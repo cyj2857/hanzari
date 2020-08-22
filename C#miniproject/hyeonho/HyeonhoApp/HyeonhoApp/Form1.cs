@@ -46,7 +46,7 @@ namespace HyeonhoApp
         {
             if(String.IsNullOrWhiteSpace(textBox1.Text))
             {
-                MessageBox.Show("내용을 입력하세요.");
+                MessageBox.Show("내용을 입력하세요!");
             }
 
             else
@@ -57,7 +57,7 @@ namespace HyeonhoApp
                  */
                 checkedListBox1.Items.Add(textBox1.Text);
                 textBox1.Text = null;
-                MessageBox.Show("할 일 등록 완료");
+                MessageBox.Show("새 일정 등록 완료");
             }
         }
 
