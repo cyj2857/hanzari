@@ -171,6 +171,7 @@
             this.button1.TabIndex = 7;
             this.button1.Text = "오늘날짜로 이동";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // monthCalendar1
             // 
@@ -178,6 +179,7 @@
             this.monthCalendar1.Location = new System.Drawing.Point(16, 67);
             this.monthCalendar1.Name = "monthCalendar1";
             this.monthCalendar1.TabIndex = 6;
+            this.monthCalendar1.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateChanged);
             // 
             // button2
             // 

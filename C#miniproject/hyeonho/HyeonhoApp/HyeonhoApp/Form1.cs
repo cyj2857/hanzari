@@ -65,5 +65,16 @@ namespace HyeonhoApp
         {
 
         }
+
+        private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // 오늘 날짜로 이동
+            monthCalendar1.SetDate(DateTime.Today);
+        }
     }
 }
