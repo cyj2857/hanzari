@@ -51,19 +51,15 @@ namespace HyeonhoApp
 
             else
             {
-                /* 
-                 * 1. checklist 에 추가
-                 * 2. textBox 내용 지워주기
-                 */
-                checkedListBox1.Items.Add(textBox1.Text);
-                textBox1.Text = null;
+                checkedListBox1.Items.Add(textBox1.Text); // checklist 에 추가
+                textBox1.Text = null; // textBox 내용 지워주기
                 MessageBox.Show("새 일정 등록 완료");
             }
         }
 
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            progressBar1.Value = (int)Math.Abs((float)(checkedListBox1.CheckedItems.Count) / (float)(checkedListBox1.Items.Count) * 100);
         }
 
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
@@ -76,5 +72,11 @@ namespace HyeonhoApp
             // 오늘 날짜로 이동
             monthCalendar1.SetDate(DateTime.Today);
         }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
