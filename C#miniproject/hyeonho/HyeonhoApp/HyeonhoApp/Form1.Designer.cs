@@ -33,15 +33,16 @@
             this.새로만들기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.열기OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.저장SToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.도움말보기HToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.도움말ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.도움말보기HToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.피드백보내기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.프로그램정보IToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.프로그램정보IToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -78,27 +79,21 @@
             // 새로만들기ToolStripMenuItem
             // 
             this.새로만들기ToolStripMenuItem.Name = "새로만들기ToolStripMenuItem";
-            this.새로만들기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.새로만들기ToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.새로만들기ToolStripMenuItem.Text = "새로 만들기(&N)";
             this.새로만들기ToolStripMenuItem.Click += new System.EventHandler(this.새로만들기ToolStripMenuItem_Click);
             // 
             // 열기OToolStripMenuItem
             // 
             this.열기OToolStripMenuItem.Name = "열기OToolStripMenuItem";
-            this.열기OToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.열기OToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.열기OToolStripMenuItem.Text = "열기(&O)";
             // 
             // 저장SToolStripMenuItem
             // 
             this.저장SToolStripMenuItem.Name = "저장SToolStripMenuItem";
-            this.저장SToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.저장SToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.저장SToolStripMenuItem.Text = "저장(&S)";
-            // 
-            // 도움말보기HToolStripMenuItem
-            // 
-            this.도움말보기HToolStripMenuItem.Name = "도움말보기HToolStripMenuItem";
-            this.도움말보기HToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.도움말보기HToolStripMenuItem.Text = "도움말 보기(&H)";
             // 
             // 도움말ToolStripMenuItem
             // 
@@ -111,22 +106,28 @@
             this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.도움말ToolStripMenuItem.Text = "도움말";
             // 
+            // 도움말보기HToolStripMenuItem
+            // 
+            this.도움말보기HToolStripMenuItem.Name = "도움말보기HToolStripMenuItem";
+            this.도움말보기HToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.도움말보기HToolStripMenuItem.Text = "도움말 보기(&H)";
+            // 
             // 피드백보내기ToolStripMenuItem
             // 
             this.피드백보내기ToolStripMenuItem.Name = "피드백보내기ToolStripMenuItem";
-            this.피드백보내기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.피드백보내기ToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.피드백보내기ToolStripMenuItem.Text = "피드백 보내기(&F)";
-            // 
-            // 프로그램정보IToolStripMenuItem
-            // 
-            this.프로그램정보IToolStripMenuItem.Name = "프로그램정보IToolStripMenuItem";
-            this.프로그램정보IToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.프로그램정보IToolStripMenuItem.Text = "프로그램 정보(I)";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(161, 6);
+            // 
+            // 프로그램정보IToolStripMenuItem
+            // 
+            this.프로그램정보IToolStripMenuItem.Name = "프로그램정보IToolStripMenuItem";
+            this.프로그램정보IToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.프로그램정보IToolStripMenuItem.Text = "프로그램 정보(I)";
             // 
             // splitContainer1
             // 
@@ -144,6 +145,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.progressBar1);
             this.splitContainer1.Panel2.Controls.Add(this.button2);
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
             this.splitContainer1.Panel2.Controls.Add(this.label3);
@@ -155,7 +157,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label1.Font = new System.Drawing.Font("Gulim", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label1.Location = new System.Drawing.Point(10, 22);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(10);
@@ -171,6 +173,7 @@
             this.button1.TabIndex = 7;
             this.button1.Text = "오늘날짜로 이동";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // monthCalendar1
             // 
@@ -178,6 +181,15 @@
             this.monthCalendar1.Location = new System.Drawing.Point(16, 67);
             this.monthCalendar1.Name = "monthCalendar1";
             this.monthCalendar1.TabIndex = 6;
+            this.monthCalendar1.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateChanged);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(186, 33);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(309, 18);
+            this.progressBar1.TabIndex = 15;
+            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
             // 
             // button2
             // 
@@ -187,6 +199,7 @@
             this.button2.TabIndex = 14;
             this.button2.Text = "일정등록";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // textBox1
             // 
@@ -195,11 +208,12 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(413, 56);
             this.textBox1.TabIndex = 13;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label3.Font = new System.Drawing.Font("Gulim", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label3.Location = new System.Drawing.Point(11, 22);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(10);
@@ -214,6 +228,7 @@
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(481, 164);
             this.checkedListBox1.TabIndex = 11;
+            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
             // 
             // Form1
             // 
@@ -259,6 +274,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

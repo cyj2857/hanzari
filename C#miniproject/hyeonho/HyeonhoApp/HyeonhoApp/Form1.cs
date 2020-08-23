@@ -22,26 +22,6 @@ namespace HyeonhoApp
 
         }
 
-        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -56,5 +36,47 @@ namespace HyeonhoApp
         {
 
         }
+
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if(String.IsNullOrWhiteSpace(textBox1.Text))
+            {
+                MessageBox.Show("내용을 입력하세요!");
+            }
+
+            else
+            {
+                checkedListBox1.Items.Add(textBox1.Text); // checklist 에 추가
+                textBox1.Text = null; // textBox 내용 지워주기
+                MessageBox.Show("새 일정 등록 완료");
+            }
+        }
+
+        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            progressBar1.Value = (int)Math.Abs((float)(checkedListBox1.CheckedItems.Count) / (float)(checkedListBox1.Items.Count) * 100);
+        }
+
+        private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // 오늘 날짜로 이동
+            monthCalendar1.SetDate(DateTime.Today);
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
