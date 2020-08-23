@@ -1,0 +1,10 @@
+C:\Users\SAMSUNG\source\repos\cardgame\bin\Debug\cardgame.exe.config
+C:\Users\SAMSUNG\source\repos\cardgame\bin\Debug\cardgame.exe
+C:\Users\SAMSUNG\source\repos\cardgame\bin\Debug\cardgame.pdb
+C:\Users\SAMSUNG\source\repos\cardgame\obj\Debug\cardgame.csprojAssemblyReference.cache
+C:\Users\SAMSUNG\source\repos\cardgame\obj\Debug\cardgame.Form1.resources
+C:\Users\SAMSUNG\source\repos\cardgame\obj\Debug\cardgame.Properties.Resources.resources
+C:\Users\SAMSUNG\source\repos\cardgame\obj\Debug\cardgame.csproj.GenerateResource.cache
+C:\Users\SAMSUNG\source\repos\cardgame\obj\Debug\cardgame.csproj.CoreCompileInputs.cache
+C:\Users\SAMSUNG\source\repos\cardgame\obj\Debug\cardgame.exe
+C:\Users\SAMSUNG\source\repos\cardgame\obj\Debug\cardgame.pdb
