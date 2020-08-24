@@ -22,6 +22,7 @@ namespace HyeonhoApp
 
         private void reset()
         {
+            // Form2 의 reset
             textBox_scheduleName.Text = listView_schedule.SelectedItems[0].SubItems[2].Text; // 일정제목
             textBox_scheduleContents.Text = listView_schedule.SelectedItems[0].SubItems[3].Text; // 일정내용 초기화
             comboBox_startTime.SelectedItem = listView_schedule.SelectedItems[0].SubItems[1].Text.Split('~')[0];
