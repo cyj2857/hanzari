@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.파일FToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.새로만들기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,14 +40,29 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.프로그램정보IToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.label1 = new System.Windows.Forms.Label();
+            this.button_reset = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.button2 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label_nowTime = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label_scheduleName = new System.Windows.Forms.Label();
+            this.comboBox_endTime = new System.Windows.Forms.ComboBox();
+            this.comboBox_startTime = new System.Windows.Forms.ComboBox();
+            this.textBox_scheduleContents = new System.Windows.Forms.TextBox();
+            this.textBox_scheduleName = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.button_addSchedule = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.listView_schedule = new System.Windows.Forms.ListView();
+            this.date = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.time = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.scheduleName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.scheduleContents = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label3 = new System.Windows.Forms.Label();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.button_deleteSchedule = new System.Windows.Forms.Button();
+            this.button_scheduleModify = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -138,26 +154,208 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.label1);
+            this.splitContainer1.Panel1.Controls.Add(this.button_reset);
             this.splitContainer1.Panel1.Controls.Add(this.button1);
             this.splitContainer1.Panel1.Controls.Add(this.monthCalendar1);
+            this.splitContainer1.Panel1.Controls.Add(this.label_nowTime);
+            this.splitContainer1.Panel1.Controls.Add(this.label6);
+            this.splitContainer1.Panel1.Controls.Add(this.label5);
+            this.splitContainer1.Panel1.Controls.Add(this.label_scheduleName);
+            this.splitContainer1.Panel1.Controls.Add(this.comboBox_endTime);
+            this.splitContainer1.Panel1.Controls.Add(this.comboBox_startTime);
+            this.splitContainer1.Panel1.Controls.Add(this.textBox_scheduleContents);
+            this.splitContainer1.Panel1.Controls.Add(this.textBox_scheduleName);
+            this.splitContainer1.Panel1.Controls.Add(this.label2);
+            this.splitContainer1.Panel1.Controls.Add(this.button_addSchedule);
+            this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel1_Paint);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.progressBar1);
-            this.splitContainer1.Panel2.Controls.Add(this.button2);
-            this.splitContainer1.Panel2.Controls.Add(this.textBox1);
+            this.splitContainer1.Panel2.Controls.Add(this.button_scheduleModify);
+            this.splitContainer1.Panel2.Controls.Add(this.button_deleteSchedule);
+            this.splitContainer1.Panel2.Controls.Add(this.listView_schedule);
             this.splitContainer1.Panel2.Controls.Add(this.label3);
-            this.splitContainer1.Panel2.Controls.Add(this.checkedListBox1);
             this.splitContainer1.Size = new System.Drawing.Size(769, 440);
             this.splitContainer1.SplitterDistance = 256;
             this.splitContainer1.TabIndex = 11;
             // 
+            // button_reset
+            // 
+            this.button_reset.Location = new System.Drawing.Point(90, 403);
+            this.button_reset.Name = "button_reset";
+            this.button_reset.Size = new System.Drawing.Size(70, 23);
+            this.button_reset.TabIndex = 26;
+            this.button_reset.Text = "초기화";
+            this.button_reset.UseVisualStyleBackColor = true;
+            this.button_reset.Click += new System.EventHandler(this.button_reset_Click);
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button1.Location = new System.Drawing.Point(67, 190);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(49, 20);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "오늘";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // monthCalendar1
+            // 
+            this.monthCalendar1.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.monthCalendar1.Location = new System.Drawing.Point(16, 50);
+            this.monthCalendar1.MaxSelectionCount = 1;
+            this.monthCalendar1.Name = "monthCalendar1";
+            this.monthCalendar1.TabIndex = 6;
+            this.monthCalendar1.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateChanged);
+            // 
+            // label_nowTime
+            // 
+            this.label_nowTime.AutoSize = true;
+            this.label_nowTime.Location = new System.Drawing.Point(17, 221);
+            this.label_nowTime.Name = "label_nowTime";
+            this.label_nowTime.Size = new System.Drawing.Size(53, 12);
+            this.label_nowTime.TabIndex = 25;
+            this.label_nowTime.Text = "현재시각";
+            this.label_nowTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_nowTime.Click += new System.EventHandler(this.label7_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(17, 302);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(29, 12);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "내용";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(17, 276);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(29, 12);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "시간";
+            // 
+            // label_scheduleName
+            // 
+            this.label_scheduleName.AutoSize = true;
+            this.label_scheduleName.Location = new System.Drawing.Point(17, 249);
+            this.label_scheduleName.Name = "label_scheduleName";
+            this.label_scheduleName.Size = new System.Drawing.Size(29, 12);
+            this.label_scheduleName.TabIndex = 22;
+            this.label_scheduleName.Text = "제목";
+            this.label_scheduleName.Click += new System.EventHandler(this.label_scheduleName_Click);
+            // 
+            // comboBox_endTime
+            // 
+            this.comboBox_endTime.FormattingEnabled = true;
+            this.comboBox_endTime.Items.AddRange(new object[] {
+            "00:00",
+            "01:00",
+            "02:00",
+            "03:00",
+            "04:00",
+            "05:00",
+            "06:00",
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
+            "22:00",
+            "23:00"});
+            this.comboBox_endTime.Location = new System.Drawing.Point(156, 273);
+            this.comboBox_endTime.Name = "comboBox_endTime";
+            this.comboBox_endTime.Size = new System.Drawing.Size(80, 20);
+            this.comboBox_endTime.TabIndex = 17;
+            this.comboBox_endTime.SelectedIndexChanged += new System.EventHandler(this.comboBox_endTime_SelectedIndexChanged);
+            // 
+            // comboBox_startTime
+            // 
+            this.comboBox_startTime.FormattingEnabled = true;
+            this.comboBox_startTime.Items.AddRange(new object[] {
+            "00:00",
+            "01:00",
+            "02:00",
+            "03:00",
+            "04:00",
+            "05:00",
+            "06:00",
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
+            "22:00",
+            "23:00"});
+            this.comboBox_startTime.Location = new System.Drawing.Point(61, 273);
+            this.comboBox_startTime.Name = "comboBox_startTime";
+            this.comboBox_startTime.Size = new System.Drawing.Size(80, 20);
+            this.comboBox_startTime.TabIndex = 16;
+            this.comboBox_startTime.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
+            // 
+            // textBox_scheduleContents
+            // 
+            this.textBox_scheduleContents.Location = new System.Drawing.Point(61, 299);
+            this.textBox_scheduleContents.Multiline = true;
+            this.textBox_scheduleContents.Name = "textBox_scheduleContents";
+            this.textBox_scheduleContents.Size = new System.Drawing.Size(175, 98);
+            this.textBox_scheduleContents.TabIndex = 21;
+            // 
+            // textBox_scheduleName
+            // 
+            this.textBox_scheduleName.Location = new System.Drawing.Point(61, 246);
+            this.textBox_scheduleName.Name = "textBox_scheduleName";
+            this.textBox_scheduleName.Size = new System.Drawing.Size(175, 21);
+            this.textBox_scheduleName.TabIndex = 20;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(142, 276);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(14, 12);
+            this.label2.TabIndex = 19;
+            this.label2.Text = "~";
+            // 
+            // button_addSchedule
+            // 
+            this.button_addSchedule.Location = new System.Drawing.Point(166, 403);
+            this.button_addSchedule.Name = "button_addSchedule";
+            this.button_addSchedule.Size = new System.Drawing.Size(70, 23);
+            this.button_addSchedule.TabIndex = 18;
+            this.button_addSchedule.Text = "일정 추가";
+            this.button_addSchedule.UseVisualStyleBackColor = true;
+            this.button_addSchedule.Click += new System.EventHandler(this.button_addSchedule_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Gulim", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label1.Location = new System.Drawing.Point(10, 22);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(10);
@@ -165,55 +363,46 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "Calendar";
             // 
-            // button1
+            // listView_schedule
             // 
-            this.button1.Location = new System.Drawing.Point(16, 241);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(74, 56);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "오늘날짜로 이동";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.listView_schedule.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.date,
+            this.time,
+            this.scheduleName,
+            this.scheduleContents});
+            this.listView_schedule.HideSelection = false;
+            this.listView_schedule.Location = new System.Drawing.Point(14, 50);
+            this.listView_schedule.Name = "listView_schedule";
+            this.listView_schedule.Size = new System.Drawing.Size(448, 347);
+            this.listView_schedule.TabIndex = 13;
+            this.listView_schedule.UseCompatibleStateImageBehavior = false;
+            this.listView_schedule.View = System.Windows.Forms.View.Details;
+            this.listView_schedule.SelectedIndexChanged += new System.EventHandler(this.listView_schedule_SelectedIndexChanged);
             // 
-            // monthCalendar1
+            // date
             // 
-            this.monthCalendar1.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.monthCalendar1.Location = new System.Drawing.Point(16, 67);
-            this.monthCalendar1.Name = "monthCalendar1";
-            this.monthCalendar1.TabIndex = 6;
-            this.monthCalendar1.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateChanged);
+            this.date.Text = "날짜";
+            this.date.Width = 80;
             // 
-            // progressBar1
+            // time
             // 
-            this.progressBar1.Location = new System.Drawing.Point(186, 33);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(309, 18);
-            this.progressBar1.TabIndex = 15;
-            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
+            this.time.Text = "시간";
+            this.time.Width = 100;
             // 
-            // button2
+            // scheduleName
             // 
-            this.button2.Location = new System.Drawing.Point(433, 241);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(62, 56);
-            this.button2.TabIndex = 14;
-            this.button2.Text = "일정등록";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.scheduleName.Text = "일정명";
+            this.scheduleName.Width = 100;
             // 
-            // textBox1
+            // scheduleContents
             // 
-            this.textBox1.Location = new System.Drawing.Point(14, 241);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(413, 56);
-            this.textBox1.TabIndex = 13;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
+            this.scheduleContents.Text = "일정내용";
+            this.scheduleContents.Width = 150;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Gulim", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label3.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label3.Location = new System.Drawing.Point(11, 22);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(10);
@@ -221,14 +410,31 @@
             this.label3.TabIndex = 12;
             this.label3.Text = "What to do today";
             // 
-            // checkedListBox1
+            // timer1
             // 
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(14, 67);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(481, 164);
-            this.checkedListBox1.TabIndex = 11;
-            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick_1);
+            // 
+            // button_deleteSchedule
+            // 
+            this.button_deleteSchedule.Location = new System.Drawing.Point(387, 403);
+            this.button_deleteSchedule.Name = "button_deleteSchedule";
+            this.button_deleteSchedule.Size = new System.Drawing.Size(75, 23);
+            this.button_deleteSchedule.TabIndex = 14;
+            this.button_deleteSchedule.Text = "일정 삭제";
+            this.button_deleteSchedule.UseVisualStyleBackColor = true;
+            this.button_deleteSchedule.Click += new System.EventHandler(this.button_deleteSchedule_Click);
+            // 
+            // button_scheduleModify
+            // 
+            this.button_scheduleModify.Location = new System.Drawing.Point(306, 403);
+            this.button_scheduleModify.Name = "button_scheduleModify";
+            this.button_scheduleModify.Size = new System.Drawing.Size(75, 23);
+            this.button_scheduleModify.TabIndex = 15;
+            this.button_scheduleModify.Text = "일정 수정";
+            this.button_scheduleModify.UseVisualStyleBackColor = true;
+            this.button_scheduleModify.Click += new System.EventHandler(this.button_scheduleModify_Click);
             // 
             // Form1
             // 
@@ -239,6 +445,7 @@
             this.Controls.Add(this.splitContainer1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -270,11 +477,26 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.MonthCalendar monthCalendar1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ComboBox comboBox_startTime;
+        private System.Windows.Forms.Button button_addSchedule;
+        private System.Windows.Forms.ComboBox comboBox_endTime;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox_scheduleContents;
+        private System.Windows.Forms.TextBox textBox_scheduleName;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label_scheduleName;
+        private System.Windows.Forms.Label label_nowTime;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button button_reset;
+        private System.Windows.Forms.ListView listView_schedule;
+        private System.Windows.Forms.ColumnHeader date;
+        private System.Windows.Forms.ColumnHeader time;
+        private System.Windows.Forms.ColumnHeader scheduleName;
+        private System.Windows.Forms.ColumnHeader scheduleContents;
+        private System.Windows.Forms.Button button_scheduleModify;
+        private System.Windows.Forms.Button button_deleteSchedule;
     }
 }
 
