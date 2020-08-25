@@ -25,7 +25,7 @@ namespace HyeonhoApp
             {
                 if (MessageBox.Show("이미 작성된 내용이 존재합니다. 새로운 파일을 여시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    Reset(); // 초기화
+                    Reset(); // dialog 초기화
                     listView_schedule.Items.Clear(); // 일정 초기화
                 }
                 else
@@ -37,7 +37,7 @@ namespace HyeonhoApp
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Reset();
+            Reset(); // dialog 초기화
             label_nowTime.Text = "현재시각 " + DateTime.Now.ToString("HH:mm:ss"); // 현재시각 label 초기화
             monthCalendar1.MinDate = DateTime.Today; // 오늘 이전날짜 비활성화
         }
@@ -77,8 +77,7 @@ namespace HyeonhoApp
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // 오늘 날짜로 이동
-            monthCalendar1.SetDate(DateTime.Today);
+            monthCalendar1.SetDate(DateTime.Today); // 오늘 날짜로 이동
         }
 
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -98,12 +97,12 @@ namespace HyeonhoApp
 
         private void timer1_Tick_1(object sender, EventArgs e)
         {
-            label_nowTime.Text = "현재시각 " + DateTime.Now.ToString("HH:mm:ss");
+            label_nowTime.Text = "현재시각 " + DateTime.Now.ToString("HH:mm:ss"); // 현재시각을 갱신해주는 timer. 1초마다 refresh
         }
 
         private void button_reset_Click(object sender, EventArgs e)
         {
-            Reset();
+            Reset(); // dialog 초기화
         }
 
         private void button_addSchedule_Click(object sender, EventArgs e)
@@ -115,12 +114,12 @@ namespace HyeonhoApp
 
             else
             {
-                ListViewItem newItem = new ListViewItem(monthCalendar1.SelectionRange.Start.ToShortDateString());
-                newItem.SubItems.Add(comboBox_startTime.SelectedItem.ToString() + "~" + comboBox_endTime.SelectedItem.ToString());
-                newItem.SubItems.Add(textBox_scheduleName.Text);
-                newItem.SubItems.Add(textBox_scheduleContents.Text);
-                listView_schedule.Items.Add(newItem); // 일정 날짜
-                Reset();
+                ListViewItem newItem = new ListViewItem(monthCalendar1.SelectionRange.Start.ToShortDateString()); // 날짜
+                newItem.SubItems.Add(comboBox_startTime.SelectedItem.ToString() + "~" + comboBox_endTime.SelectedItem.ToString()); // 시간
+                newItem.SubItems.Add(textBox_scheduleName.Text); // 제목
+                newItem.SubItems.Add(textBox_scheduleContents.Text); // 내용
+                listView_schedule.Items.Add(newItem); // 새로운 일정 추가
+                Reset(); // dialog 초기화
                 MessageBox.Show("새 일정 등록 완료");
             }
         }
@@ -148,7 +147,7 @@ namespace HyeonhoApp
                 {
                     foreach (ListViewItem eachItem in listView_schedule.SelectedItems)
                     {
-                        listView_schedule.Items.Remove(eachItem);
+                        listView_schedule.Items.Remove(eachItem); // 선택된 모든 일정 삭제
                     }
                     MessageBox.Show("삭제했습니다.", "일정 삭제 완료");
                 }
@@ -167,12 +166,12 @@ namespace HyeonhoApp
         {
             if (listView_schedule.SelectedIndices.Count == 1)
             {
-                Form2 newForm = new Form2(listView_schedule);
+                Form2 newForm = new Form2(listView_schedule); // 일정을 수정하는 새로운 폼 생성
                 newForm.Show();
             }
             else if (listView_schedule.SelectedIndices.Count > 1)
             {
-                MessageBox.Show("한 개의 일정만 선택하세요.");
+                MessageBox.Show("한 개의 일정만 선택하세요."); // multiSelect 시 제한
             }
         }
 
