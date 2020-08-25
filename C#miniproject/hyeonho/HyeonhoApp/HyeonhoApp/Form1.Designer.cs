@@ -122,8 +122,8 @@
             this.toolStripSeparator1,
             this.프로그램정보IToolStripMenuItem});
             this.도움말ToolStripMenuItem.Name = "도움말ToolStripMenuItem";
-            this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.도움말ToolStripMenuItem.Text = "도움말";
+            this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
+            this.도움말ToolStripMenuItem.Text = "도움말(&H)";
             this.도움말ToolStripMenuItem.Click += new System.EventHandler(this.도움말ToolStripMenuItem_Click);
             // 
             // 도움말보기HToolStripMenuItem
