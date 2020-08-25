@@ -95,6 +95,10 @@ namespace CSharpProject1
                 {
                     web.Navigate(textUrl.Text);
                 }
+                else
+                {
+
+                }
             }
         }
     }
