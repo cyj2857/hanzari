@@ -36,6 +36,7 @@
             this.navigateButton = new System.Windows.Forms.Button();
             this.newTabButton = new System.Windows.Forms.Button();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
@@ -54,6 +55,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.comboBox1);
             this.tabPage1.Controls.Add(this.webBrowser);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -65,24 +67,26 @@
             // 
             // backwardButton
             // 
+            this.backwardButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.backwardButton.Font = new System.Drawing.Font("굴림", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.backwardButton.Location = new System.Drawing.Point(12, 6);
             this.backwardButton.Name = "backwardButton";
             this.backwardButton.Size = new System.Drawing.Size(33, 33);
             this.backwardButton.TabIndex = 1;
             this.backwardButton.Text = "<";
-            this.backwardButton.UseVisualStyleBackColor = true;
+            this.backwardButton.UseVisualStyleBackColor = false;
             this.backwardButton.Click += new System.EventHandler(this.backwardButton_Click);
             // 
             // forwardButton
             // 
+            this.forwardButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.forwardButton.Font = new System.Drawing.Font("굴림", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.forwardButton.Location = new System.Drawing.Point(51, 6);
             this.forwardButton.Name = "forwardButton";
             this.forwardButton.Size = new System.Drawing.Size(33, 33);
             this.forwardButton.TabIndex = 2;
             this.forwardButton.Text = ">";
-            this.forwardButton.UseVisualStyleBackColor = true;
+            this.forwardButton.UseVisualStyleBackColor = false;
             this.forwardButton.Click += new System.EventHandler(this.forwardButton_Click);
             // 
             // textUrl
@@ -100,25 +104,27 @@
             // navigateButton
             // 
             this.navigateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.navigateButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.navigateButton.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.navigateButton.Location = new System.Drawing.Point(628, 6);
             this.navigateButton.Name = "navigateButton";
             this.navigateButton.Size = new System.Drawing.Size(73, 33);
             this.navigateButton.TabIndex = 4;
             this.navigateButton.Text = "Navigate";
-            this.navigateButton.UseVisualStyleBackColor = true;
+            this.navigateButton.UseVisualStyleBackColor = false;
             this.navigateButton.Click += new System.EventHandler(this.navigateButton_Click);
             // 
             // newTabButton
             // 
             this.newTabButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.newTabButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.newTabButton.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.newTabButton.Location = new System.Drawing.Point(707, 7);
             this.newTabButton.Name = "newTabButton";
             this.newTabButton.Size = new System.Drawing.Size(77, 32);
             this.newTabButton.TabIndex = 5;
             this.newTabButton.Text = "New Tab";
-            this.newTabButton.UseVisualStyleBackColor = true;
+            this.newTabButton.UseVisualStyleBackColor = false;
             this.newTabButton.Click += new System.EventHandler(this.newTabButton_Click);
             // 
             // webBrowser
@@ -134,10 +140,19 @@
             this.webBrowser.TabIndex = 0;
             this.webBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(377, 149);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(21, 20);
+            this.comboBox1.TabIndex = 1;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.newTabButton);
             this.Controls.Add(this.navigateButton);
@@ -165,6 +180,7 @@
         private System.Windows.Forms.Button navigateButton;
         private System.Windows.Forms.Button newTabButton;
         private System.Windows.Forms.WebBrowser webBrowser;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 
