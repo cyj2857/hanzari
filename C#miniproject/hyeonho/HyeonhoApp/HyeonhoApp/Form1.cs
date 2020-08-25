@@ -26,7 +26,7 @@ namespace HyeonhoApp
         {
             reset();
             label_nowTime.Text = "현재시각 " + DateTime.Now.ToString("HH:mm:ss"); // 현재시각 label 초기화
-            monthCalendar1.MinDate = DateTime.Today;
+            monthCalendar1.MinDate = DateTime.Today; // 오늘 이전날짜 비활성화
         }
 
         private void reset()

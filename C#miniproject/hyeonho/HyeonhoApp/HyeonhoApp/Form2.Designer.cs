@@ -111,7 +111,9 @@
             // 
             // comboBox_endTime
             // 
+            this.comboBox_endTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_endTime.FormattingEnabled = true;
+            this.comboBox_endTime.IntegralHeight = false;
             this.comboBox_endTime.Items.AddRange(new object[] {
             "00:00",
             "01:00",
@@ -144,7 +146,9 @@
             // 
             // comboBox_startTime
             // 
+            this.comboBox_startTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_startTime.FormattingEnabled = true;
+            this.comboBox_startTime.IntegralHeight = false;
             this.comboBox_startTime.Items.AddRange(new object[] {
             "00:00",
             "01:00",

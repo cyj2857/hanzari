@@ -18,6 +18,7 @@ namespace HyeonhoApp
             this.listView_schedule = listView_schedule;
             InitializeComponent();
             reset();
+            monthCalendar1.MinDate = DateTime.Today; // 오늘 이전날짜 비활성화
         }
 
         private void reset()
@@ -51,7 +52,12 @@ namespace HyeonhoApp
 
         private void comboBox_startTime_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            comboBox_endTime.Items.Clear();
+            for (int i = comboBox_startTime.SelectedIndex; i < comboBox_startTime.Items.Count; i++)
+            {
+                comboBox_endTime.Items.Add(comboBox_startTime.Items[i]);
+            }
+            comboBox_endTime.SelectedIndex = 1;
         }
     }
 }
