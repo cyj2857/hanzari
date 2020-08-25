@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace HyeonhoApp
 {
@@ -59,7 +60,7 @@ namespace HyeonhoApp
 
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
-            
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -71,7 +72,7 @@ namespace HyeonhoApp
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             comboBox_endTime.Items.Clear();
-            for (int i = comboBox_startTime.SelectedIndex ; i < comboBox_startTime.Items.Count; i++)
+            for (int i = comboBox_startTime.SelectedIndex; i < comboBox_startTime.Items.Count; i++)
             {
                 comboBox_endTime.Items.Add(comboBox_startTime.Items[i]);
             }
@@ -129,7 +130,7 @@ namespace HyeonhoApp
 
         private void button_deleteSchedule_Click(object sender, EventArgs e)
         {
-            if(listView_schedule.SelectedItems.Count != 0)
+            if (listView_schedule.SelectedItems.Count != 0)
             {
                 if (MessageBox.Show("선택한 일정을 삭제하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
@@ -152,15 +153,36 @@ namespace HyeonhoApp
 
         private void button_scheduleModify_Click(object sender, EventArgs e)
         {
-            if(listView_schedule.SelectedIndices.Count==1)
+            if (listView_schedule.SelectedIndices.Count == 1)
             {
                 Form2 newForm = new Form2(listView_schedule);
                 newForm.Show();
             }
-            else if(listView_schedule.SelectedIndices.Count > 1)
+            else if (listView_schedule.SelectedIndices.Count > 1)
             {
                 MessageBox.Show("한 개의 일정만 선택하세요.");
             }
+        }
+
+        private void 저장SToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StringBuilder fullString = new StringBuilder();
+            foreach (ListViewItem item in listView_schedule.Items)
+            {
+                StringBuilder sb = new StringBuilder(
+                    item.SubItems[0].Text + "%" +
+                    item.SubItems[1].Text + "%" +
+                    item.SubItems[2].Text + "%" +
+                    item.SubItems[3].Text + "\n");
+                fullString.Append(sb);
+            }
+
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Text file (*.txt)|*.txt|C# file (*.cs)|*.cs";
+            sfd.InitialDirectory = @"c:\users\public\desktop";
+
+            sfd.ShowDialog();
+            File.WriteAllText(sfd.FileName, fullString.ToString());
         }
     }
 }

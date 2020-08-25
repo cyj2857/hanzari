@@ -108,8 +108,9 @@
             // 저장SToolStripMenuItem
             // 
             this.저장SToolStripMenuItem.Name = "저장SToolStripMenuItem";
-            this.저장SToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.저장SToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.저장SToolStripMenuItem.Text = "저장(&S)";
+            this.저장SToolStripMenuItem.Click += new System.EventHandler(this.저장SToolStripMenuItem_Click);
             // 
             // 도움말ToolStripMenuItem
             // 
