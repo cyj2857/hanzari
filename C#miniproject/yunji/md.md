@@ -4,7 +4,7 @@
 
 ###     1. 초기화면
 
-<img src="Capture/1.png" style="zoom:67%;" />
+![image](Capture/1.PNG)
 
 
 
@@ -12,11 +12,13 @@
 
 ​    추가하기 버튼 클릭 시.
 
-<img src="Capture/2-1.png" style="zoom:67%;" />
+![image](Capture/2-1.PNG)
+
+
 
 ​    일정 추가 이후.
 
-<img src="Capture/2-1-A.png" style="zoom:67%;" />
+![image](Capture/2-1-A.PNG)
 
 
 
@@ -24,11 +26,13 @@
 
 ​    삭제하기 이전 삭제할 item check.
 
-<img src="Capture/2-2.png" style="zoom:67%;" />
+![image](Capture/2-2.PNG)
+
+
 
 ​    삭제하기 버튼 클릭시 삭제된 모습 확인 가능.
 
-<img src="Capture/2-2-A.png" style="zoom:67%;" />
+![image](Capture/2-2-A.PNG)
 
 
 
@@ -36,15 +40,19 @@
 
 ​    저장할 item만 check.
 
-<img src="Capture/2-3.png" style="zoom:67%;" />
+![image](Capture/2-3.PNG)
+
+
 
 ​    저장 버튼 혹은 단축키 S 누를시에 초기 directory가 지정된 dialog가 뜨고 저장 가능.
 
-![](Capture/2-3-A.png)
+![image](Capture/2-3-A.PNG)
+
+
 
 ​    textfile로 저장된 모습 확인 가능.
 
-![](Capture/2-3-B.png)
+![image](Capture/2-3-B.PNG)
 
 
 
@@ -52,21 +60,27 @@
 
 ​    열기버튼 클릭 또는 단축키 O 누를시에 초기 directory가 지정된 dialog가 뜨고 열기 가능.
 
-![](Capture/2-4.png)
+![image](Capture/2-4.PNG)
+
+
 
 ​    textfile대로 열린 모습 확인 가능.
 
-<img src="Capture/2-4-A.png" style="zoom:67%;" />
+![image](Capture/2-4-A.PNG)
+
+
 
 ###     6. 부가기능
 
 ​         전체 체크 누를 시에 모든 item check 된 것 확인 가능.
 
-<img src="Capture/2-5.png" style="zoom:67%;" />
+![image](Capture/2-5.PNG)
+
+
 
 ​         옆의 화살표로 우선순위 대로 순서 변경 가능.
 
-<img src="Capture/2-6.png" style="zoom:67%;" />
+![image](Capture/2-6.PNG)
 
 
 
