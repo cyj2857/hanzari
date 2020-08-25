@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7F5DE593-64C6-4ABF-8ACF-793A26903939}</ProjectGuid>
+    <ProjectGuid>{418153DC-7271-4C4E-8653-CE486F4B468F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>NaiveBrowser</RootNamespace>
-    <AssemblyName>NaiveBrowser</AssemblyName>
+    <RootNamespace>CSharpProject1</RootNamespace>
+    <AssemblyName>CSharpProject1</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -54,6 +54,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
