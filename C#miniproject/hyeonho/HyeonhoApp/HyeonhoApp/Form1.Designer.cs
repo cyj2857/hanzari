@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.파일FToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.새로만들기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,6 +55,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.button_addSchedule = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.button_scheduleModify = new System.Windows.Forms.Button();
+            this.button_deleteSchedule = new System.Windows.Forms.Button();
             this.listView_schedule = new System.Windows.Forms.ListView();
             this.date = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.time = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -61,8 +64,6 @@
             this.scheduleContents = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label3 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.button_deleteSchedule = new System.Windows.Forms.Button();
-            this.button_scheduleModify = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -95,21 +96,23 @@
             // 새로만들기ToolStripMenuItem
             // 
             this.새로만들기ToolStripMenuItem.Name = "새로만들기ToolStripMenuItem";
-            this.새로만들기ToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.새로만들기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.새로만들기ToolStripMenuItem.Text = "새로 만들기(&N)";
             this.새로만들기ToolStripMenuItem.Click += new System.EventHandler(this.새로만들기ToolStripMenuItem_Click);
             // 
             // 열기OToolStripMenuItem
             // 
             this.열기OToolStripMenuItem.Name = "열기OToolStripMenuItem";
-            this.열기OToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.열기OToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.열기OToolStripMenuItem.Text = "열기(&O)";
+            this.열기OToolStripMenuItem.Click += new System.EventHandler(this.열기OToolStripMenuItem_Click);
             // 
             // 저장SToolStripMenuItem
             // 
             this.저장SToolStripMenuItem.Name = "저장SToolStripMenuItem";
-            this.저장SToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.저장SToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.저장SToolStripMenuItem.Text = "저장(&S)";
+            this.저장SToolStripMenuItem.Click += new System.EventHandler(this.저장SToolStripMenuItem_Click);
             // 
             // 도움말ToolStripMenuItem
             // 
@@ -119,31 +122,35 @@
             this.toolStripSeparator1,
             this.프로그램정보IToolStripMenuItem});
             this.도움말ToolStripMenuItem.Name = "도움말ToolStripMenuItem";
-            this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.도움말ToolStripMenuItem.Text = "도움말";
+            this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
+            this.도움말ToolStripMenuItem.Text = "도움말(&H)";
+            this.도움말ToolStripMenuItem.Click += new System.EventHandler(this.도움말ToolStripMenuItem_Click);
             // 
             // 도움말보기HToolStripMenuItem
             // 
             this.도움말보기HToolStripMenuItem.Name = "도움말보기HToolStripMenuItem";
-            this.도움말보기HToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.도움말보기HToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.도움말보기HToolStripMenuItem.Text = "도움말 보기(&H)";
+            this.도움말보기HToolStripMenuItem.Click += new System.EventHandler(this.도움말보기HToolStripMenuItem_Click);
             // 
             // 피드백보내기ToolStripMenuItem
             // 
             this.피드백보내기ToolStripMenuItem.Name = "피드백보내기ToolStripMenuItem";
-            this.피드백보내기ToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.피드백보내기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.피드백보내기ToolStripMenuItem.Text = "피드백 보내기(&F)";
+            this.피드백보내기ToolStripMenuItem.Click += new System.EventHandler(this.피드백보내기ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(161, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // 프로그램정보IToolStripMenuItem
             // 
             this.프로그램정보IToolStripMenuItem.Name = "프로그램정보IToolStripMenuItem";
-            this.프로그램정보IToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.프로그램정보IToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.프로그램정보IToolStripMenuItem.Text = "프로그램 정보(I)";
+            this.프로그램정보IToolStripMenuItem.Click += new System.EventHandler(this.프로그램정보IToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -252,32 +259,10 @@
             // 
             // comboBox_endTime
             // 
+            this.comboBox_endTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_endTime.FormattingEnabled = true;
-            this.comboBox_endTime.Items.AddRange(new object[] {
-            "00:00",
-            "01:00",
-            "02:00",
-            "03:00",
-            "04:00",
-            "05:00",
-            "06:00",
-            "07:00",
-            "08:00",
-            "09:00",
-            "10:00",
-            "11:00",
-            "12:00",
-            "13:00",
-            "14:00",
-            "15:00",
-            "16:00",
-            "17:00",
-            "18:00",
-            "19:00",
-            "20:00",
-            "21:00",
-            "22:00",
-            "23:00"});
+            this.comboBox_endTime.ImeMode = System.Windows.Forms.ImeMode.On;
+            this.comboBox_endTime.IntegralHeight = false;
             this.comboBox_endTime.Location = new System.Drawing.Point(156, 273);
             this.comboBox_endTime.Name = "comboBox_endTime";
             this.comboBox_endTime.Size = new System.Drawing.Size(80, 20);
@@ -286,7 +271,9 @@
             // 
             // comboBox_startTime
             // 
+            this.comboBox_startTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_startTime.FormattingEnabled = true;
+            this.comboBox_startTime.IntegralHeight = false;
             this.comboBox_startTime.Items.AddRange(new object[] {
             "00:00",
             "01:00",
@@ -363,6 +350,26 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "Calendar";
             // 
+            // button_scheduleModify
+            // 
+            this.button_scheduleModify.Location = new System.Drawing.Point(306, 403);
+            this.button_scheduleModify.Name = "button_scheduleModify";
+            this.button_scheduleModify.Size = new System.Drawing.Size(75, 23);
+            this.button_scheduleModify.TabIndex = 15;
+            this.button_scheduleModify.Text = "일정 수정";
+            this.button_scheduleModify.UseVisualStyleBackColor = true;
+            this.button_scheduleModify.Click += new System.EventHandler(this.button_scheduleModify_Click);
+            // 
+            // button_deleteSchedule
+            // 
+            this.button_deleteSchedule.Location = new System.Drawing.Point(387, 403);
+            this.button_deleteSchedule.Name = "button_deleteSchedule";
+            this.button_deleteSchedule.Size = new System.Drawing.Size(75, 23);
+            this.button_deleteSchedule.TabIndex = 14;
+            this.button_deleteSchedule.Text = "일정 삭제";
+            this.button_deleteSchedule.UseVisualStyleBackColor = true;
+            this.button_deleteSchedule.Click += new System.EventHandler(this.button_deleteSchedule_Click);
+            // 
             // listView_schedule
             // 
             this.listView_schedule.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -416,26 +423,6 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick_1);
             // 
-            // button_deleteSchedule
-            // 
-            this.button_deleteSchedule.Location = new System.Drawing.Point(387, 403);
-            this.button_deleteSchedule.Name = "button_deleteSchedule";
-            this.button_deleteSchedule.Size = new System.Drawing.Size(75, 23);
-            this.button_deleteSchedule.TabIndex = 14;
-            this.button_deleteSchedule.Text = "일정 삭제";
-            this.button_deleteSchedule.UseVisualStyleBackColor = true;
-            this.button_deleteSchedule.Click += new System.EventHandler(this.button_deleteSchedule_Click);
-            // 
-            // button_scheduleModify
-            // 
-            this.button_scheduleModify.Location = new System.Drawing.Point(306, 403);
-            this.button_scheduleModify.Name = "button_scheduleModify";
-            this.button_scheduleModify.Size = new System.Drawing.Size(75, 23);
-            this.button_scheduleModify.TabIndex = 15;
-            this.button_scheduleModify.Text = "일정 수정";
-            this.button_scheduleModify.UseVisualStyleBackColor = true;
-            this.button_scheduleModify.Click += new System.EventHandler(this.button_scheduleModify_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -443,10 +430,11 @@
             this.ClientSize = new System.Drawing.Size(769, 440);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "일정관리";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.button_reset = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
@@ -42,6 +44,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.button_addSchedule = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button_reset
@@ -111,7 +114,9 @@
             // 
             // comboBox_endTime
             // 
+            this.comboBox_endTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_endTime.FormattingEnabled = true;
+            this.comboBox_endTime.IntegralHeight = false;
             this.comboBox_endTime.Items.AddRange(new object[] {
             "00:00",
             "01:00",
@@ -144,7 +149,9 @@
             // 
             // comboBox_startTime
             // 
+            this.comboBox_startTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_startTime.FormattingEnabled = true;
+            this.comboBox_startTime.IntegralHeight = false;
             this.comboBox_startTime.Items.AddRange(new object[] {
             "00:00",
             "01:00",
@@ -221,6 +228,10 @@
             this.label1.TabIndex = 29;
             this.label1.Text = "Calendar";
             // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -240,9 +251,10 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button_addSchedule);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form2";
+            this.Text = "일정 수정";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -264,5 +276,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button_addSchedule;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer timer1;
     }
 }
