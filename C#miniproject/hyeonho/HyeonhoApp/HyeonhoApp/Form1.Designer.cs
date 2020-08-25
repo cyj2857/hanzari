@@ -124,29 +124,33 @@
             this.도움말ToolStripMenuItem.Name = "도움말ToolStripMenuItem";
             this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.도움말ToolStripMenuItem.Text = "도움말";
+            this.도움말ToolStripMenuItem.Click += new System.EventHandler(this.도움말ToolStripMenuItem_Click);
             // 
             // 도움말보기HToolStripMenuItem
             // 
             this.도움말보기HToolStripMenuItem.Name = "도움말보기HToolStripMenuItem";
-            this.도움말보기HToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.도움말보기HToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.도움말보기HToolStripMenuItem.Text = "도움말 보기(&H)";
+            this.도움말보기HToolStripMenuItem.Click += new System.EventHandler(this.도움말보기HToolStripMenuItem_Click);
             // 
             // 피드백보내기ToolStripMenuItem
             // 
             this.피드백보내기ToolStripMenuItem.Name = "피드백보내기ToolStripMenuItem";
-            this.피드백보내기ToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.피드백보내기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.피드백보내기ToolStripMenuItem.Text = "피드백 보내기(&F)";
+            this.피드백보내기ToolStripMenuItem.Click += new System.EventHandler(this.피드백보내기ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(161, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // 프로그램정보IToolStripMenuItem
             // 
             this.프로그램정보IToolStripMenuItem.Name = "프로그램정보IToolStripMenuItem";
-            this.프로그램정보IToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.프로그램정보IToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.프로그램정보IToolStripMenuItem.Text = "프로그램 정보(I)";
+            this.프로그램정보IToolStripMenuItem.Click += new System.EventHandler(this.프로그램정보IToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 

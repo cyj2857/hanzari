@@ -263,5 +263,25 @@ namespace HyeonhoApp
                 }
             }
         }
+
+        private void 도움말ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void 피드백보내기ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/AhnHyeonho");
+        }
+
+        private void 프로그램정보IToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Made By AhnHyeonho\nhttps://github.com/AhnHyeonho", "일정관리프로그램");
+        }
+
+        private void 도움말보기HToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Made By AhnHyeonho\nhttps://github.com/AhnHyeonho", "일정관리프로그램");
+        }
     }
 }
