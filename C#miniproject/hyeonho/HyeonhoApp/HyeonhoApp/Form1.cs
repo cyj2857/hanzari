@@ -41,7 +41,7 @@ namespace HyeonhoApp
                 }
 
             } // 일정 시작시간 초기화
-            comboBox_endTime.SelectedIndex = comboBox_startTime.SelectedIndex + 1; // 일정 종료시간 초기화
+            comboBox_endTime.SelectedIndex = 1; // 일정 종료시간 초기화
             monthCalendar1.SetDate(DateTime.Today); // calendar 오늘 날짜로 이동
         }
 
@@ -69,7 +69,12 @@ namespace HyeonhoApp
 
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            comboBox_endTime.Items.Clear();
+            for (int i = comboBox_startTime.SelectedIndex ; i < comboBox_startTime.Items.Count; i++)
+            {
+                comboBox_endTime.Items.Add(comboBox_startTime.Items[i]);
+            }
+            comboBox_endTime.SelectedIndex = 1;
         }
 
         private void label7_Click(object sender, EventArgs e)

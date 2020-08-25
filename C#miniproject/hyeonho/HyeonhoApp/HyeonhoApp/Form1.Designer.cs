@@ -254,32 +254,8 @@
             // 
             this.comboBox_endTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_endTime.FormattingEnabled = true;
+            this.comboBox_endTime.ImeMode = System.Windows.Forms.ImeMode.On;
             this.comboBox_endTime.IntegralHeight = false;
-            this.comboBox_endTime.Items.AddRange(new object[] {
-            "00:00",
-            "01:00",
-            "02:00",
-            "03:00",
-            "04:00",
-            "05:00",
-            "06:00",
-            "07:00",
-            "08:00",
-            "09:00",
-            "10:00",
-            "11:00",
-            "12:00",
-            "13:00",
-            "14:00",
-            "15:00",
-            "16:00",
-            "17:00",
-            "18:00",
-            "19:00",
-            "20:00",
-            "21:00",
-            "22:00",
-            "23:00"});
             this.comboBox_endTime.Location = new System.Drawing.Point(156, 273);
             this.comboBox_endTime.Name = "comboBox_endTime";
             this.comboBox_endTime.Size = new System.Drawing.Size(80, 20);
