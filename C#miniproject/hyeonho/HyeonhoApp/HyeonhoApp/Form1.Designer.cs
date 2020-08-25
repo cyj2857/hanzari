@@ -102,8 +102,9 @@
             // 열기OToolStripMenuItem
             // 
             this.열기OToolStripMenuItem.Name = "열기OToolStripMenuItem";
-            this.열기OToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.열기OToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.열기OToolStripMenuItem.Text = "열기(&O)";
+            this.열기OToolStripMenuItem.Click += new System.EventHandler(this.열기OToolStripMenuItem_Click);
             // 
             // 저장SToolStripMenuItem
             // 

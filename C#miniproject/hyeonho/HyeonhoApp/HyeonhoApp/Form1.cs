@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Security;
 
 namespace HyeonhoApp
 {
@@ -179,10 +180,51 @@ namespace HyeonhoApp
 
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Text file (*.txt)|*.txt|C# file (*.cs)|*.cs";
-            sfd.InitialDirectory = @"c:\users\public\desktop";
+            sfd.InitialDirectory = @"C:\Users\hancom\desktop";
 
-            sfd.ShowDialog();
-            File.WriteAllText(sfd.FileName, fullString.ToString());
+            if(sfd.ShowDialog()== DialogResult.OK)
+            {
+                try
+                {
+                    var sw = new StreamWriter(sfd.FileName);
+                    sw.Write(fullString.ToString());
+                }
+                catch (SecurityException ex)
+                {
+                    MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
+                    $"Details:\n\n{ex.StackTrace}");
+                }
+            }
+        }
+
+        private void 열기OToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Text file (*.txt)|*.txt|C# file (*.cs)|*.cs";
+            ofd.InitialDirectory = @"C:\Users\hancom\desktop";
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    var sr = new StreamReader(ofd.FileName);
+                    String line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        String[] inerLine = line.Split('%');
+                        ListViewItem newItem = new ListViewItem(inerLine[0]);
+                        newItem.SubItems.Add(inerLine[1]);
+                        newItem.SubItems.Add(inerLine[2]);
+                        newItem.SubItems.Add(inerLine[3]);
+                        listView_schedule.Items.Add(newItem);
+                    }
+                }
+                catch (SecurityException ex)
+                {
+                    MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
+                    $"Details:\n\n{ex.StackTrace}");
+                }
+            }
         }
     }
 }
