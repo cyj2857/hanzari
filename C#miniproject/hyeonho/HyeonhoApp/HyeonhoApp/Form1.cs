@@ -281,7 +281,7 @@ namespace HyeonhoApp
 
         private void 도움말보기HToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/hyori100/hancomFamily/blob/AhnHyeonho/C%23miniproject/hyeonho/%EC%9D%BC%EC%A0%95%EA%B4%80%EB%A6%AC%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%EC%84%A4%EB%AA%85%EC%84%9C.md");
+            System.Diagnostics.Process.Start("https://github.com/hyori100/hancomFamily/blob/master/C%23miniproject/hyeonho/ProjectManual.md");
         }
     }
 }
