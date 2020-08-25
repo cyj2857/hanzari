@@ -54,6 +54,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.button_addSchedule = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.button_scheduleModify = new System.Windows.Forms.Button();
+            this.button_deleteSchedule = new System.Windows.Forms.Button();
             this.listView_schedule = new System.Windows.Forms.ListView();
             this.date = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.time = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -61,8 +63,6 @@
             this.scheduleContents = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label3 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.button_deleteSchedule = new System.Windows.Forms.Button();
-            this.button_scheduleModify = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -252,7 +252,9 @@
             // 
             // comboBox_endTime
             // 
+            this.comboBox_endTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_endTime.FormattingEnabled = true;
+            this.comboBox_endTime.IntegralHeight = false;
             this.comboBox_endTime.Items.AddRange(new object[] {
             "00:00",
             "01:00",
@@ -286,7 +288,9 @@
             // 
             // comboBox_startTime
             // 
+            this.comboBox_startTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_startTime.FormattingEnabled = true;
+            this.comboBox_startTime.IntegralHeight = false;
             this.comboBox_startTime.Items.AddRange(new object[] {
             "00:00",
             "01:00",
@@ -363,6 +367,26 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "Calendar";
             // 
+            // button_scheduleModify
+            // 
+            this.button_scheduleModify.Location = new System.Drawing.Point(306, 403);
+            this.button_scheduleModify.Name = "button_scheduleModify";
+            this.button_scheduleModify.Size = new System.Drawing.Size(75, 23);
+            this.button_scheduleModify.TabIndex = 15;
+            this.button_scheduleModify.Text = "일정 수정";
+            this.button_scheduleModify.UseVisualStyleBackColor = true;
+            this.button_scheduleModify.Click += new System.EventHandler(this.button_scheduleModify_Click);
+            // 
+            // button_deleteSchedule
+            // 
+            this.button_deleteSchedule.Location = new System.Drawing.Point(387, 403);
+            this.button_deleteSchedule.Name = "button_deleteSchedule";
+            this.button_deleteSchedule.Size = new System.Drawing.Size(75, 23);
+            this.button_deleteSchedule.TabIndex = 14;
+            this.button_deleteSchedule.Text = "일정 삭제";
+            this.button_deleteSchedule.UseVisualStyleBackColor = true;
+            this.button_deleteSchedule.Click += new System.EventHandler(this.button_deleteSchedule_Click);
+            // 
             // listView_schedule
             // 
             this.listView_schedule.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -415,26 +439,6 @@
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick_1);
-            // 
-            // button_deleteSchedule
-            // 
-            this.button_deleteSchedule.Location = new System.Drawing.Point(387, 403);
-            this.button_deleteSchedule.Name = "button_deleteSchedule";
-            this.button_deleteSchedule.Size = new System.Drawing.Size(75, 23);
-            this.button_deleteSchedule.TabIndex = 14;
-            this.button_deleteSchedule.Text = "일정 삭제";
-            this.button_deleteSchedule.UseVisualStyleBackColor = true;
-            this.button_deleteSchedule.Click += new System.EventHandler(this.button_deleteSchedule_Click);
-            // 
-            // button_scheduleModify
-            // 
-            this.button_scheduleModify.Location = new System.Drawing.Point(306, 403);
-            this.button_scheduleModify.Name = "button_scheduleModify";
-            this.button_scheduleModify.Size = new System.Drawing.Size(75, 23);
-            this.button_scheduleModify.TabIndex = 15;
-            this.button_scheduleModify.Text = "일정 수정";
-            this.button_scheduleModify.UseVisualStyleBackColor = true;
-            this.button_scheduleModify.Click += new System.EventHandler(this.button_scheduleModify_Click);
             // 
             // Form1
             // 

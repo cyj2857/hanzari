@@ -123,17 +123,24 @@ namespace HyeonhoApp
 
         private void button_deleteSchedule_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show("선택한 일정을 삭제하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if(listView_schedule.SelectedItems.Count != 0)
             {
-                foreach (ListViewItem eachItem in listView_schedule.SelectedItems)
+                if (MessageBox.Show("선택한 일정을 삭제하시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    listView_schedule.Items.Remove(eachItem);
+                    foreach (ListViewItem eachItem in listView_schedule.SelectedItems)
+                    {
+                        listView_schedule.Items.Remove(eachItem);
+                    }
+                    MessageBox.Show("삭제했습니다.", "일정 삭제 완료");
                 }
-                MessageBox.Show("삭제했습니다.", "일정 삭제 완료");
+                else
+                {
+                    MessageBox.Show("취소했습니다.", "일정 삭제 취소");
+                }
             }
             else
             {
-                MessageBox.Show("취소했습니다.", "일정 삭제 취소");
+                MessageBox.Show("삭제할 일정을 선택하세요.", "경고");
             }
         }
 
