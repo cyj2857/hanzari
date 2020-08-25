@@ -21,17 +21,28 @@ namespace HyeonhoApp
 
         private void 새로만들기ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (listView_schedule.Items.Count != 0)
+            {
+                if (MessageBox.Show("이미 작성된 내용이 존재합니다. 새로운 파일을 여시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    Reset(); // 초기화
+                    listView_schedule.Items.Clear(); // 일정 초기화
+                }
+                else
+                {
+                    MessageBox.Show("취소했습니다.", "새로 만들기 취소");
+                }
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            reset();
+            Reset();
             label_nowTime.Text = "현재시각 " + DateTime.Now.ToString("HH:mm:ss"); // 현재시각 label 초기화
             monthCalendar1.MinDate = DateTime.Today; // 오늘 이전날짜 비활성화
         }
 
-        private void reset()
+        private void Reset()
         {
             textBox_scheduleName.Text = null; // 일정제목 초기화
             textBox_scheduleContents.Text = null; // 일정내용 초기화
@@ -92,7 +103,7 @@ namespace HyeonhoApp
 
         private void button_reset_Click(object sender, EventArgs e)
         {
-            reset();
+            Reset();
         }
 
         private void button_addSchedule_Click(object sender, EventArgs e)
@@ -109,7 +120,7 @@ namespace HyeonhoApp
                 newItem.SubItems.Add(textBox_scheduleName.Text);
                 newItem.SubItems.Add(textBox_scheduleContents.Text);
                 listView_schedule.Items.Add(newItem); // 일정 날짜
-                reset();
+                Reset();
                 MessageBox.Show("새 일정 등록 완료");
             }
         }
@@ -167,27 +178,54 @@ namespace HyeonhoApp
 
         private void 저장SToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StringBuilder fullString = new StringBuilder();
-            foreach (ListViewItem item in listView_schedule.Items)
+            SaveFile(); // 파일로 저장
+        }
+
+        private void 열기OToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listView_schedule.Items.Count != 0)
             {
-                StringBuilder sb = new StringBuilder(
-                    item.SubItems[0].Text + "%" +
-                    item.SubItems[1].Text + "%" +
-                    item.SubItems[2].Text + "%" +
-                    item.SubItems[3].Text + "\n");
-                fullString.Append(sb);
+                if (MessageBox.Show("이미 작성된 내용이 존재합니다. 새로운 파일을 여시겠습니까?", "경고", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    Reset(); // dialog 초기화
+                    listView_schedule.Items.Clear(); // listView 초기화
+                    OpenFile(); // 파일 오픈
+                }
+                else
+                {
+                    MessageBox.Show("취소했습니다.", "열기 취소");
+                }
             }
-
+            else
+            {
+                OpenFile();
+            }
+        }
+        private void SaveFile()
+        {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Text file (*.txt)|*.txt|C# file (*.cs)|*.cs";
-            sfd.InitialDirectory = @"C:\Users\hancom\desktop";
+            sfd.Filter = "Text file (*.txt)|*.txt|C# file (*.cs)|*.cs"; // 확장자 필터 지정
+            sfd.InitialDirectory = @"C:\Users\hancom\desktop"; // 기본 디렉토리 지정
 
-            if(sfd.ShowDialog()== DialogResult.OK)
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
+                    StringBuilder fullString = new StringBuilder();
+                    foreach (ListViewItem item in listView_schedule.Items)
+                    {
+                        StringBuilder sb = new StringBuilder(
+                            item.SubItems[0].Text + "%" +
+                            item.SubItems[1].Text + "%" +
+                            item.SubItems[2].Text + "%" +
+                            item.SubItems[3].Text + "\n");
+                        fullString.Append(sb);
+                    }
+
+
                     var sw = new StreamWriter(sfd.FileName);
                     sw.Write(fullString.ToString());
+                    sw.Close();
                 }
                 catch (SecurityException ex)
                 {
@@ -196,12 +234,11 @@ namespace HyeonhoApp
                 }
             }
         }
-
-        private void 열기OToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenFile()
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Text file (*.txt)|*.txt|C# file (*.cs)|*.cs";
-            ofd.InitialDirectory = @"C:\Users\hancom\desktop";
+            ofd.Filter = "Text file (*.txt)|*.txt|C# file (*.cs)|*.cs"; // 확장자 필터 지정
+            ofd.InitialDirectory = @"C:\Users\hancom\desktop"; // 기본 디렉토리 지정
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -218,6 +255,7 @@ namespace HyeonhoApp
                         newItem.SubItems.Add(inerLine[3]);
                         listView_schedule.Items.Add(newItem);
                     }
+                    sr.Close();
                 }
                 catch (SecurityException ex)
                 {
