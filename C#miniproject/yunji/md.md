@@ -4,7 +4,7 @@
 
 ###     1. 초기화면
 
-![image](Capture/1.png)
+![image](Capture/1.PNG)
 
 
 
