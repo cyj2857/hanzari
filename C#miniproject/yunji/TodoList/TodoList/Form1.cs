@@ -55,7 +55,7 @@ namespace TodoList
 
                 for (int i = 0 ;i<= checkedListBox1.Items.Count - 1; i++)
                 {
-                    writer.WriteLine(checkedListBox1.Items[i].ToString());
+                    writer.WriteLine(i+1 + ". " + checkedListBox1.Items[i].ToString());
                 }
 
                 writer.Dispose();
@@ -101,7 +101,7 @@ namespace TodoList
                     }
                     else
                     {
-                        checkedListBox1.Items.Add(lines[i]);
+                        checkedListBox1.Items.Add(lines[i].Split('.')[1]);
                     }
                 }
 
@@ -119,6 +119,29 @@ namespace TodoList
                 checkedListBox1.SetItemChecked(i, checkBox1.Checked);
 
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = checkedListBox1.SelectedIndex;
+            if (selectedIndex > 0)
+            {
+                checkedListBox1.Items.Insert(selectedIndex - 1, checkedListBox1.Items[selectedIndex]);
+                checkedListBox1.Items.RemoveAt(selectedIndex + 1);
+                checkedListBox1.SelectedIndex = selectedIndex - 1;
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = checkedListBox1.SelectedIndex;
+            if (selectedIndex<checkedListBox1.Items.Count-1 & selectedIndex != -1)
+            {
+                checkedListBox1.Items.Insert(selectedIndex + 2, checkedListBox1.Items[selectedIndex]);
+                checkedListBox1.Items.RemoveAt(selectedIndex);
+                checkedListBox1.SelectedIndex = selectedIndex + 1;
+            }
+            
         }
 
     }
