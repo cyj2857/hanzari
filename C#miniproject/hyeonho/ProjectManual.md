@@ -17,16 +17,18 @@
 3. 일정 수정
    * ListView에서 일정을 하나 선택하고 일정 수정 버튼 클릭 시 해당 일정의 정보가 담겨진 새로운 창(form)이 뜨고 수정할 수 있음
      ![image-20200825131147118](./ManualImage/image-20200825131147118.png)
+
 * 수정된 내용은 일정 수정 버튼을 통해 저장할 수 있음
-  ![image-20200825131518123](./ManualImage/image-20200825131518123.png)
+     ![image-20200825131518123](./ManualImage/image-20200825131518123.png)
+   
    * ListView에서 여러 일정을 선택하고 일정 수정 시 오류 출력
      ![image-20200825131557683](./ManualImage/image-20200825131557683.png)
-   * 수정된 내용은 일정 수정 버튼을 통해 저장할 수 있음
-     ![image-20200825131518123](C:/Users/hancom/Desktop/Git/hancomFamily/C#miniproject/hyeonho/ManualImage/image-20200825131518123.png)
-   * ListView에서 여러 일정을 선택하고 일정 수정 시 오류 출력
-     ![image-20200825131557683](./ManualImage/image-20200825131557683.png)
+     
+     
+   
 4. 일정 삭제
    ![image-20200825131629893](./ManualImage/image-20200825131629893.png)
+
    * 일정을 선택하고 일정 삭제 클릭 시 경고창을 띄운 뒤 예를 누르면 삭제, 아니요를 누르면 삭제를 취소한다.
      ![image-20200825131717835](./ManualImage/image-20200825131717835.png)
 
