@@ -59,13 +59,11 @@ namespace WordPad_HyoriProject
 
         }
 
-        //fontName & fontSize 
         class MyFont
         {
             private List<string> fontFamilies = new List<string>();
             private List<int> fontsizeList = new List<int>();
 
-            //Get All font items
             public List<string> getFontFamilies()
             {
                 fontFamilies = new List<string>();
@@ -76,7 +74,6 @@ namespace WordPad_HyoriProject
                 return fontFamilies;
             }
 
-            //Get All fontsize items
             public List<int> getFontSize()
             {
                 fontsizeList = new List<int>();
@@ -90,7 +87,6 @@ namespace WordPad_HyoriProject
 
         }
 
-        //Font Color (글자색)
         private void colorPickerDropDown1_SelectedColorChanged(object sender, EventArgs e)
         {
             ColorPickerDropDown cpd = sender as ColorPickerDropDown;
@@ -98,7 +94,7 @@ namespace WordPad_HyoriProject
             richTextBox.SelectionColor = color;
         }
 
-        //FontName comboBox Changed (폰트 스타일)
+        //FontName comboBox
         private void comboBoxItem1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (richTextBox.SelectionFont != null)
@@ -118,7 +114,7 @@ namespace WordPad_HyoriProject
 
         }
 
-        //FontSize comboBox Changed (글자 크기)
+        //FontSize comboBox
         private void comboBoxItem2_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (richTextBox.SelectionFont != null)
@@ -138,7 +134,7 @@ namespace WordPad_HyoriProject
 
         }
 
-        //FontBoldButton Checked or Not Checked (글자 굵게)
+        //FontBoldButton
         private void fontBold_CheckedChanged(object sender, EventArgs e)
         {
             if (richTextBox.SelectionFont != null)
@@ -157,7 +153,7 @@ namespace WordPad_HyoriProject
             }
         }
 
-        //Text Alignment (정렬)
+        //Text Alignment
         private void leftAlignButton_Clicked(object sender, EventArgs e)
         {
             richTextBox.SelectionAlignment = HorizontalAlignment.Left;
@@ -173,13 +169,11 @@ namespace WordPad_HyoriProject
             richTextBox.SelectionAlignment = HorizontalAlignment.Right;
         }
 
-        //File Open (열기)
         private void openFileButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "모든 워드패드 문서(*.rtf; *.docx; *.odt; *.txt)|*.rtf; *.docx; *.odt; *.txt";
 
-            //click "open" button
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 StreamReader reader = new StreamReader(openFileDialog.FileName);
@@ -194,16 +188,20 @@ namespace WordPad_HyoriProject
                 ButtonItem buttonItem = new ButtonItem();
                 buttonItem.Text = fileName;
                 buttonItem.Click += ButtonClickHandler;
+
                 itemContainer.SubItems.Add(buttonItem,0);
             }
 
         }
 
-        //button 누를시 file 출력 
+        //open recent files
         private void ButtonClickHandler(object sender, EventArgs e)
         {
             string fileName = sender.ToString();
-            StreamReader reader = new StreamReader(Path.GetFullPath(fileName));
+            FileInfo f = new FileInfo(fileName);
+            string fullName = f.FullName;
+
+            StreamReader reader = new StreamReader(fullName);
             richTextBox.Text = reader.ReadToEnd();
 
             this.Text = fileName;
@@ -211,7 +209,6 @@ namespace WordPad_HyoriProject
             reader.Close();
         }
 
-        //Save (저장)
         private void saveButton_Click(object sender, EventArgs e)
         {
             DialogResult result;
@@ -220,7 +217,8 @@ namespace WordPad_HyoriProject
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                saveFileDialog.InitialDirectory = "C:";
+                string currentDirectory = Directory.GetCurrentDirectory();
+                saveFileDialog.InitialDirectory = currentDirectory;
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -229,23 +227,15 @@ namespace WordPad_HyoriProject
             }
         }
 
-        //Print (프린트)
         private void printButton_Click(object sender, EventArgs e)
         {
             PrintDialog printDialog = new PrintDialog();
             printDialog.ShowDialog();
         }
 
-
-        //Exit (끝내기)
         private void exitButton_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void buttonItem4_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

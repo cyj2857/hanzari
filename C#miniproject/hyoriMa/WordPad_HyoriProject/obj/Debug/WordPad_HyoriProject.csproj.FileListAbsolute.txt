@@ -13,3 +13,34 @@ C:\Users\hancom\source\repos\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject
 C:\Users\hancom\source\repos\WordPad_HyoriProject\bin\Debug\DevComponents.DotNetBar.Keyboard.dll
 C:\Users\hancom\source\repos\WordPad_HyoriProject\bin\Debug\DevComponents.DotNetBar.Keyboard.xml
 C:\Users\hancom\source\repos\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.MyForm.resources
+<<<<<<< HEAD
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\bin\Debug\WordPad_HyoriProject.exe.config
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\bin\Debug\WordPad_HyoriProject.exe
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\bin\Debug\WordPad_HyoriProject.pdb
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\bin\Debug\DevComponents.DotNetBar.Keyboard.xml
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\bin\Debug\DevComponents.DotNetBar2.xml
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csprojAssemblyReference.cache
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.MyForm.resources
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.Properties.Resources.resources
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csproj.GenerateResource.cache
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csproj.CoreCompileInputs.cache
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csproj.CopyComplete
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.exe
+C:\Users\hancom\Desktop\노윤지\hancomFamily\C#miniproject\HyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.pdb
+=======
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\bin\Debug\WordPad_HyoriProject.exe.config
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\bin\Debug\WordPad_HyoriProject.exe
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\bin\Debug\WordPad_HyoriProject.pdb
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\bin\Debug\DevComponents.DotNetBar.Keyboard.dll
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\bin\Debug\DevComponents.DotNetBar2.dll
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\bin\Debug\DevComponents.DotNetBar.Keyboard.xml
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\bin\Debug\DevComponents.DotNetBar2.xml
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csprojAssemblyReference.cache
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.MyForm.resources
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.Properties.Resources.resources
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csproj.GenerateResource.cache
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csproj.CoreCompileInputs.cache
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csproj.CopyComplete
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.exe
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.pdb
+>>>>>>> e3e9326b32ab6b8f15086b5b982056cbd8f9f7a3
