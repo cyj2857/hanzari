@@ -203,7 +203,10 @@ namespace WordPad_HyoriProject
         private void ButtonClickHandler(object sender, EventArgs e)
         {
             string fileName = sender.ToString();
-            StreamReader reader = new StreamReader(Path.GetFullPath(fileName));
+            FileInfo f = new FileInfo(fileName);
+            string fullName = f.FullName;
+
+            StreamReader reader = new StreamReader(fullName);
             richTextBox.Text = reader.ReadToEnd();
 
             this.Text = fileName;
@@ -220,7 +223,8 @@ namespace WordPad_HyoriProject
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                saveFileDialog.InitialDirectory = "C:";
+                string currentDirectory = Directory.GetCurrentDirectory();
+                saveFileDialog.InitialDirectory = currentDirectory;
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
