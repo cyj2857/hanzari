@@ -56,6 +56,7 @@
             this.printButton = new DevComponents.DotNetBar.ButtonItem();
             this.galleryContainer1 = new DevComponents.DotNetBar.GalleryContainer();
             this.labelItem8 = new DevComponents.DotNetBar.LabelItem();
+            this.itemContainer = new DevComponents.DotNetBar.ItemContainer();
             this.itemContainer4 = new DevComponents.DotNetBar.ItemContainer();
             this.exitButton = new DevComponents.DotNetBar.ButtonItem();
             this.ribbonTabItem1 = new DevComponents.DotNetBar.RibbonTabItem();
@@ -63,7 +64,6 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.맑은고딕 = new DevComponents.Editors.ComboItem();
             this.itemContainer6 = new DevComponents.DotNetBar.ItemContainer();
-            this.itemContainer = new DevComponents.DotNetBar.ItemContainer();
             this.buttonItem1 = new DevComponents.DotNetBar.ButtonItem();
             this.buttonItem3 = new DevComponents.DotNetBar.ButtonItem();
             this.buttonItem4 = new DevComponents.DotNetBar.ButtonItem();
@@ -482,6 +482,27 @@
             this.labelItem8.Stretch = true;
             this.labelItem8.Text = "Recent Documents";
             // 
+            // itemContainer
+            // 
+            // 
+            // 
+            // 
+            this.itemContainer.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.itemContainer.LayoutOrientation = DevComponents.DotNetBar.eOrientation.Vertical;
+            this.itemContainer.Name = "itemContainer";
+            this.itemContainer.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
+            this.buttonItem1,
+            this.buttonItem3,
+            this.buttonItem4});
+            // 
+            // 
+            // 
+            this.itemContainer.TitleMouseOverStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            // 
+            // 
+            // 
+            this.itemContainer.TitleStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            // 
             // itemContainer4
             // 
             // 
@@ -554,27 +575,6 @@
             // 
             this.itemContainer6.TitleStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             // 
-            // itemContainer
-            // 
-            // 
-            // 
-            // 
-            this.itemContainer.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.itemContainer.LayoutOrientation = DevComponents.DotNetBar.eOrientation.Vertical;
-            this.itemContainer.Name = "itemContainer";
-            this.itemContainer.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
-            this.buttonItem1,
-            this.buttonItem3,
-            this.buttonItem4});
-            // 
-            // 
-            // 
-            this.itemContainer.TitleMouseOverStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            // 
-            // 
-            // 
-            this.itemContainer.TitleStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            // 
             // buttonItem1
             // 
             this.buttonItem1.Name = "buttonItem1";
@@ -589,7 +589,6 @@
             // 
             this.buttonItem4.Name = "buttonItem4";
             this.buttonItem4.Text = "buttonItem4";
-            this.buttonItem4.Click += new System.EventHandler(this.buttonItem4_Click);
             // 
             // MyForm
             // 
