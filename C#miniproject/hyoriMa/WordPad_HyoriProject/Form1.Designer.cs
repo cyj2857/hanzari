@@ -271,14 +271,14 @@
             this.comboBoxItem1.DropDownWidth = 100;
             this.comboBoxItem1.Name = "comboBoxItem1";
             this.comboBoxItem1.Text = "comboBoxItem1";
-            this.comboBoxItem1.SelectedIndexChanged += new System.EventHandler(this.comboBoxItem1_SelectedIndexChanged);
+            this.comboBoxItem1.SelectedIndexChanged += new System.EventHandler(this.fontNameComboBox_SelectedIndexChanged);
             // 
             // comboBoxItem2
             // 
             this.comboBoxItem2.DropDownHeight = 106;
             this.comboBoxItem2.Name = "comboBoxItem2";
             this.comboBoxItem2.Text = "comboBoxItem2";
-            this.comboBoxItem2.SelectedIndexChanged += new System.EventHandler(this.comboBoxItem2_SelectedIndexChanged);
+            this.comboBoxItem2.SelectedIndexChanged += new System.EventHandler(this.fontSizeComboBox_SelectedIndexChanged);
             // 
             // itemContainer8
             // 

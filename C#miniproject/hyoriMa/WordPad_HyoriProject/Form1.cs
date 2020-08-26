@@ -21,17 +21,14 @@ namespace WordPad_HyoriProject
         public MyForm()
         {
             InitializeComponent();
-
         }
 
-        //When Form is loading..
         private void Form1_Load_1(object sender, EventArgs e)
         {
-            ////////////////////////////////////////////////////
+            //Setting
             richTextBox = this.richTextBox1;
             fontComboBox = this.comboBoxItem1;
             fontSizeComboBox = this.comboBoxItem2;
-            ////////////////////////////////////////////////////
 
             MyFont font = new MyFont();
             fontList = font.getFontFamilies();
@@ -79,8 +76,7 @@ namespace WordPad_HyoriProject
 
         }
 
-        //FontName comboBox
-        private void comboBoxItem1_SelectedIndexChanged(object sender, EventArgs e)
+        private void fontNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (richTextBox.SelectionFont != null)
             {
@@ -96,11 +92,9 @@ namespace WordPad_HyoriProject
                     richTextBox.SelectionFont = new Font(selectedFontItem, currentFont.Size, FontStyle.Regular);
                 }
             }
-
         }
 
-        //FontSize comboBox
-        private void comboBoxItem2_SelectedIndexChanged(object sender, EventArgs e)
+        private void fontSizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (richTextBox.SelectionFont != null)
             {
@@ -116,7 +110,6 @@ namespace WordPad_HyoriProject
                     richTextBox.SelectionFont = new Font(currentFont.FontFamily, Int32.Parse(selectedFontItem), FontStyle.Regular);
                 }
             }
-
         }
 
         //FontBoldButton
@@ -247,5 +240,7 @@ namespace WordPad_HyoriProject
             int fontSizeIndex = fontSizeComboBox.Items.IndexOf(fontSize.ToString());
             fontSizeComboBox.SelectedIndex = fontSizeIndex;
         }
+
+       
     }
 }
