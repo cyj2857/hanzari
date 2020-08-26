@@ -30,14 +30,14 @@ namespace WordPad_HyoriProject
             fontComboBox = this.comboBoxItem1;
             fontSizeComboBox = this.comboBoxItem2;
 
-            MyFont myFont = new MyFont();
-            fontList = myFont.getFontFamilies();
+            MyFont font = new MyFont();
+            fontList = font.getFontFamilies();
             foreach (string item in fontList)
             {
                 fontComboBox.Items.Add(item);
             }
 
-            fontSizeList = myFont.getFontSize();
+            fontSizeList = font.getFontSize();
             foreach (int item in fontSizeList)
             {
                 fontSizeComboBox.Items.Add(item.ToString());

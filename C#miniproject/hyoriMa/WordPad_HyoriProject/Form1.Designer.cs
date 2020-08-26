@@ -608,7 +608,7 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private DevComponents.DotNetBar.RibbonBar ribbonBar1;
         private DevComponents.Editors.ComboItem 맑은고딕;
-        private DevComponents.DotNetBar.RibbonBar Font;
+        private new DevComponents.DotNetBar.RibbonBar Font;
         private DevComponents.DotNetBar.ItemContainer itemContainer6;
         private DevComponents.DotNetBar.ItemContainer itemContainer5;
         private DevComponents.DotNetBar.ItemContainer itemContainer7;
