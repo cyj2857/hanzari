@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxToDo = new System.Windows.Forms.TextBox();
             this.buttonAdd = new System.Windows.Forms.Button();
@@ -83,6 +84,7 @@
             this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.textBoxToDo);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form2";
             this.Text = "일정 추가 창";
             this.ResumeLayout(false);
