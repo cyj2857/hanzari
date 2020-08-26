@@ -18,21 +18,21 @@
 > >
 > > ## 4. Send URL 버튼 클릭 시 메모장으로 URL 텍스트 보내기
 > >
-> > ![image-20200826114123146](C:\Users\hancom\AppData\Roaming\Typora\typora-user-images\image-20200826114123146.png)
+> > ![제목 없음](https://user-images.githubusercontent.com/42930502/91251075-925e0500-e795-11ea-8e1f-89d069d674d3.png)
 > >
 > > 
 > >
 > > ## 5. 탭 끄기
 > >
-> > ![image-20200826114203798](C:\Users\hancom\AppData\Roaming\Typora\typora-user-images\image-20200826114203798.png)
->
+> > ![제목 없음](https://user-images.githubusercontent.com/42930502/91251120-b1f52d80-e795-11ea-8881-f628dd020ffa.png)
+> >
 > > 
 > >
 > > ## 6. 뒤로가기, 앞으로가기
 > >
-> > ![image-20200826114800676](C:\Users\hancom\AppData\Roaming\Typora\typora-user-images\image-20200826114800676.png)
+> > ![1](https://user-images.githubusercontent.com/42930502/91251212-e5d05300-e795-11ea-9f23-5b158f42871d.png)
 > >
-> > ![image-20200826114808056](C:\Users\hancom\AppData\Roaming\Typora\typora-user-images\image-20200826114808056.png)
+> > ![2](https://user-images.githubusercontent.com/42930502/91251225-ed8ff780-e795-11ea-8919-7fc4b626d717.png)
 > >
 > > 
 >
