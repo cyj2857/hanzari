@@ -33,7 +33,6 @@ namespace WordPad_HyoriProject
             fontSizeComboBox = this.comboBoxItem2;
             ////////////////////////////////////////////////////
 
-
             MyFont font = new MyFont();
             fontList = font.getFontFamilies();
             foreach (string item in fontList)
@@ -47,16 +46,9 @@ namespace WordPad_HyoriProject
                 fontSizeComboBox.Items.Add(item.ToString());
             }
 
-            //Get Default Richtextbox's fontName and fontSize 
             string fontName = richTextBox.SelectionFont.Name;
-            int fontNameIndex = fontComboBox.Items.IndexOf(fontName);
-            fontComboBox.SelectedIndex = fontNameIndex;
-
             float fontSize = richTextBox.SelectionFont.Size;
-            int fontSizeIndex = fontSizeComboBox.Items.IndexOf(fontSize.ToString());
-            fontSizeComboBox.SelectedIndex = fontSizeIndex;
-
-
+            setComboBoxSelectedIndex(fontName, fontSize);
         }
 
         class MyFont
@@ -85,13 +77,6 @@ namespace WordPad_HyoriProject
             }
 
 
-        }
-
-        private void colorPickerDropDown1_SelectedColorChanged(object sender, EventArgs e)
-        {
-            ColorPickerDropDown cpd = sender as ColorPickerDropDown;
-            Color color = Color.FromArgb(cpd.SelectedColor.ToArgb());
-            richTextBox.SelectionColor = color;
         }
 
         //FontName comboBox
@@ -151,6 +136,13 @@ namespace WordPad_HyoriProject
                 }
 
             }
+        }
+
+        private void colorPickerDropDown1_SelectedColorChanged(object sender, EventArgs e)
+        {
+            ColorPickerDropDown cpd = sender as ColorPickerDropDown;
+            Color color = Color.FromArgb(cpd.SelectedColor.ToArgb());
+            richTextBox.SelectionColor = color;
         }
 
         //Text Alignment
@@ -236,6 +228,24 @@ namespace WordPad_HyoriProject
         private void exitButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void richTextBox_selectionChanged(object sender, EventArgs e)
+        {
+            string fontName = richTextBox.SelectionFont.Name;
+            float fontSize = richTextBox.SelectionFont.Size;
+
+            setComboBoxSelectedIndex(fontName, fontSize);
+
+        }
+
+        public void setComboBoxSelectedIndex(string fontName, float fontSize)
+        {
+            int fontNameIndex = fontComboBox.Items.IndexOf(fontName);
+            fontComboBox.SelectedIndex = fontNameIndex;
+
+            int fontSizeIndex = fontSizeComboBox.Items.IndexOf(fontSize.ToString());
+            fontSizeComboBox.SelectedIndex = fontSizeIndex;
         }
     }
 }

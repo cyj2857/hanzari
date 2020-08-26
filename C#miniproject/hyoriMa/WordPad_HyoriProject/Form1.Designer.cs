@@ -64,9 +64,6 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.맑은고딕 = new DevComponents.Editors.ComboItem();
             this.itemContainer6 = new DevComponents.DotNetBar.ItemContainer();
-            this.buttonItem1 = new DevComponents.DotNetBar.ButtonItem();
-            this.buttonItem3 = new DevComponents.DotNetBar.ButtonItem();
-            this.buttonItem4 = new DevComponents.DotNetBar.ButtonItem();
             this.ribbonControl1.SuspendLayout();
             this.ribbonPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -490,10 +487,6 @@
             this.itemContainer.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.itemContainer.LayoutOrientation = DevComponents.DotNetBar.eOrientation.Vertical;
             this.itemContainer.Name = "itemContainer";
-            this.itemContainer.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
-            this.buttonItem1,
-            this.buttonItem3,
-            this.buttonItem4});
             // 
             // 
             // 
@@ -553,6 +546,7 @@
             this.richTextBox1.Size = new System.Drawing.Size(790, 280);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
+            this.richTextBox1.SelectionChanged += new System.EventHandler(this.richTextBox_selectionChanged);
             // 
             // 맑은고딕
             // 
@@ -574,21 +568,6 @@
             // 
             // 
             this.itemContainer6.TitleStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            // 
-            // buttonItem1
-            // 
-            this.buttonItem1.Name = "buttonItem1";
-            this.buttonItem1.Text = "buttonItem1";
-            // 
-            // buttonItem3
-            // 
-            this.buttonItem3.Name = "buttonItem3";
-            this.buttonItem3.Text = "buttonItem3";
-            // 
-            // buttonItem4
-            // 
-            this.buttonItem4.Name = "buttonItem4";
-            this.buttonItem4.Text = "buttonItem4";
             // 
             // MyForm
             // 
@@ -644,9 +623,6 @@
         private DevComponents.DotNetBar.ButtonItem middleAlign;
         private DevComponents.DotNetBar.ButtonItem rightAlign;
         private DevComponents.DotNetBar.ItemContainer itemContainer;
-        private DevComponents.DotNetBar.ButtonItem buttonItem1;
-        private DevComponents.DotNetBar.ButtonItem buttonItem3;
-        private DevComponents.DotNetBar.ButtonItem buttonItem4;
     }
 }
 
