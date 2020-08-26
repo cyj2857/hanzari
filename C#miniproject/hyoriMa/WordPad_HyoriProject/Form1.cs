@@ -21,42 +21,31 @@ namespace WordPad_HyoriProject
         public MyForm()
         {
             InitializeComponent();
-
         }
 
-        //When Form is loading..
         private void Form1_Load_1(object sender, EventArgs e)
         {
-            ////////////////////////////////////////////////////
+            //Setting
             richTextBox = this.richTextBox1;
             fontComboBox = this.comboBoxItem1;
             fontSizeComboBox = this.comboBoxItem2;
-            ////////////////////////////////////////////////////
 
-
-            MyFont font = new MyFont();
-            fontList = font.getFontFamilies();
+            MyFont myFont = new MyFont();
+            fontList = myFont.getFontFamilies();
             foreach (string item in fontList)
             {
                 fontComboBox.Items.Add(item);
             }
 
-            fontSizeList = font.getFontSize();
+            fontSizeList = myFont.getFontSize();
             foreach (int item in fontSizeList)
             {
                 fontSizeComboBox.Items.Add(item.ToString());
             }
 
-            //Get Default Richtextbox's fontName and fontSize 
             string fontName = richTextBox.SelectionFont.Name;
-            int fontNameIndex = fontComboBox.Items.IndexOf(fontName);
-            fontComboBox.SelectedIndex = fontNameIndex;
-
             float fontSize = richTextBox.SelectionFont.Size;
-            int fontSizeIndex = fontSizeComboBox.Items.IndexOf(fontSize.ToString());
-            fontSizeComboBox.SelectedIndex = fontSizeIndex;
-
-
+            setComboBoxSelectedIndex(fontName, fontSize);
         }
 
         class MyFont
@@ -83,65 +72,37 @@ namespace WordPad_HyoriProject
                 }
                 return fontsizeList;
             }
-
-
         }
 
-        private void colorPickerDropDown1_SelectedColorChanged(object sender, EventArgs e)
-        {
-            ColorPickerDropDown cpd = sender as ColorPickerDropDown;
-            Color color = Color.FromArgb(cpd.SelectedColor.ToArgb());
-            richTextBox.SelectionColor = color;
-        }
-
-        //FontName comboBox
-        private void comboBoxItem1_SelectedIndexChanged(object sender, EventArgs e)
+        private void fontNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (richTextBox.SelectionFont != null)
             {
                 string selectedFontItem = fontComboBox.SelectedItem.ToString();
                 Font currentFont = richTextBox.SelectionFont;
 
-                if (buttonItem14.Checked == true)
-                {
-                    richTextBox.SelectionFont = new Font(selectedFontItem, currentFont.Size, FontStyle.Bold);
-                }
-                else
-                {
-                    richTextBox.SelectionFont = new Font(selectedFontItem, currentFont.Size, FontStyle.Regular);
-                }
+                richTextBox.SelectionFont = new Font(selectedFontItem, currentFont.Size, currentFont.Style);
             }
-
         }
 
-        //FontSize comboBox
-        private void comboBoxItem2_SelectedIndexChanged(object sender, EventArgs e)
+        private void fontSizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (richTextBox.SelectionFont != null)
             {
                 string selectedFontItem = fontSizeComboBox.SelectedItem.ToString();
                 Font currentFont = richTextBox.SelectionFont;
 
-                if (buttonItem14.Checked == true)
-                {
-                    richTextBox.SelectionFont = new Font(currentFont.FontFamily, Int32.Parse(selectedFontItem), FontStyle.Bold);
-                }
-                else
-                {
-                    richTextBox.SelectionFont = new Font(currentFont.FontFamily, Int32.Parse(selectedFontItem), FontStyle.Regular);
-                }
+                richTextBox.SelectionFont = new Font(currentFont.FontFamily, Int32.Parse(selectedFontItem), currentFont.Style);
             }
-
         }
 
-        //FontBoldButton
         private void fontBold_CheckedChanged(object sender, EventArgs e)
         {
             if (richTextBox.SelectionFont != null)
             {
                 Font currentFont = richTextBox.SelectionFont;
-
-                if (buttonItem14.Checked == true)
+               
+                if ((sender as ButtonItem).Checked == true)
                 {
                     richTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, FontStyle.Bold);
                 }
@@ -153,7 +114,13 @@ namespace WordPad_HyoriProject
             }
         }
 
-        //Text Alignment
+        private void colorPickerDropDown1_SelectedColorChanged(object sender, EventArgs e)
+        {
+            ColorPickerDropDown cpd = sender as ColorPickerDropDown;
+            Color color = Color.FromArgb(cpd.SelectedColor.ToArgb());
+            richTextBox.SelectionColor = color;
+        }
+
         private void leftAlignButton_Clicked(object sender, EventArgs e)
         {
             richTextBox.SelectionAlignment = HorizontalAlignment.Left;
@@ -177,6 +144,9 @@ namespace WordPad_HyoriProject
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 StreamReader reader = new StreamReader(openFileDialog.FileName);
+                Font currentFont = richTextBox.SelectionFont;
+
+                richTextBox.Font = new Font(currentFont.Name, currentFont.Size, currentFont.Style);
                 richTextBox.Text = reader.ReadToEnd();
 
                 string fileName = Path.GetFileName(openFileDialog.FileName);
@@ -202,6 +172,9 @@ namespace WordPad_HyoriProject
             string fullName = f.FullName;
 
             StreamReader reader = new StreamReader(fullName);
+            Font currentFont = richTextBox.SelectionFont;
+
+            richTextBox.Font = new Font(currentFont.Name, currentFont.Size, currentFont.Style);
             richTextBox.Text = reader.ReadToEnd();
 
             this.Text = fileName;
@@ -236,6 +209,23 @@ namespace WordPad_HyoriProject
         private void exitButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        public void setComboBoxSelectedIndex(string fontName, float fontSize)
+        {
+            int fontNameIndex = fontComboBox.Items.IndexOf(fontName);
+            fontComboBox.SelectedIndex = fontNameIndex;
+
+            int fontSizeIndex = fontSizeComboBox.Items.IndexOf(fontSize.ToString());
+            fontSizeComboBox.SelectedIndex = fontSizeIndex;
+        }
+
+        private void cursorChanged(object sender, EventArgs e)
+        {
+            string fontName = richTextBox.SelectionFont.Name;
+            float fontSize = richTextBox.SelectionFont.Size;
+
+            setComboBoxSelectedIndex(fontName, fontSize);
         }
     }
 }
