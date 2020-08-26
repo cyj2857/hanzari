@@ -1,6 +1,6 @@
 > # 윈폼으로 웹 브라우저 구현 및 URL 텍스트 메모장에 보내기
 > >
-
+> >
 > > ## 1. 프로그램 구동 초기 화면
 > > 
 > >![1](https://user-images.githubusercontent.com/42930502/91250772-cb49aa00-e794-11ea-9831-ee0d215a71f7.png)
