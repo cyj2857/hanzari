@@ -4,9 +4,7 @@
 > >
 > > ## 1. 프로그램 구동 초기 화면
 >
-> ![image-20200826112835683](C:\Users\hancom\AppData\Roaming\Typora\typora-user-images\image-20200826112835683.png)
->
-> > 
+> ![1](https://user-images.githubusercontent.com/42930502/91250772-cb49aa00-e794-11ea-9831-ee0d215a71f7.png)
 > >
 > > ## 2. New Tab 클릭 시 생성된 새로운 탭
 > >
