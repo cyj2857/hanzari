@@ -100,7 +100,12 @@ namespace CSharpProject1
             webTab.Navigate(hancomUrl);
             textUrl.Text = hancomUrl;
             webTab.DocumentCompleted += WebTab_DocumentCompleted; //컨트롤이 문서로드를 완료할 때 발생
+        }
 
+        //Close 버튼 클릭 시
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            tabControl.TabPages.Remove(tabControl.SelectedTab);
         }
 
         //☆메모장에 텍스트 보내는 기능☆

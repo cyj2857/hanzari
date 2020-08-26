@@ -32,11 +32,12 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.backwardButton = new System.Windows.Forms.Button();
-            this.forwardButton = new System.Windows.Forms.Button();
             this.textUrl = new System.Windows.Forms.TextBox();
             this.navigateButton = new System.Windows.Forms.Button();
             this.newTabButton = new System.Windows.Forms.Button();
             this.sendUrlButton = new System.Windows.Forms.Button();
+            this.forwardButton = new System.Windows.Forms.Button();
+            this.closeButton = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
@@ -89,27 +90,15 @@
             this.backwardButton.UseVisualStyleBackColor = false;
             this.backwardButton.Click += new System.EventHandler(this.backwardButton_Click);
             // 
-            // forwardButton
-            // 
-            this.forwardButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.forwardButton.Font = new System.Drawing.Font("굴림", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.forwardButton.Location = new System.Drawing.Point(51, 6);
-            this.forwardButton.Name = "forwardButton";
-            this.forwardButton.Size = new System.Drawing.Size(33, 33);
-            this.forwardButton.TabIndex = 2;
-            this.forwardButton.Text = ">";
-            this.forwardButton.UseVisualStyleBackColor = false;
-            this.forwardButton.Click += new System.EventHandler(this.forwardButton_Click);
-            // 
             // textUrl
             // 
             this.textUrl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textUrl.Font = new System.Drawing.Font("굴림", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textUrl.Location = new System.Drawing.Point(91, 6);
+            this.textUrl.Location = new System.Drawing.Point(90, 6);
             this.textUrl.Name = "textUrl";
-            this.textUrl.Size = new System.Drawing.Size(448, 32);
+            this.textUrl.Size = new System.Drawing.Size(410, 32);
             this.textUrl.TabIndex = 3;
             this.textUrl.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textUrl_KeyPress);
             // 
@@ -118,7 +107,7 @@
             this.navigateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.navigateButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.navigateButton.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.navigateButton.Location = new System.Drawing.Point(545, 6);
+            this.navigateButton.Location = new System.Drawing.Point(506, 6);
             this.navigateButton.Name = "navigateButton";
             this.navigateButton.Size = new System.Drawing.Size(73, 33);
             this.navigateButton.TabIndex = 4;
@@ -131,9 +120,9 @@
             this.newTabButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.newTabButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.newTabButton.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.newTabButton.Location = new System.Drawing.Point(624, 6);
+            this.newTabButton.Location = new System.Drawing.Point(585, 5);
             this.newTabButton.Name = "newTabButton";
-            this.newTabButton.Size = new System.Drawing.Size(77, 33);
+            this.newTabButton.Size = new System.Drawing.Size(77, 35);
             this.newTabButton.TabIndex = 5;
             this.newTabButton.Text = "New Tab";
             this.newTabButton.UseVisualStyleBackColor = false;
@@ -144,13 +133,38 @@
             this.sendUrlButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.sendUrlButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.sendUrlButton.Font = new System.Drawing.Font("굴림", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.sendUrlButton.Location = new System.Drawing.Point(707, 6);
+            this.sendUrlButton.Location = new System.Drawing.Point(668, 5);
             this.sendUrlButton.Name = "sendUrlButton";
-            this.sendUrlButton.Size = new System.Drawing.Size(77, 33);
+            this.sendUrlButton.Size = new System.Drawing.Size(77, 35);
             this.sendUrlButton.TabIndex = 6;
             this.sendUrlButton.Text = "Send URL";
             this.sendUrlButton.UseVisualStyleBackColor = false;
             this.sendUrlButton.Click += new System.EventHandler(this.sendUrlButton_Click);
+            // 
+            // forwardButton
+            // 
+            this.forwardButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.forwardButton.Font = new System.Drawing.Font("굴림", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.forwardButton.Location = new System.Drawing.Point(51, 6);
+            this.forwardButton.Name = "forwardButton";
+            this.forwardButton.Size = new System.Drawing.Size(33, 33);
+            this.forwardButton.TabIndex = 2;
+            this.forwardButton.Text = ">";
+            this.forwardButton.UseVisualStyleBackColor = false;
+            this.forwardButton.Click += new System.EventHandler(this.forwardButton_Click);
+            // 
+            // closeButton
+            // 
+            this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.closeButton.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.closeButton.Font = new System.Drawing.Font("굴림", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.closeButton.Location = new System.Drawing.Point(751, 4);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(33, 36);
+            this.closeButton.TabIndex = 7;
+            this.closeButton.Text = "X";
+            this.closeButton.UseVisualStyleBackColor = false;
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
             // Form1
             // 
@@ -158,6 +172,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.closeButton);
             this.Controls.Add(this.sendUrlButton);
             this.Controls.Add(this.newTabButton);
             this.Controls.Add(this.navigateButton);
@@ -180,12 +195,13 @@
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Button backwardButton;
-        private System.Windows.Forms.Button forwardButton;
         private System.Windows.Forms.TextBox textUrl;
         private System.Windows.Forms.Button navigateButton;
         private System.Windows.Forms.Button newTabButton;
         private System.Windows.Forms.WebBrowser webBrowser;
         private System.Windows.Forms.Button sendUrlButton;
+        private System.Windows.Forms.Button forwardButton;
+        private System.Windows.Forms.Button closeButton;
     }
 }
 
