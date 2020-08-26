@@ -4,17 +4,17 @@
 > >
 > > ## 1. 프로그램 구동 초기 화면
 >
-> ![1](https://user-images.githubusercontent.com/42930502/91250772-cb49aa00-e794-11ea-9831-ee0d215a71f7.png)
+> >![1](https://user-images.githubusercontent.com/42930502/91250772-cb49aa00-e794-11ea-9831-ee0d215a71f7.png)
 > >
 > > ## 2. New Tab 클릭 시 생성된 새로운 탭
 > >
-> > ![image-20200826113354462](C:\Users\hancom\AppData\Roaming\Typora\typora-user-images\image-20200826113354462.png)
+> > ![제목 없음](https://user-images.githubusercontent.com/42930502/91250874-03e98380-e795-11ea-80b1-4f9367213ec6.png)
 > >
 > > 
 > >
 > > ## 3. URL 입력 후 Navigate 버튼 클릭 시 변경 된 웹페이지
 > >
-> > ![image-20200826113912059](C:\Users\hancom\AppData\Roaming\Typora\typora-user-images\image-20200826113912059.png)
+> > ![제목 없음](https://user-images.githubusercontent.com/42930502/91250936-254a6f80-e795-11ea-90e4-2a71893e6c7f.png)
 > >
 > > 
 > >
