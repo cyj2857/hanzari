@@ -546,7 +546,7 @@
             this.richTextBox1.Size = new System.Drawing.Size(790, 280);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
-            this.richTextBox1.SelectionChanged += new System.EventHandler(this.richTextBox_selectionChanged);
+            this.richTextBox1.CursorChanged += new System.EventHandler(this.cursorChanged);
             // 
             // 맑은고딕
             // 
