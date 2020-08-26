@@ -91,10 +91,10 @@ namespace CSharpProject1
         private void newTabButton_Click(object sender, EventArgs e)
         {
             TabPage tab = new TabPage();
-            tab.Text = "New Tab";
+            tab.Text = "New Tab"; //임시 탭 이름
             tabControl.Controls.Add(tab);
-            tabControl.SelectTab(tabControl.TabCount - 1);
-            webTab = new WebBrowser() { ScriptErrorsSuppressed = true };
+            tabControl.SelectTab(tabControl.TabCount - 1); //새로운 탭으로 선택하려면 인덱스 번호 때문에 -1해주기
+            webTab = new WebBrowser() { ScriptErrorsSuppressed = true }; //브라우저가 스크립트 오류 메시지와 같은 대화 상자 표시 여부
             webTab.Parent = tab;
             webTab.Dock = DockStyle.Fill;
             webTab.Navigate(hancomUrl);
