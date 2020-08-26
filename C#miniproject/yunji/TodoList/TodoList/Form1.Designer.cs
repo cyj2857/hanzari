@@ -61,7 +61,7 @@
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(75, 23);
             this.buttonAdd.TabIndex = 1;
-            this.buttonAdd.Text = "추가하기";
+            this.buttonAdd.Text = "추가(&A)";
             this.buttonAdd.UseVisualStyleBackColor = true;
             this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
@@ -72,7 +72,7 @@
             this.buttonDel.Name = "buttonDel";
             this.buttonDel.Size = new System.Drawing.Size(75, 23);
             this.buttonDel.TabIndex = 2;
-            this.buttonDel.Text = "삭제하기";
+            this.buttonDel.Text = "삭제(&D)";
             this.buttonDel.UseVisualStyleBackColor = true;
             this.buttonDel.Click += new System.EventHandler(this.buttonDel_Click);
             // 
