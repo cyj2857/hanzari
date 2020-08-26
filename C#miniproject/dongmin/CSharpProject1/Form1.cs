@@ -102,7 +102,7 @@ namespace CSharpProject1
             webTab.DocumentCompleted += WebTab_DocumentCompleted; //컨트롤이 문서로드를 완료할 때 발생
         }
 
-        //Close 버튼 클릭시
+        //Close 버튼 클릭 시
         private void closeButton_Click(object sender, EventArgs e)
         {
             tabControl.TabPages.Remove(tabControl.SelectedTab);
