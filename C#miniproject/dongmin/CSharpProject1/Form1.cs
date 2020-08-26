@@ -24,46 +24,25 @@ namespace CSharpProject1
             tabControl.SelectedTab.Text = webBrowser.DocumentTitle;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            webBrowser.Navigate("https://www.hancom.com/main/main.do");
-            webBrowser.DocumentCompleted +=webBrowser_DocumentCompleted;
-        }
-
-
-        private void navigateButton_Click(object sender, EventArgs e)
-        {
-            WebBrowser web = tabControl.SelectedTab.Controls[0] as WebBrowser;
-            if (web != null)
-                web.Navigate(textUrl.Text);
-        }
-
-        WebBrowser webTab = null;
-
-        private void newTabButton_Click(object sender, EventArgs e)
-        {
-            TabPage tab = new TabPage();
-            tab.Text = "New Tab";
-            tabControl.Controls.Add(tab);
-            tabControl.SelectTab(tabControl.TabCount - 1);
-            webTab = new WebBrowser() { ScriptErrorsSuppressed = true };
-            webTab.Parent = tab;
-            webTab.Dock = DockStyle.Fill;
-            webTab.Navigate("https://www.hancom.com/main/main.do");
-            textUrl.Text = "https://www.hancom.com/main/main.do";
-            webTab.DocumentCompleted += WebTab_DocumentCompleted;
-
-        }
-
         private void WebTab_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             tabControl.SelectedTab.Text = webTab.DocumentTitle;
         }
 
+        String hancomUrl = "https://www.hancom.com/main/main.do";
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            webBrowser.Navigate(hancomUrl);
+            textUrl.Text = hancomUrl;
+            webBrowser.DocumentCompleted +=webBrowser_DocumentCompleted; //컨트롤이 문서 로드를 완료할 때 발생
+        }
+
+        //뒤로
         private void backwardButton_Click(object sender, EventArgs e)
         {
             WebBrowser web = tabControl.SelectedTab.Controls[0] as WebBrowser;
-            if(web != null)
+            if (web != null)
             {
                 if (web.CanGoBack)
                 {
@@ -72,6 +51,7 @@ namespace CSharpProject1
             }
         }
 
+        //앞으로
         private void forwardButton_Click(object sender, EventArgs e)
         {
             WebBrowser web = tabControl.SelectedTab.Controls[0] as WebBrowser;
@@ -84,6 +64,15 @@ namespace CSharpProject1
             }
         }
 
+        //navigate 버튼 클릭 시 웹페이지 이동
+        private void navigateButton_Click(object sender, EventArgs e)
+        {
+            WebBrowser web = tabControl.SelectedTab.Controls[0] as WebBrowser;
+            if (web != null)
+                web.Navigate(textUrl.Text);
+        }
+
+        //엔터 클릭 시 웹페이지 이동
         private void textUrl_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)13)
@@ -93,12 +82,28 @@ namespace CSharpProject1
                 {
                     web.Navigate(textUrl.Text);
                 }
-                else
-                {
-
-                }
             }
         }
+
+        WebBrowser webTab = null;
+
+        //New Tab 버튼 클릭 시
+        private void newTabButton_Click(object sender, EventArgs e)
+        {
+            TabPage tab = new TabPage();
+            tab.Text = "New Tab";
+            tabControl.Controls.Add(tab);
+            tabControl.SelectTab(tabControl.TabCount - 1);
+            webTab = new WebBrowser() { ScriptErrorsSuppressed = true };
+            webTab.Parent = tab;
+            webTab.Dock = DockStyle.Fill;
+            webTab.Navigate(hancomUrl);
+            textUrl.Text = hancomUrl;
+            webTab.DocumentCompleted += WebTab_DocumentCompleted; //컨트롤이 문서로드를 완료할 때 발생
+
+        }
+
+        //☆메모장에 텍스트 보내는 기능☆
 
         //FindWindowEx include
         [DllImport("user32.dll")]
@@ -115,9 +120,8 @@ namespace CSharpProject1
         {
             //메모장 실행
             Process proc = Process.Start("notepad");
-            Process notepadProcess = Process.GetProcessById(proc.Id);
-            //Process notepadProcess = Process.GetProcessesByName("notepad")[0];
-            //notepadProcess.MainWindowHandle하면 됨
+            //Process notepadProcess = Process.GetProcessById(proc.Id); //이렇게 하면 안됨 왜?
+            Process notepadProcess = Process.GetProcessesByName("notepad")[0];
 
             //윈도우 메인 핸들로부터 메모장 핸들을 얻는다, 메모장 textbox는 Edit라고 불린다
             IntPtr notepadTextbox = FindWindowEx(notepadProcess.MainWindowHandle, IntPtr.Zero, "Edit", null);
