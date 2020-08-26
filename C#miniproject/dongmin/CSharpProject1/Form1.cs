@@ -123,10 +123,11 @@ namespace CSharpProject1
 
         private void sendUrlButton_Click(object sender, EventArgs e)
         {
-            //메모장 실행
-            Process proc = Process.Start("notepad");
-            //Process notepadProcess = Process.GetProcessById(proc.Id); //이렇게 하면 안됨 왜?
+            //메모장 실행이 되어있어야 됨
             Process notepadProcess = Process.GetProcessesByName("notepad")[0];
+            //이렇게 하면 안됨 왜?
+            //Process proc = Process.Start("notepad");
+            //Process notepadProcess = Process.GetProcessById(proc.Id);
 
             //윈도우 메인 핸들로부터 메모장 핸들을 얻는다, 메모장 textbox는 Edit라고 불린다
             IntPtr notepadTextbox = FindWindowEx(notepadProcess.MainWindowHandle, IntPtr.Zero, "Edit", null);
