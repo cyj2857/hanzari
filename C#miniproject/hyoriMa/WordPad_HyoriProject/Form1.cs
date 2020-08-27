@@ -14,22 +14,13 @@ namespace WordPad_HyoriProject
         private List<string> fontList;
         private List<int> fontSizeList;
 
-        private RichTextBox richTextBox;
-        private ComboBoxItem fontComboBox;
-        private ComboBoxItem fontSizeComboBox;
-
         public MyForm()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load_1(object sender, EventArgs e)
+        private void MyForm_Load(object sender, EventArgs e)
         {
-            //Setting
-            richTextBox = this.richTextBox1;
-            fontComboBox = this.comboBoxItem1;
-            fontSizeComboBox = this.comboBoxItem2;
-
             MyFont font = new MyFont();
             fontList = font.getFontFamilies();
             foreach (string item in fontList)
@@ -48,7 +39,7 @@ namespace WordPad_HyoriProject
             setComboBoxSelectedIndex(fontName, fontSize);
         }
 
-        class MyFont
+        private class MyFont
         {
             private List<string> fontFamilies = new List<string>();
             private List<int> fontsizeList = new List<int>();
@@ -220,12 +211,6 @@ namespace WordPad_HyoriProject
             fontSizeComboBox.SelectedIndex = fontSizeIndex;
         }
 
-        private void cursorChanged(object sender, EventArgs e)
-        {
-            string fontName = richTextBox.SelectionFont.Name;
-            float fontSize = richTextBox.SelectionFont.Size;
-
-            setComboBoxSelectedIndex(fontName, fontSize);
-        }
+       
     }
 }

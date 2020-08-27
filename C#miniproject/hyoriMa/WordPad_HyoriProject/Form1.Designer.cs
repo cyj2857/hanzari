@@ -39,8 +39,8 @@
             this.Font = new DevComponents.DotNetBar.RibbonBar();
             this.itemContainer5 = new DevComponents.DotNetBar.ItemContainer();
             this.itemContainer7 = new DevComponents.DotNetBar.ItemContainer();
-            this.comboBoxItem1 = new DevComponents.DotNetBar.ComboBoxItem();
-            this.comboBoxItem2 = new DevComponents.DotNetBar.ComboBoxItem();
+            this.fontComboBox = new DevComponents.DotNetBar.ComboBoxItem();
+            this.fontSizeComboBox = new DevComponents.DotNetBar.ComboBoxItem();
             this.itemContainer8 = new DevComponents.DotNetBar.ItemContainer();
             this.buttonItem14 = new DevComponents.DotNetBar.ButtonItem();
             this.buttonItem15 = new DevComponents.DotNetBar.ButtonItem();
@@ -61,7 +61,7 @@
             this.exitButton = new DevComponents.DotNetBar.ButtonItem();
             this.ribbonTabItem1 = new DevComponents.DotNetBar.RibbonTabItem();
             this.styleManager1 = new DevComponents.DotNetBar.StyleManager(this.components);
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox = new System.Windows.Forms.RichTextBox();
             this.맑은고딕 = new DevComponents.Editors.ComboItem();
             this.itemContainer6 = new DevComponents.DotNetBar.ItemContainer();
             this.ribbonControl1.SuspendLayout();
@@ -253,8 +253,8 @@
             this.itemContainer7.HorizontalItemAlignment = DevComponents.DotNetBar.eHorizontalItemsAlignment.Center;
             this.itemContainer7.Name = "itemContainer7";
             this.itemContainer7.SubItems.AddRange(new DevComponents.DotNetBar.BaseItem[] {
-            this.comboBoxItem1,
-            this.comboBoxItem2});
+            this.fontComboBox,
+            this.fontSizeComboBox});
             // 
             // 
             // 
@@ -264,21 +264,21 @@
             // 
             this.itemContainer7.TitleStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             // 
-            // comboBoxItem1
+            // fontComboBox
             // 
-            this.comboBoxItem1.ComboWidth = 100;
-            this.comboBoxItem1.DropDownHeight = 106;
-            this.comboBoxItem1.DropDownWidth = 100;
-            this.comboBoxItem1.Name = "comboBoxItem1";
-            this.comboBoxItem1.Text = "comboBoxItem1";
-            this.comboBoxItem1.SelectedIndexChanged += new System.EventHandler(this.fontNameComboBox_SelectedIndexChanged);
+            this.fontComboBox.ComboWidth = 100;
+            this.fontComboBox.DropDownHeight = 106;
+            this.fontComboBox.DropDownWidth = 100;
+            this.fontComboBox.Name = "fontComboBox";
+            this.fontComboBox.Text = "comboBoxItem1";
+            this.fontComboBox.SelectedIndexChanged += new System.EventHandler(this.fontNameComboBox_SelectedIndexChanged);
             // 
-            // comboBoxItem2
+            // fontSizeComboBox
             // 
-            this.comboBoxItem2.DropDownHeight = 106;
-            this.comboBoxItem2.Name = "comboBoxItem2";
-            this.comboBoxItem2.Text = "comboBoxItem2";
-            this.comboBoxItem2.SelectedIndexChanged += new System.EventHandler(this.fontSizeComboBox_SelectedIndexChanged);
+            this.fontSizeComboBox.DropDownHeight = 106;
+            this.fontSizeComboBox.Name = "fontSizeComboBox";
+            this.fontSizeComboBox.Text = "comboBoxItem2";
+            this.fontSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.fontSizeComboBox_SelectedIndexChanged);
             // 
             // itemContainer8
             // 
@@ -538,15 +538,14 @@
             this.styleManager1.ManagerStyle = DevComponents.DotNetBar.eStyle.Office2010Blue;
             this.styleManager1.MetroColorParameters = new DevComponents.DotNetBar.Metro.ColorTables.MetroColorGeneratorParameters(System.Drawing.Color.White, System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(87)))), ((int)(((byte)(154))))));
             // 
-            // richTextBox1
+            // richTextBox
             // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(5, 168);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(790, 280);
-            this.richTextBox1.TabIndex = 1;
-            this.richTextBox1.Text = "";
-            this.richTextBox1.CursorChanged += new System.EventHandler(this.cursorChanged);
+            this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox.Location = new System.Drawing.Point(5, 168);
+            this.richTextBox.Name = "richTextBox";
+            this.richTextBox.Size = new System.Drawing.Size(790, 280);
+            this.richTextBox.TabIndex = 1;
+            this.richTextBox.Text = "";
             // 
             // 맑은고딕
             // 
@@ -574,12 +573,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.richTextBox);
             this.Controls.Add(this.ribbonControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MyForm";
             this.Text = "WordPad";
-            this.Load += new System.EventHandler(this.Form1_Load_1);
+            this.Load += new System.EventHandler(this.MyForm_Load);
             this.ribbonControl1.ResumeLayout(false);
             this.ribbonControl1.PerformLayout();
             this.ribbonPanel1.ResumeLayout(false);
@@ -605,15 +604,15 @@
         private DevComponents.DotNetBar.ButtonItem exitButton;
         private DevComponents.DotNetBar.RibbonTabItem ribbonTabItem1;
         private DevComponents.DotNetBar.StyleManager styleManager1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox richTextBox;
         private DevComponents.DotNetBar.RibbonBar ribbonBar1;
         private DevComponents.Editors.ComboItem 맑은고딕;
         private new DevComponents.DotNetBar.RibbonBar Font;
         private DevComponents.DotNetBar.ItemContainer itemContainer6;
         private DevComponents.DotNetBar.ItemContainer itemContainer5;
         private DevComponents.DotNetBar.ItemContainer itemContainer7;
-        private DevComponents.DotNetBar.ComboBoxItem comboBoxItem1;
-        private DevComponents.DotNetBar.ComboBoxItem comboBoxItem2;
+        private DevComponents.DotNetBar.ComboBoxItem fontComboBox;
+        private DevComponents.DotNetBar.ComboBoxItem fontSizeComboBox;
         private DevComponents.DotNetBar.ColorPickerDropDown colorPickerDropDown;
         private DevComponents.DotNetBar.ItemContainer itemContainer8;
         private DevComponents.DotNetBar.ButtonItem buttonItem14;
