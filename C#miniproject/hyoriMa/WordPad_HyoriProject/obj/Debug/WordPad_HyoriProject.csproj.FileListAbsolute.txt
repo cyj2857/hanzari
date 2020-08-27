@@ -12,3 +12,4 @@ C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriP
 C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csproj.CopyComplete
 C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.exe
 C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.pdb
+C:\Users\hancom\WinFormProject\hancomFamily\C#miniproject\hyoriMa\WordPad_HyoriProject\obj\Debug\WordPad_HyoriProject.csprojAssemblyReference.cache
