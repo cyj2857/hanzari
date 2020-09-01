@@ -1,12 +1,17 @@
 package com.hancomipp.controllers;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-@RestController
+@Controller
 public class HomeController {
-	@RequestMapping("/")
-	public String home() {
-		 return "안녕 Spring Boot!";
-	}
+
+    @GetMapping
+    public String hello(){
+        return "hello";
+    }
 }
