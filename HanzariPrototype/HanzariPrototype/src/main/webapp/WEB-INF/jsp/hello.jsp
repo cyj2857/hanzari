@@ -34,8 +34,8 @@
 	cursor: pointer;
 }
 
-div{
-	display : inline-block;
+div {
+	display: inline-block;
 }
 </style>
 
@@ -74,7 +74,7 @@ div{
 		document.getElementById("hr").onmousedown = on_mouse_down;
 		document.onmouseup = on_mouse_up;
 		document.onmousemove = on_mouse_move;
-		
+
 		var canvas = document.getElementById("myCanvas");
 		var context = canvas.getContext("2d");
 
@@ -86,7 +86,7 @@ div{
 		context.fillRect(40, 100, 60, 60);
 		context.fillStyle = "yellow";
 		context.fillRect(120, 100, 60, 60);
-		
+
 	}
 </script>
 
@@ -94,17 +94,36 @@ div{
 
 <body onload="init()">
 	<div class="d1" id="d1">
+		<h2>
+			<label>Choose Floor!<input list="floors" name="myFloors"
+				style="width: 230px;" /></label>
+		</h2>
+		<datalist id="floors">
+			<option value="1층">
+			<option value="2층">
+			<option value="3층">
+			<option value="4층">
+			<option value="5층">
+			<option value="6층">
+			<option value="7층">
+			<option value="8층">
+			<option value="9층">
+			<option value="10층">
+			<option value="11층">
+		</datalist>
+		
 		<canvas id="myCanvas" style="background-color: aliceblue" width="230"
 			height=300">
 		</canvas>
-		
+
 		<div class="search" id="search">
 			<input type="text" placeholder="검색어를 입력해주세요.">
 		</div>
 		<div class="button">
 			<button>검색</button>
 		</div>
-		
+
+
 	</div>
 	<div class="d3" id="hr"></div>
 	<div class="d2" id="d2">RIGHT</div>
