@@ -33,10 +33,6 @@
 #hr {
 	cursor: pointer;
 }
-
-div{
-	display : inline-block;
-}
 </style>
 
 <script type="text/javascript">
@@ -74,19 +70,6 @@ div{
 		document.getElementById("hr").onmousedown = on_mouse_down;
 		document.onmouseup = on_mouse_up;
 		document.onmousemove = on_mouse_move;
-		
-		var canvas = document.getElementById("myCanvas");
-		var context = canvas.getContext("2d");
-
-		context.fillStyle = "red";
-		context.fillRect(40, 20, 60, 60);
-		context.fillStyle = "green";
-		context.fillRect(120, 20, 60, 60);
-		context.fillStyle = "blue";
-		context.fillRect(40, 100, 60, 60);
-		context.fillStyle = "yellow";
-		context.fillRect(120, 100, 60, 60);
-		
 	}
 </script>
 
@@ -97,14 +80,20 @@ div{
 		<canvas id="myCanvas" style="background-color: aliceblue" width="230"
 			height=300">
 		</canvas>
-		
-		<div class="search" id="search">
-			<input type="text" placeholder="검색어를 입력해주세요.">
-		</div>
-		<div class="button">
-			<button>검색</button>
-		</div>
-		
+		<script>
+			var canvas = document.getElementById("myCanvas");
+			var context = canvas.getContext("2d");
+
+			context.fillStyle = "red";
+			context.fillRect(40, 20, 60, 60);
+			context.fillStyle = "green";
+			context.fillRect(120, 20, 60, 60);
+			context.fillStyle = "blue";
+			context.fillRect(40, 100, 60, 60);
+			context.fillStyle = "yellow";
+			context.fillRect(120, 100, 60, 60);
+			
+		</script>
 	</div>
 	<div class="d3" id="hr"></div>
 	<div class="d2" id="d2">RIGHT</div>
