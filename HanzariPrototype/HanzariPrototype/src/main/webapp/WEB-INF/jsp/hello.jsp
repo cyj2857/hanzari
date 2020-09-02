@@ -94,10 +94,10 @@ div {
 
 <body onload="init()">
 	<div class="d1" id="d1">
-		<h2>
-			<label>Choose Floor!<input list="floors" name="myFloors"
+		<h3>
+			<label>Choose Floor<input list="floors" name="myFloors"
 				style="width: 230px;" /></label>
-		</h2>
+		</h3>
 		<datalist id="floors">
 			<option value="1층">
 			<option value="2층">
@@ -111,18 +111,20 @@ div {
 			<option value="10층">
 			<option value="11층">
 		</datalist>
-		
+	
 		<canvas id="myCanvas" style="background-color: aliceblue" width="230"
 			height=300">
 		</canvas>
 
+		<h3>
+			<label>Search Employee</label>
+		</h3>
 		<div class="search" id="search">
 			<input type="text" placeholder="검색어를 입력해주세요.">
 		</div>
 		<div class="button">
 			<button>검색</button>
 		</div>
-
 
 	</div>
 	<div class="d3" id="hr"></div>
