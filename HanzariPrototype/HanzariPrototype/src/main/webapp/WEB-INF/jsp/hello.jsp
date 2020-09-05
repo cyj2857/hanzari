@@ -46,17 +46,17 @@
 		document.onmouseup = on_mouse_up;
 		document.onmousemove = on_mouse_move;
 
-		var canvas = document.getElementById("myCanvas");
-		var context = canvas.getContext("2d");
+		var myCanvas = document.getElementById("myCanvas");
+		var myContext = myCanvas.getContext("2d");
 
-		context.fillStyle = "red";
-		context.fillRect(40, 20, 60, 60);
-		context.fillStyle = "green";
-		context.fillRect(120, 20, 60, 60);
-		context.fillStyle = "blue";
-		context.fillRect(40, 100, 60, 60);
-		context.fillStyle = "yellow";
-		context.fillRect(120, 100, 60, 60);
+		myContext.fillStyle = "red";
+		myContext.fillRect(40, 20, 60, 60);
+		myContext.fillStyle = "green";
+		myContext.fillRect(120, 20, 60, 60);
+		myContext.fillStyle = "blue";
+		myContext.fillRect(40, 100, 60, 60);
+		myContext.fillStyle = "yellow";
+		myContext.fillRect(120, 100, 60, 60);
 
 	}
 </script>
@@ -82,7 +82,7 @@
 			<option value="10층">
 			<option value="11층">
 		</datalist>
-	
+
 		<canvas id="myCanvas" style="background-color: aliceblue" width="230"
 			height="300">
 		</canvas>
@@ -99,7 +99,11 @@
 
 	</div>
 	<div class="d3" id="hr"></div>
-	<div class="d2" id="d2">RIGHT</div>
+	<div class="d2" id="d2">
+		<div class="button">
+			<button>팝업창 보기</button>
+		</div>
+	</div>
 </body>
 
 </html>

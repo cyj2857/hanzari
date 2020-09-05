@@ -5,7 +5,53 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
+<<<<<<< HEAD
+  <updated>2020-09-04T12:37:50Z</updated>
+  <entry>
+    <title>A Bootiful Podcast: SpringOne 2020, Josh's book "Reactive Spring," and Microsoft Java Architect and fellow Java Champion Jonathan Giles</title>
+    <link rel="alternate" href="https://spring.io/blog/2020/09/04/a-bootiful-podcast-springone-2020-josh-s-book-reactive-spring-and-microsoft-java-architect-and-fellow-java-champion-jonathan-giles" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Josh Long</name>
+    </author>
+    <id>tag:spring.io,2020-09-04:4190</id>
+    <updated>2020-09-04T12:37:50Z</updated>
+    <content type="html">&lt;p&gt;Hi, Spring fans! Welcome to another installment of a Bootiful Podcast! In this episode &lt;a href="http://twitter.com/starbuxman"&gt;Josh Long (@starbuxman)&lt;/a&gt; talks about the massive, virtual SpringOne 2020 event (tens of thousands of people in attendance!), his just-completed book &lt;a href="http://www.reactivespring.io"&gt;&amp;ldquo;Reactive Spring&amp;rdquo;&lt;/a&gt;, and then talks to Microsoft&amp;rsquo;s &lt;a href="https://twitter.com/jonathangiles"&gt;Jonathan Giles (@jonathangiles) &lt;/a&gt;. &lt;/p&gt;
+&lt;iframe title="SpringOne 2020, Azure Spring Cloud and fellow Java Champion and Microsoft Java architect Jonathan Giles" height="122" width="100%" style="border: none;" scrolling="no" data-name="pb-iframe-player" src="https://www.podbean.com/media/player/idya5-ea2839?from=pb6admin&amp;download=1&amp;version=1&amp;auto=0&amp;share=1&amp;download=1&amp;rtl=0&amp;fonts=Helvetica&amp;skin=1&amp;pfauth=&amp;btn-skin=107"&gt;&lt;/iframe&gt;
+&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
+  </entry>
+  <entry>
+    <title>Spring Tools 4.7.2 released</title>
+    <link rel="alternate" href="https://spring.io/blog/2020/09/03/spring-tools-4-7-2-released" />
+    <category term="releases" label="Releases" />
+    <author>
+      <name>Martin Lippert</name>
+    </author>
+    <id>tag:spring.io,2020-09-03:4189</id>
+    <updated>2020-09-03T14:33:11Z</updated>
+    <content type="html">&lt;p&gt;Dear Spring Community,&lt;/p&gt;
+&lt;p&gt;I am happy to announce the 4.7.2 release of the Spring Tools 4 for Eclipse, Visual Studio Code, and Theia.&lt;/p&gt;
+&lt;p&gt;Highlights from this release include:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; new: this releases introduces a completely new wizard in Eclipse to add Spring Boot starter modules to existing projects. Take a look at the user guide section about it to learn all about this new and way more flexible way to add modules to your Spring Boot projects.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; new: this releases introduces an experimental early version of support for the Spring Boot OCI image building support in combination with Docker. You can now use the Spring Boot Dashboard in Spring Tools 4 for Eclipse to create images and run them on docker, debug the app on Docker and use Spring Boot Devtools on Docker - and all this is just one click away. Check out the preliminary section about it in the user guide.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; enhancement: Spring Tools 4 for Eclipse distributions now have the standard Eclipse tooling for Docker pre-installed&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; fixed: wizard to grab Spring guide projects now shows errors that happen while downloading the projects in dialog title section&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; fixed: live hover caused exceptions in certain situations, fix contributed to lsp4e project&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; enhancement: deploy Java 11 based Spring apps to Cloud Foundry now easier via the boot dashboard&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To download the distribution for Eclipse and find links to the marketplace entries for Visual Studio Code and Theia, please go visit:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Spring Tools 4: &lt;a href="https://spring.io/tools/"&gt;https://spring.io/tools/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Detailed changes can be found here: &lt;a href="https://github.com/spring-projects/sts4/wiki/Changelog#2020-08-27-472-release-incl-language-servers-version-1210"&gt;https://github.com/spring-projects/sts4/wiki/Changelog#2020-08-27-472-release-incl-language-servers-version-1210&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Spring Tools 4.8.0 is scheduled to be released in late September 2020.&lt;/p&gt;
+&lt;p&gt;Enjoy!&lt;/p&gt;
+&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
+  </entry>
+=======
   <updated>2020-09-02T12:00:00Z</updated>
+>>>>>>> 8bd8779c51b87f6ecef1eb85de05f1ad8aa7a582
   <entry>
     <title>Hello, Azure Spring Cloud</title>
     <link rel="alternate" href="https://spring.io/blog/2020/09/02/hello-azure-spring-cloud" />
@@ -1898,6 +1944,8 @@ Spring Security 5.4.0-RC1! You can find the complete details in the &lt;a href="
 &lt;p&gt;&lt;a href="https://spring.io/projects/spring-boot/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-boot"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-boot/issues"&gt;Issues&lt;/a&gt; | &lt;a href="http://docs.spring.io/spring-boot/docs/2.3.3.RELEASE/reference/html"&gt;Documentation&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-boot"&gt;Stack Overflow&lt;/a&gt; | &lt;a href="https://gitter.im/spring-projects/spring-boot"&gt;Gitter&lt;/a&gt;&lt;/p&gt;
 &lt;!-- rendered by Sagan Renderer Service --&gt;</content>
   </entry>
+<<<<<<< HEAD
+=======
   <entry>
     <title>Spring Batch 4.3.0-M2 is out!</title>
     <link rel="alternate" href="https://spring.io/blog/2020/08/13/spring-batch-4-3-0-m2-is-out" />
@@ -1951,4 +1999,5 @@ Spring Security 5.4.0-RC1! You can find the complete details in the &lt;a href="
 &lt;iframe width="560" height="315" src="https://www.youtube.com/embed/ipVfRdl5SP0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
 &lt;!-- rendered by Sagan Renderer Service --&gt;</content>
   </entry>
+>>>>>>> 8bd8779c51b87f6ecef1eb85de05f1ad8aa7a582
 </feed>
