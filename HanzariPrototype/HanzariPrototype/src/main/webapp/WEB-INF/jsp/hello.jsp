@@ -6,38 +6,9 @@
 <head>
 <title>Welcome, 한자리 !</title>
 
-<style type="text/css">
-.d1 {
-	float: left;
-	width: 20%;
-	height: 100%;
-	border-right: 1px solid #b8b8b8;
-	margin-right: -1px;
-	overflow-y: scroll;
-}
-
-.d2 {
-	float: left;
-	width: 79%;
-	height: 100%;
-	overflow-y: scroll;
-}
-
-.d3 {
-	float: left;
-	width: 0.3%;
-	height: 100%;
-	background-color: #888888;
-}
-
-#hr {
-	cursor: pointer;
-}
-
-div {
-	display: inline-block;
-}
-</style>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath }/resources/css/main.css">
+</head>
 
 <script type="text/javascript">
 	var startpos, diffpos = 0, range = 50;
@@ -113,7 +84,7 @@ div {
 		</datalist>
 
 		<canvas id="myCanvas" style="background-color: aliceblue" width="230"
-			height=300">
+			height="300">
 		</canvas>
 
 		<h3>
