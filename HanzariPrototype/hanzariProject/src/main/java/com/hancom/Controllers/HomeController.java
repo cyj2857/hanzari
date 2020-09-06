@@ -9,8 +9,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Controller
 public class HomeController {
     
+	//view sample vue.js
+	@RequestMapping("/hello")
+    public String Hello() {
+    	return "hello";
+    }
+	
+	//view first vue.js
+	@RequestMapping("/index")
+    public String Index() {
+    	return "index";
+    }
+	
+	//view HanzariPrototype
     @RequestMapping("/welcome")
-    public String World() {
+    public String Welcome() {
     	return "welcome";
     }
 }
