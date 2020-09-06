@@ -11,6 +11,6 @@ public class HomeController {
     
     @RequestMapping("/welcome")
     public String World() {
-    	return "index";
+    	return "welcome";
     }
 }
