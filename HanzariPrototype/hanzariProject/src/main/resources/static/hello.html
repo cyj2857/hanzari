@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>한컴-Vue.js Sample</title>
+</head>
+<body>
+	<div id="app">{{ message }}</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type=text/javascript src=/static/js/myJS.js></script>
+
+	<div id="app">
+		<button @click="say('hi')">Say hi</button>
+	</div>
+	
+	<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+    	<circle cx="100" cy="75" v-bind:r="radius" fill="lightpink" />
+  	</svg>
+	<input type="range" min="0" max="100" v-model="radius">
+</body>
+</html>
