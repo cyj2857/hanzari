@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    Hancom
+    <div id="logo">
+      <img src="./assets/logo.png">
+      <router-link to="/">Home</router-link>
+      <router-link to="/hancomWorld">HancomWorld</router-link>
+    </div>
     <router-view/>
   </div>
 </template>
