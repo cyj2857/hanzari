@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    Hancom
+    Hancomhihi
     <div id="logo">
       <img src="./assets/logo.png">
       <router-link to="/">Home</router-link>

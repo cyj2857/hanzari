@@ -8,20 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class HomeController {
-    
-	//view sample vue.js
-	@RequestMapping("/hello")
-    public String Hello() {
-    	return "hello";
-    }
 	
-	//view first vue.js
-	@RequestMapping("/index")
+	//view first vue.js->vue.js logo 
+	@RequestMapping("/")
     public String Index() {
-    	return "index";
+    	return "indexing";
     }
 	
-	//view HanzariPrototype
+	//view HanzariPrototype->한컴 화면 
     @RequestMapping("/welcome")
     public String Welcome() {
     	return "welcome";
