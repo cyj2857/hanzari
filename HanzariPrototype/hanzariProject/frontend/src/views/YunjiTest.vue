@@ -11,7 +11,6 @@
           <option>2floor</option>
           <option>3floor</option>
         </select>
-        <!-- <span>Selected: {{ selected }}</span> -->
       </div>
 
       <canvas id="myCanvas" style="background-color: aliceblue" width="230" height="300"></canvas>
@@ -26,13 +25,14 @@
     </div>
 
     <div class="d3" id="hr"></div>
+
     <div class="d2" id="d2">
       <button @click="updateText">{{ changeText }}</button>
     </div>
   </div>
 </template>
 
-<script>
+<script scoped>
 export default {
   name: 'YunjiTest',
   data() {
@@ -51,3 +51,37 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+.d1 {
+	float: left;
+	width: 20%;
+	height: 100%;
+	border-right: 1px solid #b8b8b8;
+	margin-right: -1px;
+	overflow-y: scroll;
+}
+
+.d2 {
+	float: left;
+	width: 79%;
+	height: 100%;
+	overflow-y: scroll;
+}
+
+.d3 {
+	float: left;
+	width: 0.3%;
+	height: 100%;
+	background-color: #888888;
+}
+
+#hr {
+	cursor: pointer;
+}
+
+div {
+	display: inline-block;
+}
+</style>
