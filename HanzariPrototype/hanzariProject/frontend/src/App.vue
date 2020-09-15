@@ -3,6 +3,8 @@
     <div id="routerLink">
       <router-link to="/">Home</router-link>
       <router-link to="/hancomWorld">HancomWorld</router-link>
+      <router-link to="/yunjiTest">YunjiTestPage</router-link>
+      <router-link to="/hyoriTest">HyoriTestPage</router-link>
     </div>
     <router-view/>
   </div>
