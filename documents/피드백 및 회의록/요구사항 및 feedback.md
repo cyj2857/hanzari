@@ -108,10 +108,10 @@ https://mk-v1.kakaocdn.net/dn/if-kakao/conf2019/conf_video_2019/1_104_03_m1.mp4
 ### 200915 feedback
 
 * 마일스톤 (8月~11月 / 2월 FREE)
-  ![KakaoTalk_20200915_111241845](C:\Users\hancom\Desktop\Git\hancomFamily\documents\피드백 및 회의록\.images\KakaoTalk_20200915_111241845.jpg)
+  ![image](.images\KakaoTalk_20200915_111241845.jpg)
 
 * 아키텍처 참고사항 (MVP나 MVVM으로 쓰면 될 듯..? 근데 MVVM은 ms에서만 쓴다고..)
-  ![KakaoTalk_20200915_111241845_01](C:\Users\hancom\Desktop\Git\hancomFamily\documents\피드백 및 회의록\.images\KakaoTalk_20200915_111241845_01.jpg)
+  ![image](.images\KakaoTalk_20200915_111241845_01.jpg)
 * 검색기능은 뒤로 밀어도 될 듯하다. 
   -> 실제 그룹웨어와 연동하게된다면 그룹웨어 자체적으로 검색기능을 가지고있기때문에 사번을 던져주면 그 사원에 대한 정보를 특정 포맷(xml, json 등)으로 받아오기만하면 되기때문.
 * 한자리 DB에는 자리정보 위주로만 저장되면 된다.
