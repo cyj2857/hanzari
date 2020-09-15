@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_UlR1wPP3Eeq3jON-dQuPiw" elementId="org.eclipse.e4.legacy.ide.application" contributorURI="platform:/plugin/org.eclipse.platform" selectedElement="_UlR1wfP3Eeq3jON-dQuPiw" bindingContexts="_UlUSnPP3Eeq3jON-dQuPiw">
-  <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;workbench>&#xD;&#xA;&lt;mruList>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HancomWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/HancomWorld.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/views/HancomWorld.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;Home.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/Home.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/views/Home.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;App.vue&quot; tooltip=&quot;hanzariProject/frontend/src/App.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/App.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;index.js&quot; tooltip=&quot;hanzariProject/frontend/src/router/index.js&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/router/index.js&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;main.js&quot; tooltip=&quot;hanzariProject/frontend/src/main.js&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/main.js&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HelloWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/components/HelloWorld.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/components/HelloWorld.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;index.html&quot; tooltip=&quot;hanzariProject/frontend/index.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/index.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;welcome.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/welcome.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/welcome.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;indexing.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/indexing.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/indexing.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;index.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/index.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/index.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.eclipse.jdt.ui.CompilationUnitEditor&quot; name=&quot;HomeController.java&quot; tooltip=&quot;hanzariProject/src/main/java/com/hancom/Controllers/HomeController.java&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/java/com/hancom/Controllers/HomeController.java&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;hello.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/hello.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/hello.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;App.vue&quot; tooltip=&quot;hanzariProject/src/main/resources/static/App.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/App.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HancomWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/components/HancomWorld.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/components/HancomWorld.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;index.js&quot; tooltip=&quot;hanzariProject/frontend/config/index.js&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/config/index.js&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;app.16322f6683e4d0d99f64.js&quot; tooltip=&quot;hanzariProject/src/main/resources/static/static/js/app.16322f6683e4d0d99f64.js&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/static/js/app.16322f6683e4d0d99f64.js&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.eclipse.jdt.ui.PropertiesFileEditor&quot; name=&quot;application.properties&quot; tooltip=&quot;hanzariProject/src/main/resources/application.properties&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/application.properties&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.eclipse.jdt.ui.CompilationUnitEditor&quot; name=&quot;HanzariProjectApplication.java&quot; tooltip=&quot;hanzariProject/src/main/java/com/hancom/hanzariProject/HanzariProjectApplication.java&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/java/com/hancom/hanzariProject/HanzariProjectApplication.java&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;manifest.2ae2e69a05c33dfc65f8.js&quot; tooltip=&quot;hanzariProject/src/main/resources/static/static/js/manifest.2ae2e69a05c33dfc65f8.js&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/static/js/manifest.2ae2e69a05c33dfc65f8.js&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;indexs.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/indexs.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/indexs.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;/mruList>&#xD;&#xA;&lt;/workbench>"/>
+  <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;workbench>&#xD;&#xA;&lt;mruList>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;App.vue&quot; tooltip=&quot;hanzariProject/frontend/src/App.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/App.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HyoriTest.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/HyoriTest.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/views/HyoriTest.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;welcome.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/welcome.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/welcome.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;MyCanvas.vue&quot; tooltip=&quot;hanzariProject/frontend/src/components/MyCanvas.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/components/MyCanvas.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;YunjiTest.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/YunjiTest.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/views/YunjiTest.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;Home.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/Home.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/views/Home.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HancomWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/HancomWorld.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/views/HancomWorld.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;index.js&quot; tooltip=&quot;hanzariProject/frontend/src/router/index.js&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/router/index.js&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;main.js&quot; tooltip=&quot;hanzariProject/frontend/src/main.js&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/main.js&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;index.html&quot; tooltip=&quot;hanzariProject/frontend/index.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/index.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;index.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/index.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/index.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;indexing.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/indexing.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/indexing.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.eclipse.jdt.ui.CompilationUnitEditor&quot; name=&quot;HanzariProjectApplication.java&quot; tooltip=&quot;hanzariProject/src/main/java/com/hancom/hanzariProject/HanzariProjectApplication.java&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/java/com/hancom/hanzariProject/HanzariProjectApplication.java&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.eclipse.jdt.ui.CompilationUnitEditor&quot; name=&quot;HomeController.java&quot; tooltip=&quot;hanzariProject/src/main/java/com/hancom/Controllers/HomeController.java&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/java/com/hancom/Controllers/HomeController.java&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.springsource.ide.eclipse.dashboard.ui.dashboard.elementFactory&quot; id=&quot;org.springsource.ide.eclipse.commons.gettingstarted.dashboard.WelcomeDashboard&quot; name=&quot;Dashboard&quot; tooltip=&quot;Dashboard&quot;>&#xD;&#xA;&lt;persistable openDashboard=&quot;true&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HelloWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/components/HelloWorld.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/components/HelloWorld.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;hello.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/hello.html&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/hello.html&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;App.vue&quot; tooltip=&quot;hanzariProject/src/main/resources/static/App.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/src/main/resources/static/App.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HancomWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/components/HancomWorld.vue&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/src/components/HancomWorld.vue&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;index.js&quot; tooltip=&quot;hanzariProject/frontend/config/index.js&quot;>&#xD;&#xA;&lt;persistable path=&quot;/hanzariProject/frontend/config/index.js&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;/mruList>&#xD;&#xA;&lt;/workbench>"/>
   <tags>ModelMigrationProcessor.001</tags>
   <tags>activeSchemeId:org.eclipse.ui.defaultAcceleratorConfiguration</tags>
   <children xsi:type="basic:TrimmedWindow" xmi:id="_UlR1wfP3Eeq3jON-dQuPiw" elementId="IDEWindow" contributorURI="platform:/plugin/org.eclipse.platform" selectedElement="_UlR1wvP3Eeq3jON-dQuPiw" label="%trimmedwindow.label.eclipseSDK" x="0" y="0" width="1545" height="1038">
@@ -86,7 +86,7 @@
           <tags>persp.actionSet:com.genuitec.codemix.licenseactionset</tags>
           <tags>persp.actionSet:com.genuitec.eclipse.code.ui.extensions.actionSet</tags>
           <children xsi:type="basic:PartSashContainer" xmi:id="_UlR1xfP3Eeq3jON-dQuPiw" selectedElement="_UlR1y_P3Eeq3jON-dQuPiw" horizontal="true">
-            <children xsi:type="basic:PartStack" xmi:id="_UlR1xvP3Eeq3jON-dQuPiw" elementId="topLeft" containerData="2539" selectedElement="_UlR1x_P3Eeq3jON-dQuPiw">
+            <children xsi:type="basic:PartStack" xmi:id="_UlR1xvP3Eeq3jON-dQuPiw" elementId="topLeft" containerData="1807" selectedElement="_UlR1x_P3Eeq3jON-dQuPiw">
               <children xsi:type="advanced:Placeholder" xmi:id="_UlR1x_P3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.navigator.ProjectExplorer" ref="_UlSeKPP3Eeq3jON-dQuPiw" closeable="true">
                 <tags>View</tags>
                 <tags>categoryTag:General</tags>
@@ -104,7 +104,7 @@
                 <tags>categoryTag:Java Browsing</tags>
               </children>
             </children>
-            <children xsi:type="basic:PartSashContainer" xmi:id="_UlR1y_P3Eeq3jON-dQuPiw" containerData="7461" selectedElement="_UlR1zPP3Eeq3jON-dQuPiw">
+            <children xsi:type="basic:PartSashContainer" xmi:id="_UlR1y_P3Eeq3jON-dQuPiw" containerData="8193" selectedElement="_UlR1zPP3Eeq3jON-dQuPiw">
               <children xsi:type="basic:PartSashContainer" xmi:id="_UlR1zPP3Eeq3jON-dQuPiw" containerData="6707" selectedElement="_UlR1zfP3Eeq3jON-dQuPiw" horizontal="true">
                 <children xsi:type="advanced:Placeholder" xmi:id="_UlR1zfP3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.editorss" containerData="8462" ref="_UlSeE_P3Eeq3jON-dQuPiw"/>
                 <children xsi:type="basic:PartStack" xmi:id="_UlR1zvP3Eeq3jON-dQuPiw" elementId="topRight" containerData="1538" selectedElement="_UlR1z_P3Eeq3jON-dQuPiw">
@@ -244,7 +244,7 @@
       <tags>categoryTag:Help</tags>
     </sharedElements>
     <sharedElements xsi:type="advanced:Area" xmi:id="_UlSeE_P3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.editorss" selectedElement="_UlSeFPP3Eeq3jON-dQuPiw">
-      <children xsi:type="basic:PartStack" xmi:id="_UlSeFPP3Eeq3jON-dQuPiw" elementId="org.eclipse.e4.primaryDataStack" selectedElement="_RD4MkPZdEeqxJL65iwaiBg">
+      <children xsi:type="basic:PartStack" xmi:id="_UlSeFPP3Eeq3jON-dQuPiw" elementId="org.eclipse.e4.primaryDataStack" selectedElement="_TJ7p8PboEeqrBoID0An73Q">
         <tags>org.eclipse.e4.primaryDataStack</tags>
         <tags>EditorStack</tags>
         <tags>active</tags>
@@ -255,39 +255,87 @@
           <tags>org.eclipse.jdt.ui.CompilationUnitEditor</tags>
         </children>
         <children xsi:type="basic:Part" xmi:id="_QDVTYPZOEeqGM5U0CAPw6g" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="index.js" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;index.js&quot; partName=&quot;index.js&quot; title=&quot;index.js&quot; tooltip=&quot;hanzariProject/frontend/src/router/index.js&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/router/index.js&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;290&quot; selectionTopPixel=&quot;47&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;index.js&quot; partName=&quot;index.js&quot; title=&quot;index.js&quot; tooltip=&quot;hanzariProject/frontend/src/router/index.js&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/router/index.js&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;19&quot; selectionOffset=&quot;203&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>removeOnHide</tags>
           <tags>com.genuitec.eclipse.code.javascript</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_j7OD0PZOEeqGM5U0CAPw6g" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="App.vue" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;App.vue&quot; partName=&quot;App.vue&quot; title=&quot;App.vue&quot; tooltip=&quot;hanzariProject/frontend/src/App.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/App.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;268&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
-          <tags>Editor</tags>
-          <tags>removeOnHide</tags>
-          <tags>com.genuitec.eclipse.code.vue</tags>
-        </children>
-        <children xsi:type="basic:Part" xmi:id="_ByVdgPZPEeqGM5U0CAPw6g" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="main.js" iconURI="codemixicon://fonticon/file%3A%2Fc%3A%2FUsers%2Fag497%2FDesktop%2Feclipse-jee-2019-12-R-win32-x86_64%2Feclipse%2Fplugins%2Fcom.genuitec.eclipse.code.engine.app.win32.x86_64_3.6.0.202002212104%2Fengine%2Fresources%2Fapp%2Fextensions%2Ftheme-seti%2Ficons%2Fseti.woff/b7b73b/cbcb41/\E04B/icon.png" closeable="true">
+        <children xsi:type="basic:Part" xmi:id="_ByVdgPZPEeqGM5U0CAPw6g" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="main.js" closeable="true">
           <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.javascript&quot; name=&quot;main.js&quot; partName=&quot;main.js&quot; title=&quot;main.js&quot; tooltip=&quot;hanzariProject/frontend/src/main.js&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/main.js&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;312&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>removeOnHide</tags>
           <tags>com.genuitec.eclipse.code.javascript</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_GJ2vAPZdEeqxJL65iwaiBg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="HelloWorld.vue" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HelloWorld.vue&quot; partName=&quot;HelloWorld.vue&quot; title=&quot;HelloWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/components/HelloWorld.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/components/HelloWorld.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;253&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_rdLA0PbnEeqnBYuL_1-Bzg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="HanzariProjectApplication.java" iconURI="platform:/plugin/org.eclipse.jdt.ui/icons/full/obj16/jcu_obj.png" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.eclipse.jdt.ui.CompilationUnitEditor&quot; name=&quot;HanzariProjectApplication.java&quot; partName=&quot;HanzariProjectApplication.java&quot; title=&quot;HanzariProjectApplication.java&quot; tooltip=&quot;hanzariProject/src/main/java/com/hancom/hanzariProject/HanzariProjectApplication.java&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/src/main/java/com/hancom/hanzariProject/HanzariProjectApplication.java&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;0&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>removeOnHide</tags>
-          <tags>com.genuitec.eclipse.code.vue</tags>
+          <tags>org.eclipse.jdt.ui.CompilationUnitEditor</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_RD4MkPZdEeqxJL65iwaiBg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="HancomWorld.vue" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HancomWorld.vue&quot; partName=&quot;HancomWorld.vue&quot; title=&quot;HancomWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/HancomWorld.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/views/HancomWorld.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;1354&quot; selectionTopPixel=&quot;714&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_sJJWAPbnEeqnBYuL_1-Bzg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="indexing.html" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;indexing.html&quot; partName=&quot;indexing.html&quot; title=&quot;indexing.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/indexing.html&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/src/main/resources/static/indexing.html&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;0&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>org.eclipse.wst.html.core.htmlsource.source</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_JwToIPboEeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="Dashboard" iconURI="platform:/plugin/org.springsource.ide.eclipse.commons.gettingstarted/icons/spring.png" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.springsource.ide.eclipse.commons.gettingstarted.dashboard.WelcomeDashboard&quot; name=&quot;Dashboard&quot; partName=&quot;Dashboard&quot; title=&quot;Dashboard&quot; tooltip=&quot;Dashboard&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.springsource.ide.eclipse.dashboard.ui.dashboard.elementFactory&quot; openDashboard=&quot;true&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>org.springsource.ide.eclipse.commons.gettingstarted.dashboard.WelcomeDashboard</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_TJ7p8PboEeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="App.vue" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;App.vue&quot; partName=&quot;App.vue&quot; title=&quot;App.vue&quot; tooltip=&quot;hanzariProject/frontend/src/App.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/App.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;393&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>removeOnHide</tags>
           <tags>com.genuitec.eclipse.code.vue</tags>
           <tags>active</tags>
           <tags>activeOnClose</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_SS-c8PZdEeqxJL65iwaiBg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="Home.vue" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;Home.vue&quot; partName=&quot;Home.vue&quot; title=&quot;Home.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/Home.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/views/Home.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;275&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_iaseQPboEeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="HancomWorld.vue" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HancomWorld.vue&quot; partName=&quot;HancomWorld.vue&quot; title=&quot;HancomWorld.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/HancomWorld.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/views/HancomWorld.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;207&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>com.genuitec.eclipse.code.vue</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_zCWkUPb5EeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="YunjiTest.vue" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;YunjiTest.vue&quot; partName=&quot;YunjiTest.vue&quot; title=&quot;YunjiTest.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/YunjiTest.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/views/YunjiTest.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;1011&quot; selectionTopPixel=&quot;540&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>com.genuitec.eclipse.code.vue</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_NXz1IPb6EeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="welcome.html" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;welcome.html&quot; partName=&quot;welcome.html&quot; title=&quot;welcome.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/welcome.html&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/src/main/resources/static/welcome.html&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;2578&quot; selectionTopPixel=&quot;626&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>com.genuitec.eclipse.code.html</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_SRdrsPb6EeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="index.html" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;index.html&quot; partName=&quot;index.html&quot; title=&quot;index.html&quot; tooltip=&quot;hanzariProject/frontend/index.html&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/index.html&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;214&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>com.genuitec.eclipse.code.html</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_Vgz8kPb6EeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="Home.vue" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;Home.vue&quot; partName=&quot;Home.vue&quot; title=&quot;Home.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/Home.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/views/Home.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;0&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>com.genuitec.eclipse.code.vue</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_kVohIPcNEeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="index.html" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.html&quot; name=&quot;index.html&quot; partName=&quot;index.html&quot; title=&quot;index.html&quot; tooltip=&quot;hanzariProject/src/main/resources/static/index.html&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/src/main/resources/static/index.html&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;0&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>com.genuitec.eclipse.code.html</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_VkqKsPcOEeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="HyoriTest.vue" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;HyoriTest.vue&quot; partName=&quot;HyoriTest.vue&quot; title=&quot;HyoriTest.vue&quot; tooltip=&quot;hanzariProject/frontend/src/views/HyoriTest.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/views/HyoriTest.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;2396&quot; selectionTopPixel=&quot;1200&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <tags>Editor</tags>
+          <tags>removeOnHide</tags>
+          <tags>com.genuitec.eclipse.code.vue</tags>
+        </children>
+        <children xsi:type="basic:Part" xmi:id="_7kWRMPcSEeqrBoID0An73Q" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="MyCanvas.vue" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;com.genuitec.eclipse.code.vue&quot; name=&quot;MyCanvas.vue&quot; partName=&quot;MyCanvas.vue&quot; title=&quot;MyCanvas.vue&quot; tooltip=&quot;hanzariProject/frontend/src/components/MyCanvas.vue&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/hanzariProject/frontend/src/components/MyCanvas.vue&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;357&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>removeOnHide</tags>
           <tags>com.genuitec.eclipse.code.vue</tags>
@@ -499,7 +547,7 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_UlTEJ_P3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.workbench.file">
         <tags>Draggable</tags>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_62gygPZcEeqxJL65iwaiBg" elementId="print" visible="false" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/print_edit.png" tooltip="Print" command="_UlYkJ_P3Eeq3jON-dQuPiw"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_Ii4LsPboEeqrBoID0An73Q" elementId="print" visible="false" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/print_edit.png" tooltip="Print" command="_UlYkJ_P3Eeq3jON-dQuPiw"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_UlTENPP3Eeq3jON-dQuPiw" elementId="group.edit" toBeRendered="false">
         <tags>toolbarSeparator</tags>
@@ -539,7 +587,7 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_UlTEoPP3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.workbench.navigate">
         <tags>Draggable</tags>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_62insPZcEeqxJL65iwaiBg" elementId="org.eclipse.ui.window.pinEditor" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/pin_editor.png" tooltip="Pin Editor" type="Check" command="_UlYjyvP3Eeq3jON-dQuPiw"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_Ii5Z0PboEeqrBoID0An73Q" elementId="org.eclipse.ui.window.pinEditor" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/pin_editor.png" tooltip="Pin Editor" type="Check" command="_UlYjyvP3Eeq3jON-dQuPiw"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_UlTEqvP3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.code.css" visible="false">
         <tags>Draggable</tags>
@@ -737,7 +785,7 @@
       <children xsi:type="menu:ToolControl" xmi:id="_UlTq8PP3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.StatusLine" contributorURI="platform:/plugin/org.eclipse.platform" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.StandardTrim">
         <tags>stretch</tags>
       </children>
-      <children xsi:type="menu:ToolControl" xmi:id="_UlTq8fP3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.HeapStatus" contributorURI="platform:/plugin/org.eclipse.platform" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.StandardTrim">
+      <children xsi:type="menu:ToolControl" xmi:id="_UlTq8fP3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.HeapStatus" contributorURI="platform:/plugin/org.eclipse.platform" toBeRendered="false" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.StandardTrim">
         <tags>Draggable</tags>
       </children>
       <children xsi:type="menu:ToolControl" xmi:id="_UlTq8vP3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.ProgressBar" contributorURI="platform:/plugin/org.eclipse.platform" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.StandardTrim">
@@ -843,6 +891,11 @@
     <bindings xmi:id="_UlTrS_P3Eeq3jON-dQuPiw" keySequence="ALT+/" command="_UlYkfPP3Eeq3jON-dQuPiw"/>
     <bindings xmi:id="_UlTrTPP3Eeq3jON-dQuPiw" keySequence="SHIFT+CR" command="_UlYkdfP3Eeq3jON-dQuPiw"/>
     <bindings xmi:id="_UlTrTfP3Eeq3jON-dQuPiw" keySequence="ALT+SHIFT+G" command="_UlYlmfP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_OxpX4PbkEeqnBYuL_1-Bzg" keySequence="CTRL+SHIFT+C" command="_UlX-wfP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_OxpX4fbkEeqnBYuL_1-Bzg" keySequence="CTRL+SHIFT+F" command="_UlX9VPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_OxqmAfbkEeqnBYuL_1-Bzg" keySequence="CTRL+O" command="_UlX-VPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_OxqmAvbkEeqnBYuL_1-Bzg" keySequence="CTRL+SHIFT+/" command="_UlX90PP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_OxrNEPbkEeqnBYuL_1-Bzg" keySequence="CTRL+SHIFT+\" command="_UlX9gfP3Eeq3jON-dQuPiw"/>
   </bindingTables>
   <bindingTables xmi:id="_UlTrTvP3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.contexts.window" bindingContext="_UlUSnfP3Eeq3jON-dQuPiw">
     <bindings xmi:id="_UlTrT_P3Eeq3jON-dQuPiw" keySequence="ALT+CTRL+SHIFT+A" command="_UlYjm_P3Eeq3jON-dQuPiw"/>
@@ -1032,6 +1085,10 @@
     <bindings xmi:id="_UlTr9PP3Eeq3jON-dQuPiw" keySequence="CTRL+P" command="_UlZKmvP3Eeq3jON-dQuPiw">
       <tags>type:user</tags>
     </bindings>
+    <bindings xmi:id="_OxoJwfbkEeqnBYuL_1-Bzg" keySequence="CTRL+SHIFT+T" command="_UlX82PP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_Oxp-8PbkEeqnBYuL_1-Bzg" keySequence="CTRL+P" command="_UlYkJ_P3Eeq3jON-dQuPiw">
+      <tags>deleted</tags>
+    </bindings>
   </bindingTables>
   <bindingTables xmi:id="_UlTr9fP3Eeq3jON-dQuPiw" elementId="org.eclipse.mylyn.tasks.ui.views.tasks" bindingContext="_UlUS1vP3Eeq3jON-dQuPiw">
     <bindings xmi:id="_UlTr9vP3Eeq3jON-dQuPiw" keySequence="CTRL+CR" command="_UlX9WfP3Eeq3jON-dQuPiw"/>
@@ -1129,7 +1186,6 @@
     <bindings xmi:id="_UlTsTfP3Eeq3jON-dQuPiw" keySequence="CTRL+2 F" command="_UlX9qvP3Eeq3jON-dQuPiw"/>
     <bindings xmi:id="_UlTsTvP3Eeq3jON-dQuPiw" keySequence="CTRL+2 R" command="_UlX9L_P3Eeq3jON-dQuPiw"/>
     <bindings xmi:id="_UlTsT_P3Eeq3jON-dQuPiw" keySequence="CTRL+2 L" command="_UlYkr_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_5mVkEPZcEeqxJL65iwaiBg" keySequence="ALT+SHIFT+E" command="_UlYlvvP3Eeq3jON-dQuPiw"/>
   </bindingTables>
   <bindingTables xmi:id="_UlTsUfP3Eeq3jON-dQuPiw" elementId="org.eclipse.wst.sse.ui.structuredTextEditorScope" bindingContext="_UlUSqPP3Eeq3jON-dQuPiw">
     <bindings xmi:id="_UlTsUvP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+P" command="_UlX-cPP3Eeq3jON-dQuPiw"/>
@@ -1245,7 +1301,6 @@
     <bindings xmi:id="_UlTss_P3Eeq3jON-dQuPiw" keySequence="F6" command="_UlX9zvP3Eeq3jON-dQuPiw"/>
     <bindings xmi:id="_UlTstPP3Eeq3jON-dQuPiw" keySequence="CTRL+F2" command="_UlYj-fP3Eeq3jON-dQuPiw"/>
     <bindings xmi:id="_UlTstfP3Eeq3jON-dQuPiw" keySequence="CTRL+F5" command="_UlYkgvP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_5mU9APZcEeqxJL65iwaiBg" keySequence="CTRL+SHIFT+3" command="_UlYluvP3Eeq3jON-dQuPiw"/>
   </bindingTables>
   <bindingTables xmi:id="_UlTst_P3Eeq3jON-dQuPiw" elementId="org.eclipse.jdt.ui.breadcrumbEditorScope" bindingContext="_UlUS3vP3Eeq3jON-dQuPiw">
     <bindings xmi:id="_UlTsuPP3Eeq3jON-dQuPiw" keySequence="ALT+SHIFT+B" command="_UlYk2vP3Eeq3jON-dQuPiw"/>
@@ -1255,7 +1310,9 @@
     <bindings xmi:id="_UlTsu_P3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+." command="_UlYj6PP3Eeq3jON-dQuPiw"/>
     <bindings xmi:id="_UlTsvPP3Eeq3jON-dQuPiw" keySequence="CTRL+G" command="_UlYj6fP3Eeq3jON-dQuPiw"/>
   </bindingTables>
-  <bindingTables xmi:id="_UlTsvfP3Eeq3jON-dQuPiw" elementId="org.eclipse.egit.ui.DiffViewer" bindingContext="_UlUSpPP3Eeq3jON-dQuPiw"/>
+  <bindingTables xmi:id="_UlTsvfP3Eeq3jON-dQuPiw" elementId="org.eclipse.egit.ui.DiffViewer" bindingContext="_UlUSpPP3Eeq3jON-dQuPiw">
+    <bindings xmi:id="_OxqmAPbkEeqnBYuL_1-Bzg" keySequence="CTRL+O" command="_UlX9-vP3Eeq3jON-dQuPiw"/>
+  </bindingTables>
   <bindingTables xmi:id="_UlTsvvP3Eeq3jON-dQuPiw" elementId="org.eclipse.mylyn.wikitext.ui.editor.markupSourceContext" bindingContext="_UlUSwvP3Eeq3jON-dQuPiw">
     <bindings xmi:id="_UlTsv_P3Eeq3jON-dQuPiw" keySequence="CTRL+O" command="_UlX8YfP3Eeq3jON-dQuPiw"/>
   </bindingTables>
@@ -1313,7 +1370,6 @@
   </bindingTables>
   <bindingTables xmi:id="_UlUSJvP3Eeq3jON-dQuPiw" elementId="org.eclipse.debug.ui.BreakpointView" bindingContext="_UlUSoPP3Eeq3jON-dQuPiw">
     <bindings xmi:id="_UlUSJ_P3Eeq3jON-dQuPiw" keySequence="ALT+CR" command="_UlX-PvP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_5mO2YfZcEeqxJL65iwaiBg" keySequence="CTRL+CR" command="_UlYlu_P3Eeq3jON-dQuPiw"/>
   </bindingTables>
   <bindingTables xmi:id="_UlUSKfP3Eeq3jON-dQuPiw" bindingContext="_UlUS5PP3Eeq3jON-dQuPiw"/>
   <bindingTables xmi:id="_UlUSKvP3Eeq3jON-dQuPiw" bindingContext="_UlUS5fP3Eeq3jON-dQuPiw"/>
@@ -1383,58 +1439,56 @@
   <bindingTables xmi:id="_UlUSafP3Eeq3jON-dQuPiw" bindingContext="_UlUTIPP3Eeq3jON-dQuPiw"/>
   <bindingTables xmi:id="_UlUSavP3Eeq3jON-dQuPiw" bindingContext="_UlUTIfP3Eeq3jON-dQuPiw"/>
   <bindingTables xmi:id="_UlUSa_P3Eeq3jON-dQuPiw" bindingContext="_UlUTIvP3Eeq3jON-dQuPiw"/>
-  <bindingTables xmi:id="_UlUSbPP3Eeq3jON-dQuPiw" elementId="org.eclipse.wst.jsdt.chromium.debug.ui.editors.JsEditor.context" bindingContext="_UlUS3PP3Eeq3jON-dQuPiw">
-    <bindings xmi:id="_5mR5sPZcEeqxJL65iwaiBg" keySequence="CTRL+SHIFT+I" command="_UlYlv_P3Eeq3jON-dQuPiw"/>
-  </bindingTables>
+  <bindingTables xmi:id="_UlUSbPP3Eeq3jON-dQuPiw" elementId="org.eclipse.wst.jsdt.chromium.debug.ui.editors.JsEditor.context" bindingContext="_UlUS3PP3Eeq3jON-dQuPiw"/>
   <bindingTables xmi:id="_UlUSbvP3Eeq3jON-dQuPiw" bindingContext="_UlUTI_P3Eeq3jON-dQuPiw"/>
   <bindingTables xmi:id="_UlUSb_P3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.code.codeMixEditorScope" bindingContext="_UlUSx_P3Eeq3jON-dQuPiw">
     <bindings xmi:id="_UlUScPP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+T" command="_UlZKyvP3Eeq3jON-dQuPiw">
       <tags>type:user</tags>
     </bindings>
-    <bindings xmi:id="_UlUScfP3Eeq3jON-dQuPiw" keySequence="CTRL+BS" command="_UlZKy_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUScvP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+U" command="_UlZKn_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSc_P3Eeq3jON-dQuPiw" keySequence="ALT+CTRL+E" command="_UlZKrvP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSdPP3Eeq3jON-dQuPiw" keySequence="CTRL+7" command="_UlZKh_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSdfP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+I" command="_UlZKwPP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSdvP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+M" command="_UlZKrPP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSd_P3Eeq3jON-dQuPiw" keySequence="CTRL+/" command="_UlZKh_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSePP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+A" command="_UlZKzvP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSefP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+C" command="_UlZKh_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSevP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+F" command="_UlZKr_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSe_P3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+G" command="_UlZKq_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSfPP3Eeq3jON-dQuPiw" keySequence="ALT+CTRL+J" command="_UlZKo_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSffP3Eeq3jON-dQuPiw" keySequence="CTRL+U" command="_UlZKlPP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSfvP3Eeq3jON-dQuPiw" keySequence="CTRL+O" command="_UlZKufP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSf_P3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+/" command="_UlZK0fP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSgPP3Eeq3jON-dQuPiw" keySequence="ALT+SHIFT+R" command="_UlZKvfP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSgfP3Eeq3jON-dQuPiw" keySequence="CTRL+D" command="_UlZKmfP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSgvP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+DEL" command="_UlZKwvP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSg_P3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+b" command="_UlZK1_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUShPP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+X" command="_UlZKmPP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUShfP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+Y" command="_UlZKhvP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUShvP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+[" command="_UlZKj_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSh_P3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+\" command="_UlZK0fP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSiPP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+]" command="_UlZKpfP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSifP3Eeq3jON-dQuPiw" keySequence="CTRL+DEL" command="_UlZKi_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSivP3Eeq3jON-dQuPiw" keySequence="ALT+ARROW_UP" command="_UlZKl_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSi_P3Eeq3jON-dQuPiw" keySequence="ALT+ARROW_DOWN" command="_UlZKnfP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSjPP3Eeq3jON-dQuPiw" keySequence="F3" command="_UlZKu_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSjfP3Eeq3jON-dQuPiw" keySequence="CTRL+NUMPAD_ADD" command="_UlZKhfP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSjvP3Eeq3jON-dQuPiw" keySequence="CTRL+NUMPAD_SUBTRACT" command="_UlZKp_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSj_P3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+NUMPAD_MULTIPLY" command="_UlZKuvP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSkPP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+NUMPAD_DIVIDE" command="_UlZKnvP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL0WkPboEeqrBoID0An73Q" keySequence="CTRL+BS" command="_UlZKy_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL0WkfboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+U" command="_UlZKn_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL09oPboEeqrBoID0An73Q" keySequence="ALT+CTRL+E" command="_UlZKrvP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL09ovboEeqrBoID0An73Q" keySequence="CTRL+7" command="_UlZKh_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL09pPboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+I" command="_UlZKwPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL09pfboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+M" command="_UlZKrPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL1ksPboEeqrBoID0An73Q" keySequence="CTRL+/" command="_UlZKh_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL1ksfboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+A" command="_UlZKzvP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL1ksvboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+C" command="_UlZKh_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL1ktPboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+F" command="_UlZKr_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL1ktfboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+G" command="_UlZKq_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL2LwPboEeqrBoID0An73Q" keySequence="ALT+CTRL+J" command="_UlZKo_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL2LwfboEeqrBoID0An73Q" keySequence="CTRL+U" command="_UlZKlPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL2y0PboEeqrBoID0An73Q" keySequence="CTRL+O" command="_UlZKufP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL2y0fboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+/" command="_UlZK0fP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL2y0vboEeqrBoID0An73Q" keySequence="ALT+SHIFT+R" command="_UlZKvfP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL3Z4PboEeqrBoID0An73Q" keySequence="CTRL+D" command="_UlZKmfP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4A8PboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+DEL" command="_UlZKwvP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4A8fboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+b" command="_UlZK1_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4A8vboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+X" command="_UlZKmPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4A8_boEeqrBoID0An73Q" keySequence="CTRL+SHIFT+Y" command="_UlZKhvP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4A9PboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+[" command="_UlZKj_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4oAPboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+\" command="_UlZK0fP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4oAfboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+]" command="_UlZKpfP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4oAvboEeqrBoID0An73Q" keySequence="CTRL+DEL" command="_UlZKi_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4oA_boEeqrBoID0An73Q" keySequence="ALT+ARROW_UP" command="_UlZKl_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL4oBPboEeqrBoID0An73Q" keySequence="ALT+ARROW_DOWN" command="_UlZKnfP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL52IPboEeqrBoID0An73Q" keySequence="F3" command="_UlZKu_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL7EQfboEeqrBoID0An73Q" keySequence="CTRL+NUMPAD_ADD" command="_UlZKhfP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL7EQvboEeqrBoID0An73Q" keySequence="CTRL+NUMPAD_SUBTRACT" command="_UlZKp_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL7rUPboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+NUMPAD_MULTIPLY" command="_UlZKuvP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL7rUfboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+NUMPAD_DIVIDE" command="_UlZKnvP3Eeq3jON-dQuPiw"/>
   </bindingTables>
   <bindingTables xmi:id="_UlUSkfP3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.code.ui.terminal.plus.EditContext" bindingContext="_UlUS2vP3Eeq3jON-dQuPiw">
-    <bindings xmi:id="_UlUSkvP3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+V" command="_UlZKoPP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSk_P3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+C" command="_UlZKz_P3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSlPP3Eeq3jON-dQuPiw" keySequence="SHIFT+INSERT" command="_UlZKoPP3Eeq3jON-dQuPiw"/>
-    <bindings xmi:id="_UlUSlfP3Eeq3jON-dQuPiw" keySequence="CTRL+INSERT" command="_UlZKz_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL09ofboEeqrBoID0An73Q" keySequence="CTRL+SHIFT+V" command="_UlZKoPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL1ks_boEeqrBoID0An73Q" keySequence="CTRL+SHIFT+C" command="_UlZKz_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL5PEPboEeqrBoID0An73Q" keySequence="SHIFT+INSERT" command="_UlZKoPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL7EQPboEeqrBoID0An73Q" keySequence="CTRL+INSERT" command="_UlZKz_P3Eeq3jON-dQuPiw"/>
   </bindingTables>
   <bindingTables xmi:id="_UlUSlvP3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.code.codeMixEditorDebugScope" bindingContext="_UlUSyPP3Eeq3jON-dQuPiw">
-    <bindings xmi:id="_UlUSl_P3Eeq3jON-dQuPiw" keySequence="CTRL+SHIFT+I" command="_UlZKw_P3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL09o_boEeqrBoID0An73Q" keySequence="CTRL+SHIFT+I" command="_UlZKw_P3Eeq3jON-dQuPiw"/>
   </bindingTables>
   <bindingTables xmi:id="_UlUSmPP3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.tutorial.ui.context" bindingContext="_UlUTJPP3Eeq3jON-dQuPiw">
-    <bindings xmi:id="_UlUSmfP3Eeq3jON-dQuPiw" keySequence="CTRL+C" command="_UlZKpPP3Eeq3jON-dQuPiw"/>
+    <bindings xmi:id="_IL2y0_boEeqrBoID0An73Q" keySequence="CTRL+C" command="_UlZKpPP3Eeq3jON-dQuPiw"/>
   </bindingTables>
   <bindingTables xmi:id="_UlUSmvP3Eeq3jON-dQuPiw" bindingContext="_UlUTJfP3Eeq3jON-dQuPiw"/>
   <bindingTables xmi:id="_UlUSm_P3Eeq3jON-dQuPiw" bindingContext="_UlUTJvP3Eeq3jON-dQuPiw"/>
@@ -2201,26 +2255,26 @@
     <tags>View</tags>
     <tags>categoryTag:Spring</tags>
   </descriptors>
-  <descriptors xmi:id="_UlU5ZPP3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.code.livechat.ui.views.LiveChatView" label="Live Chat" iconURI="platform:/plugin/com.genuitec.eclipse.code.livechat.ui/icons/chat.png" tooltip="" category="CodeMix" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
+  <descriptors xmi:id="_IhlLMPboEeqrBoID0An73Q" elementId="com.genuitec.eclipse.code.livechat.ui.views.LiveChatView" label="Live Chat" iconURI="platform:/plugin/com.genuitec.eclipse.code.livechat.ui/icons/chat.png" tooltip="" category="CodeMix" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
     <persistedState key="originalCompatibilityViewClass" value="com.genuitec.eclipse.code.livechat.ui.views.LiveChatView"/>
     <persistedState key="originalCompatibilityViewBundle" value="com.genuitec.eclipse.code.livechat.ui"/>
     <tags>View</tags>
     <tags>inject</tags>
     <tags>categoryTag:CodeMix</tags>
   </descriptors>
-  <descriptors xmi:id="_UlU5ZfP3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.code.ui.terminal.plus" label="Terminal+" iconURI="platform:/plugin/com.genuitec.eclipse.code.ui.terminal.plus/icons/terminal-view16.png" tooltip="" category="Terminal+" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
+  <descriptors xmi:id="_IhlyQPboEeqrBoID0An73Q" elementId="com.genuitec.eclipse.code.ui.terminal.plus" label="Terminal+" iconURI="platform:/plugin/com.genuitec.eclipse.code.ui.terminal.plus/icons/terminal-view16.png" tooltip="" category="Terminal+" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
     <persistedState key="originalCompatibilityViewClass" value="com.genuitec.eclipse.code.ui.terminal.plus.view.TerminalsView"/>
     <persistedState key="originalCompatibilityViewBundle" value="com.genuitec.eclipse.code.ui.terminal.plus"/>
     <tags>View</tags>
     <tags>categoryTag:Terminal+</tags>
   </descriptors>
-  <descriptors xmi:id="_UlU5ZvP3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.code.ui.welcome.view" label="CodeMix" iconURI="platform:/plugin/com.genuitec.eclipse.code.ui.welcome/images/CodeMix-icon-16px.png" tooltip="" category="CodeMix" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
+  <descriptors xmi:id="_IhmZUPboEeqrBoID0An73Q" elementId="com.genuitec.eclipse.code.ui.welcome.view" label="CodeMix" iconURI="platform:/plugin/com.genuitec.eclipse.code.ui.welcome/images/CodeMix-icon-16px.png" tooltip="" category="CodeMix" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
     <persistedState key="originalCompatibilityViewClass" value="com.genuitec.eclipse.code.ui.welcome.view.CodeMixWelcomeView"/>
     <persistedState key="originalCompatibilityViewBundle" value="com.genuitec.eclipse.code.ui.welcome"/>
     <tags>View</tags>
     <tags>categoryTag:CodeMix</tags>
   </descriptors>
-  <descriptors xmi:id="_UlU5Z_P3Eeq3jON-dQuPiw" elementId="com.genuitec.eclipse.tutorial.view" label="Tutorial" iconURI="platform:/plugin/com.genuitec.eclipse.tutorial.ui/icons/viewIcon.png" tooltip="" allowMultiple="true" category="CodeMix" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
+  <descriptors xmi:id="_IhnAYPboEeqrBoID0An73Q" elementId="com.genuitec.eclipse.tutorial.view" label="Tutorial" iconURI="platform:/plugin/com.genuitec.eclipse.tutorial.ui/icons/viewIcon.png" tooltip="" allowMultiple="true" category="CodeMix" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
     <persistedState key="originalCompatibilityViewClass" value="com.genuitec.eclipse.tutorial.ui.TutorialView"/>
     <persistedState key="originalCompatibilityViewBundle" value="com.genuitec.eclipse.tutorial.ui"/>
     <tags>View</tags>
@@ -3337,7 +3391,7 @@
   <commands xmi:id="_UlYky_P3Eeq3jON-dQuPiw" elementId="org.eclipse.jdt.ui.edit.text.java.uncomment" commandName="Uncomment" description="Uncomment the selected Java comment lines" category="_UlZLIfP3Eeq3jON-dQuPiw"/>
   <commands xmi:id="_UlYkzPP3Eeq3jON-dQuPiw" elementId="org.eclipse.e4.ui.importer.configureProject" commandName="Configure and Detect Nested Projects..." category="_UlZLA_P3Eeq3jON-dQuPiw"/>
   <commands xmi:id="_UlYkzfP3Eeq3jON-dQuPiw" elementId="org.eclipse.eclemma.ui.selectActiveSession" commandName="Select Active Session..." category="_UlZK9PP3Eeq3jON-dQuPiw"/>
-  <commands xmi:id="_UlYkzvP3Eeq3jON-dQuPiw" elementId="org.eclipse.egit.ui.history.CompareVersions" commandName="Compare with each other" category="_UlZLA_P3Eeq3jON-dQuPiw"/>
+  <commands xmi:id="_UlYkzvP3Eeq3jON-dQuPiw" elementId="org.eclipse.egit.ui.history.CompareVersions" commandName="Compare with Each Other" category="_UlZLA_P3Eeq3jON-dQuPiw"/>
   <commands xmi:id="_UlYkz_P3Eeq3jON-dQuPiw" elementId="org.eclipse.equinox.p2.ui.sdk.install" commandName="Install New Software..." category="_UlZLA_P3Eeq3jON-dQuPiw"/>
   <commands xmi:id="_UlYk0PP3Eeq3jON-dQuPiw" elementId="org.eclipse.ui.window.customizePerspective" commandName="Customize Perspective" description="Customize the current perspective" category="_UlZK9_P3Eeq3jON-dQuPiw"/>
   <commands xmi:id="_UlYk0fP3Eeq3jON-dQuPiw" elementId="org.eclipse.mylyn.context.ui.commands.interest.decrement" commandName="Make Less Interesting" description="Make Less Interesting" category="_UlZK7_P3Eeq3jON-dQuPiw"/>

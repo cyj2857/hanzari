@@ -19,6 +19,5 @@ export default {
 <style>
 * {
 width:100%;
-padding: 0.5%;
 }
 </style>

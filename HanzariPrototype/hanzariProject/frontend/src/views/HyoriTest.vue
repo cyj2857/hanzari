@@ -11,10 +11,9 @@
           <option>2floor</option>
           <option>3floor</option>
         </select>
-        <!-- <span>Selected: {{ selected }}</span> -->
       </div>
 
-      <canvas id="myCanvas" style="background-color: aliceblue" width="230" height="300"></canvas>
+      <MyCanvas></MyCanvas>
 
       <h3>
         <label>{{searchEmployeeMsg}}</label>
@@ -33,21 +32,104 @@
 </template>
 
 <script>
+import MyCanvas from "@/components/MyCanvas.vue";
 export default {
-  name: 'HyoriTest',
+  name: "HyoriTest",
+  components: {
+    MyCanvas
+  },
+  props: {
+    startpos: {
+      type: Number,
+      default: 0
+    },
+    diffpos: {
+      type: Number,
+      default: 0
+    },
+    range: {
+      type: Number,
+      default: 50
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
-      msg: "This is Hyori's page.",
+      msg: "This is hyori page.",
       floorMsg: "Choose Floor",
       searchEmployeeMsg: "Search Employee",
-      changeText:"Sample Text",
+      changeText: "Sample Text",
       selected: ""
     };
   },
   methods: {
     updateText() {
       this.changeText = "Click Event Test";
+    },
+    on_mouse_down(e) {
+      startpos = event.clientX + diffpos;
+      isEnable = true;
+      return false;
+    },
+    on_mouse_up(e) {
+      isEnable = false;
+      return false;
+    },
+    on_mouse_move(e) {
+      if (isEnable) {
+        pos = event.clientX;
+
+        diffpos = startpos - pos;
+
+        var width = window.innerWidth / 2;
+        if (diffpos > -(width - range) && diffpos < width - range) {
+          document.getElementById("d1").style.width = width - diffpos + "px";
+          document.getElementById("d2").style.width =
+            width - 20 + diffpos + "px";
+        }
+      }
     }
+  },
+  created() {
+    document.getElementById("hr").onmousedown = on_mouse_down;
+    document.onmouseup = on_mouse_up;
+    document.onmousemove = on_mouse_move;
   }
 };
 </script>
+
+<style scoped>
+.d1 {
+  float: left;
+  width: 20%;
+  height: 100%;
+  border-right: 1px solid #b8b8b8;
+  margin-right: -1px;
+  overflow-y: scroll;
+}
+
+.d2 {
+  float: left;
+  width: 79%;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.d3 {
+  float: left;
+  width: 0.3%;
+  height: 100%;
+  background-color: #888888;
+}
+
+#hr {
+  cursor: pointer;
+}
+
+div {
+  display: inline-block;
+}
+</style>
