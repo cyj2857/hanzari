@@ -13,7 +13,7 @@
         </select>
       </div>
 
-      <canvas id="myCanvas" style="background-color: aliceblue" width="230" height="300"></canvas>
+      <MyCanvas></MyCanvas>
 
       <h3>
         <label>{{searchEmployeeMsg}}</label>
@@ -32,22 +32,39 @@
   </div>
 </template>
 
-<script scoped>
+<script>
+import MyCanvas from '@/components/MyCanvas.vue'
 export default {
   name: 'YunjiTest',
-  data() {
+  components : {
+    MyCanvas
+  },
+  data () {
     return {
-      msg: "This is yunji's page.",
-      floorMsg: "Choose Floor",
-      searchEmployeeMsg: "Search Employee",
-      changeText:"Sample Text",
-      selected: ""
+      msg: 'This is yunji page.',
+      floorMsg: 'Choose Floor',
+      searchEmployeeMsg: 'Search Employee',
+      changeText:'Sample Text',
+      selected: ''
     };
   },
   methods: {
     updateText() {
-      this.changeText = "Click Event Test";
+      this.changeText = 'Click Event Test';
     }
+  },
+  created () {
+    var myCanvas = document.getElementById('myCanvas')
+    var myContext = myCanvas.getContext('2d')
+      
+    myContext.fillStyle = 'red'
+		myContext.fillRect(40, 20, 60, 60)
+		myContext.fillStyle = 'green'
+    myContext.fillRect(120, 20, 60, 60)
+	  myContext.fillStyle = 'blue'
+		myContext.fillRect(40, 100, 60, 60)
+  	myContext.fillStyle = 'yellow'
+	  myContext.fillRect(120, 100, 60, 60)
   }
 };
 </script>
