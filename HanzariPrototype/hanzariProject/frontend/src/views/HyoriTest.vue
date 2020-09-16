@@ -2,11 +2,8 @@
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
       <div class="select" id="select">
-        <h3>
-          <label>{{floorMsg}}</label>
-        </h3>
         <select v-model="selected">
-          <option disabled value="Please Choose Floor">Please choose floor</option>
+          <option value="" disabled hidden>Please Choose Floor</option>
           <option>1floor</option>
           <option>2floor</option>
           <option>3floor</option>
@@ -15,12 +12,11 @@
 
       <MyCanvas></MyCanvas>
 
-      <h3>
-        <label>{{searchEmployeeMsg}}</label>
-      </h3>
       <div class="search" id="search">
         <input type="text" placeholder="Input Text" />
         <button>Search</button>
+
+        <ListView></ListView>
       </div>
     </div>
 
@@ -33,10 +29,12 @@
 
 <script>
 import MyCanvas from "@/components/MyCanvas.vue";
+import ListView from "@/components/ListView.vue";
 export default {
   name: "HyoriTest",
   components: {
-    MyCanvas
+    MyCanvas,
+    ListView
   },
   props: {
     startpos: {
