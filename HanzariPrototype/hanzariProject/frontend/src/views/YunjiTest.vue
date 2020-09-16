@@ -52,19 +52,6 @@ export default {
     updateText() {
       this.changeText = 'Click Event Test';
     }
-  },
-  created () {
-    var myCanvas = document.getElementById('myCanvas')
-    var myContext = myCanvas.getContext('2d')
-      
-    myContext.fillStyle = 'red'
-		myContext.fillRect(40, 20, 60, 60)
-		myContext.fillStyle = 'green'
-    myContext.fillRect(120, 20, 60, 60)
-	  myContext.fillStyle = 'blue'
-		myContext.fillRect(40, 100, 60, 60)
-  	myContext.fillStyle = 'yellow'
-	  myContext.fillRect(120, 100, 60, 60)
   }
 };
 </script>
