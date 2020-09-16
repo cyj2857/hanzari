@@ -1,38 +1,62 @@
 <template>
-    <canvas width="230" height="300" class="canvas"></canvas>
+    <div>
+      <div class="buttonDiv">
+        <button @click="button1Click" class="figureBtn">
+          <img src="../assets/square.png">
+        </button>
+        <button @click="button2Click" class="figureBtn">
+          <img src="../assets/circle.png"></button>
+        <button @click="button3Click" class="figureBtn">
+          <img src="../assets/triangle.png">
+        </button>
+        <button @click="button4Click" class="figureBtn">
+          <img src="../assets/pentagon.png">
+        </button>
+      </div>
+    </div>    
 </template>
 
 <script>
 export default {
-    props: {
-    radius: {
-      type: Number,
-      default: 50
-    }
-  },
-  watch: {
-    radius () {
-      this.draw(this.radius)
-   }
+  data: {
+    button1Img: '../assets/square.png'
   },
   methods: {
-    draw (radius) {
-      this.ctx.beginPath()
-      this.ctx.clearRect(0, 0, 200, 200)
-      this.ctx.arc(100, 100, radius, 0, Math.PI * 2)
-      this.ctx.fill()
+    button1Click() {
+      alert('Button1 Click!')
+    },
+    button2Click() {
+      alert('Button2 Click!')
+    },
+    button3Click() {
+      alert('Button3 Click!')
+    },
+    button4Click() {
+      alert('Button4 Click!')
     }
-  },
-  mounted () {
-    this.ctx = this.$el.getContext('2d')
-    this.draw(this.radius)
   }
 }
 </script>
 
 <style scoped>
-.canvas{
-    border: 1px solid #000;
-    background-color: aliceblue;
+.buttonDiv{
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000;
+  background-color: aliceblue;
+  padding: 30px; 
+  display: inline-block;
 }
+
+.figureBtn{
+  width: 150px;
+  height: 100px;
+  padding: 30px; 
+}
+
+img {
+  width:100%;
+  height: 100%;
+}
+
 </style>
