@@ -7,13 +7,13 @@
 <script>
 export default {
   data () {
-    return{      
-        changeText:'Sample Text'
-        }
-    },
-    methods: {
-        updateText() {
-        this.changeText = 'Click Event Test'
+    return {
+      changeText: 'Sample Text'
+    }
+  },
+  methods: {
+    updateText () {
+      this.changeText = 'Click Event Test'
     }
   }
 }
