@@ -1,26 +1,23 @@
 <template>
-    <div>
-      <div class="buttonDiv">
-        <button @click="button1Click" class="figureBtn">
-          <img src="../assets/square.png">
-        </button>
-        <button @click="button2Click" class="figureBtn">
-          <img src="../assets/circle.png"></button>
-        <button @click="button3Click" class="figureBtn">
-          <img src="../assets/triangle.png">
-        </button>
-        <button @click="button4Click" class="figureBtn">
-          <img src="../assets/pentagon.png">
-        </button>
-      </div>
-    </div>    
+  <div>
+    <div class="buttonDiv">
+      <button @click="button1Click" class="figureBtn">
+        <img src="../assets/square.png">
+      </button>
+      <button @click="button2Click" class="figureBtn">
+        <img src="../assets/circle.png"></button>
+      <button @click="button3Click" class="figureBtn">
+        <img src="../assets/triangle.png">
+      </button>
+      <button @click="button4Click" class="figureBtn">
+        <img src="../assets/pentagon.png">
+      </button>
+    </div>
+  </div>    
 </template>
 
 <script>
 export default {
-  data: {
-    button1Img: '../assets/square.png'
-  },
   methods: {
     button1Click() {
       alert('Button1 Click!')
@@ -58,5 +55,4 @@ img {
   width:100%;
   height: 100%;
 }
-
 </style>

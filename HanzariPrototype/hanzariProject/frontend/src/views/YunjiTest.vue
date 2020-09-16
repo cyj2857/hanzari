@@ -1,6 +1,7 @@
 <template>
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
+      
       <div class="select" id="select">
         <h3>
           <label>{{floorMsg}}</label>
@@ -14,7 +15,7 @@
       </div>
 
       <MyCanvas></MyCanvas>
-
+      
       <h3>
         <label>{{searchEmployeeMsg}}</label>
       </h3>
@@ -22,36 +23,34 @@
         <input type="text" placeholder="Input Text" />
         <button>Search</button>
       </div>
+      
     </div>
 
     <div class="d3" id="hr"></div>
 
     <div class="d2" id="d2">
-      <button @click="updateText">{{ changeText }}</button>
+      <AttachVue></AttachVue>
     </div>
+
   </div>
 </template>
 
 <script>
 import MyCanvas from '@/components/MyCanvas.vue'
+import AttachVue from '@/components/AttachVue.vue'
 export default {
   name: 'YunjiTest',
   components : {
-    MyCanvas
+    MyCanvas,
+    AttachVue
   },
   data () {
     return {
       msg: 'This is yunji page.',
       floorMsg: 'Choose Floor',
       searchEmployeeMsg: 'Search Employee',
-      changeText:'Sample Text',
       selected: ''
     };
-  },
-  methods: {
-    updateText() {
-      this.changeText = 'Click Event Test';
-    }
   }
 };
 </script>
