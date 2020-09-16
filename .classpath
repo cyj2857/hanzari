@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="HanzariPrototype/hanzariProject/src/main/java"/>
+	<classpathentry kind="src" path="HanzariPrototype/hanzariProject/src/test/java"/>
+	<classpathentry kind="src" path="HanzariPrototype/HanzariPrototype/.mvn/wrapper"/>
+	<classpathentry kind="src" path="HanzariPrototype/HanzariPrototype/src/main/java"/>
+	<classpathentry kind="src" path="HanzariPrototype/HanzariPrototype/src/test/java"/>
+	<classpathentry kind="lib" path="HanzariPrototype/hanzariProject/gradle/wrapper/gradle-wrapper.jar"/>
+	<classpathentry kind="lib" path="HanzariPrototype/HanzariPrototype/bin/.mvn/wrapper/maven-wrapper.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
