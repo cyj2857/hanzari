@@ -87,7 +87,7 @@ export default {
       }
     }
   },
-  beforeCreate() {
+  mounted() {
     document.getElementById("hr").onmousedown = this.on_mouse_down();
     document.onmouseup = this.on_mouse_up();
     document.onmousemove = this.on_mouse_move();
@@ -107,14 +107,14 @@ export default {
 
 .d2 {
   float: left;
-  width: 79%;
+  width: 75%;
   height: 100%;
   overflow-y: scroll;
 }
 
 .d3 {
   float: left;
-  width: 0.3%;
+  width: 5%;
   height: 100%;
   background-color: #888888;
   resize: horizontal;
