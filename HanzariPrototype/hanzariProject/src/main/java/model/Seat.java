@@ -1,12 +1,19 @@
 package model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import lombok.Setter;
 
 @Entity
+@Table(name="seats")
 public class Seat {
 
 	@Id
@@ -14,8 +21,10 @@ public class Seat {
 	@Column(name = "seat_id", nullable = false)
 	int seat_id;
 
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name = "building_id")
 	@Column(name = "building_id", nullable = false)
-	String building_id;
+	Building building;
 
 	@Column(name = "floor", nullable = false)
 	String floor;
@@ -33,12 +42,7 @@ public class Seat {
 	double y;
 
 	@Column(name = "figure_id", nullable = true)
-	String figure_id;
-
-	public Seat(String building_id, String floor, boolean is_group, String group_id, double x, double y,
-			String figure_id) {
-		// 생성자
-	}
+	Figure figure;
 	
-	
+	public Seat() {}
 }
