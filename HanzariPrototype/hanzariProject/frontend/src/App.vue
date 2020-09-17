@@ -7,6 +7,7 @@
           <v-tab to="/hancomWorld">HancomWorld</v-tab>
           <v-tab to="/yunjiTest">YunjiTestPage</v-tab>
           <v-tab to="/hyoriTest">HyoriTestPage</v-tab>
+          <v-tab to="/SampleTest">SampleTestPage</v-tab>
         </v-tabs>
       </v-card>
       <router-view />
