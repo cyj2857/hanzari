@@ -10,19 +10,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 @Entity
+@AllArgsConstructor
 @Table(name="employee")
 public class Employee {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "employee_id", nullable = false)
+	@Getter
 	String employee_id;
 	
 	@Column(name = "level", nullable = false)
 	String level;
 	
 	@Column(name = "name", nullable = false)
+	@Getter
 	String name;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
@@ -32,7 +38,4 @@ public class Employee {
 	
 	@Column(name = "extension_number", nullable = true)
 	String extension_number;
-	
-	protected Employee() {}
-	
 }
