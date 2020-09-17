@@ -17,6 +17,12 @@
 
 <script>
 export default {
+  props: {
+    radius: {
+      type: Number,
+      default: 50
+    }
+  },
   data () {
     return {
       importText: '불러오기',
@@ -35,13 +41,10 @@ export default {
     },
     clickSave () {
       this.saveText = '저장완료'
-    },
-    drawImage () {
-      
     }
   },
   mounted () { //mounted 이후부터 canvas의 dom에 접근 가능
-    this.ctx = this.$el.getContext('2d')
+  
   }
 }
 </script>

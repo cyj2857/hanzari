@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style>
-* {
+*:not(button) {
   width: 100%;
 }
 </style>
