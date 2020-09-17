@@ -1,15 +1,12 @@
 <template>
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
-      <div class="select" id="select">
-        <select v-model="selected">
+      <select v-model="selected">
           <option value="" disabled hidden>Please Choose Floor</option>
           <option>1floor</option>
           <option>2floor</option>
           <option>3floor</option>
         </select>
-      </div>
-
       <MyCanvas></MyCanvas>
 
       <div class="search" id="search">
