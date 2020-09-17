@@ -1,27 +1,28 @@
 <template>
   <v-app id="app">
     <div id="routerLink">
-      <router-link to="/">Home</router-link>
-      <router-link to="/hancomWorld">HancomWorld</router-link>
-      <router-link to="/yunjiTest">YunjiTestPage</router-link>
-      <router-link to="/hyoriTest">HyoriTestPage</router-link>
+      <v-card>
+        <v-tabs v-model="tab" background-color="primary" dark>
+          <v-tab to="/">Home</v-tab>
+          <v-tab to="/hancomWorld">HancomWorld</v-tab>
+          <v-tab to="/yunjiTest">YunjiTestPage</v-tab>
+          <v-tab to="/hyoriTest">HyoriTestPage</v-tab>
+        </v-tabs>
+      </v-card>
+      <router-view />
     </div>
-    <router-view/>
-    <v-btn color="success">Success</v-btn>
-    <v-btn color="error">Error</v-btn>
-    <v-btn color="warning">Warning</v-btn>
-    <v-btn color="info">Info</v-btn>
   </v-app>
 </template>
 
+
 <script>
 export default {
-  name: 'App'
-}
+  name: "App"
+};
 </script>
 
 <style>
 * {
-width:100%;
+  width: 100%;
 }
 </style>
