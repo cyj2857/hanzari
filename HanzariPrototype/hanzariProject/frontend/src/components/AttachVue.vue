@@ -34,8 +34,8 @@ export default {
   },
   data () {
     return {
-      importText: '불러오기',
-      saveText: '저장'
+      importText: 'import',
+      saveText: 'save'
     }
   },
   methods: {
@@ -56,11 +56,9 @@ export default {
       console.log(e.target.files)
       const file = e.target.files[0]
       this.imageUrl = URL.createObjectURL(file)
-
-      //this.func()
     },
     clickSave () {
-      this.saveText = '저장완료'
+      this.saveText = 'Success Save'
     },
     func () {
       let cvn = this.$refs.canvas
@@ -76,7 +74,7 @@ export default {
 
     }
   },
-  mounted () { //mounted 이후부터 canvas의 dom에 접근 가능
+  mounted () {
     this.func()
   }
 }
