@@ -5,6 +5,7 @@ import Home from '@/views/Home'
 import HancomWorld from '@/views/HancomWorld'
 import YunjiTest from '@/views/YunjiTest'
 import HyoriTest from '@/views/HyoriTest'
+import SampleTest from '@/views/SampleTest'
 
 Vue.use(Router)
 
@@ -30,6 +31,11 @@ export default new Router({
       path: '/hyoriTest',
       name: 'hyoriTest',
       component: HyoriTest
+    },
+    {
+      path: '/SampleTest',
+      name: 'SampleTest',
+      component: SampleTest
     }
   ]
 })
