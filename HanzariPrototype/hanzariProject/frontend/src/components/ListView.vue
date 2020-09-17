@@ -4,7 +4,7 @@
       <v-list-item-content>
         <v-list-item-title>
           Ma Hyori
-          <v-btn text color="error">Error</v-btn>
+          <v-btn>Show</v-btn>
         </v-list-item-title>
         <v-list-item-subtitle>Development Team</v-list-item-subtitle>
         <v-list-item-subtitle>010-5617-4977</v-list-item-subtitle>
@@ -15,7 +15,7 @@
       <v-list-item-content>
         <v-list-item-title>
           No Yunji
-          <v-btn text color="error">Error</v-btn>
+          <v-btn>Show</v-btn>
         </v-list-item-title>
         <v-list-item-subtitle>Development Team</v-list-item-subtitle>
         <v-list-item-subtitle>010-4567-2345</v-list-item-subtitle>
