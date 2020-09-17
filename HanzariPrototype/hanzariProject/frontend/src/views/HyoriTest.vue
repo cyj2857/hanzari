@@ -12,14 +12,14 @@
       <div class="search" id="search">
         <input type="text" placeholder="Input Text" />
         <button>Search</button>
-
         <ListView></ListView>
       </div>
     </div>
 
     <div class="d3" id="hr"></div>
+    
     <div class="d2" id="d2">
-      <button @click="updateText">{{ changeText }}</button>
+      <AttachVue></AttachVue>
     </div>
   </div>
 </template>
@@ -27,11 +27,13 @@
 <script>
 import MyCanvas from "@/components/MyCanvas.vue";
 import ListView from "@/components/ListView.vue";
+import AttachVue from "@/components/AttachVue.vue";
 export default {
   name: "HyoriTest",
   components: {
     MyCanvas,
-    ListView
+    ListView,
+    AttachVue
   },
   props: {
     startpos: {
