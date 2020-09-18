@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import fabric from 'fabric'
 
 import Home from '@/views/Home'
 import HancomWorld from '@/views/HancomWorld'
@@ -8,6 +9,7 @@ import HyoriTest from '@/views/HyoriTest'
 import SampleTest from '@/views/SampleTest'
 
 Vue.use(Router)
+Vue.use(fabric)
 
 export default new Router({
   mode: 'history',
