@@ -4,6 +4,8 @@
       <img src="../assets/triangle.png" />
     </button>
     <canvas ref="canvas" class="canvas" width="800" height="800"></canvas>
+    <v-btn @click="buttonClick2">click to new rect on canvas</v-btn>
+    <v-btn @click="buttonClick3">click to load svg image</v-btn>
   </div>
 </template>
 
@@ -26,6 +28,19 @@ export default {
         shapes.push(tri);
         canvas.add(shapes[i]);
       }
+    },
+    buttonClick2 () {
+      const ref = this.$refs.canvas;
+      const canvas = new fabric.Canvas(ref);
+      const rect = new fabric.Rect({
+      fill: 'red',
+      width: 50,
+      height: 50
+      });
+      canvas.add(rect);
+    },
+    buttonClick3 () {
+      
     }
   }
 };
