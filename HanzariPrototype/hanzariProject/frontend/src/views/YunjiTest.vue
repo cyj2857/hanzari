@@ -27,7 +27,7 @@
 <script>
 import MyCanvas from "@/components/MyCanvas.vue";
 import ListView from "@/components/ListView.vue";
-import AttachVue from "@/components/AttachVue.vue";
+import AttachVue from "@/components/AttachView.vue";
 export default {
   name: "YunjiTest",
   components: {
