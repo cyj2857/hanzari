@@ -49,9 +49,8 @@ export default {
 
 <style scoped>
 .figureBtn {
-  width: 150px;
+  width: 100px;
   height: 100px;
-  padding: 30px;
 }
 
 .canvas {
