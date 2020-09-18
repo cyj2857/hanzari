@@ -10,9 +10,7 @@
       <MyCanvas></MyCanvas> -->
 
       <div class="search" id="search">
-        <input type="text" placeholder="Input Text" />
-        <button>Search</button>
-        <ListView></ListView>
+        <MyDataTable></MyDataTable>
       </div>
     </div>
 
@@ -25,7 +23,7 @@
     <div class="d3" id="hr"></div>
     <div class="d4" id="d4">
       <div class="listview" id="listview">
-        <ListView></ListView>
+        <FloorDataTable></FloorDataTable>
       </div>
     </div>
 
@@ -35,13 +33,17 @@
 <script>
 import MyCanvas from "@/components/MyCanvas.vue";
 import ListView from "@/components/ListView.vue";
+import MyDataTable from "@/components/MyDataTable.vue";
+import FloorDataTable from "@/components/FloorDataTable.vue";
 import AttachVue from "@/components/AttachVue.vue";
 export default {
   name: "HyoriTest",
   components: {
     MyCanvas,
     ListView,
-    AttachVue
+    AttachVue,
+    MyDataTable,
+    FloorDataTable
   },
   props: {
     startpos: {
