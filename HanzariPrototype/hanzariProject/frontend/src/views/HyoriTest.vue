@@ -35,7 +35,7 @@ import MyCanvas from "@/components/MyCanvas.vue";
 import ListView from "@/components/ListView.vue";
 import MyDataTable from "@/components/MyDataTable.vue";
 import FloorDataTable from "@/components/FloorDataTable.vue";
-import AttachVue from "@/components/AttachVue.vue";
+import AttachVue from "@/components/AttachView.vue";
 export default {
   name: "HyoriTest",
   components: {
@@ -111,7 +111,7 @@ export default {
 <style scoped>
 .d1 {
   float: left;
-  width: 20%;
+  width: 23%;
   height: 100%;
   border-right: 1px solid #b8b8b8;
   margin-right: -1px;
@@ -120,7 +120,7 @@ export default {
 
 .d2 {
   float: left;
-  width: 59%;
+  width: 53%;
   height: 100%;
 }
 
@@ -133,7 +133,7 @@ export default {
 
 .d4 {
   float: left;
-  width: 20%;
+  width: 23%;
   height: 100%;
   border-right: 1px solid #b8b8b8;
   margin-right: -1px;

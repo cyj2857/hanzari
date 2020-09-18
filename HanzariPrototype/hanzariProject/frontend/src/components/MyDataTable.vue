@@ -10,7 +10,18 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="employees" :search="search"></v-data-table>
+    <v-data-table :headers="headers" :items="employees" :search="search">
+      <template v-slot:item="row">
+        <tr>
+          <td>{{row.item.name}}</td>
+          <td>{{row.item.department}}</td>
+          <td>{{row.item.number}}</td>
+          <td>
+            <v-btn id="button" @click="onButtonClick(row.item)">Show</v-btn>
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
@@ -27,7 +38,8 @@ export default {
           value: "name"
         },
         { text: "Department", value: "department" },
-        { text: "Number", value: "number" }
+        { text: "Number", value: "number" },
+        { text: "", value: "button"},
       ],
       employees: [
         {
@@ -47,6 +59,18 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    onButtonClick(item) {
+      alert("click on " + item.name);
+    }
   }
 };
 </script>
+
+<style scoped>
+#button{
+ font-family: Arial,Helvetica,sans-serif;
+ font-size: 10px;
+}
+</style>
