@@ -1,32 +1,46 @@
 <template>
   <div>
-    <canvas ref="can" width="2000" height="2000"></canvas>
+    <button @click="buttonClick" class="figureBtn">
+      <img src="../assets/triangle.png" />
+    </button>
+    <canvas ref="canvas" class="canvas" width="800" height="800"></canvas>
   </div>
 </template>
 
 <script>
-import { fabric } from 'fabric';
 export default {
-mounted() {
-    const ref = this.$refs.can;
-    const canvas = new fabric.Canvas(ref);
-    const rect = new fabric.Rect({
-      fill: 'red',
-      width: 100,
-      height: 100
-    });
-    canvas.add(rect);
+  methods: {
+    buttonClick() {
+      const ref = this.$refs.canvas;
+      const canvas = new fabric.Canvas(ref);
+      var shapes = [];
 
-    const rect2 = new fabric.Triangle({
-      fill: 'blue',
-      width: 100,
-      height: 100
-    });
-    canvas.add(rect2);
+      for (let i = 0; i <= 10; i++) {
+        var tri = new fabric.Triangle({
+          left: 100,
+          top: 100,
+          fill: "orange",
+          width: 100,
+          height: 100
+        });
+        shapes.push(tri);
+        canvas.add(shapes[i]);
+      }
+    }
   }
-}
+};
 </script>
 
-<style scoped>
 
+<style scoped>
+.figureBtn {
+  width: 150px;
+  height: 100px;
+  padding: 30px;
+}
+
+.canvas {
+  border: 1px solid #000;
+  background: aliceblue;
+}
 </style>
