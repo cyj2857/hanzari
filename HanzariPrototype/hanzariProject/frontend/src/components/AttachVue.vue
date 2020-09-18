@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="canvas" width="100%" height="60%" class="canvas"></canvas>
+    <canvas ref="canvas" width="100%" height="70%" class="canvas"></canvas>
     <div class="text-center">
       <input ref="imageInput" type="file" hidden @change= "onChangeImages">
       <v-btn class="ma-2" tile outlined color="success" @click="clickImport">

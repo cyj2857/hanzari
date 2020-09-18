@@ -1,13 +1,13 @@
 <template>
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
-      <select v-model="selected">
+      <!-- <select v-model="selected">
           <option value="" disabled hidden>Please Choose Floor</option>
           <option>1floor</option>
           <option>2floor</option>
           <option>3floor</option>
         </select>
-      <MyCanvas></MyCanvas>
+      <MyCanvas></MyCanvas> -->
 
       <div class="search" id="search">
         <input type="text" placeholder="Input Text" />
@@ -21,6 +21,14 @@
     <div class="d2" id="d2">
       <AttachVue></AttachVue>
     </div>
+
+    <div class="d3" id="hr"></div>
+    <div class="d4" id="d4">
+      <div class="listview" id="listview">
+        <ListView></ListView>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -110,9 +118,8 @@ export default {
 
 .d2 {
   float: left;
-  width: 79%;
+  width: 59%;
   height: 100%;
-  overflow-y: scroll;
 }
 
 .d3 {
@@ -121,6 +128,16 @@ export default {
   height: 100%;
   background-color: #888888;
 }
+
+.d4 {
+  float: left;
+  width: 20%;
+  height: 100%;
+  border-right: 1px solid #b8b8b8;
+  margin-right: -1px;
+  overflow-y: scroll;
+}
+
 
 #hr {
   cursor: pointer;
