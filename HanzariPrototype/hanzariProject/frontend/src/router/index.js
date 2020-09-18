@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import fabric from 'fabric'
 
 import Home from '@/views/Home'
-import HancomWorld from '@/views/HancomWorld'
 import YunjiTest from '@/views/YunjiTest'
 import HyoriTest from '@/views/HyoriTest'
 import SampleTest from '@/views/SampleTest'
@@ -18,11 +17,6 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home
-    },
-    {
-      path: '/hancomWorld',
-      name: 'hancomWorld',
-      component: HancomWorld
     },
     {
       path: '/yunjiTest',
