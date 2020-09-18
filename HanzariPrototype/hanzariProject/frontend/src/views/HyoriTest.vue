@@ -17,7 +17,7 @@
     <div class="d3" id="hr"></div>
     
     <div class="d2" id="d2">
-      <AttachVue></AttachVue>
+      <AttachView></AttachView>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -35,13 +35,13 @@ import MyCanvas from "@/components/MyCanvas.vue";
 import ListView from "@/components/ListView.vue";
 import MyDataTable from "@/components/MyDataTable.vue";
 import FloorDataTable from "@/components/FloorDataTable.vue";
-import AttachVue from "@/components/AttachVue.vue";
+import AttachView from "@/components/AttachView.vue";
 export default {
   name: "HyoriTest",
   components: {
     MyCanvas,
     ListView,
-    AttachVue,
+    AttachView,
     MyDataTable,
     FloorDataTable
   },
