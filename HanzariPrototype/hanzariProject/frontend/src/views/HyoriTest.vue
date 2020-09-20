@@ -17,7 +17,8 @@
     <div class="d3" id="hr"></div>
     
     <div class="d2" id="d2">
-      <AttachView></AttachView>
+      <FloorTabs></FloorTabs>
+      <!-- <AttachView></AttachView> -->
     </div>
 
     <div class="d3" id="hr"></div>
@@ -36,6 +37,7 @@ import ListView from "@/components/ListView.vue";
 import MyDataTable from "@/components/MyDataTable.vue";
 import FloorDataTable from "@/components/FloorDataTable.vue";
 import AttachView from "@/components/AttachView.vue";
+import FloorTabs from "@/components/FloorTabs.vue";
 
 export default {
   name: "HyoriTest",
@@ -44,7 +46,8 @@ export default {
     ListView,
     AttachView,
     MyDataTable,
-    FloorDataTable
+    FloorDataTable,
+    FloorTabs
   },
   props: {
     startpos: {
@@ -123,6 +126,7 @@ export default {
   float: left;
   width: 53%;
   height: 100%;
+  overflow-y: scroll;
 }
 
 .d3 {
