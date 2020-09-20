@@ -32,12 +32,25 @@ export default {
     buttonClick2 () {
       const ref = this.$refs.canvas;
       const canvas = new fabric.Canvas(ref);
-      const rect = new fabric.Rect({
-      fill: 'red',
-      width: 50,
-      height: 50
+      var rectangle = new fabric.Rect({
+        width: 50,
+        height: 50,
+        fill: 'red',
+        opacity: 1
+        });
+
+      var textObject = new fabric.IText("마효리", {
+        left: 0,
+        top: 0,
+        fontSize: 13,
+        fill: '#000000'
       });
-      canvas.add(rect);
+
+      var group = new fabric.Group([rectangle, textObject], {
+        left: 150,
+        top: 150
+      });
+      canvas.add(group);
     },
     buttonClick3 () {
       
