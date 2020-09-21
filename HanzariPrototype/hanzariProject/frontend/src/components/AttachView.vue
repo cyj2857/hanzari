@@ -11,12 +11,18 @@
 </template>
 
 <script>
+import { eventBus } from '../main.js'
 export default {
   props: {
     myCanvas: {
       type: Object,
       default: null
     }
+  },
+  created() {
+    eventBus.$on('createdRect', () =>{
+      this.makeRectBtn();
+    });
   },
   methods: {
     initializing() {

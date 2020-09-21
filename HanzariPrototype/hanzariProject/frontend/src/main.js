@@ -6,6 +6,8 @@ import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 
+export const eventBus = new Vue()
+
 Vue.config.productionTip = false
 Vue.use(Vuetify)
 
