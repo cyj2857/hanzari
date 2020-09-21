@@ -3,9 +3,10 @@
     <button @click="makeRectBtn" class="figureBtn">
       <img src="../assets/triangle.png" />
     </button>
-    <input type="file" @change="onFileChange">
+    <input type="file" @change="onFileChange" />
     <canvas ref="canvas" class="canvas" width="800" height="800"></canvas>
     <v-btn @click="loadImageBtn">click to load svg image</v-btn>
+    <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
   </div>
 </template>
 
@@ -25,27 +26,28 @@ export default {
       }
     },
     createImage(file) {
-      this.initializing()
+      this.initializing();
       var image = new Image();
       var reader = new FileReader();
-      
-      reader.onload = (e) => {
-        
+
+      reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
           img.set({
             scaleX: this.myCanvas.width / img.width,
             scaleY: this.myCanvas.height / img.height
           });
-          this.myCanvas.setBackgroundImage(img, this.myCanvas.renderAll.bind(this.myCanvas));
+          this.myCanvas.setBackgroundImage(
+            img,
+            this.myCanvas.renderAll.bind(this.myCanvas)
+          );
           this.myCanvas.renderAll();
         });
-      }
+      };
       reader.readAsDataURL(file);
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
-      if (!files.length)
-        return;
+      if (!files.length) return;
       this.createImage(files[0]);
     },
     makeRectBtn() {
@@ -72,7 +74,7 @@ export default {
       this.myCanvas.add(group);
     },
     loadImageBtn() {
-      //���⼭�� ��ü ���� �ܰ� �ڵ尡 ���� ĵ���� ��ü�� �������ü�����.
+      //���⼭�� ��ü ���� �ܰ� �ڵ尡 ����? ĵ���� ��ü�� �������ü�����.
       this.initializing();
 
       const card = this.myCanvas;
@@ -86,6 +88,18 @@ export default {
         card.setBackgroundImage(img, card.renderAll.bind(card));
         card.renderAll();
       });
+    },
+    deleteAllBtn() {
+      this.initializing();
+      /*this.myCanvas.set({
+        backgroundColor: "#fff"
+      });*/
+      this.myCanvas
+        .getObjects()
+        .slice()
+        .forEach(obj => {
+          this.myCanvas.remove(obj);
+        });
     }
   }
 };
