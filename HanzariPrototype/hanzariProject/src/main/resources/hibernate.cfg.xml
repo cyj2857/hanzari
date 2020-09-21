@@ -25,6 +25,6 @@
 		<property name="hibernate.cache.use_second_level_cache">false</property>
 
 		<!-- Names the annotated entity class -->
-		<mapping class="" />
+		<mapping class="/hanzariProject/src/main/java/model/Figure.java" />
 	</session-factory>
 </hibernate-configuration>
