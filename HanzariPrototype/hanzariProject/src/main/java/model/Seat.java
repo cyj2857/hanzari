@@ -10,9 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.Setter;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name="seats")
 public class Seat {
 
