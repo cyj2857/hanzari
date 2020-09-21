@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Entity
+@Getter
 @AllArgsConstructor
 @Table(name="employee")
 public class Employee {
@@ -21,14 +22,12 @@ public class Employee {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "employee_id", nullable = false)
-	@Getter
 	String employee_id;
 	
 	@Column(name = "level", nullable = false)
 	String level;
 	
 	@Column(name = "name", nullable = false)
-	@Getter
 	String name;
 	
 	@ManyToOne(cascade=CascadeType.ALL)

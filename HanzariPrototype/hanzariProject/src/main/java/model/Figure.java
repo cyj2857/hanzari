@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name="temp_figures")
 @AllArgsConstructor
 public class Figure {
@@ -16,6 +17,5 @@ public class Figure {
 	String figure_id;
 	
 	@Column(name = "figure_name", nullable = false)
-	@Getter
 	String figure_name;
 }

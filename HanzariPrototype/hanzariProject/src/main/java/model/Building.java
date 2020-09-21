@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
+@Getter
 @Table(name="temp_buildings")
 public class Building {
 	
