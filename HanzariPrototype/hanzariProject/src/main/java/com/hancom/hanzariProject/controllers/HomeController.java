@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -62,32 +63,54 @@ public class HomeController {
 		
 		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 		Figure figure = new Figure();
-		figure.setFigure_id("5");
-		figure.setFigure_name("도형5");
-		
-		System.out.println("1");
+		figure.setFigure_id("6");
+		figure.setFigure_name("도형6");
 
 		Session session = sessionFactory.openSession();
-		System.out.println("2");
 		
 		try {
 			Transaction tx = session.beginTransaction();
-			System.out.println("3");
 
+			// Query
 			session.save(figure); // instead of SQL statement
-			System.out.println("4");
-
+			
 			tx.commit();
-			System.out.println("5");
 
 		} catch (Exception e) {
-			System.out.println("6");
 			e.printStackTrace();
 
 		} finally {
 			session.close();
 			sessionFactory.close();
 		}
+		
+	}
+	
+	@GetMapping("/testmain2")
+	@ResponseBody
+	public String QueryTestMain2() {
+		
+		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+
+		Session session = sessionFactory.openSession();
+		List<Figure> figures = null;
+		try {
+			Transaction tx = session.beginTransaction();
+
+			// Query
+			Query<Figure> theQuery = session.createQuery("from Figure order by figure_name desc", Figure.class);
+			figures = theQuery.getResultList();
+			
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
+		return figures.toString();
 		
 	}
 }
