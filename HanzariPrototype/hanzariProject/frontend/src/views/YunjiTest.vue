@@ -1,87 +1,151 @@
 <template>
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
-      <div class="select" id="select">
-        <h3>
-          <label>{{floorMsg}}</label>
-        </h3>
-        <select v-model="selected">
-          <option disabled value="Please Choose Floor">Please choose floor</option>
+      <!-- <select v-model="selected">
+          <option value="" disabled hidden>Please Choose Floor</option>
           <option>1floor</option>
           <option>2floor</option>
           <option>3floor</option>
         </select>
-      </div>
+      <MyCanvas></MyCanvas> -->
 
-      <canvas id="myCanvas" style="background-color: aliceblue" width="230" height="300"></canvas>
-
-      <h3>
-        <label>{{searchEmployeeMsg}}</label>
-      </h3>
       <div class="search" id="search">
-        <input type="text" placeholder="Input Text" />
-        <button>Search</button>
+        <MyDataTable></MyDataTable>
       </div>
     </div>
 
     <div class="d3" id="hr"></div>
-
+    
     <div class="d2" id="d2">
-      <button @click="updateText">{{ changeText }}</button>
+      <AttachView></AttachView>
     </div>
+
+    <div class="d3" id="hr"></div>
+    <div class="d4" id="d4">
+      <div class="listview" id="listview">
+        <FloorDataTable></FloorDataTable>
+      </div>
+    </div>
+
   </div>
 </template>
 
-<script scoped>
+<script>
+import MyCanvas from "@/components/MyCanvas.vue";
+import ListView from "@/components/ListView.vue";
+import MyDataTable from "@/components/MyDataTable.vue";
+import FloorDataTable from "@/components/FloorDataTable.vue";
+import AttachView from "@/components/AttachView.vue";
 export default {
-  name: 'YunjiTest',
+  name: "YunjiTest",
+  components: {
+    MyCanvas,
+    ListView,
+    AttachView,
+    MyDataTable,
+    FloorDataTable
+  },
+  props: {
+    startpos: {
+      type: Number,
+      default: 0
+    },
+    diffpos: {
+      type: Number,
+      default: 0
+    },
+    range: {
+      type: Number,
+      default: 50
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
-      msg: "This is yunji's page.",
+      msg: "This is yunji page.",
       floorMsg: "Choose Floor",
       searchEmployeeMsg: "Search Employee",
-      changeText:"Sample Text",
       selected: ""
     };
   },
   methods: {
-    updateText() {
-      this.changeText = "Click Event Test";
+    on_mouse_down(event) {
+      this.startpos = event.clientX + this.diffpos;
+      this.isEnable = true;
+      return false;
+    },
+    on_mouse_up(event) {
+      this.isEnable = false;
+    },
+    on_mouse_move(event) {
+      if (this.isEnable) {
+        pos = event.clientX;
+        this.diffpos = this.startpos - pos;
+        width = window.innerWidth / 2;
+        if (
+          this.diffpos > -(width - this.range) &&
+          this.diffpos < width - this.range
+        ) {
+          document.getElementById("d1").style.width =
+            width - this.diffpos + "px";
+          document.getElementById("d2").style.width =
+            width - 20 + this.diffpos + "px";
+        }
+      }
     }
+  },
+  mounted() {
+    document.getElementById("hr").onmousedown = this.on_mouse_down();
+    document.onmouseup = this.on_mouse_up();
+    document.onmousemove = this.on_mouse_move();
   }
 };
 </script>
 
 <style scoped>
-
 .d1 {
-	float: left;
-	width: 20%;
-	height: 100%;
-	border-right: 1px solid #b8b8b8;
-	margin-right: -1px;
-	overflow-y: scroll;
+  float: left;
+  width: 20%;
+  height: 100%;
+  border-right: 1px solid #b8b8b8;
+  margin-right: -1px;
+  overflow-y: scroll;
 }
 
 .d2 {
-	float: left;
-	width: 79%;
-	height: 100%;
-	overflow-y: scroll;
+  float: left;
+  width: 59%;
+  height: 100%;
+  border-right: 1px solid #b8b8b8;
+  margin-right: -1px;
+  overflow-y: scroll;
 }
 
 .d3 {
-	float: left;
-	width: 0.3%;
-	height: 100%;
-	background-color: #888888;
+  float: left;
+  width: 0.3%;
+  height: 100%;
+  background-color: #888888;
 }
 
+.d4 {
+  float: left;
+  width: 20%;
+  height: 100%;
+  border-right: 1px solid #b8b8b8;
+  margin-right: -1px;
+  overflow-y: scroll;
+}
+
+
 #hr {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 div {
-	display: inline-block;
+  display: inline-block;
 }
 </style>
