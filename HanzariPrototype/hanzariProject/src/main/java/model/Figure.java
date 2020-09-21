@@ -12,16 +12,17 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name="temp_figures")
+@Table(name = "temp_figures")
 @AllArgsConstructor
 public class Figure {
-	
+
 	@Id
 	@Column(name = "figure_id", nullable = false)
 	String figure_id;
-	
+
 	@Column(name = "figure_name", nullable = false)
 	String figure_name;
-	
-	public Figure() {};
+
+	public Figure() {
+	};
 }
