@@ -64,7 +64,19 @@ export default {
     buttonClick2() {
       
     },
-    buttonClick3() {}
+    buttonClick3() {
+      const card = this.myCanvas;
+      card.setWidth(1000);
+      card.setHeight(1000);
+      fabric.Image.fromURL("https://konvajs.org/assets/yoda.jpg", img => {
+        img.set({
+          scaleX: card.width / img.width,
+          scaleY: card.height / img.height
+        });
+        card.setBackgroundImage(img, card.renderAll.bind(card));
+        card.renderAll();
+      });
+    }
   }
 };
 </script>
