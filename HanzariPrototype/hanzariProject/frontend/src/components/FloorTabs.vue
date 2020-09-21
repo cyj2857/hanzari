@@ -11,7 +11,6 @@
       v-model="tab"
       background-color="cyan"
       dark
-      show-arrows="true"
     >
       <v-tab
         v-for="n in length"
