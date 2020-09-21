@@ -6,7 +6,7 @@
     <v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn>
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
     <input type="file" @change="onFileChange" />
-    <!-- ì¶”í›„?— ?´ svg?— image ?ƒœê·¸ëŠ” background?— ?„£ê³? matrixë§? load?•˜ë©? ?  ?“¯ -->
+    <!-- Ã¬Â¶â€Ã­â€ºâ€ž?â€”Â ?ÂÂ´ svg?â€”Â image ?Æ’Å“ÃªÂ·Â¸Ã«Å â€ background?â€”Â ?â€žÂ£ÃªÂ³? matrixÃ«Â§? load?â€¢ËœÃ«Â©? ?ÂÂ  ?â€œÂ¯ -->
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
   </div>
@@ -65,6 +65,10 @@ export default {
         fill: "red",
         opacity: 1
       });
+<<<<<<< HEAD
+=======
+      
+>>>>>>> aa98a5c92b79c116ea1e9d9b7623e4ca0b9183f6
       var textObject = new fabric.IText(itemName, {
         left: 0,
         top: 0,
@@ -75,7 +79,18 @@ export default {
         left: 150,
         top: 150
       });
+<<<<<<< HEAD
       this.myCanvas.add(group);
+=======
+
+      group.on("mouseover", function(e) {
+        var group = e.target;
+        alert(group.item(1).text);
+      });
+      
+      this.myCanvas.add(group);
+      
+>>>>>>> aa98a5c92b79c116ea1e9d9b7623e4ca0b9183f6
     },
     makeTextBox() {
       this.initializing();
@@ -93,6 +108,10 @@ export default {
         .getObjects()
         .slice()
         .forEach(obj => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa98a5c92b79c116ea1e9d9b7623e4ca0b9183f6
           this.myCanvas.remove(obj);
         });
     },
