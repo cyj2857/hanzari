@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import model.Department;
+import model.Employee;
 import model.Figure;
 
 @Controller
@@ -44,22 +46,9 @@ public class HomeController {
 		return "hello blaalaa";
 	}
 	
-	@GetMapping("/querytest")
+	@GetMapping("/inserttest")
 	@ResponseBody
-	public Iterable<Figure> getAllFigures() {
-		
-		System.out.println("Figure");
-	    List<Figure> result = jdbcTemplate.query(
-	            "SELECT * FROM temp_figures",
-	            (rs, rowNum) -> new Figure(rs.getString("figure_id"), rs.getString("figure_name"))
-	    );
-	    result.forEach(e -> System.out.println(e.getFigure_name().toString()));
-	    return result;
-	}
-	
-	@GetMapping("/testmain")
-	@ResponseBody
-	public void QueryTestMain() {
+	public void InsertTest() {
 		
 		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 		Figure figure = new Figure();
@@ -86,9 +75,9 @@ public class HomeController {
 		
 	}
 	
-	@GetMapping("/testmain2")
+	@GetMapping("/selecttest")
 	@ResponseBody
-	public String QueryTestMain2() {
+	public String SelectTest() {
 		
 		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 
@@ -110,7 +99,94 @@ public class HomeController {
 			session.close();
 			sessionFactory.close();
 		}
-		return figures.toString();
+		StringBuilder result = new StringBuilder();
+		figures.forEach(
+				it -> 
+				result.append(it.toString())
+				.append("	id: ").append(it.getFigure_id()).append("\n")
+				.append( "			name: ").append(it.getFigure_name()).append("\n")
+				.append("<br><br>").append("\n")
+				);
+		System.out.println("========================result======================");
+		System.out.println(result);
+		System.out.println("========================result======================");
+		return result.toString();		
+	}
+	
+	@GetMapping("/selecttest2")
+	@ResponseBody
+	public String SelectTest2() {
 		
+		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+
+		Session session = sessionFactory.openSession();
+		List<Department> departments = null;
+		try {
+			Transaction tx = session.beginTransaction();
+
+			// Query
+			Query<Department> theQuery = session.createQuery("from Department order by department_name desc", Department.class);
+			departments = theQuery.getResultList();
+			
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
+		StringBuilder result = new StringBuilder();
+		departments.forEach(
+				it -> 
+				result.append(it.toString())
+				.append("	id: ").append(it.getDepartment_id()).append("\n")
+				.append( "			name: ").append(it.getDepartment_name()).append("\n")
+				.append("<br><br>").append("\n")
+				);
+		System.out.println("========================result======================");
+		System.out.println(result);
+		System.out.println("========================result======================");
+		return result.toString();		
+	}
+	
+	@GetMapping("/selecttest3")
+	@ResponseBody
+	public String SelectTest3() {
+		
+		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+
+		Session session = sessionFactory.openSession();
+		List<Employee> employee = null;
+		try {
+			Transaction tx = session.beginTransaction();
+
+			// Query
+			Query<Employee> theQuery = session.createQuery("from Employee order by name desc", Employee.class);
+			employee = theQuery.getResultList();
+			
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
+		StringBuilder result = new StringBuilder();
+		employee.forEach(
+				it -> 
+				result.append(it.toString())
+				.append("	id: ").append(it.getEmployee_id()).append("\n")
+				.append( "			name: ").append(it.getName()).append("\n")
+				.append( "			departmentName: ").append(it.getDepartment().getDepartment_name()).append("\n")
+				.append("<br><br>").append("\n")
+				);
+		System.out.println("========================result======================");
+		System.out.println(result);
+		System.out.println("========================result======================");
+		return result.toString();		
 	}
 }
