@@ -1,9 +1,6 @@
 <template>
   <div>
-    <button @click="makeRectBtn" class="figureBtn">
-      <img src="../assets/triangle.png" />
-    </button>
-    <v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn>
+    <!--v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn!-->
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
     <input type="file" @change="onFileChange" />
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
@@ -21,8 +18,8 @@ export default {
     }
   },
   created() {
-    eventBus.$on("createdRect", itemName => {
-      this.makeRectBtn(itemName);
+    eventBus.$on("createdRect", item => {
+      this.makeRectBtn(item);
     });
   },
   methods: {
@@ -30,7 +27,6 @@ export default {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
         this.myCanvas = new fabric.Canvas(ref);
-      
       }
     },
     createImage(file) {
@@ -57,16 +53,15 @@ export default {
       if (!files.length) return;
       this.createImage(files[0]);
     },
-    makeRectBtn(itemName) {
+    makeRectBtn(item) {
       this.initializing();
       var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: "red",
+        fill: "blue",
         opacity: 1
       });
-      
-      var textObject = new fabric.IText(itemName, {
+      var textObject = new fabric.IText(item.name, {
         left: 0,
         top: 0,
         fontSize: 13,
@@ -76,16 +71,15 @@ export default {
         left: 150,
         top: 150
       });
-
+      
       group.on("mouseover", function(e) {
         var group = e.target;
         alert(group.item(1).text);
       });
       
       this.myCanvas.add(group);
-      
     },
-    makeTextBox() {
+    /*makeTextBox() {
       this.initializing();
       var textObject = new fabric.IText("Ma Hyori", {
         left: 0,
@@ -94,20 +88,19 @@ export default {
         fill: "#000000"
       });
       this.myCanvas.add(textObject);
-    },
+    },*/
     deleteAllBtn() {
       this.initializing();
       this.myCanvas
         .getObjects()
         .slice()
         .forEach(obj => {
-
           this.myCanvas.remove(obj);
         });
     },
-    saveCanvasBtn () {
-      this.initializing()
-      console.log('svg : ' + this.myCanvas.toSVG())//logs the SVG representation of canvas
+    saveCanvasBtn() {
+      this.initializing();
+      console.log("svg : " + this.myCanvas.toSVG()); //logs the SVG representation of canvas
     }
   }
 };
@@ -121,7 +114,8 @@ export default {
 }
 
 .canvas {
-  margin: 8px;
+  margin-left: 45px;
+  border: 1px solid #000;
   background: aliceblue;
   height: 800px;
   width: 900px;
