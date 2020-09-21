@@ -16,7 +16,7 @@ dependencies {
 	compile 'org.apache.tomcat.embed:tomcat-embed-jasper' 
 	compile 'javax.servlet:jstl:1.2'
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
-	compile("org.springframework.boot:spring-boot-starter-jdbc")cm
+	compile("org.springframework.boot:spring-boot-starter-jdbc")
 	
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
