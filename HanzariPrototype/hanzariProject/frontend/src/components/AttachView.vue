@@ -4,19 +4,27 @@
       <img src="../assets/triangle.png" />
     </button>
     <v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn>
-    <input type="file" @change="onFileChange" />
     <canvas ref="canvas" class="canvas" width="800" height="800"></canvas>
+    <input type="file" @change="onFileChange" />
+    <!-- 추후에 이 svg에 image 태그는 background에 넣고 matrix만 load하면 될 듯 -->
+    <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
   </div>
 </template>
 
 <script>
+import { eventBus } from '../main.js'
 export default {
   props: {
     myCanvas: {
       type: Object,
       default: null
     }
+  },
+  created() {
+    eventBus.$on('createdRect', (itemName) =>{
+      this.makeRectBtn(itemName);
+    });
   },
   methods: {
     initializing() {
@@ -49,7 +57,7 @@ export default {
       if (!files.length) return
       this.createImage(files[0])
     },
-    makeRectBtn() {
+    makeRectBtn(itemName) {
       this.initializing()
       var rectangle = new fabric.Rect({
         width: 50,
@@ -57,7 +65,7 @@ export default {
         fill: "red",
         opacity: 1
       })
-      var textObject = new fabric.IText("Ma Hyori", {
+      var textObject = new fabric.IText(itemName, {
         left: 0,
         top: 0,
         fontSize: 13,
@@ -87,6 +95,10 @@ export default {
         .forEach(obj => {
           this.myCanvas.remove(obj)
         })
+    },
+    saveCanvasBtn () {
+      this.initializing()
+      console.log('svg : ' + this.myCanvas.toSVG())//logs the SVG representation of canvas
     }
   }
 };

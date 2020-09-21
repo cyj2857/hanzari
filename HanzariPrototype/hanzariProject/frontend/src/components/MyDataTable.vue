@@ -26,12 +26,13 @@
 </template>
 
 <script>
+import { eventBus } from "../main.js";
 export default {
-  props:{
+  props: {
     clickedRow: {
       type: String,
       default: null
-    },
+    }
   },
   data() {
     return {
@@ -45,7 +46,7 @@ export default {
         },
         { text: "Department", value: "department" },
         { text: "Number", value: "number" },
-        { text: "", value: "button"},
+        { text: "", value: "button" }
       ],
       employees: [
         {
@@ -62,6 +63,11 @@ export default {
           name: "Chae Yujin",
           department: "Secure Team",
           number: "010-7906-3827"
+        },
+        {
+          name: "Kim Dongmin",
+          department: "has no Team",
+          number: "010-3352-0898"
         }
       ]
     };
@@ -70,8 +76,9 @@ export default {
     onButtonClick(item) {
       alert("click on " + item.name);
     },
-    showAlert(item){
-      this.clickedRow=item.name;
+    showAlert(item) {
+      this.clickedRow = item.name;
+      eventBus.$emit("createdRect",this.clickedRow);
       alert("click row " + item.name);
     }
   }
@@ -79,8 +86,8 @@ export default {
 </script>
 
 <style scoped>
-#button{
- font-family: Arial,Helvetica,sans-serif;
- font-size: 10px;
+#button {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
 }
 </style>
