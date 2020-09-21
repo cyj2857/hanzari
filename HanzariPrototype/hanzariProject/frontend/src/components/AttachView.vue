@@ -4,8 +4,10 @@
       <img src="../assets/triangle.png" />
     </button>
     <v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn>
-    <input type="file" @change="onFileChange" />
     <canvas ref="canvas" class="canvas" width="800" height="800"></canvas>
+    <input type="file" @change="onFileChange" />
+    <!-- 추후에 이 svg에 image 태그는 background에 넣고 matrix만 load하면 될 듯 -->
+    <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
   </div>
 </template>
@@ -93,6 +95,10 @@ export default {
         .forEach(obj => {
           this.myCanvas.remove(obj)
         })
+    },
+    saveCanvasBtn () {
+      this.initializing()
+      console.log('svg : ' + this.myCanvas.toSVG())//logs the SVG representation of canvas
     }
   }
 };
