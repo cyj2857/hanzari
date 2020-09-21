@@ -22,8 +22,8 @@ export default {
     }
   },
   created() {
-    eventBus.$on('createdRect', () =>{
-      this.makeRectBtn();
+    eventBus.$on('createdRect', (itemName) =>{
+      this.makeRectBtn(itemName);
     });
   },
   methods: {
@@ -57,7 +57,7 @@ export default {
       if (!files.length) return
       this.createImage(files[0])
     },
-    makeRectBtn() {
+    makeRectBtn(itemName) {
       this.initializing()
       var rectangle = new fabric.Rect({
         width: 50,
@@ -65,7 +65,7 @@ export default {
         fill: "red",
         opacity: 1
       })
-      var textObject = new fabric.IText("Ma Hyori", {
+      var textObject = new fabric.IText(itemName, {
         left: 0,
         top: 0,
         fontSize: 13,
