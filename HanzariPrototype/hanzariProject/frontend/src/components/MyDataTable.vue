@@ -17,7 +17,7 @@
           <td>{{row.item.department}}</td>
           <td>{{row.item.number}}</td>
           <td>
-            <v-btn id="button" @click="onButtonClick(row.item)">Show</v-btn>
+            <v-btn id="button" @click="onButtonClick(row.item)">Set</v-btn>
           </td>
         </tr>
       </template>
