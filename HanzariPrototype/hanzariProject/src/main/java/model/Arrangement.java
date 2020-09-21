@@ -6,9 +6,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @Table(name="arrangements")
 public class Arrangement {
 	
