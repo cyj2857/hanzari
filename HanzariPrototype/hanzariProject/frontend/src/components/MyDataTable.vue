@@ -75,10 +75,10 @@ export default {
   methods: {
     onButtonClick(item) {
       alert("click on " + item.name);
-      eventBus.$emit("createdRect");
     },
     showAlert(item) {
       this.clickedRow = item.name;
+      eventBus.$emit("createdRect",this.clickedRow);
       alert("click row " + item.name);
     }
   }

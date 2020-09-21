@@ -23,3 +23,5 @@
 2020-09-17 17:37:46,687 [Worker-21: Check Injection] INFO  j.exodus.env.EnvironmentImpl - Exodus environment created: C:\Users\hancom\WinFormProject\hancomFamily\HanzariPrototype\.metadata\com.genuitec.eclipse.webclipse.livepreview\1\store
 2020-09-18 09:14:25,036 [Worker-8: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
 2020-09-21 09:55:10,447 [Worker-3: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
+2020-09-21 13:25:55,034 [Worker-2: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2020-09-21 14:29:24,603 [Worker-4: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
