@@ -52,22 +52,26 @@ export default {
         {
           name: "Ma Hyori",
           department: "Development Team",
-          number: "010-5617-4977"
+          number: "010-5617-4977",
+          employee_id:"1771354"
         },
         {
           name: "No Yunji",
           department: "Development Team",
-          number: "010-4673-2827"
+          number: "010-4673-2827",
+          employee_id:"1745674"
         },
         {
           name: "Chae Yujin",
           department: "Secure Team",
-          number: "010-7906-3827"
+          number: "010-7906-3827",
+          employee_id:"154"
         },
         {
           name: "Kim Dongmin",
           department: "has no Team",
-          number: "010-3352-0898"
+          number: "010-3352-0898",
+          employee_id:"13454"
         }
       ]
     };
@@ -78,8 +82,8 @@ export default {
     },
     showAlert(item) {
       this.clickedRow = item.name;
-      eventBus.$emit("createdRect",this.clickedRow);
-      alert("click row " + item.name);
+      eventBus.$emit("createdRect",item);
+      //alert("click row " + item.employee_id);
     }
   }
 };

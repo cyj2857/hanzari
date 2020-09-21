@@ -1,12 +1,9 @@
 <template>
   <div>
-    <button @click="makeRectBtn" class="figureBtn">
-      <img src="../assets/triangle.png" />
-    </button>
     <v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn>
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
     <input type="file" @change="onFileChange" />
-    <!-- ì¶”í›„?— ?´ svg?— image ?ƒœê·¸ëŠ” background?— ?„£ê³? matrixë§? load?•˜ë©? ?  ?“¯ -->
+    <!-- ì¶??��???��?????��? ?´ svg???��? image ??�œê·¸ëŠ�?? background???��? ???�£ê�?? matrixë§? load???�˜ë�?? ?  ???��? -->
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
   </div>
@@ -17,13 +14,13 @@ import { eventBus } from "../main.js";
 export default {
   props: {
     myCanvas: {
-      type: Object
-      //default: null,
+      type: Object,
+      default: null,
     }
   },
   created() {
-    eventBus.$on("createdRect", itemName => {
-      this.makeRectBtn(itemName);
+    eventBus.$on("createdRect", item => {
+      this.makeRectBtn(item);
     });
   },
   methods: {
@@ -57,7 +54,7 @@ export default {
       if (!files.length) return;
       this.createImage(files[0]);
     },
-    makeRectBtn(itemName) {
+    makeRectBtn(item) {
       this.initializing();
       var rectangle = new fabric.Rect({
         width: 50,
@@ -65,11 +62,7 @@ export default {
         fill: "red",
         opacity: 1
       });
-<<<<<<< HEAD
-=======
-      
->>>>>>> aa98a5c92b79c116ea1e9d9b7623e4ca0b9183f6
-      var textObject = new fabric.IText(itemName, {
+      var textObject = new fabric.IText(item.name, {
         left: 0,
         top: 0,
         fontSize: 13,
@@ -79,18 +72,13 @@ export default {
         left: 150,
         top: 150
       });
-<<<<<<< HEAD
-      this.myCanvas.add(group);
-=======
-
+      
       group.on("mouseover", function(e) {
         var group = e.target;
         alert(group.item(1).text);
       });
       
       this.myCanvas.add(group);
-      
->>>>>>> aa98a5c92b79c116ea1e9d9b7623e4ca0b9183f6
     },
     makeTextBox() {
       this.initializing();
@@ -108,10 +96,6 @@ export default {
         .getObjects()
         .slice()
         .forEach(obj => {
-<<<<<<< HEAD
-=======
-
->>>>>>> aa98a5c92b79c116ea1e9d9b7623e4ca0b9183f6
           this.myCanvas.remove(obj);
         });
     },
