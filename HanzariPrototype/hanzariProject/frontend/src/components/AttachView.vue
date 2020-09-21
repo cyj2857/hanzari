@@ -3,7 +3,7 @@
     <v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn>
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
     <input type="file" @change="onFileChange" />
-    <!-- ì¶??��???��?????��? ?´ svg???��? image ??�œê·¸ëŠ�?? background???��? ???�£ê�?? matrixë§? load???�˜ë�?? ?  ???��? -->
+    <!-- ì¶??��???��?????��? ?´ svg???��? image ??�œê·¸ëŠ�?? background???��? ???�£ê�?? matrixë§? load???�˜ë�?? ?  ???��? -->
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
   </div>
@@ -28,7 +28,6 @@ export default {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
         this.myCanvas = new fabric.Canvas(ref);
-      
       }
     },
     createImage(file) {
@@ -63,7 +62,6 @@ export default {
         fill: "red",
         opacity: 1
       });
-      
       var textObject = new fabric.IText(item.name, {
         left: 0,
         top: 0,
@@ -74,14 +72,13 @@ export default {
         left: 150,
         top: 150
       });
-
+      
       group.on("mouseover", function(e) {
         var group = e.target;
         alert(group.item(1).text);
       });
       
       this.myCanvas.add(group);
-      
     },
     makeTextBox() {
       this.initializing();
@@ -99,13 +96,12 @@ export default {
         .getObjects()
         .slice()
         .forEach(obj => {
-
           this.myCanvas.remove(obj);
         });
     },
-    saveCanvasBtn () {
-      this.initializing()
-      console.log('svg : ' + this.myCanvas.toSVG())//logs the SVG representation of canvas
+    saveCanvasBtn() {
+      this.initializing();
+      console.log("svg : " + this.myCanvas.toSVG()); //logs the SVG representation of canvas
     }
   }
 };
@@ -119,7 +115,8 @@ export default {
 }
 
 .canvas {
-  margin: 8px;
+  margin-left: 45px;
+  border: 1px solid #000;
   background: aliceblue;
   height: 800px;
   width: 900px;
