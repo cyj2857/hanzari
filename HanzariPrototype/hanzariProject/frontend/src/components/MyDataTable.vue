@@ -12,7 +12,7 @@
     </v-card-title>
     <v-data-table :headers="headers" :items="employees" :search="search">
       <template v-slot:item="row">
-        <tr>
+        <tr @click="showAlert(row.item)">
           <td>{{row.item.name}}</td>
           <td>{{row.item.department}}</td>
           <td>{{row.item.number}}</td>
@@ -27,6 +27,12 @@
 
 <script>
 export default {
+  props:{
+    clickedRow: {
+      type: String,
+      default: null
+    },
+  },
   data() {
     return {
       search: "",
@@ -63,6 +69,10 @@ export default {
   methods: {
     onButtonClick(item) {
       alert("click on " + item.name);
+    },
+    showAlert(item){
+      this.clickedRow=item.name;
+      alert("click row " + item.name);
     }
   }
 };

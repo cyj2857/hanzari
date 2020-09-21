@@ -11,50 +11,60 @@
 
 <script>
 export default {
+  props: {
+    myCanvas: {
+      type: Object,
+      default: null
+    }
+  },
   methods: {
-    buttonClick() {
-      const ref = this.$refs.canvas;
-      const canvas = new fabric.Canvas(ref);
-      var shapes = [];
-
-      for (let i = 0; i <= 10; i++) {
-        var tri = new fabric.Triangle({
-          left: 100,
-          top: 100,
-          fill: "orange",
-          width: 100,
-          height: 100
-        });
-        shapes.push(tri);
-        canvas.add(shapes[i]);
+    initializing() {
+      if (this.myCanvas == null) {
+        const ref = this.$refs.canvas;
+        this.myCanvas = new fabric.Canvas(ref);
       }
     },
-    buttonClick2 () {
-      const ref = this.$refs.canvas;
-      const canvas = new fabric.Canvas(ref);
+    buttonClick() {
+      // var shapes = [];
+
+      // for (let i = 0; i <= 10; i++) {
+      //   var tri = new fabric.Triangle({
+      //     left: 100,
+      //     top: 100,
+      //     fill: "orange",
+      //     width: 100,
+      //     height: 100
+      //   });
+      //   shapes.push(tri);
+      //   canvas.add(shapes[i]);
+      // }
+      
+      this.initializing();
+
       var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: 'red',
+        fill: "red",
         opacity: 1
-        });
+      });
 
-      var textObject = new fabric.IText("마효리", {
+      var textObject = new fabric.IText("Ma Hyori", {
         left: 0,
         top: 0,
         fontSize: 13,
-        fill: '#000000'
+        fill: "#000000"
       });
 
       var group = new fabric.Group([rectangle, textObject], {
         left: 150,
         top: 150
       });
-      canvas.add(group);
+      this.myCanvas.add(group);
     },
-    buttonClick3 () {
+    buttonClick2() {
       
-    }
+    },
+    buttonClick3() {}
   }
 };
 </script>
