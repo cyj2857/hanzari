@@ -62,6 +62,11 @@ export default {
           name: "Chae Yujin",
           department: "Secure Team",
           number: "010-7906-3827"
+        },
+        {
+          name: "Kim Dongmin",
+          department: "has no Team",
+          number: "010-3352-0898"
         }
       ]
     };
