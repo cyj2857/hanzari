@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -23,7 +27,7 @@ import model.Figure;
 public class HomeController {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private SessionFactory sessionFactory;
 
    //view first vue.js->vue.js logo 
    @RequestMapping("/")
@@ -43,37 +47,26 @@ public class HomeController {
 		System.out.println("texttest");
 		return "hello blaalaa";
 	}
-	
-
-	@GetMapping("/querytest")
+		
+	@GetMapping("/testmain")
 	@ResponseBody
-	public Iterable<Figure> getAllFigures() {
-		System.out.println("Figure");
-	    List<Figure> result = jdbcTemplate.query(
-	            "SELECT * FROM temp_figures",
-	            (rs, rowNum) -> new Figure(rs.getString("figure_id"), rs.getString("figure_name"))
-	    );
-	    result.forEach(e -> System.out.println(e.getFigure_name().toString()));
-	    return result;
-	}
-	
-	@GetMapping("/querytest2")
-	@ResponseBody
-	public Iterable<Employee> getAllEmployee() {
-		System.out.println("Employee");
-	    List<Employee> result = jdbcTemplate.query(
-	            "SELECT * FROM employee",
-	            (rs, rowNum) -> new Employee(rs.getString("employee_id"), rs.getString("level"), rs.getString("name"), rs.getObject("department", Department.class), rs.getString("extension_number"))
-	    );
-	    result.forEach(e -> System.out.println(e.getName().toString()));
-	    return result;
-	}
-	
-	@GetMapping("/querytest3")
-	@ResponseBody
-	public int getAllEmployeeCnt() {
-		System.out.println("Employee");
-		int result = jdbcTemplate.queryForObject("SELECT COUNT(employee_id) FROM employee", int.class);
-	    return result;
+	public void QueryTestMain() {
+		sessionFactory = new Configuration().configure().buildSessionFactory();
+		Figure figure = new Figure();
+		figure.setFigure_id("5");
+		figure.setFigure_name("도형5");
+		
+		Session session = sessionFactory.openSession();
+		
+		try {
+		Transaction tx = session.beginTransaction();
+		// ...
+		tx.commit();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
 	}
 }
