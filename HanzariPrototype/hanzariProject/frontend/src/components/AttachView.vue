@@ -65,6 +65,9 @@ export default {
       
     },
     buttonClick3() {
+      //여기서도 객체 생성 단계 코드가 들어가야 캔버스 객체를 가지고올수잇음.
+      this.initializing();
+
       const card = this.myCanvas;
       card.setWidth(1000);
       card.setHeight(1000);
