@@ -9,9 +9,9 @@
 		<!-- Database connection settings -->
 		<property name="hibernate.connection.driver_class">org.mariadb.jdbc.Driver</property>
 		<property name="hibernate.connection.url">jdbc:mariadb://172.30.1.50:3306/hanzari?useSSL=false&amp;characterEncoding=UTF-8&amp;useUnicode=true&amp;serverTimezone=Asia/Seoul</property>
-		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.username">root</property>	
 		<property name="hibernate.connection.password">0000</property>
-		
+
 		<!-- Hibernate SQL dialect -->
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
@@ -25,6 +25,6 @@
 		<property name="hibernate.cache.use_second_level_cache">false</property>
 
 		<!-- Names the annotated entity class -->
-		<mapping class="" />
+		<mapping class="model.Figure" />
 	</session-factory>
 </hibernate-configuration>
