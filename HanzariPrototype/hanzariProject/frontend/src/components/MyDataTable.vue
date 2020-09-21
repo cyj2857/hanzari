@@ -62,7 +62,7 @@ export default {
           employee_id:"1745674"
         },
         {
-          name: "Chae Yujin",
+          name: "Choi Yujin",
           department: "Secure Team",
           number: "010-7906-3827",
           employee_id:"154"

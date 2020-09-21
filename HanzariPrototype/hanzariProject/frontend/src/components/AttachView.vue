@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn>
+    <!--v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn!-->
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
     <input type="file" @change="onFileChange" />
     <!-- ì¶??��???��?????��? ?´ svg???��? image ??�œê·¸ëŠ�?? background???��? ???�£ê�?? matrixë§? load???�˜ë�?? ?  ???��? -->
@@ -59,7 +59,7 @@ export default {
       var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: "red",
+        fill: "blue",
         opacity: 1
       });
       var textObject = new fabric.IText(item.name, {
@@ -80,7 +80,7 @@ export default {
       
       this.myCanvas.add(group);
     },
-    makeTextBox() {
+    /*makeTextBox() {
       this.initializing();
       var textObject = new fabric.IText("Ma Hyori", {
         left: 0,
@@ -89,7 +89,7 @@ export default {
         fill: "#000000"
       });
       this.myCanvas.add(textObject);
-    },
+    },*/
     deleteAllBtn() {
       this.initializing();
       this.myCanvas
