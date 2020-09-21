@@ -16,7 +16,7 @@ dependencies {
 	compile 'org.apache.tomcat.embed:tomcat-embed-jasper' 
 	compile 'javax.servlet:jstl:1.2'
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
-	compile("org.springframework.boot:spring-boot-starter-jdbc")
+	compile("org.springframework.boot:spring-boot-starter-jdbc")cm
 	
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -25,7 +25,10 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+	
+	// https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.5.3'
+	
 
 	//test
 	implementation 'org.springframework.boot:spring-boot-starter-test'
