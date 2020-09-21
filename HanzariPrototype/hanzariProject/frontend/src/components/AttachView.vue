@@ -3,6 +3,7 @@
     <button @click="makeRectBtn" class="figureBtn">
       <img src="../assets/triangle.png" />
     </button>
+    <input type="file" @change="onFileChange">
     <canvas ref="canvas" class="canvas" width="800" height="800"></canvas>
     <v-btn @click="loadImageBtn">click to load svg image</v-btn>
   </div>
@@ -23,21 +24,31 @@ export default {
         this.myCanvas = new fabric.Canvas(ref);
       }
     },
-    makeRectBtn() {
-      // var shapes = [];
-
-      // for (let i = 0; i <= 10; i++) {
-      //   var tri = new fabric.Triangle({
-      //     left: 100,
-      //     top: 100,
-      //     fill: "orange",
-      //     width: 100,
-      //     height: 100
-      //   });
-      //   shapes.push(tri);
-      //   canvas.add(shapes[i]);
-      // }
+    createImage(file) {
+      this.initializing()
+      var image = new Image();
+      var reader = new FileReader();
       
+      reader.onload = (e) => {
+        
+        fabric.Image.fromURL(e.target.result, img => {
+          img.set({
+            scaleX: this.myCanvas.width / img.width,
+            scaleY: this.myCanvas.height / img.height
+          });
+          this.myCanvas.setBackgroundImage(img, this.myCanvas.renderAll.bind(this.myCanvas));
+          this.myCanvas.renderAll();
+        });
+      }
+      reader.readAsDataURL(file);
+    },
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.createImage(files[0]);
+    },
+    makeRectBtn() {
       this.initializing();
 
       var rectangle = new fabric.Rect({
@@ -61,7 +72,7 @@ export default {
       this.myCanvas.add(group);
     },
     loadImageBtn() {
-      //¿©±â¼­µµ °´Ã¼ »ý¼º ´Ü°è ÄÚµå°¡ µé¾î°¡¾ß Äµ¹ö½º °´Ã¼¸¦ °¡Áö°í¿Ã¼öÀÕÀ½.
+      //ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½ ï¿½Úµå°¡ ï¿½ï¿½î°¡ï¿½ï¿½ Äµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½.
       this.initializing();
 
       const card = this.myCanvas;
