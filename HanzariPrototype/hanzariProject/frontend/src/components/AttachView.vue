@@ -1,11 +1,10 @@
 <template>
   <div>
-    <button @click="buttonClick" class="figureBtn">
+    <button @click="makeRectBtn" class="figureBtn">
       <img src="../assets/triangle.png" />
     </button>
     <canvas ref="canvas" class="canvas" width="800" height="800"></canvas>
-    <v-btn @click="buttonClick2">click to new rect on canvas</v-btn>
-    <v-btn @click="buttonClick3">click to load svg image</v-btn>
+    <v-btn @click="loadImageBtn">click to load svg image</v-btn>
   </div>
 </template>
 
@@ -24,7 +23,7 @@ export default {
         this.myCanvas = new fabric.Canvas(ref);
       }
     },
-    buttonClick() {
+    makeRectBtn() {
       // var shapes = [];
 
       // for (let i = 0; i <= 10; i++) {
@@ -61,10 +60,7 @@ export default {
       });
       this.myCanvas.add(group);
     },
-    buttonClick2() {
-      
-    },
-    buttonClick3() {
+    loadImageBtn() {
       //여기서도 객체 생성 단계 코드가 들어가야 캔버스 객체를 가지고올수잇음.
       this.initializing();
 
