@@ -28,12 +28,6 @@
 <script>
 import { eventBus } from "../main.js";
 export default {
-  props: {
-    clickedRow: {
-      type: String,
-      default: null
-    }
-  },
   data() {
     return {
       search: "",
@@ -81,9 +75,7 @@ export default {
       alert("click on " + item.name);
     },
     showAlert(item) {
-      this.clickedRow = item.name;
-      eventBus.$emit("createdRect",item);
-      //alert("click row " + item.employee_id);
+      eventBus.$emit("createdRect", item);
     }
   }
 };
