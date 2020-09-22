@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn!-->
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
     <input type="file" @change="onFileChange" />
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
@@ -20,7 +19,7 @@ export default {
   created() {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
-    });
+    })
   },
   methods: {
     initializing() {
@@ -79,16 +78,6 @@ export default {
       
       this.myCanvas.add(group);
     },
-    /*makeTextBox() {
-      this.initializing();
-      var textObject = new fabric.IText("Ma Hyori", {
-        left: 0,
-        top: 0,
-        fontSize: 13,
-        fill: "#000000"
-      });
-      this.myCanvas.add(textObject);
-    },*/
     deleteAllBtn() {
       this.initializing();
       this.myCanvas
@@ -100,7 +89,8 @@ export default {
     },
     saveCanvasBtn() {
       this.initializing();
-      console.log("svg : " + this.myCanvas.toSVG()); //logs the SVG representation of canvas
+      console.log("svg : " + this.myCanvas.toSVG()); 
+      //logs the SVG representation of canvas
     }
   }
 };
