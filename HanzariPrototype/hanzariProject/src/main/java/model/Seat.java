@@ -45,6 +45,10 @@ public class Seat {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "figure_id")
 	Figure figure;
+	
+	@ManyToOne
+	@JoinColumn(name="employee_id")
+	String employee_id;
 
 	public Seat() {
 	};
