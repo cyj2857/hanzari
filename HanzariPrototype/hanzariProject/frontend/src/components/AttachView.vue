@@ -13,7 +13,9 @@ import { eventBus } from "../main.js";
 export default {
   data: function() {
     return {
-      myCanvas: null
+      myCanvas: null,
+      mySeatArray: null,
+      seatId: 0
     };
   },
   created() {
@@ -26,6 +28,7 @@ export default {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
         this.myCanvas = new fabric.Canvas(ref);
+        this.mySeatArray = new ArrayList();
       }
     },
     createImage(file) {
@@ -69,8 +72,9 @@ export default {
       });
 
       var group = new fabric.Group([rectangle, textObject], {
+        id: item.employee_id,
+        seatId : this.seatId ++, // 1,2,3,4
         employee_id: item.employee_id,
-        seat_id: null,//auto_increased 
         left: 150,
         top: 150
       });
@@ -88,10 +92,16 @@ export default {
         console.log("hi"+x.left);//150
       });
 
-      
+      var asObject = group.toObject(['seatId']);
+      console.log(asObject.seatId);
+
+      //console.log(group.item(0))
+      //console.log(group.item(1))
 
       this.myCanvas.add(group);
 
+      //this.mySeatArray.push(group)
+      //console.log(this.mySeatArray[0].item(1))
     },
     deleteAllBtn() {
       this.initializing();

@@ -58,8 +58,8 @@ export default {
   methods: {
     getColor(department) {
       if (department=="Secure Team") return "red";
-	  else if (department=="Development Team") return "orange";
-	  else if (department=="Engineering Team") return "green";
+	    else if (department=="Development Team") return "orange";
+	    else if (department=="Engineering Team") return "green";
     }
   }
 };
