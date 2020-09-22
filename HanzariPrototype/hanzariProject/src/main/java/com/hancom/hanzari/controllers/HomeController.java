@@ -1,4 +1,4 @@
-package com.hancom.hanzariProject.controllers;
+package com.hancom.hanzari.controllers;
 
 import java.util.List;
 
