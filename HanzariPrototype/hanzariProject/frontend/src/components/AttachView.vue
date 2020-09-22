@@ -66,8 +66,8 @@ export default {
         fontSize: 13,
         fill: "#000000"
       });
-      //datatable¿¡ ÀÖ´Â list¸¦ fabric¿¡ ¸Â´Â fabric°´Ã¼·Î º¯È¯ÇÏ´Â °úÁ¤
-      //class -> custom °´Ã¼
+      //datatableï¿½ï¿½ ï¿½Ö´ï¿½ listï¿½ï¿½ fabricï¿½ï¿½ ï¿½Â´ï¿½ fabricï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½
+      //class -> custom ï¿½ï¿½Ã¼
 
       var group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
