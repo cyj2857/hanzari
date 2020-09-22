@@ -3,6 +3,7 @@ package model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,10 +46,11 @@ public class Seat {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "figure_id")
 	Figure figure;
-	
-	@ManyToOne
-	@JoinColumn(name="employee_id")
-	String employee_id;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "employee_id")
+	@Column(nullable = true)
+	Employee employee;
 
 	public Seat() {
 	};

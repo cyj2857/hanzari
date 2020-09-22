@@ -1,8 +1,11 @@
 package model;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,10 +41,15 @@ public class Employee {
 	@Column(name = "extension_number", nullable = true)
 	String extension_number;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name="seat_id")
-	Seat seats;
-	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "seat_id")
+	@Column(nullable = true)
+	Seat seat;
+
 	public Employee() {
 	};
+	
+	List<Seat> FindAllSeats(){
+		
+	}
 }
