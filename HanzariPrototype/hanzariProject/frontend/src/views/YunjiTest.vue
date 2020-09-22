@@ -17,7 +17,8 @@
     <div class="d3" id="hr"></div>
     
     <div class="d2" id="d2">
-      <AttachView></AttachView>
+      <FloorTabs></FloorTabs>
+      <!-- <AttachView></AttachView> -->
     </div>
 
     <div class="d3" id="hr"></div>
@@ -35,13 +36,16 @@ import ListView from "@/components/ListView.vue";
 import MyDataTable from "@/components/MyDataTable.vue";
 import FloorDataTable from "@/components/FloorDataTable.vue";
 import AttachView from "@/components/AttachView.vue";
+import FloorTabs from "@/components/FloorTabs.vue";
+
 export default {
-  name: "YunjiTest",
+  name: "HyoriTest",
   components: {
     ListView,
     AttachView,
     MyDataTable,
-    FloorDataTable
+    FloorDataTable,
+    FloorTabs
   },
   props: {
     startpos: {
@@ -63,42 +67,45 @@ export default {
   },
   data() {
     return {
-      msg: "This is yunji page.",
+      msg: "This is hyori page.",
       floorMsg: "Choose Floor",
       searchEmployeeMsg: "Search Employee",
+      changeText: "Sample Text",
       selected: ""
     };
   },
   methods: {
-    on_mouse_down(event) {
-      this.startpos = event.clientX + this.diffpos;
-      this.isEnable = true;
+    updateText() {
+      this.changeText = "Click Event Test";
+    },
+    on_mouse_down(e) {
+      startpos = event.clientX + diffpos;
+      isEnable = true;
       return false;
     },
-    on_mouse_up(event) {
-      this.isEnable = false;
+    on_mouse_up(e) {
+      isEnable = false;
+      return false;
     },
-    on_mouse_move(event) {
-      if (this.isEnable) {
+    on_mouse_move(e) {
+      if (isEnable) {
         pos = event.clientX;
-        this.diffpos = this.startpos - pos;
-        width = window.innerWidth / 2;
-        if (
-          this.diffpos > -(width - this.range) &&
-          this.diffpos < width - this.range
-        ) {
-          document.getElementById("d1").style.width =
-            width - this.diffpos + "px";
+
+        diffpos = startpos - pos;
+
+        var width = window.innerWidth / 2;
+        if (diffpos > -(width - range) && diffpos < width - range) {
+          document.getElementById("d1").style.width = width - diffpos + "px";
           document.getElementById("d2").style.width =
-            width - 20 + this.diffpos + "px";
+            width - 20 + diffpos + "px";
         }
       }
     }
   },
-  mounted() {
-    document.getElementById("hr").onmousedown = this.on_mouse_down();
-    document.onmouseup = this.on_mouse_up();
-    document.onmousemove = this.on_mouse_move();
+  created() {
+    document.getElementById("hr").onmousedown = on_mouse_down;
+    document.onmouseup = on_mouse_up;
+    document.onmousemove = on_mouse_move;
   }
 };
 </script>
@@ -106,7 +113,7 @@ export default {
 <style scoped>
 .d1 {
   float: left;
-  width: 20%;
+  width: 23%;
   height: 100%;
   border-right: 1px solid #b8b8b8;
   margin-right: -1px;
@@ -115,10 +122,8 @@ export default {
 
 .d2 {
   float: left;
-  width: 59%;
+  width: 53%;
   height: 100%;
-  border-right: 1px solid #b8b8b8;
-  margin-right: -1px;
   overflow-y: scroll;
 }
 
@@ -131,7 +136,7 @@ export default {
 
 .d4 {
   float: left;
-  width: 20%;
+  width: 23%;
   height: 100%;
   border-right: 1px solid #b8b8b8;
   margin-right: -1px;
