@@ -39,7 +39,7 @@ import AttachView from "@/components/AttachView.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 
 export default {
-  name: "HyoriTest",
+  name: "YunjiTest",
   components: {
     ListView,
     AttachView,
@@ -142,7 +142,6 @@ export default {
   margin-right: -1px;
   overflow-y: scroll;
 }
-
 
 #hr {
   cursor: pointer;
