@@ -67,20 +67,28 @@ export default {
         fontSize: 13,
         fill: "#000000"
       });
-      
+
       var group = new fabric.Group([rectangle, textObject], {
-        id: item.employee_id,
+        employee_id: item.employee_id,
+        seat_id: null,//auto_increased 
         left: 150,
         top: 150
       });
 
+      //db- getId
+      //group.toObject(['seat_id'])=akfjkdsk 
+      
       group.on("mouseover", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
+
+        var asObject = group.toObject(['employee_id']);
+        var x = group.toObject(['left']);
+        console.log(asObject.employee_id);//1771354
+        console.log("hi"+x.left);//150
       });
 
-      var asObject = group.toObject(['id']);
-      console.log(asObject.id);
+      
 
       this.myCanvas.add(group);
 
