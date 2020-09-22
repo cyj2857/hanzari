@@ -1,4 +1,4 @@
-package com.hancom.hanzariProject;
+package com.hancom.hanzari;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
