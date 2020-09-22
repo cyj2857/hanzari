@@ -3,7 +3,6 @@
     <!--v-btn @click="makeTextBox" class="textBoxBtn">click to make textbox</v-btn!-->
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
     <input type="file" @change="onFileChange" />
-    <!-- ì¶??��???��?????��? ?´ svg???��? image ??�œê·¸ëŠ�?? background???��? ???�£ê�?? matrixë§? load???�˜ë�?? ?  ???��? -->
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
   </div>
@@ -15,7 +14,7 @@ export default {
   props: {
     myCanvas: {
       type: Object,
-      default: null,
+      default: null
     }
   },
   created() {
