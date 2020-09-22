@@ -5,7 +5,7 @@ import fabric from 'fabric'
 import Home from '@/views/Home'
 import YunjiTest from '@/views/YunjiTest'
 import HyoriTest from '@/views/HyoriTest'
-import SampleTest from '@/views/SampleTest'
+import YujinTest from '@/views/YujinTest'
 import DongminTest from '@/views/DongminTest'
 
 Vue.use(Router)
@@ -30,9 +30,9 @@ export default new Router({
       component: HyoriTest
     },
     {
-      path: '/SampleTest',
-      name: 'SampleTest',
-      component: SampleTest
+      path: '/YujinTest',
+      name: 'YujinTest',
+      component: YujinTest
     },
     {
       path: '/DongminTest',

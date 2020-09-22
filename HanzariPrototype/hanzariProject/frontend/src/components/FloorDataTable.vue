@@ -38,7 +38,7 @@ export default {
           number: "010-4673-2827"
         },
         {
-          name: "Chae Yujin",
+          name: "Choi Yujin",
           department: "Secure Team",
           number: "010-7906-3827"
 		},
