@@ -10,16 +10,15 @@
 <script>
 import { eventBus } from "../main.js";
 export default {
-  props: {
-    myCanvas: {
-      type: Object,
-      default: null
-    }
+  data: function() {
+    return {
+      myCanvas: null
+    };
   },
   created() {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
-    })
+    });
   },
   methods: {
     initializing() {
@@ -60,23 +59,32 @@ export default {
         fill: "blue",
         opacity: 1
       });
+
       var textObject = new fabric.IText(item.name, {
         left: 0,
         top: 0,
         fontSize: 13,
         fill: "#000000"
       });
+      //datatable에 있는 list를 fabric에 맞는 fabric객체로 변환하는 과정
+      //class -> custom 객체
+
       var group = new fabric.Group([rectangle, textObject], {
+        id: item.employee_id,
         left: 150,
         top: 150
       });
-      
+
       group.on("mouseover", function(e) {
         var group = e.target;
-        alert(group.item(1).text);
+        group.item(0).set("fill", "red");
       });
-      
+
+      var asObject = group.toObject(['id']);
+      console.log(asObject.id);
+
       this.myCanvas.add(group);
+
     },
     deleteAllBtn() {
       this.initializing();
@@ -89,7 +97,7 @@ export default {
     },
     saveCanvasBtn() {
       this.initializing();
-      console.log("svg : " + this.myCanvas.toSVG()); 
+      console.log("svg : " + this.myCanvas.toSVG());
       //logs the SVG representation of canvas
     }
   }
