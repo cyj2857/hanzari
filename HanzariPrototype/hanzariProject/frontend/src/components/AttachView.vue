@@ -1,7 +1,8 @@
 <template>
   <div>
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
-    <input type="file" @change="onFileChange" />
+    <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
+    <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
   </div>
