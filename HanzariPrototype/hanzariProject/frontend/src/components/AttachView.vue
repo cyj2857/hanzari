@@ -16,12 +16,6 @@ export default {
       myCanvas: null
     };
   },
-  /*props: {
-    myCanvas: {
-      type: Object,
-      default: null
-    }
-  },*/
   created() {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
@@ -73,6 +67,7 @@ export default {
         fill: "#000000"
       })
       var group = new fabric.Group([rectangle, textObject], {
+        id: item.employee_id,
         left: 150,
         top: 150
       })
