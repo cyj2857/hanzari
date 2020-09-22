@@ -10,16 +10,21 @@
 <script>
 import { eventBus } from "../main.js";
 export default {
-  props: {
+  data: function() {
+    return {
+      myCanvas: null
+    };
+  },
+  /*props: {
     myCanvas: {
       type: Object,
       default: null
     }
-  },
+  },*/
   created() {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
-    })
+    });
   },
   methods: {
     initializing() {
@@ -70,12 +75,12 @@ export default {
         left: 150,
         top: 150
       });
-      
+
       group.on("mouseover", function(e) {
         var group = e.target;
         alert(group.item(1).text);
       });
-      
+
       this.myCanvas.add(group);
     },
     deleteAllBtn() {
@@ -89,7 +94,7 @@ export default {
     },
     saveCanvasBtn() {
       this.initializing();
-      console.log("svg : " + this.myCanvas.toSVG()); 
+      console.log("svg : " + this.myCanvas.toSVG());
       //logs the SVG representation of canvas
     }
   }
