@@ -16,25 +16,27 @@ import lombok.Getter;
 @Entity
 @Getter
 @AllArgsConstructor
-@Table(name="employee")
+@Table(name = "employee")
 public class Employee {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "employee_id", nullable = false)
 	String employee_id;
-	
+
 	@Column(name = "level", nullable = false)
 	String level;
-	
+
 	@Column(name = "name", nullable = false)
 	String name;
-	
-	@ManyToOne(cascade=CascadeType.ALL)
+
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "department_id")
-	@Column(name = "department_id", nullable = true)
 	Department department;
-	
+
 	@Column(name = "extension_number", nullable = true)
 	String extension_number;
+
+	public Employee() {
+	};
 }
