@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <p>Vue with axios sample</p>
+    <p>Vue with axios2</p>
     <v-btn v-on:click="getData">getData(View Console)</v-btn>
   </div>
 </template>
