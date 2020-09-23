@@ -28,10 +28,10 @@ export default {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     }),
-    eventBus.$on("changeFloor", floor => {
-      this.currentSelectedFloor = floor + "Floor";
-      this.changeFloor(this.currentSelectedFloor);
-    });
+      eventBus.$on("changeFloor", floor => {
+        this.currentSelectedFloor = floor + "Floor";
+        this.changeFloor(this.currentSelectedFloor);
+      });
   },
   mounted() {
     this.initializing();
@@ -58,11 +58,11 @@ export default {
         const ref = this.$refs.canvas;
         this.myCanvas = new fabric.Canvas(ref);
       }
+      if (this.mySeatList == null) {
+        this.mySeatList = new Array();
+      }
       if (this.myImageList == null) {
         this.myImageList = new Map();
-      }
-      if (this.mySeatList == null) {
-        this.mySeatList = new Map();
       }
     },
     createImage(file) {
@@ -160,7 +160,7 @@ export default {
     },
     clickSaveBtn() {
       this.$axios
-        .post("/springBootURL/", {})
+        .post("/springBootURL/", {}) //?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
         .then(response => {
           this.result = response.data;
         });
