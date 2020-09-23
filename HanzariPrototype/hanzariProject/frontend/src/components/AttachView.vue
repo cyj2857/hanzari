@@ -12,6 +12,7 @@
 <script>
 import { eventBus } from "../main.js";
 import axios from 'axios';
+
 export default {
   data: function() {
     return {
@@ -32,7 +33,7 @@ export default {
         this.myCanvas = new fabric.Canvas(ref);
       }
       if (this.mySeatList == null) {
-        this.mySeatList = new ArrayList();
+        this.mySeatList = new Array();
       }
     },
     createImage(file) {
@@ -123,7 +124,10 @@ export default {
     },
     clickSaveBtn() {
       this.initializing();
-
+      this.$axios.post('/springBootURL/',{})//나중에 층마다 저장할 시에는 URL뒤에 값 전달해주기
+      .then((response) => {
+        this.result=response.data
+      })
     }
   }
 };
