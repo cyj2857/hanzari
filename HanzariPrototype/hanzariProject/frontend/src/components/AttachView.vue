@@ -3,17 +3,21 @@
     <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
     <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
-    <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
+    <v-btn @click="clickSvgBtn" class="svgBtn">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
+    <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
   </div>
 </template>
 
 <script>
 import { eventBus } from "../main.js";
+import axios from 'axios';
 export default {
   data: function() {
     return {
-      myCanvas: null
+      myCanvas: null,
+      mySeatList: null,
+      seatId: 0
     };
   },
   created() {
@@ -26,6 +30,9 @@ export default {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
         this.myCanvas = new fabric.Canvas(ref);
+      }
+      if (this.mySeatList == null) {
+        this.mySeatList = new ArrayList();
       }
     },
     createImage(file) {
@@ -67,23 +74,38 @@ export default {
         fontSize: 13,
         fill: "#000000"
       });
-      
+
       var group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
+        seatId : this.seatId ++, // 1,2,3,4
+        employee_id: item.employee_id,
         left: 150,
         top: 150
       });
 
+      //db- getId
+      //group.toObject(['seat_id'])=akfjkdsk 
+      
       group.on("mouseover", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
+
+        var asObject = group.toObject(['employee_id']);
+        var x = group.toObject(['left']);
+        console.log(asObject.employee_id);//1771354
+        console.log("hi"+x.left);//150
       });
 
-      var asObject = group.toObject(['id']);
-      console.log(asObject.id);
+      var asObject = group.toObject(['seatId']);
+      console.log(asObject.seatId);
+
+      //console.log(group.item(0))
+      //console.log(group.item(1))
 
       this.myCanvas.add(group);
 
+      //this.mySeatList.push(group)
+      //console.log(this.mySeatList[0].item(1))
     },
     deleteAllBtn() {
       this.initializing();
@@ -94,10 +116,14 @@ export default {
           this.myCanvas.remove(obj);
         });
     },
-    saveCanvasBtn() {
+    clickSvgBtn() {
       this.initializing();
       console.log("svg : " + this.myCanvas.toSVG());
       //logs the SVG representation of canvas
+    },
+    clickSaveBtn() {
+      this.initializing();
+
     }
   }
 };
