@@ -28,20 +28,11 @@ export default {
       this.makeRectBtn(item)
     }),
     eventBus.$on("changeFloor", floor =>{
-<<<<<<< HEAD
-      
-      this.changeFloor(floor+'ì¸µ')
-    })
-  },
-  mounted(){
-    this.initializing()
-=======
-      this.changeFloor(floor+"Ãþ")
+      this.changeFloor(floor+"floor")
     })
   },
   mounted(){
     this.initializing();
->>>>>>> b69363f0b562f1882fc00f867b65c18758f877ae
   },
   methods: {
     changeFloor(floor){
@@ -69,6 +60,11 @@ export default {
         this.myImageList = new Map()
       }
     },
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      this.createImage(files[0])
+    },
     createImage(file) {
       this.initializing();
       var reader = new FileReader()
@@ -90,11 +86,6 @@ export default {
     saveImage(file){
       this.myImageList.set(this.newFloorNum, file)
       console.log(this.myImageList.get(this.newFloorNum))
-    },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files
-      if (!files.length) return
-      this.createImage(files[0])
     },
     makeRectBtn(item) {
       this.initializing()
@@ -150,7 +141,6 @@ export default {
     deleteBtn () {
       this.initializing();
       var activeObject = this.myCanvas.getActiveObject()
-     
       if (activeObject) {
           if (confirm('Are you sure?')) {
               this.myCanvas.remove(activeObject);
@@ -164,7 +154,7 @@ export default {
     },
     clickSaveBtn() {
       this.initializing();
-      this.$axios.post('/springBootURL/',{})//?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
+      this.$axios.post('/springBootURL/',{})//?ï¿½ï¿½ì¤‘ì— ì¸µë§ˆ?ï¿½ï¿½ ????ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ URL?ï¿½ï¿½?ï¿½ï¿½ ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ì£¼ê¸°
       .then((response) => {
         this.result=response.data
       })
@@ -172,7 +162,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 .figureBtn {
