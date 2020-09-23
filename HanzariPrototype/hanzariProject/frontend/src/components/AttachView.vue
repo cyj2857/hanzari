@@ -12,24 +12,21 @@
 
 <script>
 import { eventBus } from "../main.js";
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   props: {
-    floorNum: String,//ï¿½Î¸ï¿½Îºï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ ï¿½ï¿½ string 
+    floorNum: String //ï¿½Î¸ï¿½Îºï¿½ï¿½ï¿? ï¿½Þ´ï¿½ ï¿½ï¿½ string
   },
   data: function() {
     return {
       myCanvas: null,
       mySeatList: null,
-<<<<<<< HEAD
       seatId: 0,
-      imageFile: null
-=======
+      imageFile: null,
       myImageList: null,
       seatId: 0,
-      newFloorNum: this.floorNum,
->>>>>>> b7c77a68328f84218943846e01910e3fa4f098a4
+      newFloorNum: this.floorNum
     };
   },
   created() {
@@ -37,10 +34,10 @@ export default {
       this.makeRectBtn(item);
     });
   },
-  mounted(){
+  mounted() {
     this.initializing();
   },
-  destoryed(){
+  destoryed() {
     this.myCanvas = null;
   },
   methods: {
@@ -61,7 +58,7 @@ export default {
       var reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
-            img.set({
+          img.set({
             scaleX: this.myCanvas.width / img.width,
             scaleY: this.myCanvas.height / img.height
           });
@@ -69,7 +66,7 @@ export default {
             img,
             this.myCanvas.renderAll.bind(this.myCanvas)
           );
-          this.imageFile = img
+          this.imageFile = img;
           this.myCanvas.renderAll();
         });
       };
@@ -77,9 +74,8 @@ export default {
       reader.readAsDataURL(file);
 
       this.saveImage(file);
-      
     },
-    saveImage(file){
+    saveImage(file) {
       this.myImageList.set(this.newFloorNum, file);
       console.log(this.myImageList.get(this.newFloorNum));
     },
@@ -106,26 +102,26 @@ export default {
 
       var group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
-        seatId : this.seatId ++, // 1,2,3,4
+        seatId: this.seatId++, // 1,2,3,4
         employee_id: item.employee_id,
         left: 150,
         top: 150
       });
 
       //db- getId
-      //group.toObject(['seat_id'])=akfjkdsk 
-      
+      //group.toObject(['seat_id'])=akfjkdsk
+
       group.on("mouseover", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
 
-        var asObject = group.toObject(['employee_id']);
-        var x = group.toObject(['left']);
-        console.log(asObject.employee_id);//1771354
-        console.log("hi"+x.left);//150
+        var asObject = group.toObject(["employee_id"]);
+        var x = group.toObject(["left"]);
+        console.log(asObject.employee_id); //1771354
+        console.log("hi" + x.left); //150
       });
 
-      var asObject = group.toObject(['seatId']);
+      var asObject = group.toObject(["seatId"]);
       console.log(asObject.seatId);
 
       //console.log(group.item(0))
@@ -152,10 +148,11 @@ export default {
     },
     clickSaveBtn() {
       this.initializing();
-      this.$axios.post('/springBootURL/',{})//ë‚˜ì¤‘ì— ì¸µë§ˆë‹¤ ì €ìž¥í•  ì‹œì—ëŠ” URLë’¤ì— ê°’ ì „ë‹¬í•´ì£¼ê¸°
-      .then((response) => {
-        this.result=response.data
-      })
+      this.$axios
+        .post("/springBootURL/", {}) //?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
+        .then(response => {
+          this.result = response.data;
+        });
     }
   }
 };

@@ -10,11 +10,10 @@
           </v-card>
         </v-tab-item>
       </v-tabs-items>
-      
 
-      <v-btn text @click="length--">Remove Tab</v-btn>
+      <v-btn text @click="decreaseTab()">Remove Tab</v-btn>
       <v-divider class="mx-4" vertical></v-divider>
-      <v-btn text @click="length++">Add Tab</v-btn>
+      <v-btn text @click="increaseTab()">Add Tab</v-btn>
     </v-card-text>
 
     <v-tabs v-model="tab" background-color="cyan" dark>
@@ -25,6 +24,7 @@
 
 <script>
 import AttachView from "@/components/AttachView.vue";
+
 export default {
   components: {
     AttachView
@@ -33,13 +33,22 @@ export default {
     length: 3,
     tab: null,
     items: [
-          { tab: 'One', content: 'Tab 1 Content' },
-          { tab: 'Five', content: 'Tab 2 Content' },
-          { tab: 'Six', content: 'Tab 3 Content' }
-        ],
-    floorNum: null,
+      { tab: "One", content: "Tab 1 Content" },
+      { tab: "Five", content: "Tab 2 Content" },
+      { tab: "Six", content: "Tab 3 Content" }
+    ],
+    floorNum: null
   }),
-
+  methods: {
+    decreaseTab() {
+      this.length--;
+      //pop
+    },
+    increaseTab() {
+      this.length++;
+      //push
+    }
+  },
   watch: {
     length(val) {
       this.tab = val - 1;
