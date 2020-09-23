@@ -5,6 +5,8 @@
     <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
+    <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <p>{{newFloorNum}}</p>
   </div>
 </template>
 
@@ -13,11 +15,16 @@ import { eventBus } from "../main.js";
 import axios from 'axios';
 
 export default {
+  props: {
+    floorNum: String,//�θ�κ��� �޴� �� string 
+  },
   data: function() {
     return {
       myCanvas: null,
-      mySeatArray: null,
-      seatId: 0
+      mySeatList: null,
+      myImageList: null,
+      seatId: 0,
+      newFloorNum: this.floorNum,
     };
   },
   created() {
@@ -33,6 +40,9 @@ export default {
       }
       if (this.mySeatList == null) {
         this.mySeatList = new Array();
+      }
+      if (this.myImageList == null) {
+        this.myImageList = new Map();
       }
     },
     createImage(file) {
@@ -54,6 +64,13 @@ export default {
         });
       };
       reader.readAsDataURL(file);
+
+      this.saveImage(file);
+      
+    },
+    saveImage(file){
+      this.myImageList.set(this.newFloorNum, file);
+      console.log(this.myImageList.get(this.newFloorNum));
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
