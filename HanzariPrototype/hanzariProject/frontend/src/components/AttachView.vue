@@ -42,7 +42,7 @@ export default {
 
       if (this.myImageList.get(floor) != null) {
         this.loadImage(this.myImageList.get(floor));
-      } else {
+      } else if (this.myImageList.get(floor) == null) {
         this.myCanvas
           .getObjects()
           .slice()
@@ -53,6 +53,22 @@ export default {
         this.myCanvas.backgroundColor = "aliceblue";
         this.myCanvas.renderAll();
       }
+      //upload groups(mySeatlist)
+      
+      // if (this.mySeatList.size != 0) {
+      //   this.myCanvas
+      //     .getObjects()
+      //     .slice()
+      //     .forEach(obj => {
+      //       this.myCanvas.remove(obj);
+      //     });
+      //   const mapSingleIterator = this.mySeatList.values();
+
+      //   for (let single of this.mySeatList) {
+      //     console.log(single);
+      //     this.myCanvas.add(single);
+      //   }
+      // }
     },
     initializing() {
       if (this.myCanvas == null) {
@@ -60,7 +76,7 @@ export default {
         this.myCanvas = new fabric.Canvas(ref);
       }
       if (this.mySeatList == null) {
-        this.mySeatList = new Array();
+        this.mySeatList = new Map();
       }
       if (this.myImageList == null) {
         this.myImageList = new Map();
@@ -133,8 +149,9 @@ export default {
 
       this.myCanvas.add(group);
 
-      //this.mySeatArray.push(group)
-      //console.log(this.mySeatArray[0].item(1))
+      this.mySeatList.set(asObject.seatId, group);
+      console.log(this.mySeatList.get(asObject.seatId));
+      console.log(this.mySeatList.size + "num");
     },
     deleteAllBtn() {
       this.myCanvas
