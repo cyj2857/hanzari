@@ -17,7 +17,8 @@ export default {
     return {
       myCanvas: null,
       mySeatList: null,
-      seatId: 0
+      seatId: 0,
+      imageFile: null
     };
   },
   created() {
@@ -37,7 +38,6 @@ export default {
     },
     createImage(file) {
       this.initializing();
-      var image = new Image();
       var reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
@@ -49,9 +49,11 @@ export default {
             img,
             this.myCanvas.renderAll.bind(this.myCanvas)
           );
+          this.imageFile = img
           this.myCanvas.renderAll();
         });
       };
+
       reader.readAsDataURL(file);
     },
     onFileChange(e) {
@@ -123,7 +125,7 @@ export default {
     },
     clickSaveBtn() {
       this.initializing();
-
+      console.log(this.myCanvas.backgroundImage)
     }
   }
 };
