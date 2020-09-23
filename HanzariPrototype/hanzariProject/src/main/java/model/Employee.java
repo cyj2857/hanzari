@@ -39,7 +39,7 @@ public class Employee {
 	@Column(name = "extension_number", nullable = true)
 	String extension_number;
 
-	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Column(nullable = true)
 	List<Seat> seat = new ArrayList<Seat>();
 
