@@ -31,6 +31,12 @@ export default {
       this.makeRectBtn(item);
     });
   },
+  mounted(){
+    this.initializing();
+  },
+  destoryed(){
+    this.myCanvas = null;
+  },
   methods: {
     initializing() {
       if (this.myCanvas == null) {
