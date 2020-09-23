@@ -3,7 +3,7 @@
     <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
     <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
-    <v-btn @click="clickSvgBtn" class="svgBtn">canvas to svg (check in console log)</v-btn>
+    <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <p>{{newFloorNum}}</p>
@@ -13,9 +13,10 @@
 <script>
 import { eventBus } from "../main.js";
 import axios from 'axios';
+
 export default {
   props: {
-    floorNum: String,//�θ�κ��� �޴� �� string 
+    floorNum: String,//�θ�κ��� �޴� �� string 
   },
   data: function() {
     return {
@@ -47,10 +48,11 @@ export default {
     createImage(file) {
       this.initializing();
       var image = new Image();
+      
       var reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
-          img.set({
+            img.set({
             scaleX: this.myCanvas.width / img.width,
             scaleY: this.myCanvas.height / img.height
           });
@@ -120,8 +122,8 @@ export default {
 
       this.myCanvas.add(group);
 
-      //this.mySeatList.push(group)
-      //console.log(this.mySeatList[0].item(1))
+      //this.mySeatArray.push(group)
+      //console.log(this.mySeatArray[0].item(1))
     },
     deleteAllBtn() {
       this.initializing();
@@ -132,14 +134,17 @@ export default {
           this.myCanvas.remove(obj);
         });
     },
-    clickSvgBtn() {
+    saveCanvasBtn() {
       this.initializing();
       console.log("svg : " + this.myCanvas.toSVG());
       //logs the SVG representation of canvas
     },
     clickSaveBtn() {
       this.initializing();
-
+      this.$axios.post('/springBootURL/',{})//나중에 층마다 저장할 시에는 URL뒤에 값 전달해주기
+      .then((response) => {
+        this.result=response.data
+      })
     }
   }
 };

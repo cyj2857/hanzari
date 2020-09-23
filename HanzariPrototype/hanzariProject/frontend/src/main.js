@@ -5,16 +5,16 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-import axios from 'axios'
+
+import axios from 'axios' // we can use this.$axios without using 'import' in vue instance 
 
 export const eventBus = new Vue()
 
 Vue.prototype.$axios = axios
 
-Vue.config.productionTip = false
 Vue.use(Vuetify)
 
-/* eslint-disable no-new */
+/* eslint-disable no-new */ 
 new Vue({
   el: '#app',
   router,
