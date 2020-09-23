@@ -7,7 +7,6 @@
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="deleteBtn">delete selected shape</v-btn>
-    <p>{{newFloorNum}}</p>
   </div>
 </template>
 
@@ -16,16 +15,12 @@ import { eventBus } from "../main.js";
 import axios from 'axios';
 
 export default {
-  props: {
-    floorNum: String,
-  },
   data: function() {
     return {
       myCanvas: null,
       mySeatList: null,
       myImageList: null,
       seatId: 0,
-      newFloorNum: this.floorNum,
     }
   },
   created() {
@@ -33,8 +28,20 @@ export default {
       this.makeRectBtn(item)
     }),
     eventBus.$on("changeFloor", floor =>{
+<<<<<<< HEAD
+      
       this.changeFloor(floor+'ì¸µ')
     })
+  },
+  mounted(){
+    this.initializing()
+=======
+      this.changeFloor(floor+"Ãþ")
+    })
+  },
+  mounted(){
+    this.initializing();
+>>>>>>> b69363f0b562f1882fc00f867b65c18758f877ae
   },
   methods: {
     changeFloor(floor){
@@ -46,6 +53,9 @@ export default {
         .forEach(obj => {
           this.myCanvas.remove(obj);
         });
+      this.myCanvas.backgroundImage = 0;
+      this.myCanvas.backgroundColor = 'aliceblue';
+      this.myCanvas.renderAll();
     },
     initializing() {
       if (this.myCanvas == null) {
@@ -154,7 +164,7 @@ export default {
     },
     clickSaveBtn() {
       this.initializing();
-      this.$axios.post('/springBootURL/',{})//ë‚˜ì¤‘ì— ì¸µë§ˆë‹¤ ì €ìž¥í•  ì‹œì—ëŠ” URLë’¤ì— ê°’ ì „ë‹¬í•´ì£¼ê¸°
+      this.$axios.post('/springBootURL/',{})//?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
       .then((response) => {
         this.result=response.data
       })
