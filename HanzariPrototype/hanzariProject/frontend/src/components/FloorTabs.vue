@@ -9,7 +9,7 @@
     </v-card-text>
 
     <v-tabs v-model="tab" background-color="cyan" dark>
-      <v-tab v-for="n in length" :key="n" @click="sendFloorInfo(n)">{{ n }} Floor</v-tab>
+      <v-tab v-for="n in length" :key="n" @change="sendFloorInfo(n)">{{ n }} Floor</v-tab>
     </v-tabs>
   </v-card>
 </template>
@@ -31,6 +31,9 @@ export default {
         ],
     floorNum: null,
   }),
+  mounted() {
+    this.sendFloorInfo(1)
+  },
   methods: {
     sendFloorInfo (n) {
       this.floorNum = n
