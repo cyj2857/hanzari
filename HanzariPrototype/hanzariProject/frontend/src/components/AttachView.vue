@@ -3,9 +3,11 @@
     <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
     <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
-    <v-btn @click="clickSvgBtn" class="svgBtn">canvas to svg (check in console log)</v-btn>
+    <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <v-btn @click="deleteBtn">delete selected shape</v-btn>
+    <p>{{newFloorNum}}</p>
   </div>
 </template>
 
@@ -14,17 +16,26 @@ import { eventBus } from "../main.js";
 import axios from 'axios';
 
 export default {
+  props: {
+    floorNum: String,
+  },
   data: function() {
     return {
       myCanvas: null,
       mySeatList: null,
-      seatId: 0
+      seatId: 0,
+      myImageList: null,
+      seatId: 0,
+      newFloorNum: this.floorNum,
     };
   },
   created() {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     });
+  },
+  destoryed(){
+    this.myCanvas = null;
   },
   methods: {
     initializing() {
@@ -35,14 +46,16 @@ export default {
       if (this.mySeatList == null) {
         this.mySeatList = new Array();
       }
+      if (this.myImageList == null) {
+        this.myImageList = new Map();
+      }
     },
     createImage(file) {
       this.initializing();
-      var image = new Image();
       var reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
-          img.set({
+            img.set({
             scaleX: this.myCanvas.width / img.width,
             scaleY: this.myCanvas.height / img.height
           });
@@ -53,7 +66,15 @@ export default {
           this.myCanvas.renderAll();
         });
       };
+
       reader.readAsDataURL(file);
+
+      this.saveImage(file);
+      
+    },
+    saveImage(file){
+      this.myImageList.set(this.newFloorNum, file);
+      console.log(this.myImageList.get(this.newFloorNum));
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -105,8 +126,8 @@ export default {
 
       this.myCanvas.add(group);
 
-      //this.mySeatList.push(group)
-      //console.log(this.mySeatList[0].item(1))
+      //this.mySeatArray.push(group)
+      //console.log(this.mySeatArray[0].item(1))
     },
     deleteAllBtn() {
       this.initializing();
@@ -117,7 +138,18 @@ export default {
           this.myCanvas.remove(obj);
         });
     },
-    clickSvgBtn() {
+    deleteBtn () {
+      this.initializing();
+      var activeObject = this.myCanvas.getActiveObject()
+     
+      if (activeObject) {
+          if (confirm('Are you sure?')) {
+              this.myCanvas.remove(activeObject);
+          }
+      }
+
+    },
+    saveCanvasBtn() {
       this.initializing();
       console.log("svg : " + this.myCanvas.toSVG());
       //logs the SVG representation of canvas

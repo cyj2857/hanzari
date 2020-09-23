@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <p>Vue with axios sample</p>
+    <p>Vue with axios2</p>
     <v-btn v-on:click="getData">getData(View Console)</v-btn>
   </div>
 </template>
@@ -15,7 +15,6 @@ export default {
   methods: {
     getData: function() {
       axios.get(
-        //"https://raw.githubusercontent.com/joshua1988/doit-vuejs/mas-ter/data/demo.json"
         "https://reqres.in/api/users?page=2"
       ).then(function(response) {
         console.log(response);
