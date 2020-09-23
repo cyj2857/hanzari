@@ -2,14 +2,12 @@
   <v-card>
     <v-card-text class="text-center">
       <AttachView></AttachView>
-
-      <v-btn text @click="length--">Remove Tab</v-btn>
+      <v-btn text @click="decreaseTab()">Remove Tab</v-btn>
       <v-divider class="mx-4" vertical></v-divider>
-      <v-btn text @click="length++">Add Tab</v-btn>
+      <v-btn text @click="increaseTab()">Add Tab</v-btn>
     </v-card-text>
-
     <v-tabs v-model="tab" background-color="cyan" dark>
-      <v-tab v-for="n in length" :key="n" @click="sendFloorInfo(n)">{{ n }} Floor</v-tab>
+      <v-tab v-for="n in length" :key="n" @change="sendFloorInfo(n)">{{ n }} Floor</v-tab>
     </v-tabs>
   </v-card>
 </template>
@@ -25,16 +23,27 @@ export default {
     length: 3,
     tab: null,
     items: [
-          { tab: 'One', content: 'Tab 1 Content' },
-          { tab: 'Five', content: 'Tab 2 Content' },
-          { tab: 'Six', content: 'Tab 3 Content' }
-        ],
-    floorNum: null,
+      { tab: "One", content: "Tab 1 Content" },
+      { tab: "Five", content: "Tab 2 Content" },
+      { tab: "Six", content: "Tab 3 Content" }
+    ],
+    floorNum: null
   }),
+  mounted() {
+    this.sendFloorInfo(1);
+  },
   methods: {
-    sendFloorInfo (n) {
-      this.floorNum = n
-      eventBus.$emit("changeFloor", this.floorNum)
+    sendFloorInfo(n) {
+      this.floorNum = n;
+      eventBus.$emit("changeFloor", this.floorNum);
+    },
+    decreaseTab() {
+      this.length--;
+      //pop
+    },
+    increaseTab() {
+      this.length++;
+      //push
     }
   },
   watch: {
