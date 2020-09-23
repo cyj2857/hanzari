@@ -6,6 +6,7 @@
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <v-btn @click="deleteBtn">delete selected shape</v-btn>
     <p>{{newFloorNum}}</p>
   </div>
 </template>
@@ -16,29 +17,22 @@ import axios from 'axios';
 
 export default {
   props: {
-    floorNum: String,//�θ�κ��� �޴� �� string 
+    floorNum: String,
   },
   data: function() {
     return {
       myCanvas: null,
       mySeatList: null,
-<<<<<<< HEAD
       seatId: 0,
-      imageFile: null
-=======
       myImageList: null,
       seatId: 0,
       newFloorNum: this.floorNum,
->>>>>>> b7c77a68328f84218943846e01910e3fa4f098a4
     };
   },
   created() {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     });
-  },
-  mounted(){
-    this.initializing();
   },
   destoryed(){
     this.myCanvas = null;
@@ -69,7 +63,6 @@ export default {
             img,
             this.myCanvas.renderAll.bind(this.myCanvas)
           );
-          this.imageFile = img
           this.myCanvas.renderAll();
         });
       };
@@ -144,6 +137,17 @@ export default {
         .forEach(obj => {
           this.myCanvas.remove(obj);
         });
+    },
+    deleteBtn () {
+      this.initializing();
+      var activeObject = this.myCanvas.getActiveObject()
+     
+      if (activeObject) {
+          if (confirm('Are you sure?')) {
+              this.myCanvas.remove(activeObject);
+          }
+      }
+
     },
     saveCanvasBtn() {
       this.initializing();
