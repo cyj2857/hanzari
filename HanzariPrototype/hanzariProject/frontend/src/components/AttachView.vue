@@ -22,9 +22,14 @@ export default {
     return {
       myCanvas: null,
       mySeatList: null,
+<<<<<<< HEAD
+      seatId: 0,
+      imageFile: null
+=======
       myImageList: null,
       seatId: 0,
       newFloorNum: this.floorNum,
+>>>>>>> b7c77a68328f84218943846e01910e3fa4f098a4
     };
   },
   created() {
@@ -47,8 +52,6 @@ export default {
     },
     createImage(file) {
       this.initializing();
-      var image = new Image();
-      
       var reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
@@ -60,9 +63,11 @@ export default {
             img,
             this.myCanvas.renderAll.bind(this.myCanvas)
           );
+          this.imageFile = img
           this.myCanvas.renderAll();
         });
       };
+
       reader.readAsDataURL(file);
 
       this.saveImage(file);
