@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,15 +25,14 @@ import lombok.Getter;
 public class Employee {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "employee_id", nullable = false)
 	String employee_id;
 
-	@Column(name = "level", nullable = false)
-	String level;
+	@Column(name = "authority", nullable = false)
+	String authority;
 
-	@Column(name = "name", nullable = false)
-	String name;
+	@Column(name = "employee_name", nullable = false)
+	String employee_name;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "department_id")
@@ -39,11 +41,13 @@ public class Employee {
 	@Column(name = "extension_number", nullable = true)
 	String extension_number;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "seat_id")
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//	@JoinTable(name = "arrangements", 
+//	joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employee_id"),
+//	inverseJoinColumns = @JoinColumn(name = "seat_id", referencedColumnName = "seat_id"))
 	@Column(nullable = true)
-	Seat seat;
+	List<Seat> seat = new ArrayList<Seat>();
 
 	public Employee() {
-	};
+	}
 }
