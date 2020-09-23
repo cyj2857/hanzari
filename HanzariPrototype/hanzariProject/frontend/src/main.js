@@ -5,7 +5,9 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-import axios from '.axios' // we can use this.$axios without using 'import' in vue instance 
+import axios from 'axios'
+
+export const eventBus = new Vue()
 
 Vue.prototype.$axios = axios
 

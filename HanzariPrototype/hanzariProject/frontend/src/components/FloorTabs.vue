@@ -16,7 +16,7 @@
         v-for="n in length"
         :key="n"
       >
-        Item {{ n }}
+        {{ n }} Floor
       </v-tab>
     </v-tabs>
     
