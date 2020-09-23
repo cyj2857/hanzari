@@ -6,10 +6,8 @@
       <v-divider class="mx-4" vertical></v-divider>
       <v-btn text @click="increaseTab()">Add Tab</v-btn>
     </v-card-text>
-
     <v-tabs v-model="tab" background-color="cyan" dark>
       <v-tab v-for="n in length" :key="n" @change="sendFloorInfo(n)">{{ n }} Floor</v-tab>
-      <v-tab v-for="n in length" :key="n" @click="sendFloorInfo(n)">{{ n }} Floor</v-tab>
     </v-tabs>
   </v-card>
 </template>
