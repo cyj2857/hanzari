@@ -6,6 +6,7 @@
     <v-btn @click="clickSvgBtn" class="svgBtn">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <p>{{newFloorNum}}</p>
   </div>
 </template>
 
@@ -13,11 +14,16 @@
 import { eventBus } from "../main.js";
 import axios from 'axios';
 export default {
+  props: {
+    floorNum: String,//부모로부터 받는 탭 string 
+  },
   data: function() {
     return {
       myCanvas: null,
       mySeatList: null,
-      seatId: 0
+      myImageList: null,
+      seatId: 0,
+      newFloorNum: this.floorNum,
     };
   },
   created() {
@@ -33,6 +39,9 @@ export default {
       }
       if (this.mySeatList == null) {
         this.mySeatList = new Array();
+      }
+      if (this.myImageList == null) {
+        this.myImageList = new Map();
       }
     },
     createImage(file) {
@@ -53,6 +62,13 @@ export default {
         });
       };
       reader.readAsDataURL(file);
+
+      this.saveImage(file);
+      
+    },
+    saveImage(file){
+      this.myImageList.set(this.newFloorNum, file);
+      console.log(this.myImageList.get(this.newFloorNum));
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
