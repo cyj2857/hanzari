@@ -1,16 +1,7 @@
 <template>
   <v-card>
     <v-card-text class="text-center">
-      <v-tabs-items v-model="tab">
-        <v-tab-item v-for="item in items" :key="item.tab">
-          <v-card flat>
-            <v-card-text>
-              <AttachView :floorNum="item.tab"></AttachView>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
-      
+      <AttachView></AttachView>
 
       <v-btn text @click="length--">Remove Tab</v-btn>
       <v-divider class="mx-4" vertical></v-divider>
@@ -18,12 +9,13 @@
     </v-card-text>
 
     <v-tabs v-model="tab" background-color="cyan" dark>
-      <v-tab v-for="n in length" :key="n">{{ n }} Floor</v-tab>
+      <v-tab v-for="n in length" :key="n" @click="sendFloorInfo(n)">{{ n }} Floor</v-tab>
     </v-tabs>
   </v-card>
 </template>
 
 <script>
+import { eventBus } from "../main.js";
 import AttachView from "@/components/AttachView.vue";
 export default {
   components: {
@@ -39,7 +31,12 @@ export default {
         ],
     floorNum: null,
   }),
-
+  methods: {
+    sendFloorInfo (n) {
+      this.floorNum = n
+      eventBus.$emit("changeFloor", this.floorNum)
+    }
+  },
   watch: {
     length(val) {
       this.tab = val - 1;

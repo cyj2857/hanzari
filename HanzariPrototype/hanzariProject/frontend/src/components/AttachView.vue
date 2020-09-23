@@ -3,10 +3,10 @@
     <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
     <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
-    <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
+    <v-btn @click="showSvgBtn" class="SvgBtn">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <p>{{newFloorNum}}</p>
+    <v-btn @click="deleteBtn">delete selected shape</v-btn>
   </div>
 </template>
 
@@ -15,50 +15,63 @@ import { eventBus } from "../main.js";
 import axios from 'axios';
 
 export default {
-  props: {
-    floorNum: String,//ï¿½Î¸ï¿½Îºï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ ï¿½ï¿½ string 
-  },
   data: function() {
     return {
       myCanvas: null,
       mySeatList: null,
-<<<<<<< HEAD
-      seatId: 0,
-      imageFile: null
-=======
       myImageList: null,
       seatId: 0,
-      newFloorNum: this.floorNum,
->>>>>>> b7c77a68328f84218943846e01910e3fa4f098a4
-    };
+    }
   },
   created() {
     eventBus.$on("createdRect", item => {
-      this.makeRectBtn(item);
-    });
+      this.makeRectBtn(item)
+    }),
+    eventBus.$on("changeFloor", floor =>{
+<<<<<<< HEAD
+      
+      this.changeFloor(floor+'ì¸µ')
+    })
+  },
+  mounted(){
+    this.initializing()
+=======
+      this.changeFloor(floor+"Ãþ")
+    })
   },
   mounted(){
     this.initializing();
-  },
-  destoryed(){
-    this.myCanvas = null;
+>>>>>>> b69363f0b562f1882fc00f867b65c18758f877ae
   },
   methods: {
+    changeFloor(floor){
+      console.log(floor)
+      this.initializing()
+      this.myCanvas
+        .getObjects()
+        .slice()
+        .forEach(obj => {
+          this.myCanvas.remove(obj);
+        });
+      this.myCanvas.backgroundImage = 0;
+      this.myCanvas.backgroundColor = 'aliceblue';
+      this.myCanvas.renderAll();
+    },
     initializing() {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
-        this.myCanvas = new fabric.Canvas(ref);
+        this.myCanvas = new fabric.Canvas(ref)
       }
       if (this.mySeatList == null) {
-        this.mySeatList = new Array();
+        this.mySeatList = new Array()
       }
       if (this.myImageList == null) {
-        this.myImageList = new Map();
+        this.myImageList = new Map()
       }
     },
     createImage(file) {
       this.initializing();
-      var reader = new FileReader();
+      var reader = new FileReader()
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
             img.set({
@@ -69,65 +82,54 @@ export default {
             img,
             this.myCanvas.renderAll.bind(this.myCanvas)
           );
-          this.imageFile = img
-          this.myCanvas.renderAll();
         });
       };
-
-      reader.readAsDataURL(file);
-
-      this.saveImage(file);
-      
+      reader.readAsDataURL(file)
+      this.saveImage(file)
     },
     saveImage(file){
-      this.myImageList.set(this.newFloorNum, file);
-      console.log(this.myImageList.get(this.newFloorNum));
+      this.myImageList.set(this.newFloorNum, file)
+      console.log(this.myImageList.get(this.newFloorNum))
     },
     onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
+      var files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      this.createImage(files[0])
     },
     makeRectBtn(item) {
-      this.initializing();
+      this.initializing()
       var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
         fill: "blue",
         opacity: 1
-      });
-
+      })
       var textObject = new fabric.IText(item.name, {
         left: 0,
         top: 0,
         fontSize: 13,
         fill: "#000000"
-      });
-
+      })
       var group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
         seatId : this.seatId ++, // 1,2,3,4
         employee_id: item.employee_id,
         left: 150,
         top: 150
-      });
-
+      })
       //db- getId
       //group.toObject(['seat_id'])=akfjkdsk 
-      
       group.on("mouseover", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
 
-        var asObject = group.toObject(['employee_id']);
-        var x = group.toObject(['left']);
-        console.log(asObject.employee_id);//1771354
+        var asObject = group.toObject(['employee_id'])
+        var x = group.toObject(['left'])
+        console.log(asObject.employee_id)//1771354
         console.log("hi"+x.left);//150
-      });
-
-      var asObject = group.toObject(['seatId']);
-      console.log(asObject.seatId);
-
+      })
+      var asObject = group.toObject(['seatId'])
+      console.log(asObject.seatId)
       //console.log(group.item(0))
       //console.log(group.item(1))
 
@@ -145,14 +147,24 @@ export default {
           this.myCanvas.remove(obj);
         });
     },
-    saveCanvasBtn() {
+    deleteBtn () {
+      this.initializing();
+      var activeObject = this.myCanvas.getActiveObject()
+     
+      if (activeObject) {
+          if (confirm('Are you sure?')) {
+              this.myCanvas.remove(activeObject);
+          }
+      }
+    },
+    showSvgBtn() {
       this.initializing();
       console.log("svg : " + this.myCanvas.toSVG());
       //logs the SVG representation of canvas
     },
     clickSaveBtn() {
       this.initializing();
-      this.$axios.post('/springBootURL/',{})//ë‚˜ì¤‘ì— ì¸µë§ˆë‹¤ ì €ìž¥í•  ì‹œì—ëŠ” URLë’¤ì— ê°’ ì „ë‹¬í•´ì£¼ê¸°
+      this.$axios.post('/springBootURL/',{})//?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
       .then((response) => {
         this.result=response.data
       })
