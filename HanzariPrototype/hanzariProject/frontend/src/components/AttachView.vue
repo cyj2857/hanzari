@@ -13,7 +13,6 @@
 <script>
 import { eventBus } from "../main.js";
 import axios from "axios";
-
 export default {
   data: function() {
     return {
@@ -131,7 +130,6 @@ export default {
       group.on("mouseover", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
-
         var asObject = group.toObject(["employee_id"]);
         var x = group.toObject(["left"]);
         console.log(asObject.employee_id); //1771354
@@ -182,7 +180,6 @@ export default {
   width: 100px;
   height: 100px;
 }
-
 .canvas {
   margin-left: 45px;
   border: 1px solid #000;
