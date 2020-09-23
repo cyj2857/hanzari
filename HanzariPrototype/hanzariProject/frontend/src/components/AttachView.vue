@@ -139,7 +139,6 @@ export default {
       console.log(asObject.seatId);
       //console.log(group.item(0))
       //console.log(group.item(1))
-
       this.myCanvas.add(group)
 
       this.saveSeat(group)
@@ -166,7 +165,7 @@ export default {
     },
     clickSaveBtn() {
       this.$axios
-        .post("/springBootURL/", {}) //?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
+        .post("/springBootURL/", {}) 
         .then(response => {
           this.result = response.data;
         });
