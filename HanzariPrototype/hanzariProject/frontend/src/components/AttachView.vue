@@ -27,10 +27,10 @@ export default {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     }),
-      eventBus.$on("changeFloor", floor => {
+    eventBus.$on("changeFloor", floor => {
         this.currentSelectedFloor = floor + "Floor";
         this.changeFloor(this.currentSelectedFloor);
-      });
+    });
   },
   mounted() {
     this.initializing();
@@ -53,7 +53,7 @@ export default {
       if(this.mySeatList.get(floor) != null) {
         this.loadSeat(this.mySeatList.get(floor))
       }
-      else{
+      else{ //remove all objects
         this.myCanvas
         .getObjects()
         .slice()
@@ -166,7 +166,7 @@ export default {
     },
     clickSaveBtn() {
       this.$axios
-        .post("/springBootURL/", {}) //?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
+        .post("/springBootURL/", {}) //???�˜�?¤??�ì�?��? ì¸µë§?????��? ????ž¥???��? ???��????��??Š??? URL???��????��? ê°? ? ??????��????�´�?£¼ê¸°
         .then(response => {
           this.result = response.data;
         });
