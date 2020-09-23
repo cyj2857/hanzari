@@ -9,11 +9,8 @@
     </v-card-text>
 
     <v-tabs v-model="tab" background-color="cyan" dark>
-<<<<<<< HEAD
       <v-tab v-for="n in length" :key="n" @change="sendFloorInfo(n)">{{ n }} Floor</v-tab>
-=======
       <v-tab v-for="n in length" :key="n" @click="sendFloorInfo(n)">{{ n }} Floor</v-tab>
->>>>>>> 726afe70f9660802f1c90ca461ed2dced811796b
     </v-tabs>
   </v-card>
 </template>
@@ -24,7 +21,6 @@ import AttachView from "@/components/AttachView.vue";
 export default {
   components: {
     AttachView
-<<<<<<< HEAD
   },
   data: () => ({
     length: 3,
@@ -38,8 +34,6 @@ export default {
   }),
   mounted() {
     this.sendFloorInfo(1)
-=======
->>>>>>> 726afe70f9660802f1c90ca461ed2dced811796b
   },
   data: () => ({
     length: 3,
