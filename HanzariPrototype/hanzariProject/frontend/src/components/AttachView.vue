@@ -5,6 +5,8 @@
     <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
     <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
+    <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <p>{{newFloorNum}}</p>
   </div>
 </template>
 
@@ -13,17 +15,33 @@ import { eventBus } from "../main.js";
 import axios from 'axios';
 
 export default {
+  props: {
+    floorNum: String,//�θ�κ��� �޴� �� string 
+  },
   data: function() {
     return {
       myCanvas: null,
-      mySeatArray: null,
-      seatId: 0
+      mySeatList: null,
+<<<<<<< HEAD
+      seatId: 0,
+      imageFile: null
+=======
+      myImageList: null,
+      seatId: 0,
+      newFloorNum: this.floorNum,
+>>>>>>> b7c77a68328f84218943846e01910e3fa4f098a4
     };
   },
   created() {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     });
+  },
+  mounted(){
+    this.initializing();
+  },
+  destoryed(){
+    this.myCanvas = null;
   },
   methods: {
     initializing() {
@@ -34,11 +52,12 @@ export default {
       if (this.mySeatList == null) {
         this.mySeatList = new Array();
       }
+      if (this.myImageList == null) {
+        this.myImageList = new Map();
+      }
     },
     createImage(file) {
       this.initializing();
-      var image = new Image();
-      
       var reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
@@ -50,10 +69,19 @@ export default {
             img,
             this.myCanvas.renderAll.bind(this.myCanvas)
           );
+          this.imageFile = img
           this.myCanvas.renderAll();
         });
       };
+
       reader.readAsDataURL(file);
+
+      this.saveImage(file);
+      
+    },
+    saveImage(file){
+      this.myImageList.set(this.newFloorNum, file);
+      console.log(this.myImageList.get(this.newFloorNum));
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
