@@ -15,7 +15,6 @@ export default {
   methods: {
     getData: function() {
       axios.get(
-        //"https://raw.githubusercontent.com/joshua1988/doit-vuejs/mas-ter/data/demo.json"
         "https://reqres.in/api/users?page=2"
       ).then(function(response) {
         console.log(response);
