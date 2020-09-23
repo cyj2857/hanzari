@@ -115,8 +115,8 @@ public class HomeController {
 		employee.add(new Employee("19101199", "viewer", "박팀장", departments.get(3), "444-0003", null));
 
 		List<Seat> seats = new ArrayList<Seat>();
-		seats.add(new Seat("0001", building, "10", false, null, 100.5, 100.5, null, null));
-		seats.add(new Seat("0002", building, "10", false, null, 500.5, 100.5, null, null));
+		seats.add(new Seat("0001", building, "10", false, null, 100.5, 100.5, null, employee.get(1)));
+		seats.add(new Seat("0002", building, "10", false, null, 500.5, 100.5, null, employee.get(1)));
 		seats.add(new Seat("0003", building, "10", true, "A", 700.5, 200.5, null, null));
 		seats.add(new Seat("0004", building, "10", true, "A", 750.5, 200.5, null, null));
 		seats.add(new Seat("0005", building, "6", false, null, 100.5, 100.5, null, null));
@@ -146,7 +146,7 @@ public class HomeController {
 		}
 
 	}
-	
+
 	@GetMapping("/jointest")
 	@ResponseBody
 	public String JoinTest() {
@@ -174,12 +174,57 @@ public class HomeController {
 		StringBuilder result = new StringBuilder();
 		employee.forEach(it -> result.append(it.toString()).append("	id: ").append(it.getEmployee_id()).append("\n")
 				.append("			name: ").append(it.getEmployee_name()).append("\n").append("<br><br>").append("\n")
-				.append("dempartment id: ").append(it.getDepartment().getDepartment_id()).append("\n").append("<br><br>").append("\n")
-				.append("department name: ").append(it.getDepartment().getDepartment_name()).append("\n").append("<br><br>").append("\n")
+				.append("dempartment id: ").append(it.getDepartment().getDepartment_id()).append("\n")
+				.append("<br><br>").append("\n").append("department name: ")
+				.append(it.getDepartment().getDepartment_name()).append("\n").append("<br><br>").append("\n"));
+		System.out.println("========================result======================");
+		System.out.println(result);
+		System.out.println("========================result======================");
+		System.out.println("\n\n\n\n\n\n\n\n");
+		return result.toString();
+	}
+
+	@GetMapping("/jointest2")
+	@ResponseBody
+	public String JoinTest2() {
+
+		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+
+		Session session = sessionFactory.openSession();
+		Employee employee = null;
+		try {
+			Transaction tx = session.beginTransaction();
+
+			// Query
+			Query<Employee> theQuery = session.createQuery("from Employee where employee_id=:id", Employee.class);
+			theQuery.setParameter("id", "94111201");
+			employee = theQuery.getSingleResult();
+
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
+		StringBuilder result = new StringBuilder();
+		employee.getSeat().forEach(
+				it -> result.append("seat_id: ")
+				.append(it.getSeat_id())
+				.append("\n")
+				.append("mapped empl_id: ")
+				.append(it.getEmployee().getEmployee_id())
+				.append("\n")
+				.append("mapped empl_name: ")
+				.append(it.getEmployee().getEmployee_name())
+				.append("\n")
 				);
 		System.out.println("========================result======================");
 		System.out.println(result);
 		System.out.println("========================result======================");
+		System.out.println("\n\n\n\n\n\n\n\n");
 		return result.toString();
 	}
 
