@@ -36,6 +36,39 @@ export default {
     this.initializing();
   },
   methods: {
+    changeFloor(floor) {
+      console.log(floor);
+
+      if (this.myImageList.get(floor) != null) {
+        this.loadImage(this.myImageList.get(floor));
+      } else if (this.myImageList.get(floor) == null) {
+        this.myCanvas
+          .getObjects()
+          .slice()
+          .forEach(obj => {
+            this.myCanvas.remove(obj);
+          });
+        this.myCanvas.backgroundImage = 0;
+        this.myCanvas.backgroundColor = "aliceblue";
+        this.myCanvas.renderAll();
+      }
+      //upload groups(mySeatlist)
+      
+      // if (this.mySeatList.size != 0) {
+      //   this.myCanvas
+      //     .getObjects()
+      //     .slice()
+      //     .forEach(obj => {
+      //       this.myCanvas.remove(obj);
+      //     });
+      //   const mapSingleIterator = this.mySeatList.values();
+
+      //   for (let single of this.mySeatList) {
+      //     console.log(single);
+      //     this.myCanvas.add(single);
+      //   }
+      // }
+    },
     initializing() {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
@@ -141,7 +174,9 @@ export default {
       //console.log(group.item(1))
       this.myCanvas.add(group)
 
-      this.saveSeat(group)
+      this.mySeatList.set(asObject.seatId, group);
+      console.log(this.mySeatList.get(asObject.seatId));
+      console.log(this.mySeatList.size + "num");
     },
     deleteAllBtn() {
       this.myCanvas
@@ -165,11 +200,7 @@ export default {
     },
     clickSaveBtn() {
       this.$axios
-<<<<<<< HEAD
         .post("/springBootURL/", {}) 
-=======
-        .post("/springBootURL/", {}) //???šËœÃ?Â¤??˜Ã¬â?”Â? Ã¬Â¸ÂµÃ«Â§?????¹Â? ????Å¾Â¥???¢Â? ???¹Å????”Â??Å ??? URL???™Â????”Â? ÃªÂ°? ?Â ??????¹Â????¢Â´Ã?Â£Â¼ÃªÂ¸Â°
->>>>>>> c07bd90958c034dec33c312f6a2dddcde9b6a5da
         .then(response => {
           this.result = response.data;
         });
