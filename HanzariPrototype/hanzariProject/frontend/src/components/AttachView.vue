@@ -28,11 +28,20 @@ export default {
       this.makeRectBtn(item)
     }),
     eventBus.$on("changeFloor", floor =>{
+<<<<<<< HEAD
+      
+      this.changeFloor(floor+'ì¸µ')
+    })
+  },
+  mounted(){
+    this.initializing()
+=======
       this.changeFloor(floor+"Ãþ")
     })
   },
   mounted(){
     this.initializing();
+>>>>>>> b69363f0b562f1882fc00f867b65c18758f877ae
   },
   methods: {
     changeFloor(floor){
