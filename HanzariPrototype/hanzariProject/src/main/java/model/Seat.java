@@ -20,7 +20,6 @@ import lombok.Getter;
 public class Seat {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "seat_id", nullable = false)
 	int seat_id;
 
