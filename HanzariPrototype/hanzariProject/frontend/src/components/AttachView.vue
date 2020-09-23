@@ -18,8 +18,8 @@ export default {
   data: function() {
     return {
       myCanvas: null,
-      mySeatList: null,
       myImageList: null,
+      mySeatList: null,
       seatId: 0,
       currentSelectedFloor: null
     };
@@ -39,7 +39,6 @@ export default {
   methods: {
     changeFloor(floor) {
       console.log(floor);
-
       if (this.myImageList.get(floor) != null) {
         this.loadImage(this.myImageList.get(floor));
       } else {
@@ -90,6 +89,9 @@ export default {
       this.myImageList.set(this.currentSelectedFloor, file);
       console.log(this.myImageList.get(this.currentSelectedFloor));
     },
+    saveSeat() {
+      this.mySeatList
+    },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
@@ -133,8 +135,7 @@ export default {
 
       this.myCanvas.add(group);
 
-      //this.mySeatArray.push(group)
-      //console.log(this.mySeatArray[0].item(1))
+      this.saveSeat()
     },
     deleteAllBtn() {
       this.myCanvas
@@ -167,7 +168,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 .figureBtn {
