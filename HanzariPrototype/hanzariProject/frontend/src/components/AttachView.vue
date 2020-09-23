@@ -12,69 +12,68 @@
 
 <script>
 import { eventBus } from "../main.js";
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data: function() {
     return {
       myCanvas: null,
-      mySeatList: null,
       myImageList: null,
+      mySeatList: null,
       seatId: 0,
-    }
+      currentSelectedFloor: null
+    };
   },
   created() {
     eventBus.$on("createdRect", item => {
-      this.makeRectBtn(item)
+      this.makeRectBtn(item);
     }),
-    eventBus.$on("changeFloor", floor =>{
-<<<<<<< HEAD
-      
-      this.changeFloor(floor+'ì¸µ')
-    })
+    eventBus.$on("changeFloor", floor => {
+      this.currentSelectedFloor = floor + "Floor";
+      this.changeFloor(this.currentSelectedFloor);
+    });
   },
-  mounted(){
-    this.initializing()
-=======
-      this.changeFloor(floor+"Ãş")
-    })
-  },
-  mounted(){
+  mounted() {
     this.initializing();
->>>>>>> b69363f0b562f1882fc00f867b65c18758f877ae
   },
   methods: {
-    changeFloor(floor){
-      console.log(floor)
-      this.initializing()
-      this.myCanvas
-        .getObjects()
-        .slice()
-        .forEach(obj => {
-          this.myCanvas.remove(obj);
-        });
-      this.myCanvas.backgroundImage = 0;
-      this.myCanvas.backgroundColor = 'aliceblue';
-      this.myCanvas.renderAll();
+    changeFloor(floor) {
+      console.log(floor);
+      if (this.myImageList.get(floor) != null) {
+        this.loadImage(this.myImageList.get(floor));
+      } else {
+        this.myCanvas
+          .getObjects()
+          .slice()
+          .forEach(obj => {
+            this.myCanvas.remove(obj);
+          });
+        this.myCanvas.backgroundImage = 0;
+        this.myCanvas.backgroundColor = "aliceblue";
+        this.myCanvas.renderAll();
+      }
     },
     initializing() {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
-        this.myCanvas = new fabric.Canvas(ref)
-      }
-      if (this.mySeatList == null) {
-        this.mySeatList = new Array()
+        this.myCanvas = new fabric.Canvas(ref);
       }
       if (this.myImageList == null) {
-        this.myImageList = new Map()
+        this.myImageList = new Map();
+      }
+      if (this.mySeatList == null) {
+        this.mySeatList = new Map();
       }
     },
     createImage(file) {
-      this.initializing();
-      var reader = new FileReader()
+      this.loadImage(file);
+      this.saveImage(file);
+    },
+    loadImage(file) {
+      var reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
-            img.set({
+          img.set({
             scaleX: this.myCanvas.width / img.width,
             scaleY: this.myCanvas.height / img.height
           });
@@ -84,62 +83,61 @@ export default {
           );
         });
       };
-      reader.readAsDataURL(file)
-      this.saveImage(file)
+      reader.readAsDataURL(file);
     },
-    saveImage(file){
-      this.myImageList.set(this.newFloorNum, file)
-      console.log(this.myImageList.get(this.newFloorNum))
+    saveImage(file) {
+      this.myImageList.set(this.currentSelectedFloor, file);
+      console.log(this.myImageList.get(this.currentSelectedFloor));
+    },
+    saveSeat() {
+      this.mySeatList
     },
     onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files
-      if (!files.length) return
-      this.createImage(files[0])
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
     },
     makeRectBtn(item) {
-      this.initializing()
       var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
         fill: "blue",
         opacity: 1
-      })
+      });
       var textObject = new fabric.IText(item.name, {
         left: 0,
         top: 0,
         fontSize: 13,
         fill: "#000000"
-      })
+      });
       var group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
-        seatId : this.seatId ++, // 1,2,3,4
+        seatId: this.seatId++, // 1,2,3,4
         employee_id: item.employee_id,
         left: 150,
         top: 150
-      })
+      });
       //db- getId
-      //group.toObject(['seat_id'])=akfjkdsk 
+      //group.toObject(['seat_id'])=akfjkdsk
       group.on("mouseover", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
 
-        var asObject = group.toObject(['employee_id'])
-        var x = group.toObject(['left'])
-        console.log(asObject.employee_id)//1771354
-        console.log("hi"+x.left);//150
-      })
-      var asObject = group.toObject(['seatId'])
-      console.log(asObject.seatId)
+        var asObject = group.toObject(["employee_id"]);
+        var x = group.toObject(["left"]);
+        console.log(asObject.employee_id); //1771354
+        console.log("hi" + x.left); //150
+      });
+      var asObject = group.toObject(["seatId"]);
+      console.log(asObject.seatId);
       //console.log(group.item(0))
       //console.log(group.item(1))
 
       this.myCanvas.add(group);
 
-      //this.mySeatArray.push(group)
-      //console.log(this.mySeatArray[0].item(1))
+      this.saveSeat()
     },
     deleteAllBtn() {
-      this.initializing();
       this.myCanvas
         .getObjects()
         .slice()
@@ -147,32 +145,29 @@ export default {
           this.myCanvas.remove(obj);
         });
     },
-    deleteBtn () {
-      this.initializing();
-      var activeObject = this.myCanvas.getActiveObject()
-     
+    deleteBtn() {
+      var activeObject = this.myCanvas.getActiveObject();
+
       if (activeObject) {
-          if (confirm('Are you sure?')) {
-              this.myCanvas.remove(activeObject);
-          }
+        if (confirm("Are you sure?")) {
+          this.myCanvas.remove(activeObject);
+        }
       }
     },
     showSvgBtn() {
-      this.initializing();
       console.log("svg : " + this.myCanvas.toSVG());
       //logs the SVG representation of canvas
     },
     clickSaveBtn() {
-      this.initializing();
-      this.$axios.post('/springBootURL/',{})//?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
-      .then((response) => {
-        this.result=response.data
-      })
+      this.$axios
+        .post("/springBootURL/", {})
+        .then(response => {
+          this.result = response.data;
+        });
     }
   }
 };
 </script>
-
 
 <style scoped>
 .figureBtn {
