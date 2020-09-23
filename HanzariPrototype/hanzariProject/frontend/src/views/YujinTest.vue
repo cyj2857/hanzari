@@ -35,14 +35,12 @@
 import ListView from "@/components/ListView.vue";
 import MyDataTable from "@/components/MyDataTable.vue";
 import FloorDataTable from "@/components/FloorDataTable.vue";
-import AttachView from "@/components/AttachView.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 
 export default {
-  name: "HyoriTest",
+  name: "YujinTest",
   components: {
     ListView,
-    AttachView,
     MyDataTable,
     FloorDataTable,
     FloorTabs
