@@ -59,13 +59,13 @@ export default {
           name: "Choi Yujin",
           department: "Secure Team",
           number: "010-7906-3827",
-          employee_id:"154"
+          employee_id:"1791234"
         },
         {
           name: "Kim Dongmin",
           department: "has no Team",
           number: "010-3352-0898",
-          employee_id:"13454"
+          employee_id:"1804321"
         }
       ]
     };

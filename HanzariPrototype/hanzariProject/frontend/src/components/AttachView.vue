@@ -13,13 +13,12 @@
 <script>
 import { eventBus } from "../main.js";
 import axios from "axios";
-
 export default {
   data: function() {
     return {
       myCanvas: null,
-      mySeatList: null,
       myImageList: null,
+      mySeatList: null,
       seatId: 0,
       currentSelectedFloor: null
     };
@@ -28,10 +27,10 @@ export default {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     }),
-      eventBus.$on("changeFloor", floor => {
+    eventBus.$on("changeFloor", floor => {
         this.currentSelectedFloor = floor + "Floor";
         this.changeFloor(this.currentSelectedFloor);
-      });
+    });
   },
   mounted() {
     this.initializing();
@@ -75,16 +74,33 @@ export default {
         const ref = this.$refs.canvas;
         this.myCanvas = new fabric.Canvas(ref);
       }
-      if (this.mySeatList == null) {
-        this.mySeatList = new Map();
-      }
       if (this.myImageList == null) {
         this.myImageList = new Map();
       }
+      if (this.mySeatList == null) {
+        this.mySeatList = new Map();
+      }
     },
-    createImage(file) {
-      this.loadImage(file);
-      this.saveImage(file);
+    changeFloor(floor) {
+      console.log(floor);
+      if(this.mySeatList.get(floor) != null) {
+        this.loadSeat(this.mySeatList.get(floor))
+      }
+      else{ //remove all objects
+        this.myCanvas
+        .getObjects()
+        .slice()
+        .forEach(obj => {
+          this.myCanvas.remove(obj);
+        }); 
+      }
+      if (this.myImageList.get(floor) != null) {
+        this.loadImage(this.myImageList.get(floor))
+      } else {
+        this.myCanvas.backgroundImage = 0;
+        this.myCanvas.backgroundColor = "aliceblue";
+        this.myCanvas.renderAll();
+      }
     },
     loadImage(file) {
       var reader = new FileReader();
@@ -102,14 +118,25 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    saveImage(file) {
-      this.myImageList.set(this.currentSelectedFloor, file);
-      console.log(this.myImageList.get(this.currentSelectedFloor));
+    loadSeat(group){
+      this.myCanvas.add(group)
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       this.createImage(files[0]);
+    },
+    createImage(file) {
+      this.loadImage(file);
+      this.saveImage(file);
+    },
+    saveImage(file) {
+      this.myImageList.set(this.currentSelectedFloor, file);
+      console.log(this.myImageList.get(this.currentSelectedFloor));
+    },
+    saveSeat(group) {
+      this.mySeatList.set(this.currentSelectedFloor, group)
+      console.log(this.mySeatList.get(this.currentSelectedFloor))
     },
     makeRectBtn(item) {
       var rectangle = new fabric.Rect({
@@ -136,7 +163,6 @@ export default {
       group.on("mouseover", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
-
         var asObject = group.toObject(["employee_id"]);
         var x = group.toObject(["left"]);
         console.log(asObject.employee_id); //1771354
@@ -147,7 +173,7 @@ export default {
       //console.log(group.item(0))
       //console.log(group.item(1))
 
-      this.myCanvas.add(group);
+      this.myCanvas.add(group)
 
       this.mySeatList.set(asObject.seatId, group);
       console.log(this.mySeatList.get(asObject.seatId));
@@ -163,7 +189,6 @@ export default {
     },
     deleteBtn() {
       var activeObject = this.myCanvas.getActiveObject();
-
       if (activeObject) {
         if (confirm("Are you sure?")) {
           this.myCanvas.remove(activeObject);
@@ -176,7 +201,7 @@ export default {
     },
     clickSaveBtn() {
       this.$axios
-        .post("/springBootURL/", {}) //?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
+        .post("/springBootURL/", {}) //???šËœÃ?Â¤??˜Ã¬â?”Â? Ã¬Â¸ÂµÃ«Â§?????¹Â? ????Å¾Â¥???¢Â? ???¹Å????”Â??Å ??? URL???™Â????”Â? ÃªÂ°? ?Â ??????¹Â????¢Â´Ã?Â£Â¼ÃªÂ¸Â°
         .then(response => {
           this.result = response.data;
         });
@@ -185,13 +210,11 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .figureBtn {
   width: 100px;
   height: 100px;
 }
-
 .canvas {
   margin-left: 45px;
   border: 1px solid #000;

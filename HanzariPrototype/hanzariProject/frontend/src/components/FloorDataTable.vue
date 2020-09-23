@@ -41,13 +41,13 @@ export default {
           name: "Choi Yujin",
           department: "Secure Team",
           number: "010-7906-3827"
-		},
-		{
+      },
+      {
           name: "Kim Dongmin",
           department: "Engineering Team",
           number: "010-7906-3827"
-		},
-		{
+      },
+      {
           name: "Ahn Hyunho",
           department: "Engineering Team",
           number: "010-7906-3827"
@@ -58,8 +58,8 @@ export default {
   methods: {
     getColor(department) {
       if (department=="Secure Team") return "red";
-	    else if (department=="Development Team") return "orange";
-	    else if (department=="Engineering Team") return "green";
+       else if (department=="Development Team") return "orange";
+       else if (department=="Engineering Team") return "green";
     }
   }
 };
