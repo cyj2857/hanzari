@@ -49,6 +49,7 @@ public class HomeController {
 		return "hello blaalaa";
 	}
 
+	// column 1개 입력 테스트코드
 	@GetMapping("/inserttest")
 	@ResponseBody
 	public void InsertTest() {
@@ -78,6 +79,8 @@ public class HomeController {
 
 	}
 
+	// 여러 더미데이터를 넣어주는 테스트코드
+	// hibernate.hbm2ddl.auto=create 로 시작해야함.
 	@GetMapping("/inserttestdata")
 	@ResponseBody
 	public void InsertTestData() {
@@ -147,6 +150,8 @@ public class HomeController {
 
 	}
 
+	// 특정 employee에 할당된 department의 이름을 리턴하는 테스트
+	// hibernate.hbm2ddl.auto=update로 두고 진행해야되는 테스트코드
 	@GetMapping("/jointest")
 	@ResponseBody
 	public String JoinTest() {
@@ -184,6 +189,8 @@ public class HomeController {
 		return result.toString();
 	}
 
+	// 특정 employee에 할당된 여러 seat을 리턴하는 테스트
+	// hibernate.hbm2ddl.auto=update로 두고 진행해야되는 테스트코드
 	@GetMapping("/jointest2")
 	@ResponseBody
 	public String JoinTest2() {
@@ -210,17 +217,10 @@ public class HomeController {
 			sessionFactory.close();
 		}
 		StringBuilder result = new StringBuilder();
-		employee.getSeat().forEach(
-				it -> result.append("seat_id: ")
-				.append(it.getSeat_id())
-				.append("\n")
-				.append("mapped empl_id: ")
-				.append(it.getEmployee().getEmployee_id())
-				.append("\n")
-				.append("mapped empl_name: ")
-				.append(it.getEmployee().getEmployee_name())
-				.append("\n")
-				);
+		employee.getSeat()
+				.forEach(it -> result.append("seat_id: ").append(it.getSeat_id()).append("\n")
+						.append("mapped empl_id: ").append(it.getEmployee().getEmployee_id()).append("\n")
+						.append("mapped empl_name: ").append(it.getEmployee().getEmployee_name()).append("\n"));
 		System.out.println("========================result======================");
 		System.out.println(result);
 		System.out.println("========================result======================");
@@ -228,6 +228,7 @@ public class HomeController {
 		return result.toString();
 	}
 
+	// 단순 SELECT 테스트
 	@GetMapping("/selecttest")
 	@ResponseBody
 	public String SelectTest() {
@@ -261,6 +262,7 @@ public class HomeController {
 		return result.toString();
 	}
 
+	// 단순 SELECT 테스트2
 	@GetMapping("/selecttest2")
 	@ResponseBody
 	public String SelectTest2() {
@@ -296,6 +298,7 @@ public class HomeController {
 		return result.toString();
 	}
 
+	// 단순 SELECT 테스트3
 	@GetMapping("/selecttest3")
 	@ResponseBody
 	public String SelectTest3() {
@@ -308,7 +311,7 @@ public class HomeController {
 			Transaction tx = session.beginTransaction();
 
 			// Query
-			Query<Employee> theQuery = session.createQuery("from Employee order by name desc", Employee.class);
+			Query<Employee> theQuery = session.createQuery("from Employee order by employee_name desc", Employee.class);
 			employee = theQuery.getResultList();
 
 			tx.commit();

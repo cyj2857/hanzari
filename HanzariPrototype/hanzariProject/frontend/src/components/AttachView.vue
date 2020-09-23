@@ -159,7 +159,7 @@ export default {
     },
     clickSaveBtn() {
       this.$axios
-        .post("/springBootURL/", {}) //?��중에 층마?�� ????��?�� ?��?��?�� URL?��?�� �? ?��?��?��주기
+        .post("/springBootURL/", {}) //?‚˜ì¤‘ì— ì¸µë§ˆ?‹¤ ????ž¥?•  ?‹œ?—?Š” URL?’¤?— ê°? ? „?‹¬?•´ì£¼ê¸°
         .then(response => {
           this.result = response.data;
         });

@@ -39,7 +39,7 @@ import AttachView from "@/components/AttachView.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 
 export default {
-  name: "DonminTest",
+  name: "DonminTest1",
   components: {
     ListView,
     AttachView,

@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
     </v-card-title>
     <v-data-table :headers="headers" :items="employees" class="elevation-1">
-      <template v-slot:item.department="{ item }">
+      <template v-slot : item.department="{ item }">
         <v-chip :color="getColor(item.department)" dark>{{ item.department }}</v-chip>
       </template>
     </v-data-table>
