@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="canvas" class="canvas" width="900px" height="800px"></canvas>
+    <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
     <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
     <v-btn @click="saveCanvasBtn" class="saveCanvas">canvas to svg (check in console log)</v-btn>
@@ -10,6 +10,8 @@
 
 <script>
 import { eventBus } from "../main.js";
+import axios from 'axios';
+
 export default {
   data: function() {
     return {
@@ -28,7 +30,9 @@ export default {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
         this.myCanvas = new fabric.Canvas(ref);
-        this.mySeatList = new Array()
+      }
+      if (this.mySeatList == null) {
+        this.mySeatList = new Array();
       }
     },
     createImage(file) {
@@ -117,6 +121,13 @@ export default {
       this.initializing();
       console.log("svg : " + this.myCanvas.toSVG());
       //logs the SVG representation of canvas
+    },
+    clickSaveBtn() {
+      this.initializing();
+      this.$axios.post('/springBootURL/',{})//나중에 층마다 저장할 시에는 URL뒤에 값 전달해주기
+      .then((response) => {
+        this.result=response.data
+      })
     }
   }
 };
