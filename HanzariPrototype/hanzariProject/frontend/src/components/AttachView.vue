@@ -37,37 +37,38 @@ export default {
     this.initializing();
   },
   methods: {
-    changeFloor(floor) {
-      console.log(floor);
-      if (this.myImageList.get(floor) != null) {
-        this.loadImage(this.myImageList.get(floor));
-      } else {
-        this.myCanvas
-          .getObjects()
-          .slice()
-          .forEach(obj => {
-            this.myCanvas.remove(obj);
-          });
-        this.myCanvas.backgroundImage = 0;
-        this.myCanvas.backgroundColor = "aliceblue";
-        this.myCanvas.renderAll();
-      }
-    },
     initializing() {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
         this.myCanvas = new fabric.Canvas(ref);
       }
-      if (this.mySeatList == null) {
-        this.mySeatList = new Array();
-      }
       if (this.myImageList == null) {
         this.myImageList = new Map();
       }
+      if (this.mySeatList == null) {
+        this.mySeatList = new Map();
+      }
     },
-    createImage(file) {
-      this.loadImage(file);
-      this.saveImage(file);
+    changeFloor(floor) {
+      console.log(floor);
+      if(this.mySeatList.get(floor) != null) {
+        this.loadSeat(this.mySeatList.get(floor))
+      }
+      else{
+        this.myCanvas
+        .getObjects()
+        .slice()
+        .forEach(obj => {
+          this.myCanvas.remove(obj);
+        }); 
+      }
+      if (this.myImageList.get(floor) != null) {
+        this.loadImage(this.myImageList.get(floor))
+      } else {
+        this.myCanvas.backgroundImage = 0;
+        this.myCanvas.backgroundColor = "aliceblue";
+        this.myCanvas.renderAll();
+      }
     },
     loadImage(file) {
       var reader = new FileReader();
@@ -85,17 +86,25 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    saveImage(file) {
-      this.myImageList.set(this.currentSelectedFloor, file);
-      console.log(this.myImageList.get(this.currentSelectedFloor));
-    },
-    saveSeat() {
-      this.mySeatList
+    loadSeat(group){
+      this.myCanvas.add(group)
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       this.createImage(files[0]);
+    },
+    createImage(file) {
+      this.loadImage(file);
+      this.saveImage(file);
+    },
+    saveImage(file) {
+      this.myImageList.set(this.currentSelectedFloor, file);
+      console.log(this.myImageList.get(this.currentSelectedFloor));
+    },
+    saveSeat(group) {
+      this.mySeatList.set(this.currentSelectedFloor, group)
+      console.log(this.mySeatList.get(this.currentSelectedFloor))
     },
     makeRectBtn(item) {
       var rectangle = new fabric.Rect({
@@ -133,9 +142,9 @@ export default {
       //console.log(group.item(0))
       //console.log(group.item(1))
 
-      this.myCanvas.add(group);
+      this.myCanvas.add(group)
 
-      this.saveSeat()
+      this.saveSeat(group)
     },
     deleteAllBtn() {
       this.myCanvas
@@ -147,7 +156,6 @@ export default {
     },
     deleteBtn() {
       var activeObject = this.myCanvas.getActiveObject();
-
       if (activeObject) {
         if (confirm("Are you sure?")) {
           this.myCanvas.remove(activeObject);
