@@ -16,9 +16,6 @@ import { eventBus } from "../main.js";
 import axios from 'axios';
 
 export default {
-  props: {
-    floorNum: String,
-  },
   data: function() {
     return {
       myCanvas: null,
@@ -33,8 +30,12 @@ export default {
       this.makeRectBtn(item)
     }),
     eventBus.$on("changeFloor", floor =>{
+      
       this.changeFloor(floor+'층')
     })
+  },
+  mounted(){
+    this.initializing()
   },
   methods: {
     changeFloor(floor){
