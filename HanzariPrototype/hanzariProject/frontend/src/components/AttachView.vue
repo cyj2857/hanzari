@@ -164,7 +164,7 @@ export default {
       //실질적으로 floorSeatList로 각 층의 도형 리스트를 접근한다 
       this.floorSeatList.set(this.currentSelectedFloor,this.mySeatList.get(this.currentSelectedFloor));
 
-      console.log("current groups = " + this.floorSeatList.get(this.currentSelectedFloor));
+      console.log(this.floorSeatList.get(this.currentSelectedFloor));
     },
 
     //각 층의 도형 리스트 생성하기
@@ -178,7 +178,6 @@ export default {
         return this.mySeatList.get(floor);
       }
     },
-    
     deleteAllBtn() {
       this.myCanvas
         .getObjects()

@@ -47,24 +47,6 @@ export default {
     FloorDataTable,
     FloorTabs
   },
-  props: {
-    startpos: {
-      type: Number,
-      default: 0
-    },
-    diffpos: {
-      type: Number,
-      default: 0
-    },
-    range: {
-      type: Number,
-      default: 50
-    },
-    isEnable: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
     return {
       msg: "This is hyori page.",
@@ -77,36 +59,8 @@ export default {
   methods: {
     updateText() {
       this.changeText = "Click Event Test";
-    },
-    on_mouse_down(e) {
-      startpos = event.clientX + diffpos;
-      isEnable = true;
-      return false;
-    },
-    on_mouse_up(e) {
-      isEnable = false;
-      return false;
-    },
-    on_mouse_move(e) {
-      if (isEnable) {
-        pos = event.clientX;
-
-        diffpos = startpos - pos;
-
-        var width = window.innerWidth / 2;
-        if (diffpos > -(width - range) && diffpos < width - range) {
-          document.getElementById("d1").style.width = width - diffpos + "px";
-          document.getElementById("d2").style.width =
-            width - 20 + diffpos + "px";
-        }
-      }
     }
   },
-  created() {
-    document.getElementById("hr").onmousedown = on_mouse_down;
-    document.onmouseup = on_mouse_up;
-    document.onmousemove = on_mouse_move;
-  }
 };
 </script>
 
