@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
 
 import lombok.AllArgsConstructor;
@@ -15,8 +16,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
-@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id") // 추가
 @Builder
 @AllArgsConstructor
 
