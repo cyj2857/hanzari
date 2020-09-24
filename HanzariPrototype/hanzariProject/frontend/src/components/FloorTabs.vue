@@ -39,6 +39,7 @@ export default {
     },
     decreaseTab() {
       this.length--;
+      console.log("length"+this.length);
       //pop
     },
     increaseTab() {

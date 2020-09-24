@@ -1,7 +1,6 @@
 <template>
   <v-card>
     <v-card-title>
-      1Floor
       <v-spacer></v-spacer>
     </v-card-title>
     <v-data-table :headers="headers" :items="employees" class="elevation-1">

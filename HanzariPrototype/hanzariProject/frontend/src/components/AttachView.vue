@@ -2,11 +2,10 @@
   <div>
     <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
-    <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
-    <v-btn @click="showSvgBtn" class="SvgBtn">canvas to svg (check in console log)</v-btn>
-    <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
+    <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
+    <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="deleteBtn">delete selected shape</v-btn>
+    <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
   </div>
 </template>
 
@@ -205,10 +204,6 @@ export default {
         //좌석 지우면 list에 있는거 없애기
         }
       }
-    },
-    showSvgBtn() {
-      console.log("svg : " + this.myCanvas.toSVG());
-      //logs the SVG representation of canvas
     },
     clickSaveBtn() {
       this.$axios.post("/springBootURL/", {}).then(response => {
