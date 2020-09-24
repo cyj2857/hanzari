@@ -3,9 +3,10 @@
     <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
     <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
+    <v-btn @click="addVacantBtn" color="primary" dark >Add Vacant</v-btn>
+    <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
   </div>
 </template>
 
@@ -209,6 +210,43 @@ export default {
       this.$axios.post("/springBootURL/", {}).then(response => {
         this.result = response.data;
       });
+    },
+    addVacantBtn(){
+      console.log("currnet floor is " + this.currentSelectedFloor);
+     
+      //각 층에 해당하는 도형 리스트 리턴하기 
+      var mynewSeatList = this.newSeatList(this.currentSelectedFloor);
+
+      var rectangle = new fabric.Rect({
+        width: 50,
+        height: 50,
+        fill: "yellow",
+        opacity: 1
+      });
+      
+      var group = new fabric.Group([rectangle], {
+        seatId: this.seatId++, // 1,2,3,4
+        left: 150,
+        top: 150
+      });
+      group.on("mouseover", function(e) {
+        var group = e.target;
+        var asObject = group.toObject(["seatId"]);
+        var x = group.toObject(["left"]);
+
+        console.log("seatId = " + asObject.seatId); //
+        console.log("x = " + x.left); //150
+      });
+
+      this.myCanvas.add(group);
+
+      mynewSeatList.push(group);
+      
+      this.floorSeatList.set(this.currentSelectedFloor,this.mySeatList.get(this.currentSelectedFloor));
+      console.log('개수 : ' + this.floorSeatList.size)
+      
+      console.log(this.floorSeatList.get(this.currentSelectedFloor));
+
     }
   }
 };
