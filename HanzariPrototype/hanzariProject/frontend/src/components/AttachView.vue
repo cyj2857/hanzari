@@ -17,9 +17,9 @@ export default {
   data: function() {
     return {
       myCanvas: null,
-      myImageList: null,
       seatId: 0,
       currentSelectedFloor: null,
+      myImageList: null,
       mySeatList: null, //current floor's seat list
       floorSeatList: null //all floor's seat list
     };
@@ -28,10 +28,10 @@ export default {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     }),
-      eventBus.$on("changeFloor", floor => {
-        this.currentSelectedFloor = floor;
-        this.changeFloor(this.currentSelectedFloor);
-      });
+    eventBus.$on("changeFloor", floor => {
+      this.currentSelectedFloor = floor;
+      this.changeFloor(this.currentSelectedFloor);
+    });
   },
   mounted() {
     this.initializing();
@@ -113,9 +113,7 @@ export default {
     },
     saveImage(file) {
       this.myImageList.set(this.currentSelectedFloor, file);
-      console.log(
-        "myImageList : " + this.myImageList.get(this.currentSelectedFloor)
-      );
+      console.log("myImageList : " + this.myImageList.get(this.currentSelectedFloor));
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -171,11 +169,8 @@ export default {
         this.currentSelectedFloor,
         this.mySeatList.get(this.currentSelectedFloor)
       );
-      console.log("floorSeatList-size : " + this.floorSeatList.size);
-
-      console.log(
-        "floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor)
-      );
+      console.log("floorSeatList 개수 : " + this.floorSeatList.size);
+      console.log("floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor));
     },
 
     //각 층의 도형 리스트 생성하기
@@ -185,10 +180,8 @@ export default {
         var newSeatsList = new Array();
         this.mySeatList.set(floor, newSeatsList);
         return this.mySeatList.get(floor);
-        console.log("newSeatList X " + this.mySeatList.get(floor));
       } else {
         return this.mySeatList.get(floor);
-        console.log("newSeatList O " + this.mySeatList.get(floor));
       }
     },
     deleteAllBtn() {
@@ -198,7 +191,6 @@ export default {
         .forEach(obj => {
           this.myCanvas.remove(obj);
         });
-
       //console.log(this.currentSelectedFloor)
       this.mySeatList.clear();
       if (this.floorSeatList.delete(this.currentSelectedFloor))
@@ -208,8 +200,8 @@ export default {
     },
     deleteBtn() {
       var activeObject = this.myCanvas.getActiveObject();
-      console.log("activeobject : " + activeObject);
-
+      //console.log("activeobject : " + activeObject);
+      
       var shapearray = new Array();
       this.myCanvas
         .getObjects()
@@ -217,30 +209,28 @@ export default {
         .forEach(obj => {
           shapearray.push(obj);
         });
-      console.log("shapearray :  " + shapearray);
-      console.log("shapearray length :  " + shapearray.length);
+     // console.log("shapearray :  " + shapearray);
+     // console.log("shapearray length :  " + shapearray.length);
 
       if (activeObject) {
         if (confirm("Are you sure?")) {
           shapearray.slice().forEach(obj => {
             if (obj == activeObject) { 
-              console.log("selected activeobject: " + activeObject);
-              console.log("selected obj : " + obj);
+            //  console.log("selected activeobject: " + activeObject);
+            //  console.log("selected obj : " + obj);
               //delete
               var index = shapearray.indexOf(activeObject)
               shapearray.splice(index,1);
-              console.log("after delete shapearray :  " + shapearray);
-              console.log("arter delte shapearray length :  " + shapearray.length);
+           //   console.log("after delete shapearray :  " + shapearray);
+           //   console.log("arter delte shapearray length :  " + shapearray.length);
             }
           });
 
           this.myCanvas.remove(activeObject);
           this.mySeatList.clear();
-          //modify map
+          //modify map(mySeatList)
           this.mySeatList.set(this.currentSelectedFloor, shapearray);
           console.log("mySeatList >>>>>"+ this.mySeatList.get(this.currentSelectedFloor));
-          
-
           //좌석 지우면 list에 있는거 없애기
         }
       }
@@ -285,10 +275,9 @@ export default {
         this.currentSelectedFloor,
         this.mySeatList.get(this.currentSelectedFloor)
       );
-      console.log("floorSeatList-size : " + this.floorSeatList.size);
+      console.log("floorSeatList size : " + this.floorSeatList.size);
 
-      console.log(
-        "floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor)
+      console.log("floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor)
       );
     }
   }
