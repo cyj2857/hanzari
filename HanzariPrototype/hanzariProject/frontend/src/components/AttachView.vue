@@ -19,18 +19,20 @@ export default {
       myCanvas: null,
       myImageList: null,
       mySeatList: null,
+      eachSeatList : null,
       seatId: 0,
-      currentSelectedFloor: null
+      currentSelectedFloor: null,
+      items: []
     };
   },
   created() {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     }),
-    eventBus.$on("changeFloor", floor => {
+      eventBus.$on("changeFloor", floor => {
         this.currentSelectedFloor = floor + "Floor";
         this.changeFloor(this.currentSelectedFloor);
-    });
+      });
   },
   mounted() {
     this.initializing();
@@ -38,9 +40,24 @@ export default {
   methods: {
     changeFloor(floor) {
       console.log(floor);
+      //this.items.push(floor);
+      //console.log(this.items[0]);
 
       if (this.myImageList.get(floor) != null) {
         this.loadImage(this.myImageList.get(floor));
+        if(this.mySeatList.length>0){
+          this.myCanvas
+          .getObjects()
+          .slice()
+          .forEach(obj => {
+            this.myCanvas.remove(obj);
+          });
+
+          for(var i=0;i<this.mySeatList.length;i++){
+            this.myCanvas.add(this.mySeatList[i]);
+          }
+          
+        }
       } else if (this.myImageList.get(floor) == null) {
         this.myCanvas
           .getObjects()
@@ -53,7 +70,7 @@ export default {
         this.myCanvas.renderAll();
       }
       //upload groups(mySeatlist)
-      
+
       // if (this.mySeatList.size != 0) {
       //   this.myCanvas
       //     .getObjects()
@@ -78,28 +95,10 @@ export default {
         this.myImageList = new Map();
       }
       if (this.mySeatList == null) {
-        this.mySeatList = new Map();
+        this.mySeatList = new Array();
       }
-    },
-    changeFloor(floor) {
-      console.log(floor);
-      if(this.mySeatList.get(floor) != null) {
-        this.loadSeat(this.mySeatList.get(floor))
-      }
-      else{ //remove all objects
-        this.myCanvas
-        .getObjects()
-        .slice()
-        .forEach(obj => {
-          this.myCanvas.remove(obj);
-        }); 
-      }
-      if (this.myImageList.get(floor) != null) {
-        this.loadImage(this.myImageList.get(floor))
-      } else {
-        this.myCanvas.backgroundImage = 0;
-        this.myCanvas.backgroundColor = "aliceblue";
-        this.myCanvas.renderAll();
+      if(this.eachSeatList == null){
+        this.eachSeatList = new Array();
       }
     },
     loadImage(file) {
@@ -118,8 +117,8 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    loadSeat(group){
-      this.myCanvas.add(group)
+    loadSeat(group) {
+      this.myCanvas.add(group);
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -135,8 +134,8 @@ export default {
       console.log(this.myImageList.get(this.currentSelectedFloor));
     },
     saveSeat(group) {
-      this.mySeatList.set(this.currentSelectedFloor, group)
-      console.log(this.mySeatList.get(this.currentSelectedFloor))
+      this.mySeatList.set(this.currentSelectedFloor, group);
+      console.log(this.mySeatList.get(this.currentSelectedFloor));
     },
     makeRectBtn(item) {
       var rectangle = new fabric.Rect({
@@ -172,11 +171,12 @@ export default {
       console.log(asObject.seatId);
       //console.log(group.item(0))
       //console.log(group.item(1))
-      this.myCanvas.add(group)
+      this.myCanvas.add(group);
 
-      this.mySeatList.set(asObject.seatId, group);
-      console.log(this.mySeatList.get(asObject.seatId));
-      console.log(this.mySeatList.size + "num");
+      this.mySeatList.push(group);
+      // this.mySeatList.set(asObject.seatId, group);
+      // console.log(this.mySeatList.get(asObject.seatId));
+      // console.log(this.mySeatList.size + "num");
     },
     deleteAllBtn() {
       this.myCanvas
@@ -199,11 +199,9 @@ export default {
       //logs the SVG representation of canvas
     },
     clickSaveBtn() {
-      this.$axios
-        .post("/springBootURL/", {}) 
-        .then(response => {
-          this.result = response.data;
-        });
+      this.$axios.post("/springBootURL/", {}).then(response => {
+        this.result = response.data;
+      });
     }
   }
 };
