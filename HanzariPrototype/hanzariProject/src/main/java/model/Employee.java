@@ -14,16 +14,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
 @AllArgsConstructor
-@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id") // 추가
 @Builder
 @Table(name = "employee")
 public class Employee {
@@ -44,7 +46,8 @@ public class Employee {
 
 	@Column(name = "extension_number", nullable = true)
 	String extension_number;
-
+	
+	@JsonIgnore
 	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Column(nullable = true)
 	List<Seat> seat = new ArrayList<Seat>();
