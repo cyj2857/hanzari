@@ -28,9 +28,6 @@ public class HomeController {
 
 	private static SessionFactory sessionFactory;
 
-	@Autowired
-	JdbcTemplate jdbcTemplate;
-
 	// view first vue.js->vue.js logo
 	@RequestMapping("/")
 	public String Index() {
