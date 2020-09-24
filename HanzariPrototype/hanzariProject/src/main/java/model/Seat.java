@@ -9,6 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "seats")
+@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id") // 추가
 @AllArgsConstructor
 public class Seat {
 

@@ -13,12 +13,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Entity
 @Getter
 @AllArgsConstructor
+@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id") // 추가
+@Builder
 @Table(name = "employee")
 public class Employee {
 

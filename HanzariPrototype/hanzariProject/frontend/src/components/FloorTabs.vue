@@ -22,11 +22,11 @@ export default {
   data: () => ({
     length: 3,
     tab: null,
-    items: [
-      { tab: "One", content: "Tab 1 Content" },
-      { tab: "Five", content: "Tab 2 Content" },
-      { tab: "Six", content: "Tab 3 Content" }
-    ],
+    // items: [
+    //   { tab: "One", content: "Tab 1 Content" },
+    //   { tab: "Five", content: "Tab 2 Content" },
+    //   { tab: "Six", content: "Tab 3 Content" }
+    // ],
     floorNum: null
   }),
   mounted() {
@@ -39,6 +39,7 @@ export default {
     },
     decreaseTab() {
       this.length--;
+      console.log("length"+this.length);
       //pop
     },
     increaseTab() {
