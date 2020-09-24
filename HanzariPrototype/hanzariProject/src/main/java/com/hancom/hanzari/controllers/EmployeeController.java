@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +52,59 @@ public class EmployeeController {
 		}
 
 		return employee;
+	}
+	
+	@ApiOperation(value = "특정 사원 조회", notes = "특정 사원을 조회한다")
+	@GetMapping(value = "/employee/{employee_id}")
+	public Employee findEmployeeById(@PathVariable(value = "employee_id") String employee_id) {
+		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+
+		Session session = sessionFactory.openSession();
+		Employee employee = null;
+		try {
+			Transaction tx = session.beginTransaction();
+
+			Query<Employee> theQuery = session.createQuery("from Employee where employee_id=:id", Employee.class);
+			theQuery.setParameter("id", employee_id);
+			employee = theQuery.getSingleResult();
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
+
+		return employee;
+	}
+	
+	
+	@ApiOperation(value = "특정 사원 조회", notes = "특정 사원을 조회한다")
+	@GetMapping(value = "/employee/{employee_id}/seats")
+	public List<Seat> findSeatsByEmployeeId(@PathVariable(value = "employee_id") String employee_id) {
+		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+
+		Session session = sessionFactory.openSession();
+		List<Seat> seats = null;
+		try {
+			Transaction tx = session.beginTransaction();
+
+			Query<Employee> theQuery = session.createQuery("from Employee where employee_id=:id", Employee.class);
+			theQuery.setParameter("id", employee_id);
+			seats = theQuery.getSingleResult().getSeat();
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
+
+		return seats;
 	}
 
 	@ApiOperation(value = "사원 입력", notes = "사원을 입력한다.")
