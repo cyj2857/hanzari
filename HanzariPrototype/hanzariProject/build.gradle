@@ -35,6 +35,10 @@ dependencies {
 	// lombok을 위해 추가
     compileOnly 'org.projectlombok:lombok:1.18.6'
     annotationProcessor 'org.projectlombok:lombok:1.18.6'
+    
+    // swagger 추가
+    implementation 'io.springfox:springfox-swagger2:2.6.1'
+	implementation 'io.springfox:springfox-swagger-ui:2.6.1'
 }
 
 test {
