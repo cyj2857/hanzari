@@ -19,9 +19,9 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "seats")
-@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id") // 추가
 @AllArgsConstructor
+@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id") // 추가
+@Table(name = "seats")
 public class Seat {
 
 	@Id
