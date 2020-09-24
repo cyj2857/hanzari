@@ -29,7 +29,7 @@ export default {
       this.makeRectBtn(item);
     }),
       eventBus.$on("changeFloor", floor => {
-        this.currentSelectedFloor = floor + "Floor";
+        this.currentSelectedFloor = floor
         this.changeFloor(this.currentSelectedFloor);
       });
   },
@@ -162,8 +162,10 @@ export default {
       mynewSeatList.push(group);
       //각 층의 도형 리스트를 접근 할 수 있는 map에 도형리스트를 저장하기
       //실질적으로 floorSeatList로 각 층의 도형 리스트를 접근한다 
+      
       this.floorSeatList.set(this.currentSelectedFloor,this.mySeatList.get(this.currentSelectedFloor));
-
+      console.log('개수 : ' + this.floorSeatList.size)
+      
       console.log(this.floorSeatList.get(this.currentSelectedFloor));
     },
 
@@ -185,8 +187,14 @@ export default {
         .forEach(obj => {
           this.myCanvas.remove(obj);
         });
-      
-      //좌석 지우면 list에 있는거 없애기
+
+      //console.log(this.currentSelectedFloor)
+      this.mySeatList.clear()
+      if(this.floorSeatList.delete(this.currentSelectedFloor))
+        alert('success')
+      else
+        alert('fail')
+      //그 층의 모든 list 없애기
     },
     deleteBtn() {
       var activeObject = this.myCanvas.getActiveObject();

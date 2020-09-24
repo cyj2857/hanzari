@@ -14,14 +14,11 @@
       </div>
     </div>
 
-    <div class="d3" id="hr"></div>
-    
     <div class="d2" id="d2">
       <FloorTabs></FloorTabs>
       <!-- <AttachView></AttachView> -->
     </div>
 
-    <div class="d3" id="hr"></div>
     <div class="d4" id="d4">
       <div class="listview" id="listview">
         <FloorDataTable></FloorDataTable>
