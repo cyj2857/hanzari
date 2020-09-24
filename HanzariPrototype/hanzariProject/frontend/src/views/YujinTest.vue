@@ -15,7 +15,7 @@ export default {
   methods: {
     getData: function() {
       axios.get(
-        "https://reqres.in/api/users?page=2"
+        "/api/employee"
       ).then(function(response) {
         console.log(response);
       });
