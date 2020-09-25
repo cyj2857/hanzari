@@ -200,15 +200,15 @@ export default {
         });
 
       //console.log(this.currentSelectedFloor)
-      this.mySeatList.clear();
+      this.mySeatList.get(this.currentSelectedFloor).length = 0;
       if (this.floorSeatList.delete(this.currentSelectedFloor))
         alert("success");
       else alert("fail");
       //그 층의 모든 list 없애기
     },
-    deleteBtn() {
+      deleteBtn() {
       var activeObject = this.myCanvas.getActiveObject();
-      console.log("activeobject : " + activeObject);
+      //console.log("activeobject : " + activeObject);
 
       var shapearray = new Array();
       this.myCanvas
@@ -217,30 +217,36 @@ export default {
         .forEach(obj => {
           shapearray.push(obj);
         });
-      console.log("shapearray :  " + shapearray);
-      console.log("shapearray length :  " + shapearray.length);
+      // console.log("shapearray :  " + shapearray);
+      // console.log("shapearray length :  " + shapearray.length);
 
       if (activeObject) {
         if (confirm("Are you sure?")) {
           shapearray.slice().forEach(obj => {
-            if (obj == activeObject) { 
-              console.log("selected activeobject: " + activeObject);
-              console.log("selected obj : " + obj);
+            if (obj == activeObject) {
+              //  console.log("selected activeobject: " + activeObject);
+              //  console.log("selected obj : " + obj);
               //delete
-              var index = shapearray.indexOf(activeObject)
-              shapearray.splice(index,1);
-              console.log("after delete shapearray :  " + shapearray);
-              console.log("arter delte shapearray length :  " + shapearray.length);
+              var index = shapearray.indexOf(activeObject);
+              shapearray.splice(index, 1);
+              //   console.log("after delete shapearray :  " + shapearray);
+              //   console.log("arter delte shapearray length :  " + shapearray.length);
             }
           });
 
           this.myCanvas.remove(activeObject);
-          this.mySeatList.clear();
-          //modify map
+          this.mySeatList.get(this.currentSelectedFloor).length = 0;
+          //modify map(mySeatList)
+          this.floorSeatList.delete(this.currentSelectedFloor);
           this.mySeatList.set(this.currentSelectedFloor, shapearray);
-          console.log("mySeatList >>>>>"+ this.mySeatList.get(this.currentSelectedFloor));
-          
-
+          this.floorSeatList.set(this.currentSelectedFloor,this.mySeatList.get(this.currentSelectedFloor));
+          console.log(
+            "mySeatList >>>>>" + this.mySeatList.get(this.currentSelectedFloor)
+          );
+          console.log(
+            "floorSeatList >>>>>" +
+              this.floorSeatList.get(this.currentSelectedFloor)
+          );
           //좌석 지우면 list에 있는거 없애기
         }
       }
