@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text class="text-center">
-      <AttachView></AttachView>
+      <AttachCanvas></AttachCanvas>
       <v-btn text @click="decreaseTab()">Remove Tab</v-btn>
       <v-divider class="mx-4" vertical></v-divider>
       <v-btn text @click="increaseTab()">Add Tab</v-btn>
@@ -14,10 +14,10 @@
 
 <script>
 import { eventBus } from "../main.js";
-import AttachView from "@/components/AttachView.vue";
+import AttachCanvas from "@/components/AttachCanvas.vue";
 export default {
   components: {
-    AttachView
+    AttachCanvas
   },
   data: () => ({
     length: 3,
