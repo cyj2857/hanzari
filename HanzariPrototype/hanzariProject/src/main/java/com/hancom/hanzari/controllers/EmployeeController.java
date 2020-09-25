@@ -5,8 +5,9 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,13 +29,12 @@ import model.Seat;
 @RequestMapping(value = "/api")
 public class EmployeeController {
 
-	private static SessionFactory sessionFactory;
+	@Autowired
+	private SessionFactory sessionFactory;
 
 	@ApiOperation(value = "사원 조회", notes = "모든 사원을 조회한다")
 	@GetMapping(value = "/employee")
 	public List<Employee> findAllEmployee() {
-		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-
 		Session session = sessionFactory.openSession();
 		List<Employee> employee = null;
 		try {
@@ -53,12 +53,10 @@ public class EmployeeController {
 
 		return employee;
 	}
-	
+
 	@ApiOperation(value = "특정 사원 조회", notes = "특정 사원을 조회한다")
 	@GetMapping(value = "/employee/{employee_id}")
 	public Employee findEmployeeById(@PathVariable(value = "employee_id") String employee_id) {
-		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-
 		Session session = sessionFactory.openSession();
 		Employee employee = null;
 		try {
@@ -79,13 +77,10 @@ public class EmployeeController {
 
 		return employee;
 	}
-	
-	
+
 	@ApiOperation(value = "특정 사원 조회", notes = "특정 사원을 조회한다")
 	@GetMapping(value = "/employee/{employee_id}/seats")
 	public List<Seat> findSeatsByEmployeeId(@PathVariable(value = "employee_id") String employee_id) {
-		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-
 		Session session = sessionFactory.openSession();
 		List<Seat> seats = null;
 		try {
@@ -115,7 +110,6 @@ public class EmployeeController {
 			@ApiParam(value = "부서", required = true) @RequestParam Department department,
 			@ApiParam(value = "내선번호", required = false) @RequestParam String extension_number,
 			@ApiParam(value = "좌석", required = false) @RequestParam Seat seat) {
-		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		Employee employee = Employee.builder().employee_id(employee_id).authority(authority)
 				.employee_name(employee_name).department(department).extension_number(extension_number).build();
