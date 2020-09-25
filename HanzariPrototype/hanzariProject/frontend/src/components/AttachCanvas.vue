@@ -285,10 +285,6 @@ export default {
 </script>
 
 <style scoped>
-.figureBtn {
-  width: 100px;
-  height: 100px;
-}
 .canvas {
   margin-left: 45px;
   border: 1px solid #000;

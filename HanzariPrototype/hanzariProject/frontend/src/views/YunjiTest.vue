@@ -1,27 +1,21 @@
 <template>
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
-      <!-- <select v-model="selected">
-          <option value="" disabled hidden>Please Choose Floor</option>
-          <option>1floor</option>
-          <option>2floor</option>
-          <option>3floor</option>
-        </select>
-      <MyCanvas></MyCanvas> -->
-
       <div class="search" id="search">
-        <MyDataTable></MyDataTable>
+        <AllFloorsDataTable></AllFloorsDataTable>
       </div>
     </div>
 
+    <div class="d3" id="hr"></div>
+    
     <div class="d2" id="d2">
       <FloorTabs></FloorTabs>
-      <!-- <AttachView></AttachView> -->
     </div>
 
+    <div class="d3" id="hr"></div>
     <div class="d4" id="d4">
       <div class="listview" id="listview">
-        <FloorDataTable></FloorDataTable>
+        <EachFloorDataTable></EachFloorDataTable>
       </div>
     </div>
 
@@ -29,20 +23,16 @@
 </template>
 
 <script>
-import ListView from "@/components/ListView.vue";
-import MyDataTable from "@/components/MyDataTable.vue";
-import FloorDataTable from "@/components/FloorDataTable.vue";
-import AttachView from "@/components/AttachView.vue";
+import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
+import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
 
 export default {
   name: "YunjiTest",
   components: {
-    ListView,
-    AttachView,
-    MyDataTable,
-    FloorDataTable,
-    FloorTabs
+    AllFloorsDataTable,
+    FloorTabs,
+    EachFloorDataTable
   },
   data() {
     return {
