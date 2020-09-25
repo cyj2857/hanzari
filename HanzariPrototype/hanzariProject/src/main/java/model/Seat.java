@@ -15,12 +15,15 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import model.Figure.FigureBuilder;
 
 @Entity
 @Getter
 @AllArgsConstructor
+@Builder
 @Table(name = "seats")
 public class Seat {
 
