@@ -17,9 +17,9 @@ export default {
   data: function() {
     return {
       myCanvas: null,
+      myImageList: null,
       seatId: 0,
       currentSelectedFloor: null,
-      myImageList: null,
       mySeatList: null, //current floor's seat list
       floorSeatList: null //all floor's seat list
     };
@@ -28,16 +28,16 @@ export default {
     eventBus.$on("createdRect", item => {
       this.makeRectBtn(item);
     }),
-    eventBus.$on("changeFloor", floor => {
-      this.currentSelectedFloor = floor;
-      this.changeFloor(this.currentSelectedFloor);
-    });
+      eventBus.$on("changeFloor", floor => {
+        this.currentSelectedFloor = floor;
+        this.changeFloor(this.currentSelectedFloor);
+      });
   },
   mounted() {
     this.initializing();
   },
   methods: {
-    //canvas, map »ı¼º
+    //canvas, map ìƒì„±
     initializing() {
       if (this.myCanvas == null) {
         const ref = this.$refs.canvas;
@@ -54,7 +54,7 @@ export default {
       }
     },
     changeFloor(floor) {
-      //µµÇü ·£´õ¸µ Àü¿¡ È­¸éÀÇ µµÇüµéÀ»  ÃÊ±âÈ­
+      //ë„í˜• ëœë”ë§ ì „ì— í™”ë©´ì˜ ë„í˜•ë“¤ì„  ì´ˆê¸°í™”
       this.myCanvas
         .getObjects()
         .slice()
@@ -62,12 +62,12 @@ export default {
           this.myCanvas.remove(obj);
         });
 
-      //°¢ ÃşÀÇ ÀúÀåµÈ µµÇü ¸®½ºÆ® È­¸é¿¡ »Ñ·ÁÁÖ±â
-      //ÇöÀç ÃşÀÇ ÀÌ¹ÌÁö°¡ ÀúÀåµÇ¾îÀÖ´Ù¸é
+      //ê° ì¸µì˜ ì €ì¥ëœ ë„í˜• ë¦¬ìŠ¤íŠ¸ í™”ë©´ì— ë¿Œë ¤ì£¼ê¸°
+      //í˜„ì¬ ì¸µì˜ ì´ë¯¸ì§€ê°€ ì €ì¥ë˜ì–´ìˆë‹¤ë©´
       if (this.myImageList.get(floor) != null) {
         this.loadImage(this.myImageList.get(floor));
 
-        //ÇöÀç Ãş¿¡ ±×¸° µµÇüµéÀÌ ÀÖ´Ù¸é
+        //í˜„ì¬ ì¸µì— ê·¸ë¦° ë„í˜•ë“¤ì´ ìˆë‹¤ë©´
         if (this.floorSeatList.get(floor)) {
           var onefloorSeatList = this.floorSeatList.get(floor);
 
@@ -77,8 +77,8 @@ export default {
           }
         }
       } else if (this.myImageList.get(floor) == null) {
-        //ÇöÀç ÃşÀÇ ÀÌ¹ÌÁö°¡ ÀúÀåµÇ¾îÀÖÁö ¾Ê´Ù¸é
-        //È­¸é¿¡ ±×·ÁÁ®ÀÖ´ø ÀÌ¹ÌÁö¿Í µµÇü ÃÊ±âÈ­
+        //í˜„ì¬ ì¸µì˜ ì´ë¯¸ì§€ê°€ ì €ì¥ë˜ì–´ìˆì§€ ì•Šë‹¤ë©´
+        //í™”ë©´ì— ê·¸ë ¤ì ¸ìˆë˜ ì´ë¯¸ì§€ì™€ ë„í˜• ì´ˆê¸°í™”
         this.myCanvas
           .getObjects()
           .slice()
@@ -113,7 +113,9 @@ export default {
     },
     saveImage(file) {
       this.myImageList.set(this.currentSelectedFloor, file);
-      console.log("myImageList : " + this.myImageList.get(this.currentSelectedFloor));
+      console.log(
+        "myImageList : " + this.myImageList.get(this.currentSelectedFloor)
+      );
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -121,11 +123,11 @@ export default {
       this.createImage(files[0]);
     },
 
-    //µµÇü»ı¼º½Ã
+    //ë„í˜•ìƒì„±ì‹œ
     makeRectBtn(item) {
       console.log("currnet floor is " + this.currentSelectedFloor);
 
-      //°¢ Ãş¿¡ ÇØ´çÇÏ´Â µµÇü ¸®½ºÆ® ¸®ÅÏÇÏ±â
+      //ê° ì¸µì— í•´ë‹¹í•˜ëŠ” ë„í˜• ë¦¬ìŠ¤íŠ¸ ë¦¬í„´í•˜ê¸°
       var mynewSeatList = this.newSeatList(this.currentSelectedFloor);
 
       var rectangle = new fabric.Rect({
@@ -160,28 +162,33 @@ export default {
       // console.log(asObject.seatId);
       this.myCanvas.add(group);
 
-      //°¢ ÃşÀÇ µµÇü ¸®½ºÆ®¿¡ ÇÏ³ªÀÇ ÇØ´ç µµÇüÀ» ³Ö±â
+      //ê° ì¸µì˜ ë„í˜• ë¦¬ìŠ¤íŠ¸ì— í•˜ë‚˜ì˜ í•´ë‹¹ ë„í˜•ì„ ë„£ê¸°
       mynewSeatList.push(group);
-      //°¢ ÃşÀÇ µµÇü ¸®½ºÆ®¸¦ Á¢±Ù ÇÒ ¼ö ÀÖ´Â map¿¡ µµÇü¸®½ºÆ®¸¦ ÀúÀåÇÏ±â
-      //½ÇÁúÀûÀ¸·Î floorSeatList·Î °¢ ÃşÀÇ µµÇü ¸®½ºÆ®¸¦ Á¢±ÙÇÑ´Ù
+      //ê° ì¸µì˜ ë„í˜• ë¦¬ìŠ¤íŠ¸ë¥¼ ì ‘ê·¼ í•  ìˆ˜ ìˆëŠ” mapì— ë„í˜•ë¦¬ìŠ¤íŠ¸ë¥¼ ì €ì¥í•˜ê¸°
+      //ì‹¤ì§ˆì ìœ¼ë¡œ floorSeatListë¡œ ê° ì¸µì˜ ë„í˜• ë¦¬ìŠ¤íŠ¸ë¥¼ ì ‘ê·¼í•œë‹¤
 
       this.floorSeatList.set(
         this.currentSelectedFloor,
         this.mySeatList.get(this.currentSelectedFloor)
       );
-      console.log("floorSeatList °³¼ö : " + this.floorSeatList.size);
-      console.log("floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor));
+      console.log("floorSeatList-size : " + this.floorSeatList.size);
+
+      console.log(
+        "floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor)
+      );
     },
 
-    //°¢ ÃşÀÇ µµÇü ¸®½ºÆ® »ı¼ºÇÏ±â
+    //ê° ì¸µì˜ ë„í˜• ë¦¬ìŠ¤íŠ¸ ìƒì„±í•˜ê¸°
     newSeatList: function(floor) {
-      //Ãş¿¡ ÇØ´çÇÏ´Â µµÇü¸®½ºÆ®°¡ ¸¸µé¾îÁöÁö ¾Ê¾ÒÀ»¶§
+      //ì¸µì— í•´ë‹¹í•˜ëŠ” ë„í˜•ë¦¬ìŠ¤íŠ¸ê°€ ë§Œë“¤ì–´ì§€ì§€ ì•Šì•˜ì„ë•Œ
       if (!this.mySeatList.get(floor)) {
         var newSeatsList = new Array();
         this.mySeatList.set(floor, newSeatsList);
         return this.mySeatList.get(floor);
+        console.log("newSeatList X " + this.mySeatList.get(floor));
       } else {
         return this.mySeatList.get(floor);
+        console.log("newSeatList O " + this.mySeatList.get(floor));
       }
     },
     deleteAllBtn() {
@@ -191,17 +198,18 @@ export default {
         .forEach(obj => {
           this.myCanvas.remove(obj);
         });
+
       //console.log(this.currentSelectedFloor)
       this.mySeatList.clear();
       if (this.floorSeatList.delete(this.currentSelectedFloor))
         alert("success");
       else alert("fail");
-      //±× ÃşÀÇ ¸ğµç list ¾ø¾Ö±â
+      //ê·¸ ì¸µì˜ ëª¨ë“  list ì—†ì• ê¸°
     },
     deleteBtn() {
       var activeObject = this.myCanvas.getActiveObject();
-      //console.log("activeobject : " + activeObject);
-      
+      console.log("activeobject : " + activeObject);
+
       var shapearray = new Array();
       this.myCanvas
         .getObjects()
@@ -209,29 +217,31 @@ export default {
         .forEach(obj => {
           shapearray.push(obj);
         });
-     // console.log("shapearray :  " + shapearray);
-     // console.log("shapearray length :  " + shapearray.length);
+      console.log("shapearray :  " + shapearray);
+      console.log("shapearray length :  " + shapearray.length);
 
       if (activeObject) {
         if (confirm("Are you sure?")) {
           shapearray.slice().forEach(obj => {
             if (obj == activeObject) { 
-            //  console.log("selected activeobject: " + activeObject);
-            //  console.log("selected obj : " + obj);
+              console.log("selected activeobject: " + activeObject);
+              console.log("selected obj : " + obj);
               //delete
               var index = shapearray.indexOf(activeObject)
               shapearray.splice(index,1);
-           //   console.log("after delete shapearray :  " + shapearray);
-           //   console.log("arter delte shapearray length :  " + shapearray.length);
+              console.log("after delete shapearray :  " + shapearray);
+              console.log("arter delte shapearray length :  " + shapearray.length);
             }
           });
 
           this.myCanvas.remove(activeObject);
           this.mySeatList.clear();
-          //modify map(mySeatList)
+          //modify map
           this.mySeatList.set(this.currentSelectedFloor, shapearray);
           console.log("mySeatList >>>>>"+ this.mySeatList.get(this.currentSelectedFloor));
-          //ÁÂ¼® Áö¿ì¸é list¿¡ ÀÖ´Â°Å ¾ø¾Ö±â
+          
+
+          //ì¢Œì„ ì§€ìš°ë©´ listì— ìˆëŠ”ê±° ì—†ì• ê¸°
         }
       }
     },
@@ -243,7 +253,7 @@ export default {
     addVacantBtn() {
       console.log("currnet floor is " + this.currentSelectedFloor);
 
-      //°¢ Ãş¿¡ ÇØ´çÇÏ´Â µµÇü ¸®½ºÆ® ¸®ÅÏÇÏ±â
+      //ê° ì¸µì— í•´ë‹¹í•˜ëŠ” ë„í˜• ë¦¬ìŠ¤íŠ¸ ë¦¬í„´í•˜ê¸°
       var mynewSeatList = this.newSeatList(this.currentSelectedFloor);
 
       var rectangle = new fabric.Rect({
@@ -275,9 +285,10 @@ export default {
         this.currentSelectedFloor,
         this.mySeatList.get(this.currentSelectedFloor)
       );
-      console.log("floorSeatList size : " + this.floorSeatList.size);
+      console.log("floorSeatList-size : " + this.floorSeatList.size);
 
-      console.log("floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor)
+      console.log(
+        "floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor)
       );
     }
   }
