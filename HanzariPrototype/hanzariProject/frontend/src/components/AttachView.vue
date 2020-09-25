@@ -2,69 +2,104 @@
   <div>
     <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
-    <v-btn color="success" @click="$refs.inputUpload.click()">File upload to background</v-btn>
-    <v-btn @click="showSvgBtn" class="SvgBtn">canvas to svg (check in console log)</v-btn>
-    <v-btn @click="deleteAllBtn">delete shapes on canvas</v-btn>
+    <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
+    <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
+    <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
+    <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="deleteBtn">delete selected shape</v-btn>
-    <p>{{newFloorNum}}</p>
   </div>
 </template>
 
 <script>
 import { eventBus } from "../main.js";
-import axios from 'axios';
-
+import axios from "axios";
 export default {
-  props: {
-    floorNum: String,
-  },
   data: function() {
     return {
       myCanvas: null,
-      mySeatList: null,
-      myImageList: null,
       seatId: 0,
-      newFloorNum: this.floorNum,
-    }
+      currentSelectedFloor: null,
+      myImageList: null,
+      mySeatList: null, //current floor's seat list
+      floorSeatList: null //all floor's seat list
+    };
   },
   created() {
     eventBus.$on("createdRect", item => {
-      this.makeRectBtn(item)
+      this.makeRectBtn(item);
     }),
-    eventBus.$on("changeFloor", floor =>{
-      this.changeFloor(floor+'ì¸µ')
-    })
+    eventBus.$on("changeFloor", floor => {
+      this.currentSelectedFloor = floor;
+      this.changeFloor(this.currentSelectedFloor);
+    });
+  },
+  mounted() {
+    this.initializing();
   },
   methods: {
-    changeFloor(floor){
-      console.log(floor)
-      this.initializing()
+    //canvas, map »ý¼º
+    initializing() {
+      if (this.myCanvas == null) {
+        const ref = this.$refs.canvas;
+        this.myCanvas = new fabric.Canvas(ref);
+      }
+      if (this.myImageList == null) {
+        this.myImageList = new Map();
+      }
+      if (this.floorSeatList == null) {
+        this.floorSeatList = new Map();
+      }
+      if (this.mySeatList == null) {
+        this.mySeatList = new Map();
+      }
+    },
+    changeFloor(floor) {
+      //µµÇü ·£´õ¸µ Àü¿¡ È­¸éÀÇ µµÇüµéÀ»  ÃÊ±âÈ­
       this.myCanvas
         .getObjects()
         .slice()
         .forEach(obj => {
           this.myCanvas.remove(obj);
         });
-    },
-    initializing() {
-      if (this.myCanvas == null) {
-        const ref = this.$refs.canvas;
-        this.myCanvas = new fabric.Canvas(ref)
-      }
-      if (this.mySeatList == null) {
-        this.mySeatList = new Array()
-      }
-      if (this.myImageList == null) {
-        this.myImageList = new Map()
+
+      //°¢ ÃþÀÇ ÀúÀåµÈ µµÇü ¸®½ºÆ® È­¸é¿¡ »Ñ·ÁÁÖ±â
+      //ÇöÀç ÃþÀÇ ÀÌ¹ÌÁö°¡ ÀúÀåµÇ¾îÀÖ´Ù¸é
+      if (this.myImageList.get(floor) != null) {
+        this.loadImage(this.myImageList.get(floor));
+
+        //ÇöÀç Ãþ¿¡ ±×¸° µµÇüµéÀÌ ÀÖ´Ù¸é
+        if (this.floorSeatList.get(floor)) {
+          var onefloorSeatList = this.floorSeatList.get(floor);
+
+          for (var i = 0; i < onefloorSeatList.length; i++) {
+            this.myCanvas.add(onefloorSeatList[i]);
+            console.log("onefloorSeatList : " + onefloorSeatList[i]);
+          }
+        }
+      } else if (this.myImageList.get(floor) == null) {
+        //ÇöÀç ÃþÀÇ ÀÌ¹ÌÁö°¡ ÀúÀåµÇ¾îÀÖÁö ¾Ê´Ù¸é
+        //È­¸é¿¡ ±×·ÁÁ®ÀÖ´ø ÀÌ¹ÌÁö¿Í µµÇü ÃÊ±âÈ­
+        this.myCanvas
+          .getObjects()
+          .slice()
+          .forEach(obj => {
+            this.myCanvas.remove(obj);
+          });
+
+        this.myCanvas.backgroundImage = 0;
+        this.myCanvas.backgroundColor = "aliceblue";
+        this.myCanvas.renderAll();
       }
     },
     createImage(file) {
-      this.initializing();
-      var reader = new FileReader()
+      this.loadImage(file);
+      this.saveImage(file);
+    },
+    loadImage(file) {
+      var reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
-            img.set({
+          img.set({
             scaleX: this.myCanvas.width / img.width,
             scaleY: this.myCanvas.height / img.height
           });
@@ -74,102 +109,186 @@ export default {
           );
         });
       };
-      reader.readAsDataURL(file)
-      this.saveImage(file)
+      reader.readAsDataURL(file);
     },
-    saveImage(file){
-      this.myImageList.set(this.newFloorNum, file)
-      console.log(this.myImageList.get(this.newFloorNum))
+    saveImage(file) {
+      this.myImageList.set(this.currentSelectedFloor, file);
+      console.log("myImageList : " + this.myImageList.get(this.currentSelectedFloor));
     },
     onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files
-      if (!files.length) return
-      this.createImage(files[0])
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
     },
+
+    //µµÇü»ý¼º½Ã
     makeRectBtn(item) {
-      this.initializing()
+      console.log("currnet floor is " + this.currentSelectedFloor);
+
+      //°¢ Ãþ¿¡ ÇØ´çÇÏ´Â µµÇü ¸®½ºÆ® ¸®ÅÏÇÏ±â
+      var mynewSeatList = this.newSeatList(this.currentSelectedFloor);
+
       var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
         fill: "blue",
         opacity: 1
-      })
+      });
       var textObject = new fabric.IText(item.name, {
         left: 0,
         top: 0,
         fontSize: 13,
         fill: "#000000"
-      })
+      });
       var group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
-        seatId : this.seatId ++, // 1,2,3,4
+        seatId: this.seatId++, // 1,2,3,4
         employee_id: item.employee_id,
         left: 150,
         top: 150
-      })
-      //db- getId
-      //group.toObject(['seat_id'])=akfjkdsk 
+      });
       group.on("mouseover", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
+        var asObject = group.toObject(["employee_id"]);
+        var x = group.toObject(["left"]);
 
-        var asObject = group.toObject(['employee_id'])
-        var x = group.toObject(['left'])
-        console.log(asObject.employee_id)//1771354
-        console.log("hi"+x.left);//150
-      })
-      var asObject = group.toObject(['seatId'])
-      console.log(asObject.seatId)
-      //console.log(group.item(0))
-      //console.log(group.item(1))
-
+        console.log("employee id = " + asObject.employee_id); //1771354
+        console.log("left = " + x.left); //150
+      });
+      // var asObject = group.toObject(["seatId"]);
+      // console.log(asObject.seatId);
       this.myCanvas.add(group);
 
-      //this.mySeatArray.push(group)
-      //console.log(this.mySeatArray[0].item(1))
+      //°¢ ÃþÀÇ µµÇü ¸®½ºÆ®¿¡ ÇÏ³ªÀÇ ÇØ´ç µµÇüÀ» ³Ö±â
+      mynewSeatList.push(group);
+      //°¢ ÃþÀÇ µµÇü ¸®½ºÆ®¸¦ Á¢±Ù ÇÒ ¼ö ÀÖ´Â map¿¡ µµÇü¸®½ºÆ®¸¦ ÀúÀåÇÏ±â
+      //½ÇÁúÀûÀ¸·Î floorSeatList·Î °¢ ÃþÀÇ µµÇü ¸®½ºÆ®¸¦ Á¢±ÙÇÑ´Ù
+
+      this.floorSeatList.set(
+        this.currentSelectedFloor,
+        this.mySeatList.get(this.currentSelectedFloor)
+      );
+      console.log("floorSeatList °³¼ö : " + this.floorSeatList.size);
+      console.log("floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor));
+    },
+
+    //°¢ ÃþÀÇ µµÇü ¸®½ºÆ® »ý¼ºÇÏ±â
+    newSeatList: function(floor) {
+      //Ãþ¿¡ ÇØ´çÇÏ´Â µµÇü¸®½ºÆ®°¡ ¸¸µé¾îÁöÁö ¾Ê¾ÒÀ»¶§
+      if (!this.mySeatList.get(floor)) {
+        var newSeatsList = new Array();
+        this.mySeatList.set(floor, newSeatsList);
+        return this.mySeatList.get(floor);
+      } else {
+        return this.mySeatList.get(floor);
+      }
     },
     deleteAllBtn() {
-      this.initializing();
       this.myCanvas
         .getObjects()
         .slice()
         .forEach(obj => {
           this.myCanvas.remove(obj);
         });
+      //console.log(this.currentSelectedFloor)
+      this.mySeatList.clear();
+      if (this.floorSeatList.delete(this.currentSelectedFloor))
+        alert("success");
+      else alert("fail");
+      //±× ÃþÀÇ ¸ðµç list ¾ø¾Ö±â
     },
-    deleteBtn () {
-      this.initializing();
-      var activeObject = this.myCanvas.getActiveObject()
-     
+    deleteBtn() {
+      var activeObject = this.myCanvas.getActiveObject();
+      //console.log("activeobject : " + activeObject);
+      
+      var shapearray = new Array();
+      this.myCanvas
+        .getObjects()
+        .slice()
+        .forEach(obj => {
+          shapearray.push(obj);
+        });
+     // console.log("shapearray :  " + shapearray);
+     // console.log("shapearray length :  " + shapearray.length);
+
       if (activeObject) {
-          if (confirm('Are you sure?')) {
-              this.myCanvas.remove(activeObject);
-          }
+        if (confirm("Are you sure?")) {
+          shapearray.slice().forEach(obj => {
+            if (obj == activeObject) { 
+            //  console.log("selected activeobject: " + activeObject);
+            //  console.log("selected obj : " + obj);
+              //delete
+              var index = shapearray.indexOf(activeObject)
+              shapearray.splice(index,1);
+           //   console.log("after delete shapearray :  " + shapearray);
+           //   console.log("arter delte shapearray length :  " + shapearray.length);
+            }
+          });
+
+          this.myCanvas.remove(activeObject);
+          this.mySeatList.clear();
+          //modify map(mySeatList)
+          this.mySeatList.set(this.currentSelectedFloor, shapearray);
+          console.log("mySeatList >>>>>"+ this.mySeatList.get(this.currentSelectedFloor));
+          //ÁÂ¼® Áö¿ì¸é list¿¡ ÀÖ´Â°Å ¾ø¾Ö±â
+        }
       }
     },
-    showSvgBtn() {
-      this.initializing();
-      console.log("svg : " + this.myCanvas.toSVG());
-      //logs the SVG representation of canvas
-    },
     clickSaveBtn() {
-      this.initializing();
-      this.$axios.post('/springBootURL/',{})//ë‚˜ì¤‘ì— ì¸µë§ˆë‹¤ ì €ìž¥í•  ì‹œì—ëŠ” URLë’¤ì— ê°’ ì „ë‹¬í•´ì£¼ê¸°
-      .then((response) => {
-        this.result=response.data
-      })
+      this.$axios.post("/springBootURL/", {}).then(response => {
+        this.result = response.data;
+      });
+    },
+    addVacantBtn() {
+      console.log("currnet floor is " + this.currentSelectedFloor);
+
+      //°¢ Ãþ¿¡ ÇØ´çÇÏ´Â µµÇü ¸®½ºÆ® ¸®ÅÏÇÏ±â
+      var mynewSeatList = this.newSeatList(this.currentSelectedFloor);
+
+      var rectangle = new fabric.Rect({
+        width: 50,
+        height: 50,
+        fill: "yellow",
+        opacity: 1
+      });
+
+      var group = new fabric.Group([rectangle], {
+        seatId: this.seatId++, // 1,2,3,4
+        left: 150,
+        top: 150
+      });
+      group.on("mouseover", function(e) {
+        var group = e.target;
+        var asObject = group.toObject(["seatId"]);
+        var x = group.toObject(["left"]);
+
+        console.log("seatId = " + asObject.seatId); //
+        console.log("left = " + x.left); //150
+      });
+
+      this.myCanvas.add(group);
+
+      mynewSeatList.push(group);
+
+      this.floorSeatList.set(
+        this.currentSelectedFloor,
+        this.mySeatList.get(this.currentSelectedFloor)
+      );
+      console.log("floorSeatList size : " + this.floorSeatList.size);
+
+      console.log("floorSeatList : " + this.floorSeatList.get(this.currentSelectedFloor)
+      );
     }
   }
 };
 </script>
-
 
 <style scoped>
 .figureBtn {
   width: 100px;
   height: 100px;
 }
-
 .canvas {
   margin-left: 45px;
   border: 1px solid #000;

@@ -30,6 +30,7 @@
 		<mapping class="model.Employee" />
 		<mapping class="model.Figure" />
 		<mapping class="model.Seat" />
+		<mapping class="model.Shape" />
 
 	</session-factory>
 </hibernate-configuration>
