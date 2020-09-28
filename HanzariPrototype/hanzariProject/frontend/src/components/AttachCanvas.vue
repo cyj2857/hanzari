@@ -7,6 +7,7 @@
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
+    <v-btn @click="changecolorBtn">Change color Shape</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
       <EmployeeDialog :dialogStatus="this.dialogStatus" 
       @close="closeDialog"/>
@@ -188,7 +189,7 @@ export default {
 
       group.on("mousedown", function(e) {
         var group = e.target;
-        group.item(0).set("fill", "red");
+        //group.item(0).set("fill", "red");
       })
 
       // var asObject = group.toObject(["seatId"]);
@@ -346,11 +347,20 @@ export default {
         }
       }
     },
-    clickSaveBtn() {
-      this.$axios.post("/springBootURL/", {}).then(response => {
-        this.result = response.data;
-      });
-    },
+     changecolorBtn(){
+      var activeObject = this.floorCanvas.getActiveObject();
+      var eachfloor = this.eachFloorSeatMap.get(this.currentSelectedFloor);
+
+      if (activeObject) {
+        eachfloor.slice().forEach(obj => {
+        if (obj == activeObject) {
+          //modify color
+          obj.item(0).set("fill", "orange");
+        }
+    });
+       this.floorCanvas.renderAll();
+    }
+     },
     clickSaveBtn() {
       this.$axios.post("/springBootURL/", {}).then(response => {
         this.result = response.data;
