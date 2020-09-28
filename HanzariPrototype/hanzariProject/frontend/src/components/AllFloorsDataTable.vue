@@ -80,8 +80,8 @@ export default {
       eventBus.$emit("createSeat", item);
     },
     showSeatButtonClicked(item) {
-      alert("showSeatButtonClicked = " + item.name);
-      eventBus.$emit("showSeat", item);
+      //eventBus.$emit("showSeat", item);
+      eventBus.$emit("showSeatDataTable", item);
     }
   }
 };
