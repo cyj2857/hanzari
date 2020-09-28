@@ -17,21 +17,17 @@
 <script>
 export default {
   props: {
-    /*setDialog: {
-      type: Object
-    }
-    dialog: {
+    dialogStatus: {
         type: Boolean
-    }*/
+    }
   },
   data () {
     return {
-
     }
   },
   computed: {
     dialog () {
-      return true
+      return this.dialogStatus
     }
   }
 }
