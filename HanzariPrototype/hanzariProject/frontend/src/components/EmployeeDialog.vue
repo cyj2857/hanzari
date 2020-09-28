@@ -1,5 +1,5 @@
 <template>
-  <v-dialog max-width="290" :value="dialog">
+  <v-dialog max-width="290" :value="dialog" persistent>
     <v-form ref="form" lazy-validation>
       <v-card>
         <v-card-title>{{dialogStatus}}</v-card-title>
@@ -24,27 +24,6 @@ export default {
   data () {
     return {
     }
-  },
-    directives: {
-		'click-outside': {
-			bind: function (el, binding, vnode) {
-				el.event = function (event) {
-					if (!(el == event.target || el.contains(event.target))) {
-						vnode.context[binding.expression](event);
-					}
-				};
-				var elementsOfOutside = document.querySelectorAll('.clickOutsideOfLectureCard');
-				for (var i = 0; i < elementsOfOutside.length; i++) {
-					elementsOfOutside[i].addEventListener('click', el.event);
-				}
-			},
-			unbind: function (el) {
-				var elementsOfOutside = document.querySelectorAll('.clickOutsideOfLectureCard');
-				for (var i = 0; i < elementsOfOutside.length; i++) {
-					elementsOfOutside[i].removeEventListener('click', el.event);
-				}
-			}
-		}
   },
   computed: {
     dialog () {
