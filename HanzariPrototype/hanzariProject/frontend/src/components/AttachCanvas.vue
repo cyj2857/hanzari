@@ -8,8 +8,9 @@
     <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-      <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog"/>
-      <v-btn @click="getDialog">test Btn</v-btn>
+      <EmployeeDialog :dialogStatus="this.dialogStatus" 
+      @close="closeDialog"/>
+      <v-btn @click="getDialog">Show Seat Info</v-btn>
   </div>
 </template>
 
@@ -51,6 +52,11 @@ export default {
     getDialog(){
       this.dialogStatus = true
       // return this.dialogStatus
+      console.log(this.dialogStatus)
+    },
+    closeDialog () {
+      console.log('<<<close dialog>>>')
+      this.dialogStatus = false
       console.log(this.dialogStatus)
     },
     //canvas, map 생성
@@ -181,9 +187,6 @@ export default {
       group.on("mousedown", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
-        
-        //this.dialogStatus = true
-        //console.log(this.dialogStatus)
       })
 
       // var asObject = group.toObject(["seatId"]);
@@ -388,11 +391,6 @@ export default {
       console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
 
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
-    },
-    closeDialog () {
-      console.log('<<<close dialog>>>')
-      this.dialogStatus = false
-      console.log(this.dialogStatus)
     }
   }
 };
