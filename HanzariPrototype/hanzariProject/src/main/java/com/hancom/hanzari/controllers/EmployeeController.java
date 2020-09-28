@@ -28,7 +28,8 @@ import model.Seat;
 @RestController
 @RequestMapping(value = "/api")
 public class EmployeeController {
-
+	
+	// 전체적인 수정 필요
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -48,7 +49,6 @@ public class EmployeeController {
 
 		} finally {
 			session.close();
-			sessionFactory.close();
 		}
 
 		return employee;
@@ -72,7 +72,6 @@ public class EmployeeController {
 
 		} finally {
 			session.close();
-			sessionFactory.close();
 		}
 
 		return employee;
@@ -96,7 +95,6 @@ public class EmployeeController {
 
 		} finally {
 			session.close();
-			sessionFactory.close();
 		}
 
 		return seats;
@@ -124,7 +122,6 @@ public class EmployeeController {
 
 		} finally {
 			session.close();
-			sessionFactory.close();
 		}
 		return employee;
 	}
