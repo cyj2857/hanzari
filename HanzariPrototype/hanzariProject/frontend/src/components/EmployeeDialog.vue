@@ -18,3 +18,30 @@
     </v-form>
   </v-dialog>
 </template>
+
+<script>
+export default {
+  props: {
+    setDialog: {
+      type: Object
+    }
+  },
+  data () {
+    return {
+
+    }
+  },
+  computed: {
+    dialog () {
+      return this.setDialog.dialog
+    },
+    dialogTitle () {
+      if (this.setDialog.dialogMode === 'add') {
+        return '세트 추가'
+      } else if (this.setDialog.dialogMode === 'mod') {
+        return '세트 수정'
+      }
+    }
+  }
+}
+</script>
