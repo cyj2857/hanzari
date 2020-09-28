@@ -3,6 +3,7 @@
     <div class="d1" id="d1">
       <div class="search" id="search">
         <AllFloorsDataTable></AllFloorsDataTable>
+        <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>
 
@@ -26,13 +27,15 @@
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
+import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
 
 export default {
   name: "HyoriTest",
   components: {
     AllFloorsDataTable,
     FloorTabs,
-    EachFloorDataTable
+    EachFloorDataTable,
+    EachEmployeeSeatDataTable
   },
   data() {
     return {

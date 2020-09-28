@@ -236,9 +236,6 @@ export default {
           myGroup.item(0).set("fill", "yellow");
         }
         //자리가 아직 없을때 예외처리 하기
-        else {
-          alert(item.name+"은 자리가 존재하지 않습니다.");
-        }
        
       }
     },
