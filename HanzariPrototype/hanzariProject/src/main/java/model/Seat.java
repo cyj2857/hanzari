@@ -22,6 +22,7 @@ import model.Figure.FigureBuilder;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
 @Table(name = "seats")
@@ -31,7 +32,7 @@ public class Seat {
 	@Column(name = "seat_id", nullable = false)
 	String seat_id;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "building_id")
 	Building building;
 
@@ -56,7 +57,7 @@ public class Seat {
 
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "employee_id")
+	@JoinColumn(name = "employee_id") // 관계의 주인
 	Employee employee;
 
 	public Seat() {

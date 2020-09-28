@@ -40,18 +40,29 @@ public class Employee {
 	@Column(name = "employee_name", nullable = false)
 	String employee_name;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "department_id")
 	Department department;
 
 	@Column(name = "extension_number", nullable = true)
 	String extension_number;
-	
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Column(nullable = true)
 	List<Seat> seat = new ArrayList<Seat>();
 
 	public Employee() {
+	}
+
+	public void add(Seat seat) {
+		seat.setEmployee(this);
+		getSeat().add(seat);
+	}
+
+	public List<String> seatIdList() {
+		List<String> result = new ArrayList<String>();
+		seat.forEach(e -> result.add(e.seat_id));
+		return result;
 	}
 }
