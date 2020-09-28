@@ -77,13 +77,11 @@ export default {
   },
   methods: {
     createSeatButtonClicked(item) {
-      alert("createSeatButtonClicked = " + item.name);
+      eventBus.$emit("createSeat", item);
     },
     showSeatButtonClicked(item) {
       alert("showSeatButtonClicked = " + item.name);
-    },
-    createRect(item) {
-      eventBus.$emit("createdRect", item);
+      eventBus.$emit("showSeat", item);
     }
   }
 };
