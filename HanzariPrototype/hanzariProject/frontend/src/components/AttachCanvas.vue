@@ -20,8 +20,8 @@ export default {
       floorImageList: null,
       seatId: 0,
       currentSelectedFloor: null,
-      eachFloorSeatMap: null, //current floor's seat list
-      allFloorsSeatList: null //all floor's seat list
+      eachFloorSeatMap: null, //current floor's seat map
+      allFloorsSeatMap: null //all floor's seat map
     };
   },
   created() {
@@ -46,8 +46,8 @@ export default {
       if (this.floorImageList == null) {
         this.floorImageList = new Map();
       }
-      if (this.allFloorsSeatList == null) {
-        this.allFloorsSeatList = new Map();
+      if (this.allFloorsSeatMap == null) {
+        this.allFloorsSeatMap = new Map();
       }
       if (this.eachFloorSeatMap == null) {
         this.eachFloorSeatMap = new Map();
@@ -68,8 +68,8 @@ export default {
         this.loadImage(this.floorImageList.get(floor));
 
         //현재 층에 그린 도형들이 있다면
-        if (this.allFloorsSeatList.get(floor)) {
-          var myOnefloorSeatList = this.allFloorsSeatList.get(floor);
+        if (this.allFloorsSeatMap.get(floor)) {
+          var myOnefloorSeatList = this.allFloorsSeatMap.get(floor);
 
           for (var i = 0; i < myOnefloorSeatList.length; i++) {
             this.floorCanvas.add(myOnefloorSeatList[i]);
@@ -126,7 +126,7 @@ export default {
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       //각 층에 해당하는 도형 리스트 리턴하기
-      var eachFloorSeatList = this.setEachFloorSeatList(this.currentSelectedFloor);
+      var eachFloorSeatList = this.getEachFloorSeatList(this.currentSelectedFloor);
 
       var rectangle = new fabric.Rect({
         width: 50,
@@ -163,21 +163,21 @@ export default {
       //각 층의 도형 리스트에 하나의 해당 도형을 넣기
       eachFloorSeatList.push(group);
       //각 층의 도형 리스트를 접근 할 수 있는 map에 도형리스트를 저장하기
-      //실질적으로 allFloorsSeatList로 각 층의 도형 리스트를 접근한다
+      //실질적으로 allFloorsSeatMap로 각 층의 도형 리스트를 접근한다
 
-      this.allFloorsSeatList.set(
+      this.allFloorsSeatMap.set(
         this.currentSelectedFloor,
         this.eachFloorSeatMap.get(this.currentSelectedFloor)
       );
-      console.log("allFloorsSeatList-size : " + this.allFloorsSeatList.size);
+      console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
 
       console.log(
-        "allFloorsSeatList : " + this.allFloorsSeatList.get(this.currentSelectedFloor)
+        "allFloorsSeatMap : " + this.allFloorsSeatMap.get(this.currentSelectedFloor)
       );
     },
 
     //각 층의 도형 리스트 생성하기
-    setEachFloorSeatList: function(floor) {
+    getEachFloorSeatList: function(floor) {
       //층에 해당하는 도형리스트가 만들어지지 않았을때
       if (!this.eachFloorSeatMap.get(floor)) {
         var newSeatsList = new Array();
@@ -199,7 +199,7 @@ export default {
 
       //console.log(this.currentSelectedFloor)
       this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
-      if (this.allFloorsSeatList.delete(this.currentSelectedFloor))
+      if (this.allFloorsSeatMap.delete(this.currentSelectedFloor))
         alert("success");
       else alert("fail");
       //그 층의 모든 list 없애기
@@ -235,15 +235,15 @@ export default {
           this.floorCanvas.remove(activeObject);
           this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
           //modify map(eachFloorSeatMap)
-          this.allFloorsSeatList.delete(this.currentSelectedFloor);
+          this.allFloorsSeatMap.delete(this.currentSelectedFloor);
           this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
-          this.allFloorsSeatList.set(this.currentSelectedFloor,this.eachFloorSeatMap.get(this.currentSelectedFloor));
+          this.allFloorsSeatMap.set(this.currentSelectedFloor,this.eachFloorSeatMap.get(this.currentSelectedFloor));
           console.log(
             "eachFloorSeatMap >>>>>" + this.eachFloorSeatMap.get(this.currentSelectedFloor)
           );
           console.log(
-            "allFloorsSeatList >>>>>" +
-              this.allFloorsSeatList.get(this.currentSelectedFloor)
+            "allFloorsSeatMap >>>>>" +
+              this.allFloorsSeatMap.get(this.currentSelectedFloor)
           );
           //좌석 지우면 list에 있는거 없애기
         }
@@ -258,7 +258,7 @@ export default {
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       //각 층에 해당하는 도형 리스트 리턴하기
-      var mynewSeatList = this.setEachFloorSeatList(this.currentSelectedFloor);
+      var mynewSeatList = this.getEachFloorSeatList(this.currentSelectedFloor);
 
       var rectangle = new fabric.Rect({
         width: 50,
@@ -285,13 +285,13 @@ export default {
 
       mynewSeatList.push(group);
 
-      this.allFloorsSeatList.set(
+      this.allFloorsSeatMap.set(
         this.currentSelectedFloor,
         this.eachFloorSeatMap.get(this.currentSelectedFloor)
       );
-      console.log("allFloorsSeatList-size : " + this.allFloorsSeatList.size);
+      console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
 
-      console.log(this.allFloorsSeatList.get(this.currentSelectedFloor));
+      console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
     }
   }
 };
