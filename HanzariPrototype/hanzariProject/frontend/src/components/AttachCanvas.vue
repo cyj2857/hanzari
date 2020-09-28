@@ -5,6 +5,7 @@
     <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
+    <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
   </div>
@@ -298,6 +299,59 @@ export default {
           //좌석 지우면 list에 있는거 없애기
         }
       }
+    },
+      deleteBtns() {
+      var activeObject = this.floorCanvas.getActiveObject().toGroup();
+      console.log("activeObject : ");
+      console.log(activeObject);
+      var shapearray = new Array();
+      this.floorCanvas
+        .getObjects()
+        .slice()
+        .forEach(obj => {
+          shapearray.push(obj);
+        });
+      // console.log("shapearray :  " + shapearray);
+      // console.log("shapearray length :  " + shapearray.length);
+
+      if (activeObject) {
+        if (confirm("Are you sure?")) {
+          shapearray.slice().forEach(obj => {
+            if (obj == activeObject) {
+              //  console.log("selected activeobject: " + activeObject);
+              //  console.log("selected obj : " + obj);
+              //delete
+              var index = shapearray.indexOf(activeObject);
+              shapearray.splice(index, 1);
+              //   console.log("after delete shapearray :  " + shapearray);
+              //   console.log("arter delte shapearray length :  " + shapearray.length);
+            }
+          });
+
+          this.floorCanvas.remove(activeObject);
+          this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
+          //modify map(eachFloorSeatMap)
+          this.allFloorsSeatMap.delete(this.currentSelectedFloor);
+          this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
+          this.allFloorsSeatMap.set(
+            this.currentSelectedFloor,
+            this.eachFloorSeatMap.get(this.currentSelectedFloor)
+          );
+          //  console.log(
+          //    "eachFloorSeatMap >>>>>" + this.eachFloorSeatMap.get(this.currentSelectedFloor)
+          //  );
+          //  console.log(
+          //    "allFloorsSeatList >>>>>" +
+          //      this.allFloorsSeatList.get(this.currentSelectedFloor)
+          //  );
+          //醫뚯꽍 吏  슦硫  list 뿉  엳 뒗嫄   뾾 븷湲 
+        }
+      }
+    },
+    clickSaveBtn() {
+      this.$axios.post("/springBootURL/", {}).then(response => {
+        this.result = response.data;
+      });
     },
     clickSaveBtn() {
       this.$axios.post("/springBootURL/", {}).then(response => {
