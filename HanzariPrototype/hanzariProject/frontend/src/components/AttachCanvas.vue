@@ -8,7 +8,8 @@
     <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog"></EmployeeDialog>
+      <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog"/>
+      <v-btn @click="getDialog">test Btn</v-btn>
   </div>
 </template>
 
@@ -29,16 +30,6 @@ export default {
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null, //all floor's seat map
       dialogStatus: false
-      /*setDialog: {
-        dialog: false,
-        dialogTitle: '',
-        dialogMode: '',
-        set: {
-          _id: '',
-          name: ''
-        }
-      },*/
-      //item: null
     };
   },
   created() {
@@ -57,6 +48,11 @@ export default {
     this.initializing();
   },
   methods: {
+    getDialog(){
+      this.dialogStatus = true
+      // return this.dialogStatus
+      console.log(this.dialogStatus)
+    },
     //canvas, map 생성
     initializing() {
       if (this.floorCanvas == null) {
@@ -186,9 +182,8 @@ export default {
         var group = e.target;
         group.item(0).set("fill", "red");
         
-        this.dialog = true
-        //this.item = item
-        //console.log(item)
+        //this.dialogStatus = true
+        //console.log(this.dialogStatus)
       })
 
       // var asObject = group.toObject(["seatId"]);
@@ -399,7 +394,8 @@ export default {
     },
     closeDialog () {
       console.log('<<<close dialog>>>')
-      this.dialog = false
+      this.dialogStatus = false
+      console.log(this.dialogStatus)
     }
   }
 };
