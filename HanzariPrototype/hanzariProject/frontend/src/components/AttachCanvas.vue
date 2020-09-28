@@ -22,7 +22,7 @@ export default {
       seatId: 0,
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
-      allFloorsSeatMap: null //all floor's seat map
+      allFloorsSeatMap: null //all floor's seat map,
     };
   },
   created() {
@@ -350,6 +350,7 @@ export default {
 
         console.log("seatId = " + asObject.seatId); //
         console.log("left = " + x.left); //150
+
       });
 
       this.floorCanvas.add(group);
