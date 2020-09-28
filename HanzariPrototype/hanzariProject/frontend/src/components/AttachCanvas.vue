@@ -22,7 +22,6 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null //all floor's seat map
-      //한글 테스트
     };
   },
   created() {
@@ -74,7 +73,6 @@ export default {
         //현재 층에 그린 도형들이 있다면
         if (this.allFloorsSeatMap.get(floor)) {
           var myOnefloorSeatList = this.allFloorsSeatMap.get(floor);
-
           for (var i = 0; i < myOnefloorSeatList.length; i++) {
             this.floorCanvas.add(myOnefloorSeatList[i]);
             console.log("myOnefloorSeatList : " + myOnefloorSeatList[i]);
@@ -149,6 +147,9 @@ export default {
       var group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
         seatId: this.seatId++, // 1,2,3,4
+        employee_name: item.name,
+        employee_department: item.department,
+        employee_number: item.number,
         employee_id: item.employee_id,
         left: 150,
         top: 150
@@ -181,6 +182,8 @@ export default {
         "allFloorsSeatMap : " +
           this.allFloorsSeatMap.get(this.currentSelectedFloor)
       );
+      console.log(eachFloorSeatList[0].employee_number);
+      eventBus.$emit('eachFloorSeatList', eachFloorSeatList); //보내
     },
 
     showSeat(item) {
@@ -325,7 +328,7 @@ export default {
         var asObject = group.toObject(["seatId"]);
         var x = group.toObject(["left"]);
 
-        console.log("seatId = " + asObject.seatId); //
+        console.log("seatId = " + asObject.seatId);
         console.log("left = " + x.left); //150
       });
 
