@@ -145,7 +145,7 @@ export default {
       });
       var textObject = new fabric.IText(item.name, {
         left: 0,
-        top: 0,
+        top: rectangle.height/3,
         fontSize: 13,
         fill: "#000000"
       });
@@ -153,6 +153,7 @@ export default {
         id: item.employee_id,
         seatId: this.seatId++, // 1,2,3,4
         employee_id: item.employee_id,
+        floor_id: this.currentSelectedFloor,
         left: 150,
         top: 150
       });
@@ -163,6 +164,7 @@ export default {
         var x = group.toObject(["left"]);
 
         console.log("employee id = " + asObject.employee_id); //1771354
+        //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
         console.log("left = " + x.left); //150
       });
 
@@ -195,16 +197,17 @@ export default {
       );
     },
     showSeat(item) {
+      //현재 탭의 층에 대해서만
       var eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
 
       for (var i = 0; i < eachFloorSeatList.length; i++) {
         var myGroup = eachFloorSeatList[i];
-        var asObject = myGroup.toObject(["employee_id"]);
+        var asObject = myGroup.toObject(["employee_id", "floor_id"]);
+        console.log(asObject.floor_id + "층에 자리가 있습니다.");
 
         if (item.employee_id == asObject.employee_id) {
-          
           this.floorCanvas
             .getObjects()
             .slice()
@@ -217,18 +220,17 @@ export default {
           if (this.floorImageList.get(this.currentSelectedFloor) != null) {
             this.loadImage(this.floorImageList.get(this.currentSelectedFloor));
 
-            //현재 층에 그린 도형들이 있다면
-            if (this.allFloorsSeatMap.get(this.currentSelectedFloor)) {
-              var myOnefloorSeatList = this.allFloorsSeatMap.get(this.currentSelectedFloor);
-
-              for (var i = 0; i < myOnefloorSeatList.length; i++) {
-                this.floorCanvas.add(myOnefloorSeatList[i]);
-                console.log("myOnefloorSeatList : " + myOnefloorSeatList[i]);
-              }
+            for (var i = 0; i < eachFloorSeatList.length; i++) {
+              this.floorCanvas.add(eachFloorSeatList[i]);
             }
           }
           myGroup.item(0).set("fill", "yellow");
         }
+        //자리가 아직 없을때 예외처리 하기
+        else {
+          alert(item.name+"은 자리가 존재하지 않습니다.");
+        }
+       
       }
     },
     //각 층의 도형 리스트 생성하기
@@ -253,7 +255,7 @@ export default {
         });
 
       //console.log(this.currentSelectedFloor)
-      this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
+      this.getEachFloorSeatList(this.currentSelectedFloor).length = 0;
       if (this.allFloorsSeatMap.delete(this.currentSelectedFloor))
         alert("success");
       else alert("fail");
