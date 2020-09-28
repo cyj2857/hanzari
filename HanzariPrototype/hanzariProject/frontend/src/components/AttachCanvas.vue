@@ -15,7 +15,11 @@
 <script>
 import { eventBus } from "../main.js";
 import axios from "axios";
+import EmployeeDialog from "@/components/EmployeeDialog.vue";
 export default {
+  components: {
+    EmployeeDialog
+  },
   data: function() {
     return {
       floorCanvas: null,
