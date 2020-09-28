@@ -203,12 +203,12 @@ export default {
 
           //각 층의 저장된 도형 리스트 화면에 뿌려주기
           //현재 층의 이미지가 저장되어있다면
-          if (this.floorImageList.get(floor) != null) {
-            this.loadImage(this.floorImageList.get(floor));
+          if (this.floorImageList.get(this.currentSelectedFloor) != null) {
+            this.loadImage(this.floorImageList.get(this.currentSelectedFloor));
 
             //현재 층에 그린 도형들이 있다면
-            if (this.allFloorsSeatMap.get(floor)) {
-              var myOnefloorSeatList = this.allFloorsSeatMap.get(floor);
+            if (this.allFloorsSeatMap.get(this.currentSelectedFloor)) {
+              var myOnefloorSeatList = this.allFloorsSeatMap.get(this.currentSelectedFloor);
 
               for (var i = 0; i < myOnefloorSeatList.length; i++) {
                 this.floorCanvas.add(myOnefloorSeatList[i]);
