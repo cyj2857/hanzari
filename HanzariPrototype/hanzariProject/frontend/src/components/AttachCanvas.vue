@@ -13,7 +13,11 @@
 <script>
 import { eventBus } from "../main.js";
 import axios from "axios";
+import EmployeeDialog from "@/components/EmployeeDialog.vue";
 export default {
+  components: {
+    EmployeeDialog
+  },
   data: function() {
     return {
       floorCanvas: null,
@@ -21,8 +25,8 @@ export default {
       seatId: 0,
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
-      allFloorsSeatMap: null //all floor's seat map
-      //한글 테스트
+      allFloorsSeatMap: null, //all floor's seat map
+      dialog: false // true : openDialog , fale : closeDialog
     };
   },
   created() {
@@ -124,7 +128,6 @@ export default {
       if (!files.length) return;
       this.createImage(files[0]);
     },
-
     //도형생성시
     createSeat(item) {
       console.log("currnet floor is " + this.currentSelectedFloor);
@@ -155,13 +158,22 @@ export default {
       });
       group.on("mouseover", function(e) {
         var group = e.target;
-        group.item(0).set("fill", "red");
+        //group.item(0).set("fill", "red");
         var asObject = group.toObject(["employee_id"]);
         var x = group.toObject(["left"]);
 
         console.log("employee id = " + asObject.employee_id); //1771354
         console.log("left = " + x.left); //150
       });
+
+      group.on("mousedown", function(e) {
+        var group = e.target;
+        group.item(0).set("fill", "red");
+        
+        this.dialog = true
+        console.log(this.dialog)
+      })
+
       // var asObject = group.toObject(["seatId"]);
       // console.log(asObject.seatId);
       this.floorCanvas.add(group);
@@ -182,7 +194,6 @@ export default {
           this.allFloorsSeatMap.get(this.currentSelectedFloor)
       );
     },
-
     showSeat(item) {
       var eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
@@ -340,6 +351,10 @@ export default {
       console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
 
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
+    },
+    closeDialog() {
+      this.dialog = false
+      console.log(this.dialog)
     }
   }
 };
