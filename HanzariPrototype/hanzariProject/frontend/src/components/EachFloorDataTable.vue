@@ -61,7 +61,7 @@ export default {
     });
   },
   mounted() {
-    this.renderEachFloorSeatList(eachFloorSeatList);
+     this.renderEachFloorSeatList(eachFloorSeatList);
   },
   methods: {
     getColor(department) {
@@ -74,9 +74,9 @@ export default {
       //리스트 초기화
       this.employees=[];
       for (var i = 0; i < eachFloorSeatList.length; i++) {
-        console.log(eachFloorSeatList[i].employee_name);
-        console.log(eachFloorSeatList[i].employee_department);
-        console.log(eachFloorSeatList[i].employee_number);
+        //console.log(eachFloorSeatList[i].employee_name);
+        //console.log(eachFloorSeatList[i].employee_department);
+        //console.log(eachFloorSeatList[i].employee_number);
         var employee = {};
         employee.name=eachFloorSeatList[i].employee_name;
         employee.department=eachFloorSeatList[i].employee_department;

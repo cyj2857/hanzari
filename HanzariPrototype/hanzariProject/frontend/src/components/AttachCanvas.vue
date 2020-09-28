@@ -205,6 +205,8 @@ export default {
 
       console.log("allFloorsSeatMap : ")
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
+
+      eventBus.$emit('eachFloorSeatList',eachFloorSeatList);
     },
 
     showSeat(item) {
