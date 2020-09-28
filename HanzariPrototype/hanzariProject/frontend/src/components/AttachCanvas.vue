@@ -14,11 +14,7 @@
 <script>
 import { eventBus } from "../main.js";
 import axios from "axios";
-import EmployeeDialog from "@/components/EmployeeDialog.vue";
 export default {
-  components: {
-    EmployeeDialog
-  },
   data: function() {
     return {
       floorCanvas: null,
@@ -26,8 +22,7 @@ export default {
       seatId: 0,
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
-      allFloorsSeatMap: null, //all floor's seat map
-      dialog: false // true : openDialog , fale : closeDialog
+      allFloorsSeatMap: null //all floor's seat map
     };
   },
   created() {
@@ -82,7 +77,8 @@ export default {
 
           for (var i = 0; i < myOnefloorSeatList.length; i++) {
             this.floorCanvas.add(myOnefloorSeatList[i]);
-            console.log("myOnefloorSeatList : " + myOnefloorSeatList[i]);
+            console.log("myOnefloorSeatList : ")
+            console.log(myOnefloorSeatList[i]);
           }
         }
       } else if (this.floorImageList.get(floor) == null) {
@@ -122,6 +118,7 @@ export default {
     },
     saveImage(file) {
       this.floorImageList.set(this.currentSelectedFloor, file);
+      console.log("floorImageList : ")
       console.log(this.floorImageList.get(this.currentSelectedFloor));
     },
     onFileChange(e) {
@@ -129,6 +126,7 @@ export default {
       if (!files.length) return;
       this.createImage(files[0]);
     },
+
     //도형생성시
     createSeat(item) {
       console.log("currnet floor is " + this.currentSelectedFloor);
@@ -160,7 +158,7 @@ export default {
       });
       group.on("mouseover", function(e) {
         var group = e.target;
-        //group.item(0).set("fill", "red");
+        group.item(0).set("fill", "red");
         var asObject = group.toObject(["employee_id"]);
         var x = group.toObject(["left"]);
 
@@ -168,15 +166,6 @@ export default {
         //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
         console.log("left = " + x.left); //150
       });
-
-      group.on("mousedown", function(e) {
-        var group = e.target;
-        group.item(0).set("fill", "red");
-        
-        this.dialog = true
-        console.log(this.dialog)
-      })
-
       // var asObject = group.toObject(["seatId"]);
       // console.log(asObject.seatId);
       this.floorCanvas.add(group);
@@ -192,11 +181,10 @@ export default {
       );
       console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
 
-      console.log(
-        "allFloorsSeatMap : " +
-          this.allFloorsSeatMap.get(this.currentSelectedFloor)
-      );
+      console.log("allFloorsSeatMap : ")
+      console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
     },
+
     showSeat(item) {
       //현재 탭의 층에 대해서만
       var eachFloorSeatList = this.getEachFloorSeatList(
@@ -241,13 +229,12 @@ export default {
         var newSeatsList = new Array();
         this.eachFloorSeatMap.set(floor, newSeatsList);
         return this.eachFloorSeatMap.get(floor);
-        console.log("newSeatList X " + this.eachFloorSeatMap.get(floor));
       } else {
         return this.eachFloorSeatMap.get(floor);
-        console.log("newSeatList O " + this.eachFloorSeatMap.get(floor));
       }
     },
     deleteAllBtn() {
+      //그 층의 모든 list 없애기
       this.floorCanvas
         .getObjects()
         .slice()
@@ -260,11 +247,11 @@ export default {
       if (this.allFloorsSeatMap.delete(this.currentSelectedFloor))
         alert("success");
       else alert("fail");
-      //그 층의 모든 list 없애기
+
     },
     deleteBtn() {
+       //좌석 지우면 list에 있는거 없애기
       var activeObject = this.floorCanvas.getActiveObject();
-      //console.log("activeobject : " + activeObject);
 
       var shapearray = new Array();
       this.floorCanvas
@@ -273,48 +260,31 @@ export default {
         .forEach(obj => {
           shapearray.push(obj);
         });
-      // console.log("shapearray :  " + shapearray);
-      // console.log("shapearray length :  " + shapearray.length);
-
       if (activeObject) {
         if (confirm("Are you sure?")) {
           shapearray.slice().forEach(obj => {
             if (obj == activeObject) {
-              //  console.log("selected activeobject: " + activeObject);
-              //  console.log("selected obj : " + obj);
               //delete
               var index = shapearray.indexOf(activeObject);
               shapearray.splice(index, 1);
-              //   console.log("after delete shapearray :  " + shapearray);
-              //   console.log("arter delte shapearray length :  " + shapearray.length);
             }
           });
 
           this.floorCanvas.remove(activeObject);
-          this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
           //modify map(eachFloorSeatMap)
+          this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
           this.allFloorsSeatMap.delete(this.currentSelectedFloor);
           this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
           this.allFloorsSeatMap.set(
             this.currentSelectedFloor,
             this.eachFloorSeatMap.get(this.currentSelectedFloor)
           );
-          console.log(
-            "eachFloorSeatMap >>>>>" +
-              this.eachFloorSeatMap.get(this.currentSelectedFloor)
-          );
-          console.log(
-            "allFloorsSeatMap >>>>>" +
-              this.allFloorsSeatMap.get(this.currentSelectedFloor)
-          );
-          //좌석 지우면 list에 있는거 없애기
         }
       }
     },
       deleteBtns() {
       var activeObject = this.floorCanvas.getActiveObject().toGroup();
-      console.log("activeObject : ");
-      console.log(activeObject);
+
       var shapearray = new Array();
       this.floorCanvas
         .getObjects()
@@ -322,40 +292,26 @@ export default {
         .forEach(obj => {
           shapearray.push(obj);
         });
-      // console.log("shapearray :  " + shapearray);
-      // console.log("shapearray length :  " + shapearray.length);
 
       if (activeObject) {
         if (confirm("Are you sure?")) {
           shapearray.slice().forEach(obj => {
             if (obj == activeObject) {
-              //  console.log("selected activeobject: " + activeObject);
-              //  console.log("selected obj : " + obj);
               //delete
               var index = shapearray.indexOf(activeObject);
               shapearray.splice(index, 1);
-              //   console.log("after delete shapearray :  " + shapearray);
-              //   console.log("arter delte shapearray length :  " + shapearray.length);
             }
           });
 
           this.floorCanvas.remove(activeObject);
-          this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
           //modify map(eachFloorSeatMap)
+          this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
           this.allFloorsSeatMap.delete(this.currentSelectedFloor);
           this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
           this.allFloorsSeatMap.set(
             this.currentSelectedFloor,
             this.eachFloorSeatMap.get(this.currentSelectedFloor)
           );
-          //  console.log(
-          //    "eachFloorSeatMap >>>>>" + this.eachFloorSeatMap.get(this.currentSelectedFloor)
-          //  );
-          //  console.log(
-          //    "allFloorsSeatList >>>>>" +
-          //      this.allFloorsSeatList.get(this.currentSelectedFloor)
-          //  );
-          //醫뚯꽍 吏  슦硫  list 뿉  엳 뒗嫄   뾾 븷湲 
         }
       }
     },
@@ -407,10 +363,6 @@ export default {
       console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
 
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
-    },
-    closeDialog() {
-      this.dialog = false
-      console.log(this.dialog)
     }
   }
 };
