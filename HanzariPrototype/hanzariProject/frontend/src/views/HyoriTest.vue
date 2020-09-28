@@ -3,7 +3,7 @@
     <div class="d1" id="d1">
       <div class="search" id="search">
         <AllFloorsDataTable></AllFloorsDataTable>
-        <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
+        <!--<EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>!-->
       </div>
     </div>
 
