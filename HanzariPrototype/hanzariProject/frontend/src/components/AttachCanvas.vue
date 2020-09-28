@@ -8,7 +8,7 @@
     <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <EmployeeDialog :setDialog="this.setDialog" @close="closeDialog"></EmployeeDialog>
+    <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog"></EmployeeDialog>
   </div>
 </template>
 
@@ -28,7 +28,8 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null, //all floor's seat map
-      setDialog: {
+      dialogStatus: false
+      /*setDialog: {
         dialog: false,
         dialogTitle: '',
         dialogMode: '',
@@ -36,7 +37,8 @@ export default {
           _id: '',
           name: ''
         }
-      }
+      },*/
+      //item: null
     };
   },
   created() {
@@ -182,8 +184,9 @@ export default {
         var group = e.target;
         group.item(0).set("fill", "red");
         
-        this.setDialog.dialog = true
-        this.setDialog.dialogMode = mode
+        this.dialog = true
+        //this.item = item
+        //console.log(item)
       })
 
       // var asObject = group.toObject(["seatId"]);
@@ -364,7 +367,6 @@ export default {
           //    "allFloorsSeatList >>>>>" +
           //      this.allFloorsSeatList.get(this.currentSelectedFloor)
           //  );
-          //醫뚯꽍 吏  슦硫  list 뿉  엳 뒗嫄   뾾 븷湲 
         }
       }
     },
@@ -419,7 +421,7 @@ export default {
     },
     closeDialog () {
       console.log('<<<close dialog>>>')
-      this.setDialog.dialog = false
+      this.dialog = false
     }
   }
 };
