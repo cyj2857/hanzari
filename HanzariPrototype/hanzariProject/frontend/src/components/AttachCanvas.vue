@@ -22,8 +22,8 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null //all floor's seat map
+      //한글 테스트
     };
-    //한글 테스트
   },
   created() {
     eventBus.$on("createdRect", item => {
