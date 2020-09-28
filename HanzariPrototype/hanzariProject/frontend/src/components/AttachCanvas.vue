@@ -8,6 +8,7 @@
     <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog"></EmployeeDialog>
   </div>
 </template>
 
@@ -22,7 +23,18 @@ export default {
       seatId: 0,
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
-      allFloorsSeatMap: null //all floor's seat map,
+      allFloorsSeatMap: null, //all floor's seat map
+      dialogStatus: false
+      /*setDialog: {
+        dialog: false,
+        dialogTitle: '',
+        dialogMode: '',
+        set: {
+          _id: '',
+          name: ''
+        }
+      },*/
+      //item: null
     };
   },
   created() {
@@ -158,7 +170,6 @@ export default {
       });
       group.on("mouseover", function(e) {
         var group = e.target;
-        group.item(0).set("fill", "red");
         var asObject = group.toObject(["employee_id"]);
         var x = group.toObject(["left"]);
 
@@ -166,6 +177,16 @@ export default {
         //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
         console.log("left = " + x.left); //150
       });
+
+      group.on("mousedown", function(e) {
+        var group = e.target;
+        group.item(0).set("fill", "red");
+        
+        this.dialog = true
+        //this.item = item
+        //console.log(item)
+      })
+
       // var asObject = group.toObject(["seatId"]);
       // console.log(asObject.seatId);
       this.floorCanvas.add(group);
@@ -312,6 +333,13 @@ export default {
             this.currentSelectedFloor,
             this.eachFloorSeatMap.get(this.currentSelectedFloor)
           );
+          //  console.log(
+          //    "eachFloorSeatMap >>>>>" + this.eachFloorSeatMap.get(this.currentSelectedFloor)
+          //  );
+          //  console.log(
+          //    "allFloorsSeatList >>>>>" +
+          //      this.allFloorsSeatList.get(this.currentSelectedFloor)
+          //  );
         }
       }
     },
@@ -364,6 +392,10 @@ export default {
       console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
 
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
+    },
+    closeDialog () {
+      console.log('<<<close dialog>>>')
+      this.dialog = false
     }
   }
 };
