@@ -60,9 +60,9 @@ export default {
       this.renderEachFloorSeatList(eachFloorSeatList);
     });
   },
-  mounted() {
-     this.renderEachFloorSeatList(eachFloorSeatList);
-  },
+  // mounted() {
+  //    this.renderEachFloorSeatList(eachFloorSeatList);
+  // },
   methods: {
     getColor(department) {
       if (department=="Secure Team") return "red";
