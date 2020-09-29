@@ -2,10 +2,8 @@
   <v-dialog max-width="290" :value="dialog" persistent>
     <v-form ref="form" lazy-validation>
       <v-card>
-        <v-card-title>{{dialogInfo.dialogTitle}}</v-card-title>
+        <v-card-title>{{dialogStatus}}</v-card-title>
         <v-card-text>
-          {{dialogInfo.employee_name}}
-          {{dialogInfo.employee_department}}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -19,8 +17,8 @@
 <script>
 export default {
   props: {
-    dialogInfo: {
-        type: Object
+    dialogStatus: {
+        type: Boolean
     }
   },
   data () {
@@ -29,7 +27,7 @@ export default {
   },
   computed: {
     dialog () {
-      return this.dialogInfo.dialogStatus
+      return this.dialogStatus
     }
   }
 }

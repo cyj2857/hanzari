@@ -58,4 +58,4 @@ export default {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
 }
-</style> 
+</style>

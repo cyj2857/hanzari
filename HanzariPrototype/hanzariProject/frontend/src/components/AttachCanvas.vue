@@ -7,9 +7,9 @@
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
-    <v-btn @click="changecolorBtn">Change color Shape</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-      <EmployeeDialog :dialogInfo="this.dialogInfo" @close="closeDialog"/>
+      <EmployeeDialog :dialogStatus="this.dialogStatus" 
+      @close="closeDialog"/>
       <v-btn @click="getDialog">Show Seat Info</v-btn>
   </div>
 </template>
@@ -30,14 +30,7 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null, //all floor's seat map
-      //dialogStatus: false
-      dialogInfo:{
-        dialogStatus: false,
-        dialogTitle: '',
-        employee_name: '',
-        employee_department: '',
-        employee_number: ''
-      }
+      dialogStatus: false
     };
   },
   created() {
@@ -57,17 +50,14 @@ export default {
   },
   methods: {
     getDialog(){
-      this.dialogInfo.dialogStatus = true
-      this.dialogInfo.employee_name = 'yunji'
-      this.dialogInfo.employee_department = 'HR Team'
-      this.dialogInfo.dialogTitle = this.dialogInfo.employee_name + '사원의 정보입니다'
-      this.dialogInfo.employee_number = '010-4568-3222'
-      console.log(this.dialogInfo.dialogStatus)
+      this.dialogStatus = true
+      // return this.dialogStatus
+      console.log(this.dialogStatus)
     },
     closeDialog () {
       console.log('<<<close dialog>>>')
-      this.dialogInfo.dialogStatus = false
-      console.log(this.dialogInfo.dialogStatus)
+      this.dialogStatus = false
+      console.log(this.dialogStatus)
     },
     //canvas, map 생성
     initializing() {
@@ -119,9 +109,10 @@ export default {
           });
 
         this.floorCanvas.backgroundImage = 0;
-        this.floorCanvas.backgroundColor = "aliceblue";
+        this.floorCanvas.backgroundColor = "aliceblue"; 
         this.floorCanvas.renderAll();
       }
+      eventBus.$emit('eachFloorSeatList',myOnefloorSeatList);
     },
     createImage(file) {
       this.loadImage(file);
@@ -194,12 +185,11 @@ export default {
         console.log("employee id = " + asObject.employee_id); //1771354
         //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
         console.log("left = " + x.left); //150
-        
       });
 
       group.on("mousedown", function(e) {
         var group = e.target;
-        //group.item(0).set("fill", "red");
+        group.item(0).set("fill", "red");
       })
 
       // var asObject = group.toObject(["seatId"]);
@@ -357,20 +347,11 @@ export default {
         }
       }
     },
-     changecolorBtn(){
-      var activeObject = this.floorCanvas.getActiveObject();
-      var eachfloor = this.eachFloorSeatMap.get(this.currentSelectedFloor);
-
-      if (activeObject) {
-        eachfloor.slice().forEach(obj => {
-        if (obj == activeObject) {
-          //modify color
-          obj.item(0).set("fill", "orange");
-        }
-    });
-       this.floorCanvas.renderAll();
-    }
-     },
+    clickSaveBtn() {
+      this.$axios.post("/springBootURL/", {}).then(response => {
+        this.result = response.data;
+      });
+    },
     clickSaveBtn() {
       this.$axios.post("/springBootURL/", {}).then(response => {
         this.result = response.data;
