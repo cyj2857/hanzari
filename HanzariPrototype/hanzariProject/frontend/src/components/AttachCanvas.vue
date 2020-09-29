@@ -36,6 +36,7 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null, //all floor's seat map
+      eachEmployeeSeatMap: null,//each Employee's seats map
       dialogStatus: false
     };
   },
@@ -378,6 +379,16 @@ export default {
         return this.eachFloorSeatMap.get(floor);
       } else {
         return this.eachFloorSeatMap.get(floor);
+      }
+    },
+
+    getEachEmployeeSeatListL: function(employee){
+      if(!this.eachEmployeeSeatMap.get(employee)){
+        var newEmployeeSeatList = new Array();
+        this.eachEmployeeSeatMap.set(employee, newEmployeeSeatList);
+        return this.eachEmployeeSeatMap.get(employee);
+      }else{
+        return this.eachEmployeeSeatMap.get(employee);
       }
     },
     deleteAllBtn() {
