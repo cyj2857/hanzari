@@ -3,7 +3,6 @@
     <v-form ref="form" lazy-validation>
       <v-card>
         <v-card-title>{{dialogStatus}}</v-card-title>
-        <v-card-text>
         <v-card-title>
           {{this.employee_name}} Employee Information
         </v-card-title>
