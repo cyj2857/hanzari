@@ -351,6 +351,7 @@ export default {
         console.log(asObject.floor_id + "층에 자리가 있습니다.");
 
         if (item.employee_id == asObject.employee_id) {
+          console.log("hihi");
           this.floorCanvas
             .getObjects()
             .slice()
@@ -367,7 +368,7 @@ export default {
               this.floorCanvas.add(eachFloorSeatList[i]);
             }
           }
-          myGroup.item(0).set("fill", "yellow");
+          myGroup.item(0).set("fill", "red");
         }
         //자리가 아직 없을때 예외처리 하기
       }
