@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
 
+import dto.EmployeeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,5 +64,9 @@ public class Employee {
 		List<String> result = new ArrayList<String>();
 		seat.forEach(e -> result.add(e.seat_id));
 		return result;
+	}
+	
+	public EmployeeDto toDto() {
+		return new EmployeeDto(employee_id, authority, employee_name, department.department_name, extension_number);
 	}
 }

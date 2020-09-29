@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import exception.ResourceNotFoundException;
 import model.Employee;
 import repository.EmployeeRepository;
 
+@Service
 public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
