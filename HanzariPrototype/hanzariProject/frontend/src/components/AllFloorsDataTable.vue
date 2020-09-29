@@ -79,8 +79,8 @@ export default {
           employee_id: "1804321",
         },
         {
-          name: "Lee yuri",
-          department: "has no Team",
+          name: "Ahn Hyeon ho",
+          department: "Design Team",
           number: "010-34852-3421",
           employee_id: "1932584",
         },
