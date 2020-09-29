@@ -183,8 +183,8 @@ export default {
       var rectangle4 = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: "blue",
-        opacity: 1,
+        fill: "blue",//seat.getFigure.getShape() 
+        opacity: 1
       });
 
       var textObject1 = new fabric.IText(item.name, {
