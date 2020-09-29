@@ -28,7 +28,7 @@ public class Figure {
 	@Column(name = "figure_id", nullable = false)
 	String figure_id;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "shape_id")
 	Shape shape; // 그려질 모양에 대한 정보 (ex. 네모, 세모, 원 등)
 

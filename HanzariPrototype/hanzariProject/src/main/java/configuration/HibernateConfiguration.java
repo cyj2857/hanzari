@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 @org.springframework.context.annotation.Configuration
 public class HibernateConfiguration {
 
-	@Bean
+	@Bean(name="entityManagerFactory")
 	public SessionFactory sessionFactory() {
 		return new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 	}
