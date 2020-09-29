@@ -94,12 +94,12 @@ public class HomeController {
 		List<Seat> seats = new ArrayList<Seat>();
 		seats.add(new Seat("0001", building, "10", false, null, 100.5, 100.5, figures.get(0), employee.get(0)));
 		seats.add(new Seat("0002", building, "10", false, null, 500.5, 100.5, figures.get(1), employee.get(0)));
-		seats.add(new Seat("0003", building, "10", true, "A", 700.5, 200.5, figures.get(2), null));
-		seats.add(new Seat("0004", building, "10", true, "A", 750.5, 200.5, figures.get(3), null));
-		seats.add(new Seat("0005", building, "6", false, null, 100.5, 100.5, figures.get(4), null));
-		seats.add(new Seat("0006", building, "6", false, null, 200.5, 500.5, figures.get(5), null));
-		seats.add(new Seat("0007", building, "6", true, "A", 600.5, 600.5, figures.get(6), null));
-		seats.add(new Seat("0008", building, "6", true, "A", 650.5, 600.5, figures.get(7), null));
+		seats.add(new Seat("0003", building, "10", true, "A", 700.5, 200.5, figures.get(2), employee.get(1)));
+		seats.add(new Seat("0004", building, "10", true, "A", 750.5, 200.5, figures.get(3), employee.get(1)));
+		seats.add(new Seat("0005", building, "6", false, null, 100.5, 100.5, figures.get(4), employee.get(3)));
+		seats.add(new Seat("0006", building, "6", false, null, 200.5, 500.5, figures.get(5), employee.get(2)));
+		seats.add(new Seat("0007", building, "6", true, "A", 600.5, 600.5, figures.get(6), employee.get(4)));
+		seats.add(new Seat("0008", building, "6", true, "A", 650.5, 600.5, figures.get(7), employee.get(5)));
 
 		try {
 			Transaction tx = session.beginTransaction();
