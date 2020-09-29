@@ -37,8 +37,8 @@ export default {
     eventBus.$on("createSeat", item => {
       this.createSeat(item);
     }),
-      eventBus.$on("showSeat", item => {
-        this.showSeat(item);
+      eventBus.$on("showSeat", seat => {
+        this.showSeat(seat);
       }),
       eventBus.$on("changeFloor", floor => {
         this.currentSelectedFloor = floor;
@@ -366,7 +366,7 @@ export default {
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       ////////////////////////////
     },
-    showSeat(item) {
+    showSeat(seat) {
       //현재 탭의 층에 대해서만
       var eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
@@ -374,10 +374,11 @@ export default {
 
       for (var i = 0; i < eachFloorSeatList.length; i++) {
         var myGroup = eachFloorSeatList[i];
-        var asObject = myGroup.toObject(["employee_id", "floor_id"]);
+        var asObject = myGroup.toObject(["employee_id", "floor_id", "seatId"]);
         console.log(asObject.floor_id + "층에 자리가 있습니다.");
 
-        if (item.employee_id == asObject.employee_id) {
+        var objectSeatId = asObject.seatId+"번";
+        if (seat.seat_id == objectSeatId) {
           console.log("hihi");
           this.floorCanvas
             .getObjects()
