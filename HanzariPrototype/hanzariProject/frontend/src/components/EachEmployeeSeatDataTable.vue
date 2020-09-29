@@ -42,11 +42,12 @@ export default {
   },
   created() {
     eventBus.$on("showSeatDataTable", item => {
-	  this.employees.push({ name: item.name, department: item.department, number: item.number })
+	  this.employees.push({ name: item.name, department: item.department, number: item.number, employee_id: item.employee_id })
 	});
   },
   methods: {
     showSeatButtonClicked(item) {
+      console.log(item);
       eventBus.$emit("showSeat", item);
     }
   }
@@ -58,4 +59,4 @@ export default {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
 }
-</style>
+</style> 
