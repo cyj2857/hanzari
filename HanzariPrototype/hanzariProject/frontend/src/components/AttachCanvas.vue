@@ -8,8 +8,7 @@
     <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-      <EmployeeDialog :dialogStatus="this.dialogStatus" 
-      @close="closeDialog"/>
+      <EmployeeDialog :dialogInfo="this.dialogInfo" @close="closeDialog"/>
       <v-btn @click="getDialog">Show Seat Info</v-btn>
   </div>
 </template>
@@ -30,7 +29,14 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null, //all floor's seat map
-      dialogStatus: false
+      //dialogStatus: false
+      dialogInfo:{
+        dialogStatus: false,
+        dialogTitle: '',
+        employee_name: '',
+        employee_department: '',
+        employee_number: ''
+      }
     };
   },
   created() {
@@ -50,14 +56,17 @@ export default {
   },
   methods: {
     getDialog(){
-      this.dialogStatus = true
-      // return this.dialogStatus
-      console.log(this.dialogStatus)
+      this.dialogInfo.dialogStatus = true
+      this.dialogInfo.employee_name = 'yunji'
+      this.dialogInfo.employee_department = 'HR Team'
+      this.dialogInfo.dialogTitle = this.dialogInfo.employee_name + '사원의 정보입니다'
+      this.dialogInfo.employee_number = '010-4568-3222'
+      console.log(this.dialogInfo.dialogStatus)
     },
     closeDialog () {
       console.log('<<<close dialog>>>')
-      this.dialogStatus = false
-      console.log(this.dialogStatus)
+      this.dialogInfo.dialogStatus = false
+      console.log(this.dialogInfo.dialogStatus)
     },
     //canvas, map 생성
     initializing() {
@@ -184,11 +193,13 @@ export default {
         console.log("employee id = " + asObject.employee_id); //1771354
         //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
         console.log("left = " + x.left); //150
+        
       });
 
       group.on("mousedown", function(e) {
         var group = e.target;
         group.item(0).set("fill", "red");
+        
       })
 
       // var asObject = group.toObject(["seatId"]);
