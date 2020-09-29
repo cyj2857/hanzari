@@ -16,8 +16,8 @@
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="changecolorBtn">Change color Shape</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <EmployeeDialog :dialogInfo="this.dialogInfo" @close="closeDialog" />
-    <v-btn @click="getDialog">Show Seat Info</v-btn>
+      <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog"/>
+      <v-btn @click="getDialog">Show Seat Info</v-btn>
   </div>
 </template>
 
@@ -37,14 +37,7 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null, //all floor's seat map
-      //dialogStatus: false
-      dialogInfo: {
-        dialogStatus: false,
-        dialogTitle: "",
-        employee_name: "",
-        employee_department: "",
-        employee_number: "",
-      },
+      dialogStatus: false
     };
   },
   created() {
@@ -63,19 +56,14 @@ export default {
     this.initializing();
   },
   methods: {
-    getDialog() {
-      this.dialogInfo.dialogStatus = true;
-      this.dialogInfo.employee_name = "yunji";
-      this.dialogInfo.employee_department = "HR Team";
-      this.dialogInfo.dialogTitle =
-        this.dialogInfo.employee_name + "사원의 정보입니다";
-      this.dialogInfo.employee_number = "010-4568-3222";
-      console.log(this.dialogInfo.dialogStatus);
+    getDialog(){
+      this.dialogStatus = true
+      console.log(this.dialogStatus)
     },
-    closeDialog() {
-      console.log("<<<close dialog>>>");
-      this.dialogInfo.dialogStatus = false;
-      console.log(this.dialogInfo.dialogStatus);
+    closeDialog () {
+      console.log('<<<close dialog>>>')
+      this.dialogStatus = false
+      console.log(this.dialogStatus)
     },
     //canvas, map 생성
     initializing() {
@@ -320,10 +308,16 @@ export default {
         eachFloorSeatList.push(group);
       }
 
-      /*group.on("mousedown", function(e) {
+      group.on("mousedown", function(e) {
         var group = e.target;
         //group.item(0).set("fill", "red");
-      })*/
+        
+        console.log(group.toObject(["employee_name"]).employee_name)
+        eventBus.$emit('employee_id', group.toObject(["employee_id"]).employee_id)
+        eventBus.$emit('employee_name', group.toObject(["employee_name"]).employee_name)
+        eventBus.$emit('floor_id', group.toObject(["floor_id"]).floor_id)
+
+      })
 
       // var asObject = group.toObject(["seatId"]);
       // console.log(asObject.seatId);
