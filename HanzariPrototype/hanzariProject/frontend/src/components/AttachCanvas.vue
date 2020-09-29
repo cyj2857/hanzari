@@ -310,13 +310,9 @@ export default {
 
       group.on("mousedown", function(e) {
         var group = e.target;
-        //group.item(0).set("fill", "red");
-        
-        console.log(group.toObject(["employee_name"]).employee_name)
         eventBus.$emit('employee_id', group.toObject(["employee_id"]).employee_id)
         eventBus.$emit('employee_name', group.toObject(["employee_name"]).employee_name)
         eventBus.$emit('floor_id', group.toObject(["floor_id"]).floor_id)
-
       })
 
       // var asObject = group.toObject(["seatId"]);
@@ -517,6 +513,12 @@ export default {
         console.log("seatId = " + asObject.seatId);
         console.log("left = " + x.left); //150
       });
+      group.on("mousedown", function(e) {
+        var group = e.target;
+        eventBus.$emit('employee_id', null)
+        eventBus.$emit('employee_name', null)
+        eventBus.$emit('floor_id', null)
+      })
 
       this.floorCanvas.add(group);
 
