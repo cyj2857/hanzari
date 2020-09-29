@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import model.Employee;
-import model.Figure;
-import model.Seat;
 
 @Getter
 @Setter
@@ -20,26 +17,35 @@ public class SeatDto {
 	private String seat_id;
 
 	@NotBlank
-	private BuildingDto building;
-
-	@NotBlank
 	private String floor;
-
-	@NotBlank
-	private Boolean is_group;
-
-	@NotBlank
-	private String group_id;
-
+	
 	@NotBlank
 	private double x;
 
 	@NotBlank
 	private double y;
-
+	
 	@NotBlank
-	private FigureDto figure;
+	private String building_id;
 
 	@NotBlank
 	private String employee_id;
-}
+
+	@NotBlank
+	private double width;
+	
+	@NotBlank
+	private double height;
+	
+	@NotBlank
+	private double degree;
+	
+	@NotBlank
+	private String shape_id;
+	/* 추후 추가될 수도 있음
+	@NotBlank
+	private Boolean is_group;
+
+	private String group_id;
+	 */
+	}
