@@ -47,7 +47,6 @@ public class Employee {
 	@Column(name = "extension_number", nullable = true)
 	String extension_number;
 
-	@JsonIgnore
 	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Column(nullable = true)
 	List<Seat> seat = new ArrayList<Seat>();
