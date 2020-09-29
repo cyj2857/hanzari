@@ -67,6 +67,6 @@ public class Employee {
 	}
 	
 	public EmployeeDto toDto() {
-		return new EmployeeDto(employee_id, authority, employee_name, department.department_name, extension_number);
+		return new EmployeeDto(employee_id, authority, employee_name, department.getDepartment_id(), extension_number);
 	}
 }

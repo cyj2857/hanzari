@@ -23,7 +23,7 @@ public class EmployeeDto {
 	String employee_name;
 
 	@NotBlank
-	String department_name;
+	String department_id;
 
 	String extension_number;
 }
