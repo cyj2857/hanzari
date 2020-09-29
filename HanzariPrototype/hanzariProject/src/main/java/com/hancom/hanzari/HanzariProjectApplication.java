@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan("com.hancom.hanzari.controllers")
+@ComponentScan(basePackages={"com.hancom.hanzari.controllers","configuration"})
 @SpringBootApplication
 public class HanzariProjectApplication {
 

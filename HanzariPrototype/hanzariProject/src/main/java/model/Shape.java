@@ -16,9 +16,8 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
-
+@Builder
 @Table(name = "temp_shapes")
 public class Shape {
 
