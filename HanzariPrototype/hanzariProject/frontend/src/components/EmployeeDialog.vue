@@ -2,10 +2,8 @@
   <v-dialog max-width="290" :value="dialog" persistent>
     <v-form ref="form" lazy-validation>
       <v-card>
-<<<<<<< HEAD
         <v-card-title>{{dialogStatus}}</v-card-title>
         <v-card-text>
-=======
         <v-card-title>
           {{this.employee_name}} Employee Information
         </v-card-title>
@@ -13,7 +11,6 @@
           floor : {{this.floor_id}} 
           id : {{this.employee_id}}
           name : {{this.employee_name}}
->>>>>>> e767094f7ecc2e66e9d6be21148a86f195787ed5
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -43,8 +40,6 @@ export default {
   computed: {
     dialog () {
       return this.dialogStatus
-<<<<<<< HEAD
-=======
     }
   },
   created() {
@@ -64,7 +59,6 @@ export default {
       console.log(this.employee_id)
       console.log(this.floor_id)
       console.log(this.employee_name)
->>>>>>> e767094f7ecc2e66e9d6be21148a86f195787ed5
     }
   }
 }
