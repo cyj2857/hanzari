@@ -479,7 +479,7 @@ export default {
         eachfloor.slice().forEach((obj) => {
           if (obj == activeObject) {
             //modify color
-            obj.item(0).set("fill", "red");
+            obj.item(0).set("fill", "black");
           }
         });
         this.floorCanvas.renderAll();
@@ -499,7 +499,7 @@ export default {
       var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: "yellow",
+        fill: "gray",
         opacity: 1,
       });
 
