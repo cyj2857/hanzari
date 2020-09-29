@@ -4,13 +4,13 @@
       <v-spacer></v-spacer>
       <v-text-field single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="employees" :search="search">
+    <v-data-table :headers="headers" :items="seats" :search="search">
       <template v-slot:item="row">
         <!--<tr @click="createRect(row.item)">!-->
         <tr>
           <td>{{row.item.name}}</td>
           <td>{{row.item.department}}</td>
-          <td>{{row.item.number}}</td>
+          <td>{{row.item.seat_id}}</td>
           <td>
             <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)">Show</v-btn>
           </td>
@@ -25,7 +25,6 @@ import { eventBus } from "../main.js";
 export default {
   data() {
     return {
-      currentItem: null,
       search: "",
       headers: [
         {
@@ -36,21 +35,14 @@ export default {
         },
         { text: "Department", value: "department" },
         { text: "SeatID", value: "seat_id" },
-        //{ text: "Number", value: "number" },
         { text: "", value: "showSeatButton" }
       ],
-      employees: []
+      seats: []
     };
   },
   created() {
-    eventBus.$on("showSeatDataTable", item => {
-      //this.employees.push({ name: item.name, department: item.department, number: item.number, employee_id: item.employee_id });
-      this.currentItem = item;
-      console.log(this.currentItem.employee_id + "가 사원의 아이디입니다.");
-    });
-
-    eventBus.$on("eachEmployeeSeatMap", eachEmployeeSeatMap => {
-      this.renderEachEmployeeSeatList(eachEmployeeSeatMap);
+    eventBus.$on("showSeatDataTable", employee => {
+      this.renderEachEmployeeSeatList(employee);
     });
   },
   methods: {
@@ -58,21 +50,23 @@ export default {
       console.log(item);
       eventBus.$emit("showSeat", item);
     },
-    renderEachEmployeeSeatList(eachEmployeeSeatMap) {
+    renderEachEmployeeSeatList(employee) {
       //리스트 초기화
-      this.employees = [];
-      console.log("사이즈는 바로바로" + eachEmployeeSeatMap.size);
-      var eachEmployeeSeatList = eachEmployeeSeatMap.get("1771354");
+      this.seats = [];
+      var eachEmployeeSeatList = employee.seatIdList;
+
       if (eachEmployeeSeatList) {
         for (var i = 0; i < eachEmployeeSeatList.length; i++) {
-          this.employees.push({
-            name: "Ma hyori",
-            department: "Department Team",
-            employee_id: "1771354",
-            seat_id: eachEmployeeSeatList[i] + "번 자리"
-          });
 
-          //this.employees.push(employee);
+          var newSeat = {};
+          newSeat.seat_id = eachEmployeeSeatList[i]+"번";
+          newSeat.employee_id = employee.employee_id;
+          newSeat.name = employee.name;
+          newSeat.department = employee.department;
+          
+          console.log(newSeat.seat_id+"입니다.");
+
+          this.seats.push(newSeat);
         }
       }
     }
