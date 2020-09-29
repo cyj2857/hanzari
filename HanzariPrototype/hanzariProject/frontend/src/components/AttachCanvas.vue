@@ -14,7 +14,6 @@
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
-    <v-btn @click="changecolorBtn">Change color Shape</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
       <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog"/>
       <v-btn @click="getDialog">Show Seat Info</v-btn>
@@ -115,9 +114,10 @@ export default {
           });
 
         this.floorCanvas.backgroundImage = 0;
-        this.floorCanvas.backgroundColor = "aliceblue";
+        this.floorCanvas.backgroundColor = "aliceblue"; 
         this.floorCanvas.renderAll();
       }
+      eventBus.$emit('eachFloorSeatList',myOnefloorSeatList);
     },
     createImage(file) {
       this.loadImage(file);

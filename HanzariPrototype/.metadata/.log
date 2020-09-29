@@ -10238,6 +10238,8 @@ java.net.UnknownHostException: 알려진 호스트가 없습니다 (dist.springs
 	at org.eclipse.ecf.provider.filetransfer.httpclient45.HttpClientRetrieveFileTransfer$1.performFileTransfer(HttpClientRetrieveFileTransfer.java:988)
 	at org.eclipse.ecf.filetransfer.FileTransferJob.run(FileTransferJob.java:74)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+<<<<<<< HEAD
+=======
 !SESSION 2020-09-28 15:20:25.135 -----------------------------------------------
 eclipse.buildId=4.16.0.I20200604-0540
 java.version=14.0.2
@@ -10515,3 +10517,4 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY com.genuitec.eclipse.code.core 1 0 2020-09-29 08:55:51.899
 !MESSAGE CodeMix Engine engine has been started
+>>>>>>> ec686b2393a3311b64ce77d4bea574aebbc81c16
