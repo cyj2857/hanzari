@@ -157,7 +157,7 @@ export default {
       );
 
       //각 사원의 자리 리스트 리턴하기
-      var eachEmployeeSeatList = this.getEachEmployeeSeatListL(
+      var eachEmployeeSeatList = this.getEachEmployeeSeatList(
         item.employee_id
       );
 
@@ -265,6 +265,10 @@ export default {
         });
         this.floorCanvas.add(group);
         eachFloorSeatList.push(group);
+
+        var groupToObject = group.toObject(["seatId"]);
+        eachEmployeeSeatList.push(groupToObject.seatId);
+        console.log(item.name+"의 자리의 개수는 "+eachEmployeeSeatList.length+"입니다");
       } else if (item.department == "Marketing Team") {
         var group = new fabric.Group([rectangle3, textObject3], {
           id: item.employee_id,
@@ -288,6 +292,10 @@ export default {
         });
         this.floorCanvas.add(group);
         eachFloorSeatList.push(group);
+
+        var groupToObject = group.toObject(["seatId"]);
+        eachEmployeeSeatList.push(groupToObject.seatId);
+        console.log(item.name+"의 자리의 개수는 "+eachEmployeeSeatList.length+"입니다");
       } else {
         var group = new fabric.Group([rectangle4, textObject4], {
           id: item.employee_id,
@@ -312,6 +320,10 @@ export default {
 
         this.floorCanvas.add(group);
         eachFloorSeatList.push(group);
+
+        var groupToObject = group.toObject(["seatId"]);
+        eachEmployeeSeatList.push(groupToObject.seatId);
+        console.log(item.name+"의 자리의 개수는 "+eachEmployeeSeatList.length+"입니다");
       }
 
       group.on("mousedown", function(e) {
@@ -346,6 +358,13 @@ export default {
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      /////////////////////////////////////////////
+      // this.eachEmployeeSeatMap.set(
+      //   item.employee_id, eachEmployeeSeatList
+      // )
+      console.log("eachEmployeeSeatMap-size:"+this.eachEmployeeSeatMap.size);
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      ////////////////////////////
     },
     showSeat(item) {
       //현재 탭의 층에 대해서만
@@ -393,7 +412,7 @@ export default {
       }
     },
 
-    getEachEmployeeSeatListL: function(employee_id) {
+    getEachEmployeeSeatList: function(employee_id) {
       if (!this.eachEmployeeSeatMap.get(employee_id)) {
         var newEmployeeSeatList = new Array();
         this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
