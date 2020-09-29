@@ -2,16 +2,16 @@ package service;
 
 import java.util.List;
 
-import dto.EmployeeDto;
+import model.Employee;
 
 public interface EmployeeService {
-	List<EmployeeDto> findAll(); // R
-	
-	EmployeeDto findById(String employee_id) throws Exception; // R
-	
+	List<Employee> findAll(); // R
+
+	Employee findById(String employee_id) throws Exception; // R
+
 	void deleteById(String employee_id); // D
-	
-	EmployeeDto save(EmployeeDto employee); // C
+
+	Employee save(Employee employee); // C
 
 	void updateById(String employee_id); // U
 }
