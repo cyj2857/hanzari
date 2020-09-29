@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
 
+import dto.SeatDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -62,4 +63,9 @@ public class Seat {
 
 	public Seat() {
 	};
+
+	public SeatDto toDto() {
+		return new SeatDto(seat_id, floor, x, y, building.getBuilding_id(), employee.getEmployee_id(),
+				figure.getWidth(), figure.getHeight(), figure.getDegree(), figure.getShape().getShape_id());
+	}
 }
