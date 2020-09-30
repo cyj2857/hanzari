@@ -4,13 +4,13 @@
       <v-spacer></v-spacer>
       <v-text-field single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="employees" :search="search">
+    <v-data-table :headers="headers" :items="seats" :search="search">
       <template v-slot:item="row">
         <!--<tr @click="createRect(row.item)">!-->
         <tr>
           <td>{{row.item.name}}</td>
           <td>{{row.item.department}}</td>
-          <td>{{row.item.number}}</td>
+          <td>{{row.item.seat_id}}</td>
           <td>
             <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)">Show</v-btn>
           </td>
@@ -34,20 +34,42 @@ export default {
           value: "name"
         },
         { text: "Department", value: "department" },
-        { text: "Number", value: "number" },
+        { text: "SeatID", value: "seat_id" },
         { text: "", value: "showSeatButton" }
       ],
-      employees: []
+      seats: []
     };
   },
   created() {
-    eventBus.$on("showSeatDataTable", item => {
-	  this.employees.push({ name: item.name, department: item.department, number: item.number })
-	});
+    eventBus.$on("showSeatDataTable", employee => {
+      this.renderEachEmployeeSeatList(employee);
+    });
   },
   methods: {
-    showSeatButtonClicked(item) {
-      eventBus.$emit("showSeat", item);
+    showSeatButtonClicked(seat) {
+      console.log(seat);
+      eventBus.$emit("showSeat", seat);
+    },
+    renderEachEmployeeSeatList(employee) {
+      //리스트 초기화
+      this.seats = [];
+      var eachEmployeeSeatList = employee.seatIdList;
+
+      if (eachEmployeeSeatList) {
+        for (var i = 0; i < eachEmployeeSeatList.length; i++) {
+
+          var newSeat = {};
+          newSeat.seat_id = eachEmployeeSeatList[i]+"번";
+          newSeat.employee_id = employee.employee_id;
+          newSeat.name = employee.name;
+          newSeat.department = employee.department;
+          
+          console.log(newSeat.seat_id+"입니다.");
+
+          this.seats.push(newSeat);
+        }
+      }
+      console.log("첫번째 자리의 아이디는 "+this.seats[0].seat_id);
     }
   }
 };
