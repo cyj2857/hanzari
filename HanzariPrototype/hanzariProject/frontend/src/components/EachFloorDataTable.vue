@@ -19,7 +19,6 @@
 
 <script>
 //@change="renderEachFloorSeatList(eachFloorSeatList)"
-//브랜치 확인
 import { eventBus } from "../main.js";
 export default {
   data() {
