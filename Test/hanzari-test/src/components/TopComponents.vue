@@ -1,8 +1,8 @@
 <template>
-<v-app-bar app color="blue" rounded="lg">
+<v-app-bar app color="blue" rounded>
     <v-app-bar-nav-icon
       color="white"
-      @click="drawer = !drawer"
+      @click="rightContainerControl"
     ></v-app-bar-nav-icon>
     <v-toolbar-title>
       <span class="white--text">한자리</span>
@@ -16,3 +16,15 @@
     </v-btn>
 </v-app-bar>
 </template>
+
+<script>
+import EventBus from "@/EventBus.js";
+export default {
+  methods:{
+    rightContainerControl(){
+      //$emit{"이벤트 이름", 옵션}
+      EventBus.$emit("drawerControl");
+    }
+  }
+}
+</script>

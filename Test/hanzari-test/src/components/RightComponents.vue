@@ -4,7 +4,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <v-sheet rounded="lg" min-height="100vh">
+          <v-sheet rounded min-height="100vh">
             <!--  -->
           </v-sheet>
         </v-col>
