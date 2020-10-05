@@ -52,9 +52,6 @@ export default {
   mounted() {
     this.sendFloorInfo(this.items[0].id);
   },
-  created(){
-
-  },
   methods: {
     getDialog(){
       this.dialogStatus = true;
