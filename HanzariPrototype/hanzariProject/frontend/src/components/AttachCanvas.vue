@@ -24,6 +24,7 @@
 import { eventBus } from "../main.js";
 import axios from "axios";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
+
 export default {
   components: {
     EmployeeDialog,
@@ -156,6 +157,7 @@ export default {
 
     //도형생성시
     createSeat(item) {
+
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       //각 층에 해당하는 도형 리스트 리턴하기
@@ -166,191 +168,38 @@ export default {
       //각 사원의 자리 리스트 리턴하기
       var eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
 
-      var rectangle1 = new fabric.Rect({
+      var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: "orange",
+        fill: this.ChangeColor(item.department),
         opacity: 1,
       });
-
-      var rectangle2 = new fabric.Rect({
-        width: 50,
-        height: 50,
-        fill: "yellow",
-        opacity: 1,
-      });
-
-      var rectangle3 = new fabric.Rect({
-        width: 50,
-        height: 50,
-        fill: "green",
-        opacity: 1,
-      });
-
-      var rectangle4 = new fabric.Rect({
-        width: 50,
-        height: 50,
-        fill: "blue", //seat.getFigure.getShape()
-        opacity: 1,
-      });
-
-      var textObject1 = new fabric.IText(item.name, {
+      var textObject = new fabric.IText(item.name, {
         left: 0,
-        top: rectangle1.height / 3,
+        top: rectangle.height / 3,
         fontSize: 13,
-        fill: "#000000",
-      });
-      var textObject2 = new fabric.IText(item.name, {
-        left: 0,
-        top: rectangle2.height / 3,
-        fontSize: 13,
-        fill: "#000000",
-      });
-      var textObject3 = new fabric.IText(item.name, {
-        left: 0,
-        top: rectangle3.height / 3,
-        fontSize: 13,
-        fill: "#000000",
+        fill: "black",
       });
 
-      var textObject4 = new fabric.IText(item.name, {
-        left: 0,
-        top: rectangle4.height / 3,
-        fontSize: 13,
-        fill: "#000000",
+      var group = new fabric.Group([rectangle, textObject], {
+        id: item.employee_id,
+        seatId: this.seatId++, // 1,2,3,4
+        employee_name: item.name,
+        employee_department: item.department,
+        employee_number: item.number,
+        employee_id: item.employee_id,
+        floor_id: this.currentSelectedFloor,
+        left: 150,
+        top: 150,
       });
-
-      if (item.department == "Development Team") {
-        var group = new fabric.Group([rectangle1, textObject1], {
-          id: item.employee_id,
-          seatId: this.seatId++, // 1,2,3,4
-          employee_name: item.name,
-          employee_department: item.department,
-          employee_number: item.number,
-          employee_id: item.employee_id,
-          floor_id: this.currentSelectedFloor,
-          left: 150,
-          top: 150,
-        });
-        group.on("mouseover", function (e) {
-          var group = e.target;
-          var asObject = group.toObject(["employee_id"]);
-          var x = group.toObject(["left"]);
-
-          console.log("employee id = " + asObject.employee_id); //1771354
-          //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
-          console.log("left = " + x.left); //150
-        });
-        this.floorCanvas.add(group);
-        eachFloorSeatList.push(group);
-
-        var groupToObject = group.toObject(["seatId"]);
-        eachEmployeeSeatList.push(groupToObject.seatId);
-        console.log(
-          item.name +
-            "의 자리의 개수는 " +
-            eachEmployeeSeatList.length +
-            "입니다"
-        );
-      } else if (item.department == "Secure Team") {
-        var group = new fabric.Group([rectangle2, textObject2], {
-          id: item.employee_id,
-          seatId: this.seatId++, // 1,2,3,4
-          employee_name: item.name,
-          employee_department: item.department,
-          employee_number: item.number,
-          employee_id: item.employee_id,
-          floor_id: this.currentSelectedFloor,
-          left: 150,
-          top: 150,
-        });
-        group.on("mouseover", function (e) {
-          var group = e.target;
-          var asObject = group.toObject(["employee_id"]);
-          var x = group.toObject(["left"]);
-
-          console.log("employee id = " + asObject.employee_id); //1771354
-          //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
-          console.log("left = " + x.left); //150
-        });
-        this.floorCanvas.add(group);
-        eachFloorSeatList.push(group);
-
-        var groupToObject = group.toObject(["seatId"]);
-        eachEmployeeSeatList.push(groupToObject.seatId);
-        console.log(
-          item.name +
-            "의 자리의 개수는 " +
-            eachEmployeeSeatList.length +
-            "입니다"
-        );
-      } else if (item.department == "Marketing Team") {
-        var group = new fabric.Group([rectangle3, textObject3], {
-          id: item.employee_id,
-          seatId: this.seatId++, // 1,2,3,4
-          employee_name: item.name,
-          employee_department: item.department,
-          employee_number: item.number,
-          employee_id: item.employee_id,
-          floor_id: this.currentSelectedFloor,
-          left: 150,
-          top: 150,
-        });
-        group.on("mouseover", function (e) {
-          var group = e.target;
-          var asObject = group.toObject(["employee_id"]);
-          var x = group.toObject(["left"]);
-
-          console.log("employee id = " + asObject.employee_id); //1771354
-          //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
-          console.log("left = " + x.left); //150
-        });
-        this.floorCanvas.add(group);
-        eachFloorSeatList.push(group);
-
-        var groupToObject = group.toObject(["seatId"]);
-        eachEmployeeSeatList.push(groupToObject.seatId);
-        console.log(
-          item.name +
-            "의 자리의 개수는 " +
-            eachEmployeeSeatList.length +
-            "입니다"
-        );
-      } else {
-        var group = new fabric.Group([rectangle4, textObject4], {
-          id: item.employee_id,
-          seatId: this.seatId++, // 1,2,3,4
-          employee_name: item.name,
-          employee_department: item.department,
-          employee_number: item.number,
-          employee_id: item.employee_id,
-          floor_id: this.currentSelectedFloor,
-          left: 150,
-          top: 150,
-        });
-        group.on("mouseover", function (e) {
-          var group = e.target;
-          var asObject = group.toObject(["employee_id"]);
-          var x = group.toObject(["left"]);
-
-          console.log("employee id = " + asObject.employee_id); //1771354
-          //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
-          console.log("left = " + x.left); //150
-        });
-
-        this.floorCanvas.add(group);
-        eachFloorSeatList.push(group);
-
-        var groupToObject = group.toObject(["seatId"]);
-        eachEmployeeSeatList.push(groupToObject.seatId);
-        console.log(
-          item.name +
-            "의 자리의 개수는 " +
-            eachEmployeeSeatList.length +
-            "입니다"
-        );
-      }
-
+      group.on("mouseover", function (e) {
+        var group = e.target;
+        var asObject = group.toObject(["employee_id"]);
+        var x = group.toObject(["left"]);
+        console.log("employee id = " + asObject.employee_id); //1771354
+        //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
+        console.log("left = " + x.left); //150
+      });
       group.on("mousedown", function (e) {
         var group = e.target;
         eventBus.$emit(
@@ -363,6 +212,15 @@ export default {
         );
         eventBus.$emit("floor_id", group.toObject(["floor_id"]).floor_id);
       });
+
+      this.floorCanvas.add(group);
+      eachFloorSeatList.push(group);
+
+      var groupToObject = group.toObject(["seatId"]);
+      eachEmployeeSeatList.push(groupToObject.seatId);
+      console.log(
+        item.name + "의 자리의 개수는 " + eachEmployeeSeatList.length + "입니다"
+      );
 
       // var asObject = group.toObject(["seatId"]);
       // console.log(asObject.seatId);
@@ -390,6 +248,18 @@ export default {
       console.log("eachEmployeeSeatMap-size:" + this.eachEmployeeSeatMap.size);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       ////////////////////////////
+    },
+    ChangeColor(department) {
+      const Colors = {
+        Orange: "orange",
+        Yellow: "yellow",
+        Green: "green",
+        Blue: "blue",
+      };
+      if (department == "Development Team") return Colors.Orange;
+      else if (department == "Secure Team") return Colors.Yellow;
+      else if (department == "Marketing Team") return Colors.Green;
+      else return Colors.Blue;
     },
     showSeat(seat) {
       //현재 탭의 층에 대해서만
