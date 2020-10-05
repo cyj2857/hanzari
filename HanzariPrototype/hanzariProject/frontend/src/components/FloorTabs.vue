@@ -11,7 +11,7 @@
         <v-tab
           v-for="tab of items"
           :key="tab.id"
-          @change="sendFloorInfo(tab.id)"
+          @change="setFloor(tab.id)"
           >{{ tab.id }}</v-tab
         >
       </v-tabs>
@@ -49,7 +49,7 @@ export default {
       });
   },
   mounted() {
-    this.sendFloorInfo(this.items[0].id);
+    this.setFloor(this.items[0].id);
   },
   methods: {
     getDialog() {
@@ -82,7 +82,7 @@ export default {
       //items에서 그 index 삭제
       this.decreaseTab();
     },
-    sendFloorInfo(n) {
+    setFloor(n) {
       this.floorNum = n;
       eventBus.$emit("changeFloor", this.floorNum);
     },
