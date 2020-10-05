@@ -198,27 +198,31 @@ export default {
       // });
       group.on("mousedown", e => {
         if (e.button === 1) {
-          this.getDialog();
+          console.log("left click");
         }
         if (e.button === 2) {
           console.log("middle click");
         }
         if (e.button === 3) {
           console.log("right click");
+
         }
       });
+      
+       group.on("mousedblclick", e => {
+          var group = e.target;
+          eventBus.$emit(
+            "employee_id",
+            group.toObject(["employee_id"]).employee_id
+          );
+          eventBus.$emit(
+            "employee_name",
+            group.toObject(["employee_name"]).employee_name
+          );
+          eventBus.$emit("floor_id", group.toObject(["floor_id"]).floor_id);
 
-      group.on("mousedown", function(e) {
-        var group = e.target;
-        eventBus.$emit(
-          "employee_id",
-          group.toObject(["employee_id"]).employee_id
-        );
-        eventBus.$emit(
-          "employee_name",
-          group.toObject(["employee_name"]).employee_name
-        );
-        eventBus.$emit("floor_id", group.toObject(["floor_id"]).floor_id);
+          this.getDialog();
+
       });
 
       this.floorCanvas.add(group);
