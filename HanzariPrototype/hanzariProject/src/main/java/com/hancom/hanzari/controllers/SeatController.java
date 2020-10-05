@@ -23,7 +23,7 @@ public class SeatController {
 	private SeatService seatService;
 
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<SeatDto>> getAllEmps() {
+	public ResponseEntity<List<SeatDto>> getAllSeats() {
 		List<Seat> employee = seatService.findAll();
 		List<SeatDto> result = new ArrayList<>();
 		employee.forEach(e -> result.add(e.toDto()));
@@ -32,7 +32,16 @@ public class SeatController {
 
 	// seat_id로 한 자리 조회
 	@GetMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<SeatDto> getEmp(@PathVariable("seat_id") String seat_id) throws Exception {
+	public ResponseEntity<SeatDto> getSeat(@PathVariable("seat_id") String seat_id) throws Exception {
 		return new ResponseEntity<SeatDto>(seatService.findById(seat_id).toDto(), HttpStatus.OK);
+	}
+
+	// employee_id로 자리 조회
+	@GetMapping(value = "/by-empid/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<SeatDto>> getSeatsByEmpId(@PathVariable("employee_id") String employee_id) {
+		List<Seat> employee = seatService.findByEmpId(employee_id);
+		List<SeatDto> result = new ArrayList<>();
+		employee.forEach(e -> result.add(e.toDto()));
+		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
 	}
 }

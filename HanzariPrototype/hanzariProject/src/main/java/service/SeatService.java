@@ -9,6 +9,8 @@ public interface SeatService {
 
 	Seat findById(String seat_id) throws Exception; // R
 
+	List<Seat> findByEmpId(String employee_id);
+	
 	void deleteById(String seat_id); // D
 
 	Seat save(Seat seat); // C

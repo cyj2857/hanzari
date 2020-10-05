@@ -15,17 +15,29 @@ public class SeatServiceImpl implements SeatService {
 
 	@Autowired
 	private SeatRepository seatRepository;
-	
+
 	@Override
 	public List<Seat> findAll() {
 		List<Seat> seats = new ArrayList<Seat>();
-		seatRepository.findAll().forEach(e->seats.add(e));
+		seatRepository.findAll().forEach(e -> seats.add(e));
 		return seats;
 	}
 
 	@Override
 	public Seat findById(String seat_id) throws Exception {
-		return seatRepository.findById(seat_id).orElseThrow(()-> new ResourceNotFoundException("Seat", "seat_id", seat_id));
+		return seatRepository.findById(seat_id)
+				.orElseThrow(() -> new ResourceNotFoundException("Seat", "seat_id", seat_id));
+	}
+
+	@Override
+	public List<Seat> findByEmpId(String employee_id) {
+		List<Seat> seats = new ArrayList<Seat>();
+		seatRepository.findAll().forEach(e -> {
+			if (e.getEmployee().getEmployee_id().toString().equals(employee_id)) {
+				seats.add(e);
+			}
+		});
+		return seats;
 	}
 
 	@Override
