@@ -32,3 +32,11 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### eclipse ###
+.metadata
+.settings
+.bin
+hyori
+
