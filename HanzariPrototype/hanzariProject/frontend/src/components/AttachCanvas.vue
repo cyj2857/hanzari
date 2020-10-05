@@ -8,7 +8,7 @@
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
-    <v-btn @click="getDialog">Show Seat Info</v-btn>
+    <!--<v-btn @click="getDialog">Show Seat Info</v-btn>!-->
   </div>
 </template>
 
@@ -75,7 +75,11 @@ export default {
     initializing() {
       if (this.floorCanvas == null) {
         const ref = this.$refs.canvas;
-        this.floorCanvas = new fabric.Canvas(ref);
+        this.floorCanvas = new fabric.Canvas(ref, {
+          fireRightClick: true, // <-- enable firing of right click events
+          fireMiddleClick: true, // <-- enable firing of middle click events
+          stopContextMenu: true // <--  prevent context menu from showing
+        });
       }
     },
     changeFloor(floor) {
@@ -184,14 +188,26 @@ export default {
         left: 150,
         top: 150
       });
-      group.on("mouseover", function(e) {
-        var group = e.target;
-        var asObject = group.toObject(["employee_id"]);
-        var x = group.toObject(["left"]);
-        console.log("employee id = " + asObject.employee_id); //1771354
-        //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
-        console.log("left = " + x.left); //150
+      // group.on("mouseover", function(e) {
+      //   var group = e.target;
+      //   var asObject = group.toObject(["employee_id"]);
+      //   var x = group.toObject(["left"]);
+      //   console.log("employee id = " + asObject.employee_id); //1771354
+      //   //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
+      //   console.log("left = " + x.left); //150
+      // });
+      group.on("mousedown", e => {
+        if (e.button === 1) {
+          this.getDialog();
+        }
+        if (e.button === 2) {
+          console.log("middle click");
+        }
+        if (e.button === 3) {
+          console.log("right click");
+        }
       });
+
       group.on("mousedown", function(e) {
         var group = e.target;
         eventBus.$emit(
