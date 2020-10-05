@@ -17,32 +17,36 @@
         >
       </v-tabs>
     </v-card>
-    <TabEnterDialog
+    <AddFloorDialog
       :dialogStatus="this.dialogStatus"
       @close="closeDialog"
-    ></TabEnterDialog>
+    ></AddFloorDialog>
   </div>
 </template>
 
 <script>
 import { eventBus } from "../main.js";
 import AttachCanvas from "@/components/AttachCanvas.vue";
-import TabEnterDialog from "@/components/TabEnterDialog.vue";
+import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
   components: {
     AttachCanvas,
-    TabEnterDialog
+    AddFloorDialog
   },
   data: () => ({
     length: 3,
     tab: null,
     items: [{ id: "One" }, { id: "Five" }, { id: "Six" }],
     floorNum: null,
-    dialogStatus: false
+    dialogStatus: false,
+    inputFloor: null
   }),
   created() {
-    eventBus.$on("close", () => {
-      this.closeDialog()
+    eventBus.$on("confirm", () => {
+      this.confirmDialog()
+    }),
+    eventBus.$on("floor", (floor) => {
+      this.inputFloor = floor
     })
   },
   mounted() {
@@ -52,6 +56,13 @@ export default {
     getDialog(){
       this.dialogStatus = true;
       console.log(this.dialogStatus);
+    },
+    confirmDialog() {
+      console.log("<<<confirm dialog>>>");
+      this.dialogStatus = false;
+      console.log(this.dialogStatus);
+      console.log(this.inputFloor + "here~")
+      this.increaseTab()
     },
     closeDialog() {
       console.log("<<<close dialog>>>");

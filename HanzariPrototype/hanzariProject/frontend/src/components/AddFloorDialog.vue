@@ -3,11 +3,12 @@
     <v-form ref="form" lazy-validation>
       <v-card>
         <v-card-title>
-          <span class="headline">Enter Floor</span>
+          <span class="headline">Add Floor</span>
         </v-card-title>
-        <v-text-field label="Floor" required></v-text-field>
+        <v-text-field label="Floor" v-model="floor" required></v-text-field>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <v-btn @click="test">test</v-btn>
           <v-btn @click="confirm">Confirm</v-btn>
           <v-btn @click="$emit('close')">Close</v-btn>
         </v-card-actions>
@@ -25,17 +26,22 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      floor: null,
+    };
   },
   computed: {
     dialog() {
       return this.dialogStatus;
     },
   },
-  created() {},
   methods: {
+    test() {
+      console.log(this.floor)
+    },
     confirm() {
-      eventBus.$emit("close");
+      eventBus.$emit(this.floor);
+      eventBus.$emit("confirm");
     },
   },
 };
