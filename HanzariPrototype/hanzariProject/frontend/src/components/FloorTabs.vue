@@ -62,6 +62,7 @@ export default {
       this.dialogStatus = false;
       console.log(this.dialogStatus);
       console.log(this.inputFloor + "from add floor dialog")
+      this.items.push({id: this.inputFloor})
       this.increaseTab()
       console.log(this.length)
     },
