@@ -196,7 +196,6 @@ export default {
         var group = e.target;
         var asObject = group.toObject(["employee_id"]);
         var x = group.toObject(["left"]);
-
         console.log("employee id = " + asObject.employee_id); //1771354
         //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
         console.log("left = " + x.left); //150
