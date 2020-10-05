@@ -452,6 +452,7 @@ export default {
         var asObject = group.toObject(["seatId"]);
         var x = group.toObject(["left"]);
 
+
         console.log("seatId = " + asObject.seatId);
         console.log("left = " + x.left); //150
       });
