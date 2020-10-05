@@ -220,6 +220,10 @@ export default {
             group.toObject(["employee_name"]).employee_name
           );
           eventBus.$emit("floor_id", group.toObject(["floor_id"]).floor_id);
+          eventBus.$emit(
+          "employee_department",
+          group.toObject(["employee_department"]).employee_department
+         );
 
           this.getDialog();
 
@@ -290,7 +294,7 @@ export default {
 
       for (var i = 0; i < eachFloorSeatList.length; i++) {
         var myGroup = eachFloorSeatList[i];
-        var asObject = myGroup.toObject(["employee_id", "floor_id", "seatId"]);
+        var asObject = myGroup.toObject(["employee_id", "floor_id", "seatId",  "employee_department"]);
         console.log(asObject.floor_id + "층에 자리가 있습니다.");
 
         var objectSeatId = asObject.seatId + "번";
@@ -312,7 +316,19 @@ export default {
               this.floorCanvas.add(eachFloorSeatList[i]);
             }
           }
-          myGroup.item(0).set("fill", "red");
+          // myGroup.item(0).set("fill", "red");
+          myGroup.item(0).animate("fill", "red", {
+            onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
+            duration: 2000,
+            onComplete: orgincolor,
+          });
+          var color=this.getColor(asObject.employee_department)
+          function orgincolor() {
+            console.log(color);
+            myGroup
+              .item(0)
+              .set("fill", color);
+          } 
         }
         //자리가 아직 없을때 예외처리 하기
       }
