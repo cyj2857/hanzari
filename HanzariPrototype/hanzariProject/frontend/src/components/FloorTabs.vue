@@ -45,7 +45,7 @@ export default {
     eventBus.$on("confirm", () => {
       this.confirmDialog()
     }),
-    eventBus.$on("floor", (floor) => {
+    eventBus.$on("floorInfo", (floor) => {
       this.inputFloor = floor
     })
   },
@@ -61,8 +61,9 @@ export default {
       console.log("<<<confirm dialog>>>");
       this.dialogStatus = false;
       console.log(this.dialogStatus);
-      console.log(this.inputFloor + "here~")
+      console.log(this.inputFloor + "from add floor dialog")
       this.increaseTab()
+      console.log(this.length)
     },
     closeDialog() {
       console.log("<<<close dialog>>>");

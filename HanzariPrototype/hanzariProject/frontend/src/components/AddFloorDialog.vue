@@ -40,7 +40,7 @@ export default {
       console.log(this.floor)
     },
     confirm() {
-      eventBus.$emit(this.floor);
+      eventBus.$emit("floorInfo", this.floor);
       eventBus.$emit("confirm");
     },
   },
