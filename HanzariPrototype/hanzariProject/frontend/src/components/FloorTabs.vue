@@ -3,10 +3,9 @@
     <v-card>
       <v-card-text class="text-center">
         <AttachCanvas></AttachCanvas>
-        <v-btn text @click="decreaseTab()">Remove Floor</v-btn>
+        <v-btn text @click="removeFloor">Remove Floor</v-btn>
         <v-divider class="mx-4" vertical></v-divider>
         <v-btn text @click="getDialog">Add Floor</v-btn>
-        <!--<v-btn text @click="increaseTab()">Add Floor</v-btn>-->
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
         <v-tab
@@ -39,22 +38,22 @@ export default {
     items: [{ id: "One" }, { id: "Five" }, { id: "Six" }],
     floorNum: null,
     dialogStatus: false,
-    inputFloor: null
+    inputFloor: null,
   }),
   created() {
     eventBus.$on("confirm", () => {
-      this.confirmDialog()
+      this.confirmDialog();
     }),
-    eventBus.$on("floorInfo", (floor) => {
-      this.inputFloor = floor
-    })
+      eventBus.$on("floorInfo", (floor) => {
+        this.inputFloor = floor;
+      });
   },
   mounted() {
     this.sendFloorInfo(this.items[0].id);
   },
   methods: {
-    getDialog(){
-      eventBus.$emit("initFloor", null)
+    getDialog() {
+      eventBus.$emit("initFloor", null);
       this.dialogStatus = true;
       console.log(this.dialogStatus);
     },
@@ -62,16 +61,26 @@ export default {
       console.log("<<<confirm dialog>>>");
       this.dialogStatus = false;
       console.log(this.dialogStatus);
-      console.log(this.inputFloor + "from add floor dialog")
-      this.items.push({id: this.inputFloor})
+      console.log(this.inputFloor + "from add floor dialog");
+      this.items.push({ id: this.inputFloor });
 
-      this.increaseTab()
-      console.log(this.length)
+      this.increaseTab();
+      console.log(this.length);
     },
     closeDialog() {
       console.log("<<<close dialog>>>");
       this.dialogStatus = false;
       console.log(this.dialogStatus);
+    },
+    removeFloor() {
+      //items에서 id가 현재 floor인 애 index 가져오기
+      var currentFloorId = this.items[this.floorNum].id
+      const idx = this.items.findIndex(function(item) {return item.id == currentFloorId})
+      if (idx > -1) this.items.splice(idx, 1)
+
+      console.log(this.items)
+      //items에서 그 index 삭제
+      this.decreaseTab();
     },
     sendFloorInfo(n) {
       this.floorNum = n;
@@ -89,7 +98,7 @@ export default {
   },
   watch: {
     length(val) {
-      this.tab = val - 1;
+      this.floorNum = val - 1;
     },
   },
 };
