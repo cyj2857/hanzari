@@ -50,6 +50,7 @@ export default {
       eventBus.$on("changeFloor", (floor) => {
         this.currentSelectedFloor = floor;
         this.changeFloor(this.currentSelectedFloor);
+        console.log(this.currentSelectedFloor+"여기가 현재층");
       });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();

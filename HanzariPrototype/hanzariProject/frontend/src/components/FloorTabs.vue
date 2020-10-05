@@ -6,8 +6,9 @@
       <v-divider class="mx-4" vertical></v-divider>
       <v-btn text @click="increaseTab()">Add Tab</v-btn>
     </v-card-text>
-    <v-tabs v-model="tab" background-color="cyan" dark>
-      <v-tab v-for="n in length" :key="n" @change="sendFloorInfo(n)">{{ n }} Floor</v-tab>
+    <v-tabs v-model="floorNum" background-color="cyan" dark>
+      <v-tab v-for="tab of items" :key="tab.id" @change="sendFloorInfo(tab.id)">{{tab.id}}</v-tab>
+      <!-- <v-tab v-for="n in length" :key="n" @change="sendFloorInfo(n)">{{ n }} Floor</v-tab> -->
     </v-tabs>
   </v-card>
 </template>
@@ -22,15 +23,15 @@ export default {
   data: () => ({
     length: 3,
     tab: null,
-    // items: [
-    //   { tab: "One", content: "Tab 1 Content" },
-    //   { tab: "Five", content: "Tab 2 Content" },
-    //   { tab: "Six", content: "Tab 3 Content" }
-    // ],
-    floorNum: null
+    items: [
+      { id: "One"},
+      { id: "Five"},
+      { id: "Six"}
+    ],
+    floorNum: 0
   }),
   mounted() {
-    this.sendFloorInfo(1);
+    this.sendFloorInfo(this.items[0].id);
   },
   methods: {
     sendFloorInfo(n) {
@@ -39,7 +40,7 @@ export default {
     },
     decreaseTab() {
       this.length--;
-      console.log("length"+this.length);
+      console.log("length" + this.length);
       //pop
     },
     increaseTab() {
