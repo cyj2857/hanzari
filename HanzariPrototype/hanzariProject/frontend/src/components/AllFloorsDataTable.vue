@@ -31,6 +31,7 @@
 
 <script>
 import { eventBus } from "../main.js";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -48,46 +49,12 @@ export default {
         { text: "", value: "createSeatButton" },
         { text: "", value: "showSeatButton" }
       ],
-      employees: [
-        {
-          name: "Ma Hyori",
-          department: "Development Team",
-          number: "010-5617-4977",
-          employee_id: "1771354",
-          seatIdList: null
-        },
-        {
-          name: "No Yunji",
-          department: "Development Team",
-          number: "010-4673-2827",
-          employee_id: "1745674",
-          seatIdList: null
-        },
-        {
-          name: "Choi Yujin",
-          department: "Secure Team",
-          number: "010-7906-3827",
-          employee_id: "1791234",
-          seatIdList: null
-        },
-        {
-          name: "Kim Dongmin",
-          department: "Marketing Team",
-          number: "010-3352-0898",
-          employee_id: "1804321",
-          seatIdList: null
-        },
-        {
-          name: "Ahn Hyeon ho",
-          department: "Design Team",
-          number: "010-34852-3421",
-          employee_id: "1932584",
-          seatIdList: null
-        }
-      ]
+      employees: []
     };
   },
-
+  mounted() {
+    this.getData(this.employees);
+  },
   created() {
     eventBus.$on("eachEmployeeSeatMap", eachEmployeeSeatMap => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
@@ -105,10 +72,18 @@ export default {
           var eachEmployeeSeatList = this.allEmployeeSeatMap.get(
             item.employee_id
           );
-          console.log(this.employees[k].employee_id+"의 자리 개수는"+eachEmployeeSeatList.length);//4
+          console.log(
+            this.employees[k].employee_id +
+              "의 자리 개수는" +
+              eachEmployeeSeatList.length
+          ); //4
 
           if (eachEmployeeSeatList) {
-            console.log(this.employees[k].employee_id+"의 자리는"+eachEmployeeSeatList[2]);//2
+            console.log(
+              this.employees[k].employee_id +
+                "의 자리는" +
+                eachEmployeeSeatList[2]
+            ); //2
             console.log(this.employees[k].name);
 
             this.employees[k].seatIdList = eachEmployeeSeatList;
@@ -117,6 +92,40 @@ export default {
             eventBus.$emit("showSeatDataTable", this.employees[k]);
           }
         }
+      }
+    },
+    getData(employeeList) {
+      axios.get("http://172.30.1.50:8080/employee").then(function(response) {
+        console.log(response.data.length + "는 사이즈입니다.");
+
+        for (var i = 0; i < response.data.length; i++) {
+          var newEmployee = {};
+
+          newEmployee.name = response.data[i].employee_name;
+          console.log(newEmployee.name + "내이름이야");
+          newEmployee.department = response.data[i].department_name;
+          newEmployee.number = response.data[i].extension_number;
+          newEmployee.employee_id = response.data[i].employee_id;
+          newEmployee.seatIdList = response.data[i].seatList;
+          console.log(newEmployee.seatIdList);
+
+          employeeList.push(newEmployee);
+        }
+      });
+    },
+    createEmployee(response) {
+      for (var i = 0; i < response.data.length; i++) {
+        var newEmployee = {};
+
+        newEmployee.name = response.data[i].employee_name;
+        console.log(newEmployee.name + "내이름이야");
+        newEmployee.department = response.data[i].department_name;
+        newEmployee.number = response.data[i].extension_number;
+        newEmployee.employee_id = response.data[i].employee_id;
+        newEmployee.seatIdList = response.data[i].seatList;
+        console.log(newEmployee.seatIdList);
+
+        this.employees.push(newEmployee);
       }
     }
   }
