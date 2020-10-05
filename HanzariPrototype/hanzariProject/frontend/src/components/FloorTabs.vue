@@ -2,9 +2,9 @@
   <v-card>
     <v-card-text class="text-center">
       <AttachCanvas></AttachCanvas>
-      <v-btn text @click="decreaseTab()">Remove Tab</v-btn>
+      <v-btn text @click="decreaseTab()">Remove Floor</v-btn>
       <v-divider class="mx-4" vertical></v-divider>
-      <v-btn text @click="increaseTab()">Add Tab</v-btn>
+      <v-btn text @click="increaseTab()">Add Floor</v-btn>
     </v-card-text>
     <v-tabs v-model="floorNum" background-color="cyan" dark>
       <v-tab v-for="tab of items" :key="tab.id" @change="sendFloorInfo(tab.id)">{{tab.id}}</v-tab>
@@ -28,7 +28,7 @@ export default {
       { id: "Five"},
       { id: "Six"}
     ],
-    floorNum: 0
+    floorNum: null
   }),
   mounted() {
     this.sendFloorInfo(this.items[0].id);
