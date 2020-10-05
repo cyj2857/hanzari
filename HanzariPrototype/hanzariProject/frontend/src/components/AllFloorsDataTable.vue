@@ -33,6 +33,8 @@
 import { eventBus } from "../main.js";
 import axios from "axios";
 const portNum = 8080;
+const host = "172.30.1.50";
+
 export default {
 
   data() {
@@ -67,7 +69,7 @@ export default {
       eventBus.$emit("createSeat", item);
     },
     showSeatButtonClicked(item) {
-      //console.log("ì‚¬ì´ì¦ˆëŠ” ë°”ë¡œë°”ë¡œ" + this.allEmployeeSeatMap.size);
+      //console.log("?‚¬?´ì¦ˆëŠ” ë°”ë¡œë°”ë¡œ" + this.allEmployeeSeatMap.size);
 
       for (var k = 0; k < this.employees.length; k++) {
         if (this.employees[k].employee_id == item.employee_id) {
@@ -75,18 +77,18 @@ export default {
           //  item.employee_id
           //);
           var eachEmployeeSeatList = this.employees[k].seatIdList;
-          console.log(eachEmployeeSeatList+"ê°€ ìë¦¬ ê°œìˆ˜ì´ë‹¤.");
+          console.log(eachEmployeeSeatList+"ê°? ?ë¦? ê°œìˆ˜?´?‹¤.");
 
           console.log(
             this.employees[k].employee_id +
-              "ì˜ ìë¦¬ ê°œìˆ˜ëŠ”" +
+              "?˜ ?ë¦? ê°œìˆ˜?Š”" +
               eachEmployeeSeatList.length
           ); //4
 
           if (eachEmployeeSeatList) {
             console.log(
               this.employees[k].employee_id +
-                "ì˜ ìë¦¬ëŠ”" +
+                "?˜ ?ë¦¬ëŠ”" +
                 eachEmployeeSeatList[2]
             ); //2
             console.log(this.employees[k].name);
@@ -102,15 +104,15 @@ export default {
     getEmployees() {
       let initEmployeeList = new Array();
       
-      axios.get("http://172.30.1.50:"+portNum+"/employee").then(function(response) {
-        console.log(response.data.length + "ëŠ” ì‚¬ì´ì¦ˆì…ë‹ˆë‹¤.");
+      axios.get("http://"+host+":"+portNum+"/employee").then(function(response) {
+        console.log(response.data.length + "?Š” ?‚¬?´ì¦ˆì…?‹ˆ?‹¤.");
 
         
         for (var i = 0; i < response.data.length; i++) {
           var newEmployee = {};
 
           newEmployee.name = response.data[i].employee_name;
-          console.log(newEmployee.name + "ë‚´ì´ë¦„ì´ì•¼");
+          console.log(newEmployee.name + "?‚´?´ë¦„ì´?•¼");
           newEmployee.department = response.data[i].department_name;
           newEmployee.number = response.data[i].extension_number;
           newEmployee.employee_id = response.data[i].employee_id;
@@ -119,7 +121,7 @@ export default {
 
           initEmployeeList.push(newEmployee);
         }
-        console.log(initEmployeeList.length+"ì‚¬ëŒ ê°œìˆ˜ì•¼");
+        console.log(initEmployeeList.length+"?‚¬?Œ ê°œìˆ˜?•¼");
         
       });
       return initEmployeeList;
