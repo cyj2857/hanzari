@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-spacer></v-spacer>
+      <v-spacer>{{this.currentFloor}}</v-spacer>
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -29,16 +29,17 @@ export default {
         { text: "Number", value: "number" },
       ],
       employees: [],
+      currentFloor: null
     };
   },
   created() {
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
       this.renderEachFloorSeatList(eachFloorSeatList);
     });
+    eventBus.$on("changeFloor", (floor)=>{
+      this.currentFloor = floor
+    })
   },
-  // mounted() {
-  //    this.renderEachFloorSeatList(eachFloorSeatList);
-  // },
   methods: {
     getColor(department) {
       console.log("부서는" + department);
