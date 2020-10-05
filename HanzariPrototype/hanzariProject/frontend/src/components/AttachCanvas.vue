@@ -256,22 +256,17 @@ export default {
     showSeat(seat) {
       //seat의 층과 현재층이 같지 않다면
       console.log(seat.seat_id + "가 해당 자리의 아이디입니다.");
-      var seatFloor = seat.seat_id.split("-")[0];
-      console.log(seatFloor + "이 해당 자리의 층입니다.");
+      var seatFloor;
 
-      var eachFloorSeatList = null;
-      if (this.currentSelectedFloor != seatFloor) {
-        //탭 전환 코드 
-        eachFloorSeatList = this.getEachFloorSeatList(
-          seatFloor
-        );
+      if (this.currentSelectedFloor != seat.seat_id.split("-")[0]) {
+        //탭 전환 코드
+        seatFloor = seat.seat_id.split("-")[0];
       }
       //seat의 층과 현재층이 같다면
       else {
-        eachFloorSeatList = this.getEachFloorSeatList(
-          this.currentSelectedFloor
-        );
+        seatFloor = this.currentSelectedFloor;
       }
+      var eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
 
       for (var i = 0; i < eachFloorSeatList.length; i++) {
         var myGroup = eachFloorSeatList[i];
@@ -290,8 +285,8 @@ export default {
 
           //각 층의 저장된 도형 리스트 화면에 뿌려주기
           //현재 층의 이미지가 저장되어있다면
-          if (this.floorImageList.get(this.currentSelectedFloor) != null) {
-            this.loadImage(this.floorImageList.get(this.currentSelectedFloor));
+          if (this.floorImageList.get(seatFloor) != null) {
+            this.loadImage(this.floorImageList.get(seatFloor));
 
             for (var i = 0; i < eachFloorSeatList.length; i++) {
               this.floorCanvas.add(eachFloorSeatList[i]);
