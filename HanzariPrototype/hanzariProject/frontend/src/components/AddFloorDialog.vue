@@ -29,16 +29,21 @@ export default {
       floor: null,
     };
   },
+  created() {
+    eventBus.$on("initFloor", (initFloor)=>{
+      this.floor = initFloor
+    })
+  },
   computed: {
     dialog() {
       return this.dialogStatus;
     },
   },
   methods: {
-    test() {
-      console.log(this.floor)
-    },
     confirm() {
+      if(this.floor==null)
+        return;
+        
       eventBus.$emit("floorInfo", this.floor);
       eventBus.$emit("confirm");
     },

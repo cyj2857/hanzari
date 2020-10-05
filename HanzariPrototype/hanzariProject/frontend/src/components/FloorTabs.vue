@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     getDialog(){
+      eventBus.$emit("initFloor", null)
       this.dialogStatus = true;
       console.log(this.dialogStatus);
     },
