@@ -12,7 +12,6 @@
     >
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
-    <v-btn @click="deleteBtns">Delete Selected Shapes</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
@@ -43,7 +42,7 @@ export default {
   created() {
     eventBus.$on("createSeat", (item) => {
       this.createSeat(item);
-      }),
+    }),
       eventBus.$on("showSeat", (seat) => {
         this.showSeat(seat);
       }),
@@ -51,18 +50,18 @@ export default {
         this.currentSelectedFloor = floor;
         this.changeFloor(this.currentSelectedFloor);
       });
-      if (this.floorImageList == null) {
-        this.floorImageList = new Map();
-      }
-      if (this.allFloorsSeatMap == null) {
-        this.allFloorsSeatMap = new Map();
-      }
-      if (this.eachFloorSeatMap == null) {
-        this.eachFloorSeatMap = new Map();
-      }
-      if (this.eachEmployeeSeatMap == null) {
-        this.eachEmployeeSeatMap = new Map();
-      }
+    if (this.floorImageList == null) {
+      this.floorImageList = new Map();
+    }
+    if (this.allFloorsSeatMap == null) {
+      this.allFloorsSeatMap = new Map();
+    }
+    if (this.eachFloorSeatMap == null) {
+      this.eachFloorSeatMap = new Map();
+    }
+    if (this.eachEmployeeSeatMap == null) {
+      this.eachEmployeeSeatMap = new Map();
+    }
   },
   mounted() {
     this.initializing();
@@ -449,54 +448,32 @@ export default {
     },
     deleteAllBtn() {
       //그 층의 모든 list 없애기
-      this.floorCanvas
-        .getObjects()
-        .slice()
-        .forEach((obj) => {
-          this.floorCanvas.remove(obj);
-        });
+      if (confirm("Are you sure?")) {
+        this.floorCanvas
+          .getObjects()
+          .slice()
+          .forEach((obj) => {
+            this.floorCanvas.remove(obj);
+          });
 
-      //console.log(this.currentSelectedFloor)
-      this.getEachFloorSeatList(this.currentSelectedFloor).length = 0;
-      if (this.allFloorsSeatMap.delete(this.currentSelectedFloor))
-        alert("success");
-      else alert("fail");
+        //console.log(this.currentSelectedFloor)
+        this.getEachFloorSeatList(this.currentSelectedFloor).length = 0;
+        if (this.allFloorsSeatMap.delete(this.currentSelectedFloor))
+          alert("success");
+        else alert("fail");
+      }
     },
     deleteBtn() {
       //좌석 지우면 list에 있는거 없애기
-      var activeObject = this.floorCanvas.getActiveObject();
-
-      var shapearray = new Array();
-      this.floorCanvas
-        .getObjects()
-        .slice()
-        .forEach((obj) => {
-          shapearray.push(obj);
-        });
-      if (activeObject) {
-        if (confirm("Are you sure?")) {
-          shapearray.slice().forEach((obj) => {
-            if (obj == activeObject) {
-              //delete
-              var index = shapearray.indexOf(activeObject);
-              shapearray.splice(index, 1);
-            }
-          });
-
-          this.floorCanvas.remove(activeObject);
-          //modify map(eachFloorSeatMap)
-          this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
-          this.allFloorsSeatMap.delete(this.currentSelectedFloor);
-          this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
-          this.allFloorsSeatMap.set(
-            this.currentSelectedFloor,
-            this.eachFloorSeatMap.get(this.currentSelectedFloor)
-          );
-        }
+      var activeObject = null;
+      if (this.floorCanvas.getActiveObjects().length == 1) {
+        activeObject = this.floorCanvas.getActiveObject()
+        console.log("단일객체 선택");
+      } 
+      else{
+        activeObject = this.floorCanvas.getActiveObject().toGroup()
+        console.log("복수객체 선택");
       }
-    },
-    deleteBtns() {
-      var activeObject = this.floorCanvas.getActiveObject().toGroup();
 
       var shapearray = new Array();
       this.floorCanvas
@@ -505,7 +482,6 @@ export default {
         .forEach((obj) => {
           shapearray.push(obj);
         });
-
       if (activeObject) {
         if (confirm("Are you sure?")) {
           shapearray.slice().forEach((obj) => {
@@ -515,7 +491,6 @@ export default {
               shapearray.splice(index, 1);
             }
           });
-
           this.floorCanvas.remove(activeObject);
           //modify map(eachFloorSeatMap)
           this.eachFloorSeatMap.get(this.currentSelectedFloor).length = 0;
@@ -525,13 +500,6 @@ export default {
             this.currentSelectedFloor,
             this.eachFloorSeatMap.get(this.currentSelectedFloor)
           );
-          //  console.log(
-          //    "eachFloorSeatMap >>>>>" + this.eachFloorSeatMap.get(this.currentSelectedFloor)
-          //  );
-          //  console.log(
-          //    "allFloorsSeatList >>>>>" +
-          //      this.allFloorsSeatList.get(this.currentSelectedFloor)
-          //  );
         }
       }
     },
