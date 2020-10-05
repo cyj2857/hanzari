@@ -163,7 +163,7 @@ export default {
       var rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: this.ChangeColor(item.department),
+        fill: this.getColor(item.department),
         opacity: 1
       });
       var textObject = new fabric.IText(item.name, {
@@ -241,7 +241,7 @@ export default {
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       ////////////////////////////
     },
-    ChangeColor(department) {
+    getColor(department) {
       const Colors = {
         Orange: "orange",
         Yellow: "yellow",
