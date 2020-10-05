@@ -31,7 +31,7 @@ public class EmployeeController {
 		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
 	}
 	
-	// empno로 한명의 사원 조회
+	// employee_id로 한명의 사원 조회
     @GetMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<EmployeeDto> getEmp(@PathVariable("employee_id") String employee_id) throws Exception {
           return new ResponseEntity<EmployeeDto>(employeeService.findById(employee_id).toDto(), HttpStatus.OK);
