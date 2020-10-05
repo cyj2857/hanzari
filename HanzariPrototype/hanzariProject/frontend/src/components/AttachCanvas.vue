@@ -471,7 +471,6 @@ export default {
         this.eachFloorSeatMap.get(this.currentSelectedFloor)
       );
       console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
-
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
     }
   }
