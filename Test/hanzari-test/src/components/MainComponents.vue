@@ -87,7 +87,7 @@ export default {
         const ref = this.$refs.canvas;
         const canvas = new fabric.Canvas(ref, {
           backgroundColor: "white",
-          width: 1150,
+          width: 1620,
           height: 800,
         });
         const rect = new fabric.Rect({
