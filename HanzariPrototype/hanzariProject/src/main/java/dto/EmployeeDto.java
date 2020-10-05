@@ -1,5 +1,8 @@
 package dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
@@ -26,4 +29,6 @@ public class EmployeeDto {
 	String department_name;
 
 	String extension_number;
+	
+	List<String> seatList = new ArrayList<>();
 }
