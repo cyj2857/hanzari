@@ -11,7 +11,7 @@
 
 <script>
 //components 폴더에 있는 vue 파일들 불러와서 template 태그 안의 해당 부분들에 넣기
-import BottomComponents from "@/components/BottomComponents.vue";
+import BottomComponents from "@/components/BottomComponents.vue"; 
 import LeftComponents from "@/components/LeftComponents.vue";
 import MainComponents from "@/components/MainComponents.vue";
 import RightComponents from "@/components/RightComponents.vue";

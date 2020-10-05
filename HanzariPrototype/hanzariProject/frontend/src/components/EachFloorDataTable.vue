@@ -8,7 +8,7 @@
       :items="employees"
       class="elevation-1"
     >
-      <template v-slot:item.department="{ item }">
+      <template v-slot:[`item.department`]="{ item }">
         <v-chip :color="getColor(item.department)" dark>{{
           item.department
         }}</v-chip>
