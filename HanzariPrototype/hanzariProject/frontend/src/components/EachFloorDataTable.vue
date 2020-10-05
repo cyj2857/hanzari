@@ -18,7 +18,7 @@
 </template>
 
 <script>
-//    @change="renderEachFloorSeatList(eachFloorSeatList)"
+//@change="renderEachFloorSeatList(eachFloorSeatList)"
 import { eventBus } from "../main.js";
 export default {
   data() {
