@@ -1,15 +1,8 @@
 <template>
   <div>
     <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
-    <input
-      v-show="false"
-      ref="inputUpload"
-      type="file"
-      @change="onFileChange"
-    />
-    <v-btn color="success" @click="$refs.inputUpload.click()"
-      >File Upload to Background</v-btn
-    >
+    <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
+    <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -26,9 +19,9 @@ import EmployeeDialog from "@/components/EmployeeDialog.vue";
 
 export default {
   components: {
-    EmployeeDialog,
+    EmployeeDialog
   },
-  data: function () {
+  data: function() {
     return {
       floorCanvas: null,
       floorImageList: null,
@@ -37,20 +30,20 @@ export default {
       eachFloorSeatMap: null, //current floor's seat map
       allFloorsSeatMap: null, //all floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
-      dialogStatus: false,
+      dialogStatus: false
     };
   },
   created() {
-    eventBus.$on("createSeat", (item) => {
+    eventBus.$on("createSeat", item => {
       this.createSeat(item);
     }),
-      eventBus.$on("showSeat", (seat) => {
+      eventBus.$on("showSeat", seat => {
         this.showSeat(seat);
       }),
-      eventBus.$on("changeFloor", (floor) => {
+      eventBus.$on("changeFloor", floor => {
         this.currentSelectedFloor = floor;
         this.changeFloor(this.currentSelectedFloor);
-        console.log(this.currentSelectedFloor+"여기가 현재층");
+        console.log(this.currentSelectedFloor + "여기가 현재층");
       });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
@@ -90,7 +83,7 @@ export default {
       this.floorCanvas
         .getObjects()
         .slice()
-        .forEach((obj) => {
+        .forEach(obj => {
           this.floorCanvas.remove(obj);
         });
 
@@ -114,7 +107,7 @@ export default {
         this.floorCanvas
           .getObjects()
           .slice()
-          .forEach((obj) => {
+          .forEach(obj => {
             this.floorCanvas.remove(obj);
           });
 
@@ -130,11 +123,11 @@ export default {
     },
     loadImage(file) {
       var reader = new FileReader();
-      reader.onload = (e) => {
-        fabric.Image.fromURL(e.target.result, (img) => {
+      reader.onload = e => {
+        fabric.Image.fromURL(e.target.result, img => {
           img.set({
             scaleX: this.floorCanvas.width / img.width,
-            scaleY: this.floorCanvas.height / img.height,
+            scaleY: this.floorCanvas.height / img.height
           });
           this.floorCanvas.setBackgroundImage(
             img,
@@ -157,7 +150,6 @@ export default {
 
     //도형생성시
     createSeat(item) {
-
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       //각 층에 해당하는 도형 리스트 리턴하기
@@ -172,27 +164,27 @@ export default {
         width: 50,
         height: 50,
         fill: this.ChangeColor(item.department),
-        opacity: 1,
+        opacity: 1
       });
       var textObject = new fabric.IText(item.name, {
         left: 0,
         top: rectangle.height / 3,
         fontSize: 13,
-        fill: "black",
+        fill: "black"
       });
 
       var group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
-        seatId: this.seatId++, // 1,2,3,4
+        seatId: this.currentSelectedFloor + "-" + this.seatId++, // 1,2,3,4
         employee_name: item.name,
         employee_department: item.department,
         employee_number: item.number,
         employee_id: item.employee_id,
         floor_id: this.currentSelectedFloor,
         left: 150,
-        top: 150,
+        top: 150
       });
-      group.on("mouseover", function (e) {
+      group.on("mouseover", function(e) {
         var group = e.target;
         var asObject = group.toObject(["employee_id"]);
         var x = group.toObject(["left"]);
@@ -200,7 +192,7 @@ export default {
         //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
         console.log("left = " + x.left); //150
       });
-      group.on("mousedown", function (e) {
+      group.on("mousedown", function(e) {
         var group = e.target;
         eventBus.$emit(
           "employee_id",
@@ -254,7 +246,7 @@ export default {
         Orange: "orange",
         Yellow: "yellow",
         Green: "green",
-        Blue: "blue",
+        Blue: "blue"
       };
       if (department == "Development Team") return Colors.Orange;
       else if (department == "Secure Team") return Colors.Yellow;
@@ -262,10 +254,24 @@ export default {
       else return Colors.Blue;
     },
     showSeat(seat) {
-      //현재 탭의 층에 대해서만
-      var eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
-      );
+      //seat의 층과 현재층이 같지 않다면
+      console.log(seat.seat_id + "가 해당 자리의 아이디입니다.");
+      var seatFloor = seat.seat_id.split("-")[0];
+      console.log(seatFloor + "이 해당 자리의 층입니다.");
+
+      var eachFloorSeatList = null;
+      if (this.currentSelectedFloor != seatFloor) {
+        //탭 전환 코드 
+        eachFloorSeatList = this.getEachFloorSeatList(
+          seatFloor
+        );
+      }
+      //seat의 층과 현재층이 같다면
+      else {
+        eachFloorSeatList = this.getEachFloorSeatList(
+          this.currentSelectedFloor
+        );
+      }
 
       for (var i = 0; i < eachFloorSeatList.length; i++) {
         var myGroup = eachFloorSeatList[i];
@@ -278,7 +284,7 @@ export default {
           this.floorCanvas
             .getObjects()
             .slice()
-            .forEach((obj) => {
+            .forEach(obj => {
               this.floorCanvas.remove(obj);
             });
 
@@ -297,7 +303,7 @@ export default {
       }
     },
     //각 층의 도형 리스트 생성하기
-    getEachFloorSeatList: function (floor) {
+    getEachFloorSeatList: function(floor) {
       //층에 해당하는 도형리스트가 만들어지지 않았을때
       if (!this.eachFloorSeatMap.get(floor)) {
         var newSeatsList = new Array();
@@ -308,7 +314,7 @@ export default {
       }
     },
 
-    getEachEmployeeSeatList: function (employee_id) {
+    getEachEmployeeSeatList: function(employee_id) {
       if (!this.eachEmployeeSeatMap.get(employee_id)) {
         var newEmployeeSeatList = new Array();
         this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
@@ -323,7 +329,7 @@ export default {
         this.floorCanvas
           .getObjects()
           .slice()
-          .forEach((obj) => {
+          .forEach(obj => {
             this.floorCanvas.remove(obj);
           });
 
@@ -338,11 +344,10 @@ export default {
       //좌석 지우면 list에 있는거 없애기
       var activeObject = null;
       if (this.floorCanvas.getActiveObjects().length == 1) {
-        activeObject = this.floorCanvas.getActiveObject()
+        activeObject = this.floorCanvas.getActiveObject();
         console.log("단일객체 선택");
-      } 
-      else{
-        activeObject = this.floorCanvas.getActiveObject().toGroup()
+      } else {
+        activeObject = this.floorCanvas.getActiveObject().toGroup();
         console.log("복수객체 선택");
       }
 
@@ -350,12 +355,12 @@ export default {
       this.floorCanvas
         .getObjects()
         .slice()
-        .forEach((obj) => {
+        .forEach(obj => {
           shapearray.push(obj);
         });
       if (activeObject) {
         if (confirm("Are you sure?")) {
-          shapearray.slice().forEach((obj) => {
+          shapearray.slice().forEach(obj => {
             if (obj == activeObject) {
               //delete
               var index = shapearray.indexOf(activeObject);
@@ -379,7 +384,7 @@ export default {
       var eachfloor = this.eachFloorSeatMap.get(this.currentSelectedFloor);
 
       if (activeObject) {
-        eachfloor.slice().forEach((obj) => {
+        eachfloor.slice().forEach(obj => {
           if (obj == activeObject) {
             //modify color
             obj.item(0).set("fill", "black");
@@ -389,7 +394,7 @@ export default {
       }
     },
     clickSaveBtn() {
-      this.$axios.post("/springBootURL/", {}).then((response) => {
+      this.$axios.post("/springBootURL/", {}).then(response => {
         this.result = response.data;
       });
     },
@@ -403,15 +408,15 @@ export default {
         width: 50,
         height: 50,
         fill: "gray",
-        opacity: 1,
+        opacity: 1
       });
 
       var group = new fabric.Group([rectangle], {
         seatId: this.seatId++, // 1,2,3,4
         left: 150,
-        top: 150,
+        top: 150
       });
-      group.on("mouseover", function (e) {
+      group.on("mouseover", function(e) {
         var group = e.target;
         var asObject = group.toObject(["seatId"]);
         var x = group.toObject(["left"]);
@@ -419,7 +424,7 @@ export default {
         console.log("seatId = " + asObject.seatId);
         console.log("left = " + x.left); //150
       });
-      group.on("mousedown", function (e) {
+      group.on("mousedown", function(e) {
         var group = e.target;
         eventBus.$emit("employee_id", null);
         eventBus.$emit("employee_name", null);
@@ -437,8 +442,8 @@ export default {
       console.log("allFloorsSeatMap-size : " + this.allFloorsSeatMap.size);
 
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
-    },
-  },
+    }
+  }
 };
 </script>
 
