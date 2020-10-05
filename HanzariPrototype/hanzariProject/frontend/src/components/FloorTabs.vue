@@ -33,6 +33,9 @@ export default {
   mounted() {
     this.sendFloorInfo(this.items[0].id);
   },
+  created(){
+
+  },
   methods: {
     sendFloorInfo(n) {
       this.floorNum = n;
