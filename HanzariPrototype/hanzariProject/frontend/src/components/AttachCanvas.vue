@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="canvas" class="canvas" width="970px" height="800px"></canvas>
+    <canvas ref="canvas" class="canvas" width="855px" height="800px"></canvas>
     <input
       v-show="false"
       ref="inputUpload"
@@ -40,7 +40,7 @@ export default {
       allFloorsSeatMap: null, //all floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
       dialogStatus: false,
-      DBseatsList: []
+      //DBseatsList: [],
     };
   },
   created() {
@@ -268,8 +268,7 @@ export default {
       else return Colors.Blue;
     },
     showSeat(seat) {
-      
-      console.log(seat.seat_id + "가 해당 자리의 아이디입니다."); // One-0, 
+      console.log(seat.seat_id + "가 해당 자리의 아이디입니다."); // One-0,
       let seatFloor;
 
       //seat의 층과 현재층이 같지 않다면
@@ -418,35 +417,6 @@ export default {
         this.floorCanvas.renderAll();
       }
     },
-    clickSaveBtn() { //이후 SetSeats()로 이름 변경할 예정
-      this.$axios.post("/springBootURL/", {}).then((response) => {
-        this.result = response.data;
-      });
-    },
-    clickLoadBtn() { //이후 getSeats()로 이름 변경할 예정
-      let loadSeatList = new Array();
-      axios
-        .get("http://" + host + ":" + portNum + "/seats")
-        .then(function (response) {
-          for (var i = 0; i < response.data.length; i++) {
-            let newSeat = {}; // make new SeatObject
-            newSeat.seat_id = response.data[i].seat_id;
-            console.log(newSeat.seat_id + "new object's seat_id");
-            newSeat.floor = response.data[i].floor;
-            newSeat.x = response.data[i].x;
-            newSeat.y = response.data[i].y;
-            newSeat.building_id = response.data[i].building_id;
-            newSeat.employee_id = response.data[i].employee_id;
-            newSeat.width = response.data[i].width;
-            newSeat.height = response.data[i].height;
-            newSeat.degree = response.data[i].degree;
-            newSeat.shape_id = response.data[i].shape_id;
-
-            loadSeatList.push(newSeat);
-          }
-        });
-      return loadSeatList; // db에서 가져온 seat list
-    },
     addVacantBtn() {
       console.log("currnet floor is " + this.currentSelectedFloor);
 
@@ -490,6 +460,97 @@ export default {
       );
       console.log("allFloorsSeatMap-size :  " + this.allFloorsSeatMap.size);
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
+    },
+
+    /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
+    seat VM , employee VM 만 보고 view(component) 다루기위함 */
+
+    clickSaveBtn() {
+      //이후 SetSeats()로 이름 변경할 예정
+      axios
+        .post("http://" + host + ":" + portNum + "/seats")
+        .then((response) => {
+          this.result = response.data;
+        });
+    },
+    clickLoadBtn() {
+      //이후 getSeats()로 이름 변경할 예정
+      let loadSeatList = new Array();
+      axios
+        .get("http://" + host + ":" + portNum + "/seats")
+        .then(function (response) {
+          for (var i = 0; i < response.data.length; i++) {
+            let newSeat = {}; // to make new SeatObject
+            newSeat.seat_id = response.data[i].seat_id;
+            console.log(newSeat.seat_id + "new object's seat_id");
+            newSeat.floor = response.data[i].floor;
+            newSeat.x = response.data[i].x;
+            newSeat.y = response.data[i].y;
+            newSeat.building_id = response.data[i].building_id;
+            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.width = response.data[i].width;
+            newSeat.height = response.data[i].height;
+            newSeat.degree = response.data[i].degree;
+            newSeat.shape_id = response.data[i].shape_id;
+
+            loadSeatList.push(newSeat);
+          }
+        });
+      //return loadSeatList; // db에서 가져온 seat array
+      this.loadToCanvas(loadSeatList);
+    },
+    loadToCanvas(loadSeatList) {
+      for (let i = 0; i < loadSeatList.length; i++) {
+        let employee = this.getEmployeeInfo(loadSeatList[i].employee_id);
+
+        let rectangle = new fabric.Rect({
+          width: loadSeatList[i].width,
+          height: loadSeatList[i].height,
+          fill: this.getColor(employee.department_name),
+          opacity: 1,
+        });
+        let textObject = new fabric.IText(employee.employee_name, {
+          left: 0,
+          top: rectangle.height / 3,
+          fontSize: 13,
+          fill: "black",
+        });
+
+        let group = new fabric.Group([rectangle, textObject], {
+          id: loadSeatList[i].employee_id,
+          seatId: loadSeatList[i].seat_id,
+          employee_name: employee.employee_name,
+          employee_department: employee.department_name,
+          employee_number: employee.extension_number,
+          employee_id: loadSeatList[i].employee_id,
+          floor_id: this.currentSelectedFloor,
+          left: loadSeatList[i].x,
+          top: loadSeatList[i].y,
+        });
+
+        this.floorCanvas.add(group);
+        this.eachFloorSeatMap.set(loadSeatList[i].floor, loadSeatList);
+        this.allFloorsSeatMap.set(
+          loadSeatList[i].floor,
+          this.eachFloorSeatMap.get(loadSeatList[i].floor)
+        );
+      }
+    },
+    getEmployeeInfo(employee_id) {
+      axios
+        .get("http://" + host + ":" + portNum + "/employee/" + employee_id)
+        .then(function (response) {
+          for (var i = 0; i < response.data.length; i++) {
+            var selectedEmployee = {};
+
+            selectedEmployee.name = response.data[i].employee_name;
+            selectedEmployee.department = response.data[i].department_name;
+            selectedEmployee.number = response.data[i].extension_number;
+            selectedEmployee.employee_id = response.data[i].employee_id;
+            selectedEmployee.seatIdList = response.data[i].seatList;
+          }
+          return selectedEmployee;
+        });
     },
   },
 };
