@@ -1,4 +1,4 @@
-package model;
+package com.hancom.hanzari.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
+import com.hancom.hanzari.dto.EmployeeDto;
 
-import dto.EmployeeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -67,6 +62,6 @@ public class Employee {
 	}
 	
 	public EmployeeDto toDto() {
-		return new EmployeeDto(employee_id, authority, employee_name, department.getDepartment_name(), extension_number);
+		return new EmployeeDto(employee_id, authority, employee_name, department.getDepartment_name(), extension_number, seatIdList());
 	}
 }

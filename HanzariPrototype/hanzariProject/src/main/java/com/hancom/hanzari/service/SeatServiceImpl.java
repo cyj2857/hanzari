@@ -1,4 +1,4 @@
-package service;
+package com.hancom.hanzari.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,26 +6,38 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import exception.ResourceNotFoundException;
-import model.Seat;
-import repository.SeatRepository;
+import com.hancom.hanzari.exception.ResourceNotFoundException;
+import com.hancom.hanzari.model.Seat;
+import com.hancom.hanzari.repository.SeatRepository;
 
 @Service
 public class SeatServiceImpl implements SeatService {
 
 	@Autowired
 	private SeatRepository seatRepository;
-	
+
 	@Override
 	public List<Seat> findAll() {
 		List<Seat> seats = new ArrayList<Seat>();
-		seatRepository.findAll().forEach(e->seats.add(e));
+		seatRepository.findAll().forEach(e -> seats.add(e));
 		return seats;
 	}
 
 	@Override
 	public Seat findById(String seat_id) throws Exception {
-		return seatRepository.findById(seat_id).orElseThrow(()-> new ResourceNotFoundException("Seat", "seat_id", seat_id));
+		return seatRepository.findById(seat_id)
+				.orElseThrow(() -> new ResourceNotFoundException("Seat", "seat_id", seat_id));
+	}
+
+	@Override
+	public List<Seat> findByEmpId(String employee_id) {
+		List<Seat> seats = new ArrayList<Seat>();
+		seatRepository.findAll().forEach(e -> {
+			if (e.getEmployee().getEmployee_id().toString().equals(employee_id)) {
+				seats.add(e);
+			}
+		});
+		return seats;
 	}
 
 	@Override
@@ -35,8 +47,8 @@ public class SeatServiceImpl implements SeatService {
 
 	@Override
 	public Seat save(Seat seat) {
-		// TODO Auto-generated method stub
-		return null;
+		seatRepository.save(seat);
+		return seat;
 	}
 
 	@Override
