@@ -1,21 +1,8 @@
 <template>
   <div>
-    <canvas
-      ref="canvas"
-      class="canvas"
-      width="855px"
-      height="800px"
-      style="text-align: center"
-    ></canvas>
-    <input
-      v-show="false"
-      ref="inputUpload"
-      type="file"
-      @change="onFileChange"
-    />
-    <v-btn color="success" @click="$refs.inputUpload.click()"
-      >File Upload to Background</v-btn
-    >
+    <canvas ref="canvas" class="canvas" width="855px" height="800px" style="text-align: center"></canvas>
+    <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
+    <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -452,34 +439,76 @@ export default {
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
 
-    clickSaveBtn() {
-      //이후 SetSeats()로 이름 변경할 예정
-      let data = {
-        seat_id: "2",
-        floor: "10",
-        x: 100.5,
-        y: 100.5,
-        is_group: false,
-        group_id: null,
-        building_id: "HANCOM01",
-        employee_id: "19101101",
-        width: 50.5,
-        height: 50.5,
-        degree: 0,
-        shape_id: "1",
-      };
-      axios
-        .post(
-          "http://" + host + ":" + portNum + "/seats",
-          JSON.stringify(data),
-          {
-            headers: { "Content-Type": `application/json` },
-          }
-        )
-        .then((res) => {
-          console.log(res.data);
-        });
-    },
+  clickSaveBtn() {
+    console.log(this.allFloorsSeatMap.length+"현재 저장한 층의 개수입니다.");
+    if (this.allFloorsSeatMap) {
+      for (var i = 0; i < this.allFloorsSeatMap.size; i++) {
+        //console.log(this.allFloorsSeatMap.size+"현재 저장한 층의 개수입니다.");
+        /*for (var j = 0; j < this.eachFloorSeatMap[i].length; j++) {
+          console.log(this.eachFloorSeatMap[i].length+"한 층의 자리 개수입니다.");
+
+          let groupToObject = this.eachFloorSeatMap[i].toObject([
+            "seatId",
+            "floor_id",
+            "left",
+            "top",
+            "employee_department",
+            "employee_id"
+          ]);
+
+          let data = {};
+          data.seat_id = groupToObject.seatId;
+          data.floor = groupToObject.floor_id;
+          data.x = groupToObject.left;
+          data.y = groupToObject.top;
+          data.is_group = true;
+          data.group_id = groupToObject.employee_department;
+          data.building_id = "HANCOM01";
+          data.employee_id = groupToObject.employee_id;
+          data.width = 50.5;
+          data.height = 50.5;
+          data.degree = 0;
+          data.shape_id = "1";
+
+          this.saveAllSeatByAxios(data);
+        }*/
+      }
+    }
+  },
+  saveAllSeatByAxios(data) {
+    axios
+      .post("http://" + host + ":" + portNum + "/seats", JSON.stringify(data), {
+        headers: { "Content-Type": `application/json` }
+      })
+      .then(res => {
+        console.log(res.data);
+      });
+  },
+  clickLoadBtn() {
+    //이후 getSeats()로 이름 변경할 예정
+    let loadSeatList = new Array();
+    axios
+      .get("http://" + host + ":" + portNum + "/seats")
+      .then(function(response) {
+        for (var i = 0; i < response.data.length; i++) {
+          let newSeat = {}; // to make new SeatObject
+          newSeat.seat_id = response.data[i].seat_id;
+          console.log(newSeat.seat_id + "new object's seat_id");
+          newSeat.floor = response.data[i].floor;
+          newSeat.x = response.data[i].x;
+          newSeat.y = response.data[i].y;
+          newSeat.building_id = response.data[i].building_id;
+          newSeat.employee_id = response.data[i].employee_id;
+          newSeat.width = response.data[i].width;
+          newSeat.height = response.data[i].height;
+          newSeat.degree = response.data[i].degree;
+          newSeat.shape_id = response.data[i].shape_id;
+
+          loadSeatList.push(newSeat);
+        }
+      })
+  },
+
     getSeats() {
       let loadSeatList = new Array();
       axios
