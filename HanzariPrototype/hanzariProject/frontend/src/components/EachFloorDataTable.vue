@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-spacer></v-spacer>
+      <v-spacer>{{this.currentFloor}}</v-spacer>
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -29,16 +29,17 @@ export default {
         { text: "Number", value: "number" },
       ],
       employees: [],
+      currentFloor: null
     };
   },
   created() {
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
       this.renderEachFloorSeatList(eachFloorSeatList);
     });
+    eventBus.$on("changeFloor", (floor)=>{
+      this.currentFloor = floor
+    })
   },
-  // mounted() {
-  //    this.renderEachFloorSeatList(eachFloorSeatList);
-  // },
   methods: {
     getColor(department) {
       console.log("부서는" + department);
@@ -52,8 +53,8 @@ export default {
       //리스트 초기화
       this.employees = [];
       if (eachFloorSeatList) {
-        for (var i = 0; i < eachFloorSeatList.length; i++) {
-          var employee = {};
+        for (let i = 0; i < eachFloorSeatList.length; i++) {
+          let employee = {};
           employee.name = eachFloorSeatList[i].employee_name;
           employee.department = eachFloorSeatList[i].employee_department;
           employee.number = eachFloorSeatList[i].employee_number;

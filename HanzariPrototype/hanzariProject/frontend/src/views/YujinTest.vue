@@ -9,15 +9,13 @@
 <script src ="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   name: "AxiosTest",
   methods: {
     getData: function() {
-      axios.get(
-        "/api/employee"
-      ).then(function(response) {
-        console.log(response);
+      axios.get("http://172.30.1.50:8080/employee").then(function(response) {
+        console.log(response)
       });
     }
   }
