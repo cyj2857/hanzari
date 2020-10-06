@@ -405,20 +405,6 @@ export default {
         }
       }
     },
-    changecolorBtn() {
-      let activeObject = this.floorCanvas.getActiveObject();
-      let eachfloor = this.eachFloorSeatMap.get(this.currentSelectedFloor);
-
-      if (activeObject) {
-        eachfloor.slice().forEach((obj) => {
-          if (obj == activeObject) {
-            //modify color
-            obj.item(0).set("fill", "black");
-          }
-        });
-        this.floorCanvas.renderAll();
-      }
-    },
     addVacantBtn() {
       console.log("currnet floor is " + this.currentSelectedFloor);
 
