@@ -1,6 +1,9 @@
-package dto;
+package com.hancom.hanzari.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+
+import com.hancom.hanzari.model.Employee;
+import com.hancom.hanzari.model.Seat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,34 +21,31 @@ public class SeatDto {
 
 	@NotBlank
 	private String floor;
-	
+
 	@NotBlank
 	private double x;
 
 	@NotBlank
 	private double y;
-	
-	@NotBlank
-	private String building_id;
 
-	@NotBlank
-	private String employee_id;
-
-	@NotBlank
-	private double width;
-	
-	@NotBlank
-	private double height;
-	
-	@NotBlank
-	private double degree;
-	
-	@NotBlank
-	private String shape_id;
-	/* 추후 추가될 수도 있음
 	@NotBlank
 	private Boolean is_group;
 
 	private String group_id;
-	 */
-	}
+
+	private String building_id;
+
+	private String employee_id; // nullable
+
+	@NotBlank
+	private double width;
+
+	@NotBlank
+	private double height;
+
+	@NotBlank
+	private double degree;
+
+	@NotBlank
+	private String shape_id;
+}
