@@ -463,20 +463,42 @@ export default {
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
 
   clickSaveBtn() {
-    let data = {
-      seat_id: "2",
-      floor: "10",
-      x: 100.5,
-      y: 100.5,
-      is_group: false,
-      group_id: null,
-      building_id: "HANCOM01",
-      employee_id: "19101101",
-      width: 50.5,
-      height: 50.5,
-      degree: 0,
-      shape_id: "1"
-    };
+    console.log(this.allFloorsSeatMap.length+"현재 저장한 층의 개수입니다.");
+    if (this.allFloorsSeatMap) {
+      for (var i = 0; i < this.allFloorsSeatMap.size; i++) {
+        //console.log(this.allFloorsSeatMap.size+"현재 저장한 층의 개수입니다.");
+        /*for (var j = 0; j < this.eachFloorSeatMap[i].length; j++) {
+          console.log(this.eachFloorSeatMap[i].length+"한 층의 자리 개수입니다.");
+
+          let groupToObject = this.eachFloorSeatMap[i].toObject([
+            "seatId",
+            "floor_id",
+            "left",
+            "top",
+            "employee_department",
+            "employee_id"
+          ]);
+
+          let data = {};
+          data.seat_id = groupToObject.seatId;
+          data.floor = groupToObject.floor_id;
+          data.x = groupToObject.left;
+          data.y = groupToObject.top;
+          data.is_group = true;
+          data.group_id = groupToObject.employee_department;
+          data.building_id = "HANCOM01";
+          data.employee_id = groupToObject.employee_id;
+          data.width = 50.5;
+          data.height = 50.5;
+          data.degree = 0;
+          data.shape_id = "1";
+
+          this.saveAllSeatByAxios(data);
+        }*/
+      }
+    }
+  },
+  saveAllSeatByAxios(data) {
     axios
       .post("http://" + host + ":" + portNum + "/seats", JSON.stringify(data), {
         headers: { "Content-Type": `application/json` }
