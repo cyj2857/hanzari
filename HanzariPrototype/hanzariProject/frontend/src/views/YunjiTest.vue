@@ -3,6 +3,7 @@
     <div class="d1" id="d1">
       <div class="search" id="search">
         <AllFloorsDataTable></AllFloorsDataTable>
+        <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>
 
@@ -26,13 +27,15 @@
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
+import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
 
 export default {
   name: "YunjiTest",
   components: {
     AllFloorsDataTable,
     FloorTabs,
-    EachFloorDataTable
+    EachFloorDataTable,
+    EachEmployeeSeatDataTable
   },
   data() {
     return {
@@ -46,7 +49,7 @@ export default {
   methods: {
     updateText() {
       this.changeText = "Click Event Test";
-    }
+    },
   },
 };
 </script>
@@ -54,7 +57,7 @@ export default {
 <style scoped>
 .d1 {
   float: left;
-  width: 23%;
+  width: 25%;
   height: 100%;
   border-right: 1px solid #b8b8b8;
   margin-right: -1px;
@@ -63,9 +66,10 @@ export default {
 
 .d2 {
   float: left;
-  width: 53%;
+  width: 50%;
   height: 100%;
   overflow-y: scroll;
+  text-align: center;
 }
 
 .d3 {
@@ -77,12 +81,13 @@ export default {
 
 .d4 {
   float: left;
-  width: 23%;
+  width: 25%;
   height: 100%;
   border-right: 1px solid #b8b8b8;
   margin-right: -1px;
   overflow-y: scroll;
 }
+
 
 #hr {
   cursor: pointer;
