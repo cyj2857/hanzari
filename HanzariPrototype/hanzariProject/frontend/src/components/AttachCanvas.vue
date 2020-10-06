@@ -1,6 +1,12 @@
 <template>
   <div>
-    <canvas ref="canvas" class="canvas" width="855px" height="800px"></canvas>
+    <canvas
+      ref="canvas"
+      class="canvas"
+      width="855px"
+      height="800px"
+      style="text-align: center"
+    ></canvas>
     <input
       v-show="false"
       ref="inputUpload"
@@ -40,7 +46,7 @@ export default {
       allFloorsSeatMap: null, //all floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
       dialogStatus: false,
-      //DBseatsList: [],
+      DBseatsList: [],
     };
   },
   created() {
@@ -70,7 +76,7 @@ export default {
   },
   mounted() {
     this.initializing();
-    //this.DBseatsList = this.clickLoadBtn();
+    this.DBseatsList = this.getSeats();
   },
   methods: {
     getDialog() {
@@ -454,8 +460,7 @@ export default {
           this.result = response.data;
         });
     },
-    clickLoadBtn() {
-      //이후 getSeats()로 이름 변경할 예정
+    getSeats() {
       let loadSeatList = new Array();
       axios
         .get("http://" + host + ":" + portNum + "/seats")
@@ -477,17 +482,18 @@ export default {
             loadSeatList.push(newSeat);
           }
         });
-      console.log(loadSeatList);
-      //return loadSeatList; // db에서 가져온 seat array
-      this.loadToCanvas(loadSeatList);
+      return loadSeatList;
+    },
+    clickLoadBtn() {
+      this.loadToCanvas(this.DBseatsList);
     },
     loadToCanvas(loadSeatList) {
+      //console.log(loadSeatList[0])
       for (let i = 0; i < loadSeatList.length; i++) {
         let employee = null;
         if (loadSeatList[i].employee_id) {
           employee = this.getEmployeeInfo(loadSeatList[i].employee_id);
         }
-
         let rectangle = new fabric.Rect({
           width: loadSeatList[i].width,
           height: loadSeatList[i].height,
