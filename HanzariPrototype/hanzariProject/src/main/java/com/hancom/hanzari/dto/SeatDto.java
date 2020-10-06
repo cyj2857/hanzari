@@ -33,7 +33,6 @@ public class SeatDto {
 
 	private String group_id;
 
-	@NotBlank
 	private String building_id;
 
 	private String employee_id; // nullable

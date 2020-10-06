@@ -74,11 +74,7 @@ public class Seat {
 	}
 
 	public void setEmployee(Employee employee) {
-		if (employee != null) {
-			employee.getSeat().remove(this);
-		}
 		this.employee = employee;
-		this.employee.getSeat().add(this);
 	}
 
 	public void setFigure(Figure figure) {
