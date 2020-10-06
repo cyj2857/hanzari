@@ -14,6 +14,7 @@
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
     <!--<v-btn @click="getDialog">Show Seat Info</v-btn>!-->
   </div>
@@ -23,7 +24,8 @@
 import { eventBus } from "../main.js";
 import axios from "axios";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
-
+const host = "172.30.1.50";
+const portNum = 8080;
 export default {
   components: {
     EmployeeDialog,
@@ -196,14 +198,7 @@ export default {
         left: 150,
         top: 150,
       });
-      // group.on("mouseover", function(e) {
-      //   let group = e.target;
-      //   let asObject = group.toObject(["employee_id"]);
-      //   let x = group.toObject(["left"]);
-      //   console.log("employee id = " + asObject.employee_id); //1771354
-      //   //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
-      //   console.log("left = " + x.left); //150
-      // });
+
       group.on("mousedown", (e) => {
         if (e.button === 1) {
           console.log("left click");
@@ -244,15 +239,6 @@ export default {
         item.name + "의 자리의 개수는 " + eachEmployeeSeatList.length + "입니다"
       );
 
-      // let asObject = group.toObject(["seatId"]);
-      // console.log(asObject.seatId);
-      // this.floorCanvas.add(group);
-
-      //각 층의 도형 리스트에 하나의 해당 도형을 넣기
-      //eachFloorSeatList.push(group);
-      //각 층의 도형 리스트를 접근 할 수 있는 map에 도형리스트를 저장하기
-      //실질적으로 allFloorsSeatMap로 각 층의 도형 리스트를 접근한다
-
       this.allFloorsSeatMap.set(
         this.currentSelectedFloor,
         this.eachFloorSeatMap.get(this.currentSelectedFloor)
@@ -263,13 +249,9 @@ export default {
       console.log(this.allFloorsSeatMap.get(this.currentSelectedFloor));
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-      /////////////////////////////////////////////
-      // this.eachEmployeeSeatMap.set(
-      //   item.employee_id, eachEmployeeSeatList
-      // )
+
       console.log("eachEmployeeSeatMap-size:" + this.eachEmployeeSeatMap.size);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-      ////////////////////////////
     },
     getColor(department) {
       const Colors = {
@@ -437,6 +419,32 @@ export default {
       this.$axios.post("/springBootURL/", {}).then((response) => {
         this.result = response.data;
       });
+    },
+    clickLoadBtn() {
+      let loadSeatList = new Array();
+      axios
+        .get("http://" + host + ":" + portNum + "/seats")
+        .then(function (response) {
+          for (let i = 0; i < response.data.length; i++) {
+            let newSeat = {}; // make new SeatObject
+            newSeat.seat_id = response.data[i].seat_id;
+            console.log(newSeat.seat_id + "new object's seat_id");
+            newSeat.floor = response.data[i].floor;
+            newSeat.x = response.data[i].x;
+            newSeat.y = response.data[i].y;
+            newSeat.building_id = response.data[i].building_id;
+            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.width = response.data[i].width;
+            newSeat.height = response.data[i].height;
+            newSeat.degree = response.data[i].degree;
+            newSeat.shape_id = response.data[i].shape_id;
+
+            loadSeatList.push(newSeat);
+          }
+        });
+      return loadSeatList;
+
+      console.log(loadSeatList)
     },
     addVacantBtn() {
       console.log("currnet floor is " + this.currentSelectedFloor);
