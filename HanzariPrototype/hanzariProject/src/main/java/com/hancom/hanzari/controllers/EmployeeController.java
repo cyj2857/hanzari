@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hancom.hanzari.dto.EmployeeDto;
 import com.hancom.hanzari.model.Employee;
-
-import dto.EmployeeDto;
-import service.EmployeeService;
+import com.hancom.hanzari.service.EmployeeService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

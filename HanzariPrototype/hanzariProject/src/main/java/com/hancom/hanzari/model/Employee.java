@@ -13,8 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.hancom.hanzari.dto.EmployeeDto;
 
-import dto.EmployeeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

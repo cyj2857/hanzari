@@ -1,4 +1,4 @@
-package service;
+package com.hancom.hanzari.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hancom.hanzari.exception.ResourceNotFoundException;
 import com.hancom.hanzari.model.Seat;
-
-import exception.ResourceNotFoundException;
-import repository.SeatRepository;
+import com.hancom.hanzari.repository.SeatRepository;
 
 @Service
 public class SeatServiceImpl implements SeatService {

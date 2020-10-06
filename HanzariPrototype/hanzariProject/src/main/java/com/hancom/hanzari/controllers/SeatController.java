@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hancom.hanzari.dto.SeatDto;
 import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.Seat;
-
-import dto.SeatDto;
-import service.EmployeeService;
-import service.SeatService;
+import com.hancom.hanzari.service.EmployeeService;
+import com.hancom.hanzari.service.SeatService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

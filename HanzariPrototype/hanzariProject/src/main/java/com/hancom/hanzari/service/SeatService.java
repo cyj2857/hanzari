@@ -1,4 +1,4 @@
-package service;
+package com.hancom.hanzari.service;
 
 import java.util.List;
 

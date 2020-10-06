@@ -10,8 +10,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hancom.hanzari.dto.SeatDto;
 
-import dto.SeatDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

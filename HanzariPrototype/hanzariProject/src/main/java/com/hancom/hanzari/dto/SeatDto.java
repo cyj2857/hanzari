@@ -1,4 +1,4 @@
-package dto;
+package com.hancom.hanzari.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 
