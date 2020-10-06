@@ -418,12 +418,12 @@ export default {
         this.floorCanvas.renderAll();
       }
     },
-    clickSaveBtn() {
+    clickSaveBtn() { //이후 SetSeats()로 이름 변경할 예정
       this.$axios.post("/springBootURL/", {}).then((response) => {
         this.result = response.data;
       });
     },
-    clickLoadBtn() {
+    clickLoadBtn() { //이후 getSeats()로 이름 변경할 예정
       let loadSeatList = new Array();
       axios
         .get("http://" + host + ":" + portNum + "/seats")
