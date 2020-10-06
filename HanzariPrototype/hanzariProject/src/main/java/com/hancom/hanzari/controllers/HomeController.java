@@ -8,21 +8,23 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import model.Building;
-import model.Department;
-import model.Employee;
-import model.Figure;
-import model.Seat;
-import model.Shape;
+import com.hancom.hanzari.model.Building;
+import com.hancom.hanzari.model.Department;
+import com.hancom.hanzari.model.Employee;
+import com.hancom.hanzari.model.Figure;
+import com.hancom.hanzari.model.Seat;
+import com.hancom.hanzari.model.Shape;
 
 @Controller
 public class HomeController {
 
+	@Autowired
 	private static SessionFactory sessionFactory;
 
 	// view first vue.js->vue.js logo
@@ -57,6 +59,7 @@ public class HomeController {
 		shapes.add(new Shape("3", "원"));
 		shapes.add(new Shape("4", "타원"));
 
+		/*
 		List<Figure> figures = new ArrayList<Figure>();
 		figures.add(new Figure("1", shapes.get(0), 50, 50, 0));
 		figures.add(new Figure("2", shapes.get(0), 50, 50, 0));
@@ -66,7 +69,7 @@ public class HomeController {
 		figures.add(new Figure("6", shapes.get(1), 50, 50, 0));
 		figures.add(new Figure("7", shapes.get(2), 50, 50, 0));
 		figures.add(new Figure("8", shapes.get(2), 50, 50, 0));
-
+		*/
 		List<Department> departments = new ArrayList<Department>();
 		departments.add(new Department("1", "부서1"));
 		departments.add(new Department("2", "부서2"));
@@ -91,26 +94,28 @@ public class HomeController {
 		employee.add(new Employee("19101104", "viewer", "심청넷", departments.get(2), "333-0005", null));
 		employee.add(new Employee("19101199", "viewer", "박팀장", departments.get(2), "444-0003", null));
 
+		/*
 		List<Seat> seats = new ArrayList<Seat>();
-		seats.add(new Seat("0001", building, "10", false, null, 100.5, 100.5, figures.get(0), employee.get(0)));
-		seats.add(new Seat("0002", building, "10", false, null, 500.5, 100.5, figures.get(1), employee.get(0)));
-		seats.add(new Seat("0003", building, "10", true, "A", 700.5, 200.5, figures.get(2), employee.get(1)));
-		seats.add(new Seat("0004", building, "10", true, "A", 750.5, 200.5, figures.get(3), employee.get(1)));
-		seats.add(new Seat("0005", building, "6", false, null, 100.5, 100.5, figures.get(4), employee.get(3)));
-		seats.add(new Seat("0006", building, "6", false, null, 200.5, 500.5, figures.get(5), employee.get(2)));
-		seats.add(new Seat("0007", building, "6", true, "A", 600.5, 600.5, figures.get(6), employee.get(4)));
-		seats.add(new Seat("0008", building, "6", true, "A", 650.5, 600.5, figures.get(7), employee.get(5)));
-
+		seats.add(new Seat("1", "10", 100.5, 100.5, false, null, building, employee.get(0), figures.get(0)));
+		seats.add(new Seat("2", "10", 500.5, 100.5, false, null, building, employee.get(0), figures.get(1)));
+		seats.add(new Seat("3", "10", 700.5, 200.5, true, "A", building, employee.get(1), figures.get(2)));
+		seats.add(new Seat("4", "10", 750.5, 200.5, true, "A", building, employee.get(1), figures.get(3)));
+		seats.add(new Seat("5", "6", 100.5, 100.5, false, null, building, employee.get(3), figures.get(4)));
+		seats.add(new Seat("6", "6", 200.5, 500.5, false, null, building, employee.get(2), figures.get(5)));
+		seats.add(new Seat("7", "6", 600.5, 600.5, true, "A", building, employee.get(4), figures.get(6)));
+		seats.add(new Seat("8", "6", 650.5, 600.5, true, "A", building, employee.get(5), figures.get(7)));
+		*/
+		
 		try {
 			Transaction tx = session.beginTransaction();
 
 			// Query
 			shapes.forEach(e -> session.save(e));
-			figures.forEach(e -> session.save(e)); // instead of SQL statement
+			//figures.forEach(e -> session.save(e)); // instead of SQL statement
 			departments.forEach(e -> session.save(e)); // instead of SQL statement
 			session.save(building); // instead of SQL statement
 			employee.forEach(e -> session.save(e)); // instead of SQL statement
-			seats.forEach(e -> session.save(e)); // instead of SQL statement
+			//seats.forEach(e -> session.save(e)); // instead of SQL statement
 
 			tx.commit();
 

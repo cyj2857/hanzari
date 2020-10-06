@@ -454,10 +454,30 @@ export default {
 
     clickSaveBtn() {
       //이후 SetSeats()로 이름 변경할 예정
+      let data = {
+        seat_id: "2",
+        floor: "10",
+        x: 100.5,
+        y: 100.5,
+        is_group: false,
+        group_id: null,
+        building_id: "HANCOM01",
+        employee_id: "19101101",
+        width: 50.5,
+        height: 50.5,
+        degree: 0,
+        shape_id: "1",
+      };
       axios
-        .post("http://" + host + ":" + portNum + "/seats")
-        .then((response) => {
-          this.result = response.data;
+        .post(
+          "http://" + host + ":" + portNum + "/seats",
+          JSON.stringify(data),
+          {
+            headers: { "Content-Type": `application/json` },
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
         });
     },
     getSeats() {

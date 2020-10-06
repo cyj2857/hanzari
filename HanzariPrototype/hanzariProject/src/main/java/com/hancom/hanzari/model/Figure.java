@@ -1,4 +1,4 @@
-package model;
+package com.hancom.hanzari.model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,7 +26,7 @@ public class Figure {
 
 	@Id
 	@Column(name = "figure_id", nullable = false)
-	String figure_id;
+	String figure_id; // seat_id와 동일
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "shape_id")
@@ -43,4 +43,10 @@ public class Figure {
 
 	public Figure() {
 	};
+	
+	void setShape(String shape_id) {
+		/*
+		 * shape table에서 shape_id에 해당하는 Shape 객체를 가져와서 바인딩
+		 */
+	}
 }

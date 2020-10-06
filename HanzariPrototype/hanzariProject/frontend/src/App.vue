@@ -23,7 +23,7 @@ const host = "172.30.1.50";
 export default {
   name: "App",
   methods: {
-    getSeats() {
+    /*getSeats() {
       let loadSeatList = new Array()
       axios.get("http://"+host+":"+portNum+"/seats").then(function(response){
         for(let i = 0; i < response.data.length; i++) {
@@ -44,7 +44,7 @@ export default {
         }
       })
       return loadSeatList
-    }
+    }*/
   }
 };
 </script>
