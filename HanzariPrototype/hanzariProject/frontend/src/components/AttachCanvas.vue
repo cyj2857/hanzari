@@ -40,6 +40,7 @@ export default {
       allFloorsSeatMap: null, //all floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
       dialogStatus: false,
+      DBseatsList: []
     };
   },
   created() {
@@ -69,6 +70,7 @@ export default {
   },
   mounted() {
     this.initializing();
+    this.DBseatsList = this.clickLoadBtn();
   },
   methods: {
     getDialog() {
@@ -442,9 +444,7 @@ export default {
             loadSeatList.push(newSeat);
           }
         });
-      return loadSeatList;
-
-      console.log(loadSeatList)
+      return loadSeatList; // db에서 가져온 seat list
     },
     addVacantBtn() {
       console.log("currnet floor is " + this.currentSelectedFloor);
