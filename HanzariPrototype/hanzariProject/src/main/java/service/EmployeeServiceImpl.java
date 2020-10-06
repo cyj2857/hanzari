@@ -6,8 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hancom.hanzari.model.Employee;
+
 import exception.ResourceNotFoundException;
-import model.Employee;
 import repository.EmployeeRepository;
 
 @Service

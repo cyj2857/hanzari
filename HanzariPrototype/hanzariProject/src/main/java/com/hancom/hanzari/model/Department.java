@@ -1,4 +1,4 @@
-package model;
+package com.hancom.hanzari.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -3,7 +3,7 @@ package repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import model.Seat;
+import com.hancom.hanzari.model.Seat;
 
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, String> {

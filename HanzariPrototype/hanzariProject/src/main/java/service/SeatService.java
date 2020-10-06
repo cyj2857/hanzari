@@ -2,7 +2,7 @@ package service;
 
 import java.util.List;
 
-import model.Seat;
+import com.hancom.hanzari.model.Seat;
 
 public interface SeatService {
 	List<Seat> findAll(); // R

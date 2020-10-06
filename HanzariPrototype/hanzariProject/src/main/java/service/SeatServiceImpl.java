@@ -6,8 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hancom.hanzari.model.Seat;
+
 import exception.ResourceNotFoundException;
-import model.Seat;
 import repository.SeatRepository;
 
 @Service
@@ -47,7 +48,7 @@ public class SeatServiceImpl implements SeatService {
 
 	@Override
 	public Seat save(Seat seat) {
-		// TODO Auto-generated method stub
+		seatRepository.save(seat);
 		return null;
 	}
 
