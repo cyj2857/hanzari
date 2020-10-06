@@ -48,7 +48,7 @@ public class SeatServiceImpl implements SeatService {
 	@Override
 	public Seat save(Seat seat) {
 		seatRepository.save(seat);
-		return null;
+		return seat;
 	}
 
 	@Override
