@@ -8,18 +8,10 @@
         <v-btn text @click="getDialog">Add Floor</v-btn>
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
-        <v-tab
-          v-for="tab of items"
-          :key="tab.id"
-          @change="setFloor(tab.id)"
-          >{{ tab.id }}</v-tab
-        >
+        <v-tab v-for="tab of items" :key="tab.id" @change="setFloor(tab.id)">{{ tab.id }}</v-tab>
       </v-tabs>
     </v-card>
-    <AddFloorDialog
-      :dialogStatus="this.dialogStatus"
-      @close="closeDialog"
-    ></AddFloorDialog>
+    <AddFloorDialog :dialogStatus="this.dialogStatus" @close="closeDialog"></AddFloorDialog>
   </div>
 </template>
 
@@ -39,13 +31,25 @@ export default {
     floorNum: null,
     dialogStatus: false,
     inputFloor: null,
+    seatFloor: null
   }),
   created() {
     eventBus.$on("confirm", () => {
       this.confirmDialog();
     }),
-      eventBus.$on("floorInfo", (floor) => {
+      eventBus.$on("floorInfo", floor => {
         this.inputFloor = floor;
+      }),
+      eventBus.$on("showSeatFloor", floor => {
+        this.seatFloor = floor;
+        console.log(this.seatFloor + "가 넘어온 자리 층입니다");
+
+        for(let i=0;i<this.items.length;i++){
+          if(this.seatFloor == this.items[i].id){
+            this.floorNum = i;
+            this.setFloor(this.items[this.floorNum].id);
+          }
+        }
       });
   },
   mounted() {
@@ -75,11 +79,13 @@ export default {
     },
     removeFloor() {
       //items���� id�� ���� floor�� �� index ��������
-      let currentFloorId = this.items[this.floorNum].id
-      const idx = this.items.findIndex(function(item) {return item.id == currentFloorId})
-      if (idx > -1) this.items.splice(idx, 1)
+      let currentFloorId = this.items[this.floorNum].id;
+      const idx = this.items.findIndex(function(item) {
+        return item.id == currentFloorId;
+      });
+      if (idx > -1) this.items.splice(idx, 1);
 
-      console.log(this.items)
+      console.log(this.items);
       //items���� �� index ����
       this.decreaseTab();
     },
@@ -94,12 +100,12 @@ export default {
     increaseTab() {
       this.length++;
       //push
-    },
+    }
   },
   watch: {
     length(val) {
       this.floorNum = val - 1;
-    },
-  },
+    }
+  }
 };
 </script>
