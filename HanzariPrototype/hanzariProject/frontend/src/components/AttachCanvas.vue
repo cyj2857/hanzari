@@ -98,8 +98,8 @@ export default {
 
         //현재 층에 그린 도형들이 있다면
         if (this.allFloorsSeatMap.get(floor)) {
-          var myOnefloorSeatList = this.allFloorsSeatMap.get(floor);
-          for (var i = 0; i < myOnefloorSeatList.length; i++) {
+          let myOnefloorSeatList = this.allFloorsSeatMap.get(floor);
+          for (let i = 0; i < myOnefloorSeatList.length; i++) {
             this.floorCanvas.add(myOnefloorSeatList[i]);
             console.log("myOnefloorSeatList : ");
             console.log(myOnefloorSeatList[i]);
@@ -126,7 +126,7 @@ export default {
       this.saveImage(file);
     },
     loadImage(file) {
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.onload = e => {
         fabric.Image.fromURL(e.target.result, img => {
           img.set({
@@ -147,7 +147,7 @@ export default {
       console.log(this.floorImageList.get(this.currentSelectedFloor));
     },
     onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
+      let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       this.createImage(files[0]);
     },
@@ -157,27 +157,27 @@ export default {
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       //각 층에 해당하는 도형 리스트 리턴하기
-      var eachFloorSeatList = this.getEachFloorSeatList(
+      let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
 
       //각 사원의 자리 리스트 리턴하기
-      var eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
 
-      var rectangle = new fabric.Rect({
+      let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
         fill: this.getColor(item.department),
         opacity: 1
       });
-      var textObject = new fabric.IText(item.name, {
+      let textObject = new fabric.IText(item.name, {
         left: 0,
         top: rectangle.height / 3,
         fontSize: 13,
         fill: "black"
       });
 
-      var group = new fabric.Group([rectangle, textObject], {
+      let group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // 1,2,3,4
         employee_name: item.name,
@@ -189,9 +189,9 @@ export default {
         top: 150
       });
       // group.on("mouseover", function(e) {
-      //   var group = e.target;
-      //   var asObject = group.toObject(["employee_id"]);
-      //   var x = group.toObject(["left"]);
+      //   let group = e.target;
+      //   let asObject = group.toObject(["employee_id"]);
+      //   let x = group.toObject(["left"]);
       //   console.log("employee id = " + asObject.employee_id); //1771354
       //   //console.log(asObject.floor_id+"층에 자리가 생성되었습니다.");
       //   console.log("left = " + x.left); //150
@@ -210,7 +210,7 @@ export default {
       });
       
        group.on("mousedblclick", e => {
-          var group = e.target;
+          let group = e.target;
           eventBus.$emit(
             "employee_id",
             group.toObject(["employee_id"]).employee_id
@@ -232,13 +232,13 @@ export default {
       this.floorCanvas.add(group);
       eachFloorSeatList.push(group);
 
-      var groupToObject = group.toObject(["seatId"]);
+      let groupToObject = group.toObject(["seatId"]);
       eachEmployeeSeatList.push(groupToObject.seatId);
       console.log(
         item.name + "의 자리의 개수는 " + eachEmployeeSeatList.length + "입니다"
       );
 
-      // var asObject = group.toObject(["seatId"]);
+      // let asObject = group.toObject(["seatId"]);
       // console.log(asObject.seatId);
       // this.floorCanvas.add(group);
 
@@ -280,7 +280,7 @@ export default {
     showSeat(seat) {
       //seat의 층과 현재층이 같지 않다면
       console.log(seat.seat_id + "가 해당 자리의 아이디입니다.");
-      var seatFloor;
+      let seatFloor;
 
       if (this.currentSelectedFloor != seat.seat_id.split("-")[0]) {
         //탭 전환 코드
@@ -290,14 +290,14 @@ export default {
       else {
         seatFloor = this.currentSelectedFloor;
       }
-      var eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
+      let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
 
-      for (var i = 0; i < eachFloorSeatList.length; i++) {
-        var myGroup = eachFloorSeatList[i];
-        var asObject = myGroup.toObject(["employee_id", "floor_id", "seatId",  "employee_department"]);
+      for (let i = 0; i < eachFloorSeatList.length; i++) {
+        let myGroup = eachFloorSeatList[i];
+        let asObject = myGroup.toObject(["employee_id", "floor_id", "seatId",  "employee_department"]);
         console.log(asObject.floor_id + "층에 자리가 있습니다.");
 
-        var objectSeatId = asObject.seatId + "번";
+        let objectSeatId = asObject.seatId + "번";
         if (seat.seat_id == objectSeatId) {
           console.log("hihi");
           this.floorCanvas
@@ -312,7 +312,7 @@ export default {
           if (this.floorImageList.get(seatFloor) != null) {
             this.loadImage(this.floorImageList.get(seatFloor));
 
-            for (var i = 0; i < eachFloorSeatList.length; i++) {
+            for (let i = 0; i < eachFloorSeatList.length; i++) {
               this.floorCanvas.add(eachFloorSeatList[i]);
             }
           }
@@ -322,7 +322,7 @@ export default {
             duration: 2000,
             onComplete: orgincolor,
           });
-          var color=this.getColor(asObject.employee_department)
+          let color=this.getColor(asObject.employee_department)
           function orgincolor() {
             console.log(color);
             myGroup
@@ -337,7 +337,7 @@ export default {
     getEachFloorSeatList: function(floor) {
       //층에 해당하는 도형리스트가 만들어지지 않았을때
       if (!this.eachFloorSeatMap.get(floor)) {
-        var newSeatsList = new Array();
+        let newSeatsList = new Array();
         this.eachFloorSeatMap.set(floor, newSeatsList);
         return this.eachFloorSeatMap.get(floor);
       } else {
@@ -347,7 +347,7 @@ export default {
 
     getEachEmployeeSeatList: function(employee_id) {
       if (!this.eachEmployeeSeatMap.get(employee_id)) {
-        var newEmployeeSeatList = new Array();
+        let newEmployeeSeatList = new Array();
         this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
         return this.eachEmployeeSeatMap.get(employee_id);
       } else {
@@ -373,7 +373,7 @@ export default {
     },
     deleteBtn() {
       //좌석 지우면 list에 있는거 없애기
-      var activeObject = null;
+      let activeObject = null;
       if (this.floorCanvas.getActiveObjects().length == 1) {
         activeObject = this.floorCanvas.getActiveObject();
         console.log("단일객체 선택");
@@ -382,7 +382,7 @@ export default {
         console.log("복수객체 선택");
       }
 
-      var shapearray = new Array();
+      let shapearray = new Array();
       this.floorCanvas
         .getObjects()
         .slice()
@@ -394,7 +394,7 @@ export default {
           shapearray.slice().forEach(obj => {
             if (obj == activeObject) {
               //delete
-              var index = shapearray.indexOf(activeObject);
+              let index = shapearray.indexOf(activeObject);
               shapearray.splice(index, 1);
             }
           });
@@ -411,8 +411,8 @@ export default {
       }
     },
     changecolorBtn() {
-      var activeObject = this.floorCanvas.getActiveObject();
-      var eachfloor = this.eachFloorSeatMap.get(this.currentSelectedFloor);
+      let activeObject = this.floorCanvas.getActiveObject();
+      let eachfloor = this.eachFloorSeatMap.get(this.currentSelectedFloor);
 
       if (activeObject) {
         eachfloor.slice().forEach(obj => {
@@ -433,31 +433,31 @@ export default {
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       //각 층에 해당하는 도형 리스트 리턴하기
-      var mynewSeatList = this.getEachFloorSeatList(this.currentSelectedFloor);
+      let mynewSeatList = this.getEachFloorSeatList(this.currentSelectedFloor);
 
-      var rectangle = new fabric.Rect({
+      let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
         fill: "gray",
         opacity: 1
       });
 
-      var group = new fabric.Group([rectangle], {
+      let group = new fabric.Group([rectangle], {
         seatId: this.seatId++, // 1,2,3,4
         left: 150,
         top: 150
       });
       group.on("mouseover", function(e) {
-        var group = e.target;
-        var asObject = group.toObject(["seatId"]);
-        var x = group.toObject(["left"]);
+        let group = e.target;
+        let asObject = group.toObject(["seatId"]);
+        let x = group.toObject(["left"]);
 
 
         console.log("seatId = " + asObject.seatId);
         console.log("left = " + x.left); //150
       });
       group.on("mousedown", function(e) {
-        var group = e.target;
+        let group = e.target;
         eventBus.$emit("employee_id", null);
         eventBus.$emit("employee_name", null);
         eventBus.$emit("floor_id", null);

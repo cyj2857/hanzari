@@ -71,12 +71,12 @@ export default {
     showSeatButtonClicked(item) {
       //console.log("?‚¬?´ì¦ˆëŠ” ë°”ë¡œë°”ë¡œ" + this.allEmployeeSeatMap.size);
 
-      for (var k = 0; k < this.employees.length; k++) {
+      for (let k = 0; k < this.employees.length; k++) {
         if (this.employees[k].employee_id == item.employee_id) {
-          //var eachEmployeeSeatList = this.allEmployeeSeatMap.get(
+          //let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
           //  item.employee_id
           //);
-          var eachEmployeeSeatList = this.employees[k].seatIdList;
+          let eachEmployeeSeatList = this.employees[k].seatIdList;
           console.log(eachEmployeeSeatList+"ê°? ?ë¦? ê°œìˆ˜?´?‹¤.");
 
           console.log(
@@ -108,8 +108,8 @@ export default {
         console.log(response.data.length + "?Š” ?‚¬?´ì¦ˆì…?‹ˆ?‹¤.");
 
         
-        for (var i = 0; i < response.data.length; i++) {
-          var newEmployee = {};
+        for (let i = 0; i < response.data.length; i++) {
+          let newEmployee = {};
 
           newEmployee.name = response.data[i].employee_name;
           console.log(newEmployee.name + "?‚´?´ë¦„ì´?•¼");

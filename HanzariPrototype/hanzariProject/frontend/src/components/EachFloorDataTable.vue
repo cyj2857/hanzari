@@ -53,8 +53,8 @@ export default {
       //리스트 초기화
       this.employees = [];
       if (eachFloorSeatList) {
-        for (var i = 0; i < eachFloorSeatList.length; i++) {
-          var employee = {};
+        for (let i = 0; i < eachFloorSeatList.length; i++) {
+          let employee = {};
           employee.name = eachFloorSeatList[i].employee_name;
           employee.department = eachFloorSeatList[i].employee_department;
           employee.number = eachFloorSeatList[i].employee_number;

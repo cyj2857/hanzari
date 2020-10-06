@@ -53,12 +53,12 @@ export default {
     renderEachEmployeeSeatList(employee) {
       //리스트 초기화
       this.seats = [];
-      var eachEmployeeSeatList = employee.seatIdList;
+      let eachEmployeeSeatList = employee.seatIdList;
 
       if (eachEmployeeSeatList) {
-        for (var i = 0; i < eachEmployeeSeatList.length; i++) {
+        for (let i = 0; i < eachEmployeeSeatList.length; i++) {
 
-          var newSeat = {};
+          let newSeat = {};
           newSeat.seat_id = eachEmployeeSeatList[i]+"번";
           newSeat.employee_id = employee.employee_id;
           newSeat.name = employee.name;
