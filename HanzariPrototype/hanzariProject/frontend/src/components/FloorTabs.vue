@@ -74,7 +74,7 @@ export default {
     },
     removeFloor() {
       //items에서 id가 현재 floor인 애 index 가져오기
-      var currentFloorId = this.items[this.floorNum].id
+      let currentFloorId = this.items[this.floorNum].id
       const idx = this.items.findIndex(function(item) {return item.id == currentFloorId})
       if (idx > -1) this.items.splice(idx, 1)
 
