@@ -26,8 +26,8 @@ export default {
     getSeats() {
       let loadSeatList = new Array()
       axios.get("http://"+host+":"+portNum+"/seats").then(function(response){
-        for(var i = 0; i < response.data.length; i++) {
-          var newSeat = {} // make new SeatObject
+        for(let i = 0; i < response.data.length; i++) {
+          let newSeat = {} // make new SeatObject
           newSeat.seat_id = response.data[i].seat_id
           console.log(newSeat.seat_id + "new object's seat_id")
           newSeat.floor = response.data[i].floor
