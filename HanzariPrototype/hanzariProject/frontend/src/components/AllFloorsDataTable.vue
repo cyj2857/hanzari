@@ -68,9 +68,9 @@ export default {
     showSeatButtonClicked(item) {
       //console.log("allEmployeeSeatMap? size" + this.allEmployeeSeatMap.size);
 
-      for (var k = 0; k < this.employees.length; k++) {
+      for (let k = 0; k < this.employees.length; k++) {
         if (this.employees[k].employee_id == item.employee_id) {
-          //var eachEmployeeSeatList = this.allEmployeeSeatMap.get(
+          //let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
           //  item.employee_id
           //);
           var eachEmployeeSeatList = this.employees[k].seatIdList;
