@@ -4,11 +4,12 @@
       <v-card>
         <template v-if="employee_id">
           <v-card-title>
-            {{ this.employee_name }} Employee Information
+            {{ this.employee_name }} Employee
           </v-card-title>
           <v-card-text>
-            floor : {{ this.floor_id }} id : {{ this.employee_id }} name :
-            {{ this.employee_name }}
+            Name :{{ this.employee_name }}
+            Id : {{ this.employee_id }} 
+            Floor : {{ this.floor_id }} 
           </v-card-text>
         </template>
         <template v-else>

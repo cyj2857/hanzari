@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="canvas" class="canvas" width="855px" height="800px" style="text-align: center"></canvas>
+    <canvas ref="canvas" class="canvas" width="950px" height="800px" style="text-align: center"></canvas>
     <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
     <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
@@ -439,13 +439,17 @@ export default {
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
 
+  //아직 구현중에 있습니다. 
   clickSaveBtn() {
-    console.log(this.allFloorsSeatMap.length+"현재 저장한 층의 개수입니다.");
     if (this.allFloorsSeatMap) {
       for (var i = 0; i < this.allFloorsSeatMap.size; i++) {
+        if(this.eachFloorSeatMap[i]){
+          console.log(this.eachFloorSeatMap[i].length+"한 층의 자리 개수입니다.");
+        }
+        
         //console.log(this.allFloorsSeatMap.size+"현재 저장한 층의 개수입니다.");
         /*for (var j = 0; j < this.eachFloorSeatMap[i].length; j++) {
-          console.log(this.eachFloorSeatMap[i].length+"한 층의 자리 개수입니다.");
+          
 
           let groupToObject = this.eachFloorSeatMap[i].toObject([
             "seatId",
@@ -461,8 +465,8 @@ export default {
           data.floor = groupToObject.floor_id;
           data.x = groupToObject.left;
           data.y = groupToObject.top;
-          data.is_group = true;
-          data.group_id = groupToObject.employee_department;
+          data.is_group = false;
+          data.group_id = null;
           data.building_id = "HANCOM01";
           data.employee_id = groupToObject.employee_id;
           data.width = 50.5;
