@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="canvas" class="canvas" width="1100px" height="800px"></canvas>
+    <canvas ref="canvas" class="canvas" width="970px" height="800px"></canvas>
     <input
       v-show="false"
       ref="inputUpload"
@@ -266,10 +266,11 @@ export default {
       else return Colors.Blue;
     },
     showSeat(seat) {
-      //seat의 층과 현재층이 같지 않다면
-      console.log(seat.seat_id + "가 해당 자리의 아이디입니다.");
+      
+      console.log(seat.seat_id + "가 해당 자리의 아이디입니다."); // One-0, 
       let seatFloor;
 
+      //seat의 층과 현재층이 같지 않다면
       if (this.currentSelectedFloor != seat.seat_id.split("-")[0]) {
         //탭 전환 코드
         seatFloor = seat.seat_id.split("-")[0];

@@ -49,7 +49,8 @@ export default {
       });
   },
   mounted() {
-    this.setFloor(this.items[0].id);
+    this.floorNum = 0;
+    this.setFloor(this.items[this.floorNum].id);
   },
   methods: {
     getDialog() {
@@ -73,18 +74,17 @@ export default {
       console.log(this.dialogStatus);
     },
     removeFloor() {
-      //items¿¡¼­ id°¡ ÇöÀç floorÀÎ ¾Ö index °¡Á®¿À±â
+      //itemsï¿½ï¿½ï¿½ï¿½ idï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ floorï¿½ï¿½ ï¿½ï¿½ index ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
       let currentFloorId = this.items[this.floorNum].id
       const idx = this.items.findIndex(function(item) {return item.id == currentFloorId})
       if (idx > -1) this.items.splice(idx, 1)
 
       console.log(this.items)
-      //items¿¡¼­ ±× index »èÁ¦
+      //itemsï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ index ï¿½ï¿½ï¿½ï¿½
       this.decreaseTab();
     },
     setFloor(n) {
-      this.floorNum = n;
-      eventBus.$emit("changeFloor", this.floorNum);
+      eventBus.$emit("changeFloor", n);
     },
     decreaseTab() {
       this.length--;
