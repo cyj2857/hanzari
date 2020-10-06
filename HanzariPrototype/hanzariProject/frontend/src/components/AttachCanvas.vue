@@ -70,7 +70,7 @@ export default {
   },
   mounted() {
     this.initializing();
-    this.DBseatsList = this.clickLoadBtn();
+    //this.DBseatsList = this.clickLoadBtn();
   },
   methods: {
     getDialog() {
@@ -191,7 +191,7 @@ export default {
 
       let group = new fabric.Group([rectangle, textObject], {
         id: item.employee_id,
-        seatId: this.currentSelectedFloor + "-" + this.seatId++, // 1,2,3,4
+        seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
         employee_name: item.name,
         employee_department: item.department,
         employee_number: item.number,
@@ -261,11 +261,13 @@ export default {
         Yellow: "yellow",
         Green: "green",
         Blue: "blue",
+        Gray: "Gray",
       };
       if (department == "Development Team") return Colors.Orange;
       else if (department == "Secure Team") return Colors.Yellow;
       else if (department == "Marketing Team") return Colors.Green;
-      else return Colors.Blue;
+      else if (department == "Design Team") return Colors.Blue;
+      else return Colors.Gray;
     },
     showSeat(seat) {
       console.log(seat.seat_id + "가 해당 자리의 아이디입니다."); // One-0,
@@ -426,12 +428,12 @@ export default {
       let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: "gray",
+        fill: this.getColor(null),
         opacity: 1,
       });
 
       let group = new fabric.Group([rectangle], {
-        seatId: this.seatId++, // 1,2,3,4
+        seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
         left: 150,
         top: 150,
       });
@@ -443,15 +445,8 @@ export default {
         console.log("seatId = " + asObject.seatId);
         console.log("left = " + x.left); //150
       });
-      group.on("mousedown", function (e) {
-        let group = e.target;
-        eventBus.$emit("employee_id", null);
-        eventBus.$emit("employee_name", null);
-        eventBus.$emit("floor_id", null);
-      });
 
       this.floorCanvas.add(group);
-
       mynewSeatList.push(group);
 
       this.allFloorsSeatMap.set(
@@ -482,10 +477,10 @@ export default {
           for (var i = 0; i < response.data.length; i++) {
             let newSeat = {}; // to make new SeatObject
             newSeat.seat_id = response.data[i].seat_id;
-            console.log(newSeat.seat_id + "new object's seat_id");
             newSeat.floor = response.data[i].floor;
             newSeat.x = response.data[i].x;
             newSeat.y = response.data[i].y;
+            newSeat.is_group = response.data[i].is_group;
             newSeat.building_id = response.data[i].building_id;
             newSeat.employee_id = response.data[i].employee_id;
             newSeat.width = response.data[i].width;
@@ -496,12 +491,16 @@ export default {
             loadSeatList.push(newSeat);
           }
         });
+      console.log(loadSeatList);
       //return loadSeatList; // db에서 가져온 seat array
       this.loadToCanvas(loadSeatList);
     },
     loadToCanvas(loadSeatList) {
       for (let i = 0; i < loadSeatList.length; i++) {
-        let employee = this.getEmployeeInfo(loadSeatList[i].employee_id);
+        let employee = null;
+        if (loadSeatList[i].employee_id) {
+          employee = this.getEmployeeInfo(loadSeatList[i].employee_id);
+        }
 
         let rectangle = new fabric.Rect({
           width: loadSeatList[i].width,
@@ -523,7 +522,7 @@ export default {
           employee_department: employee.department_name,
           employee_number: employee.extension_number,
           employee_id: loadSeatList[i].employee_id,
-          floor_id: this.currentSelectedFloor,
+          floor_id: loadSeatList[i].floor,
           left: loadSeatList[i].x,
           top: loadSeatList[i].y,
         });
