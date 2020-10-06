@@ -32,8 +32,7 @@
 <script>
 import { eventBus } from "../main.js";
 import axios from "axios";
-const portNum = 8080;
-const host = "172.30.1.50";
+
 export default {
   data() {
     return {
