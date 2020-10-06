@@ -428,7 +428,7 @@ export default {
       axios
         .get("http://" + host + ":" + portNum + "/seats")
         .then(function (response) {
-          for (let i = 0; i < response.data.length; i++) {
+          for (var i = 0; i < response.data.length; i++) {
             let newSeat = {}; // make new SeatObject
             newSeat.seat_id = response.data[i].seat_id;
             console.log(newSeat.seat_id + "new object's seat_id");
