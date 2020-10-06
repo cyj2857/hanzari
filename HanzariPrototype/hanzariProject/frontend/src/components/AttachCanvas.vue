@@ -105,7 +105,7 @@ export default {
 
         //현재 층에 그린 도형들이 있다면
         if (this.allFloorsSeatMap.get(floor)) {
-          let myOnefloorSeatList = this.allFloorsSeatMap.get(floor);
+          const myOnefloorSeatList = this.allFloorsSeatMap.get(floor);
           for (let i = 0; i < myOnefloorSeatList.length; i++) {
             this.floorCanvas.add(myOnefloorSeatList[i]);
             console.log("myOnefloorSeatList : ");
