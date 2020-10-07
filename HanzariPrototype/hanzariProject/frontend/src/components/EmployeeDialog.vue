@@ -38,7 +38,7 @@ export default {
     return {
       employee_id: "",
       floor_id: "",
-      employee_name: "",
+      employee_name: ""
     };
   },
   computed: {

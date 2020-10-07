@@ -121,6 +121,8 @@ export default {
         this.floorCanvas.backgroundImage = 0;
         this.floorCanvas.backgroundColor = "aliceblue";
         this.floorCanvas.renderAll();
+
+        eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
     createImage(file) {

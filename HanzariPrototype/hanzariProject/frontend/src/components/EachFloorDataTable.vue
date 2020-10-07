@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-spacer>{{this.currentFloor}}</v-spacer>
+      <v-spacer>{{this.currentFloor}} {{this.currentFloorSeatsLength}}Seats </v-spacer>
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -29,6 +29,7 @@ export default {
         { text: "Number", value: "number" },
       ],
       employees: [],
+      currentFloorSeatsLength: 0,
       currentFloor: null
     };
   },
@@ -37,7 +38,7 @@ export default {
       this.renderEachFloorSeatList(eachFloorSeatList);
     });
     eventBus.$on("changeFloor", (floor)=>{
-      this.currentFloor = floor
+      this.currentFloor = floor;
     })
   },
   methods: {
@@ -52,7 +53,8 @@ export default {
     renderEachFloorSeatList(eachFloorSeatList) {
       //리스트 초기화
       this.employees = [];
-      if (eachFloorSeatList) {
+      
+      if (eachFloorSeatList.length != 0) {
         for (let i = 0; i < eachFloorSeatList.length; i++) {
           let employee = {};
           employee.name = eachFloorSeatList[i].employee_name;
@@ -65,10 +67,18 @@ export default {
             number: employee.number,
           });
 
+          this.currentFloorSeatsLength = this.employees.length;
+          
           console.log(employee.number);
           //this.employees.push(employee);
         }
       }
+
+      else{
+        //this.employees = [];
+        this.currentFloorSeatsLength = 0;
+      }
+
     },
   }
 };
