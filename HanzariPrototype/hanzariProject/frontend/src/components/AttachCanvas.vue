@@ -1,15 +1,39 @@
 <template>
   <div>
-    <canvas ref="canvas" class="canvas" width="950px" height="800px" style="text-align: center"></canvas>
-    <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
-    <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
+    <canvas
+      ref="canvas"
+      class="canvas"
+      width="950px"
+      height="800px"
+      style="text-align: center"
+    ></canvas>
+    <input
+      v-show="false"
+      ref="inputUpload"
+      type="file"
+      @change="onFileChange"
+    />
+    <v-btn color="success" @click="$refs.inputUpload.click()"
+      >File Upload to Background</v-btn
+    >
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
-    <!--<v-btn @click="getDialog">Show Seat Info</v-btn>!-->
+    <span
+      class="context-menu"
+      v-show="menuInVisible"
+      tabindex="-1"
+      v-click-outside="closeMenu"
+    >
+      <ul>
+        <v-btn>clickMe</v-btn>
+        <v-btn>clickMe2</v-btn>
+        <v-btn>clickMe3</v-btn>
+      </ul>
+    </span>
   </div>
 </template>
 
@@ -33,6 +57,7 @@ export default {
       allFloorsSeatMap: null, //all floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
       dialogStatus: false,
+      menuStatus: false,
       DBseatsList: [],
     };
   },
@@ -63,9 +88,24 @@ export default {
   },
   mounted() {
     this.initializing();
-    this.DBseatsList = this.getSeats();
+    //this.DBseatsList = this.getSeats();
+  },
+  computed: {
+    menuInVisible() {
+      return this.menuStatus;
+    },
   },
   methods: {
+    setMenuPosition(x, y) {
+      console.log(x, y)
+      this.openMenu()
+    },
+    openMenu(){
+      this.menuStatus = true;
+    },
+    closeMenu() {
+      this.menuStatus = false;
+    },
     getDialog() {
       this.dialogStatus = true;
       console.log(this.dialogStatus);
@@ -156,7 +196,6 @@ export default {
       if (!files.length) return;
       this.createImage(files[0]);
     },
-
     //도형생성시
     createSeat(item) {
       console.log("currnet floor is " + this.currentSelectedFloor);
@@ -195,14 +234,18 @@ export default {
       });
 
       group.on("mousedown", (e) => {
+        let group = e.target;
         if (e.button === 1) {
-          console.log("left click");
+          //console.log("left click");
         }
         if (e.button === 2) {
-          console.log("middle click");
+          //console.log("middle click");
         }
         if (e.button === 3) {
-          console.log("right click");
+          //console.log("right click");
+
+          //context menu 넣을 곳
+          this.setMenuPosition(group.toObject(["left"]).left, group.toObject(["top"]).top);
         }
       });
 
@@ -221,7 +264,6 @@ export default {
           "employee_department",
           group.toObject(["employee_department"]).employee_department
         );
-
         this.getDialog();
       });
 
@@ -439,16 +481,18 @@ export default {
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
 
-  //아직 구현중에 있습니다. 
-  clickSaveBtn() {
-    if (this.allFloorsSeatMap) {
-      for (var i = 0; i < this.allFloorsSeatMap.size; i++) {
-        if(this.eachFloorSeatMap[i]){
-          console.log(this.eachFloorSeatMap[i].length+"한 층의 자리 개수입니다.");
-        }
-        
-        //console.log(this.allFloorsSeatMap.size+"현재 저장한 층의 개수입니다.");
-        /*for (var j = 0; j < this.eachFloorSeatMap[i].length; j++) {
+    //아직 구현중에 있습니다.
+    clickSaveBtn() {
+      if (this.allFloorsSeatMap) {
+        for (var i = 0; i < this.allFloorsSeatMap.size; i++) {
+          if (this.eachFloorSeatMap[i]) {
+            console.log(
+              this.eachFloorSeatMap[i].length + "한 층의 자리 개수입니다."
+            );
+          }
+
+          //console.log(this.allFloorsSeatMap.size+"현재 저장한 층의 개수입니다.");
+          /*for (var j = 0; j < this.eachFloorSeatMap[i].length; j++) {
           
 
           let groupToObject = this.eachFloorSeatMap[i].toObject([
@@ -476,42 +520,46 @@ export default {
 
           this.saveAllSeatByAxios(data);
         }*/
-      }
-    }
-  },
-  saveAllSeatByAxios(data) {
-    axios
-      .post("http://" + host + ":" + portNum + "/seats", JSON.stringify(data), {
-        headers: { "Content-Type": `application/json` }
-      })
-      .then(res => {
-        console.log(res.data);
-      });
-  },
-  clickLoadBtn() {
-    //이후 getSeats()로 이름 변경할 예정
-    let loadSeatList = new Array();
-    axios
-      .get("http://" + host + ":" + portNum + "/seats")
-      .then(function(response) {
-        for (var i = 0; i < response.data.length; i++) {
-          let newSeat = {}; // to make new SeatObject
-          newSeat.seat_id = response.data[i].seat_id;
-          console.log(newSeat.seat_id + "new object's seat_id");
-          newSeat.floor = response.data[i].floor;
-          newSeat.x = response.data[i].x;
-          newSeat.y = response.data[i].y;
-          newSeat.building_id = response.data[i].building_id;
-          newSeat.employee_id = response.data[i].employee_id;
-          newSeat.width = response.data[i].width;
-          newSeat.height = response.data[i].height;
-          newSeat.degree = response.data[i].degree;
-          newSeat.shape_id = response.data[i].shape_id;
-
-          loadSeatList.push(newSeat);
         }
-      })
-  },
+      }
+    },
+    saveAllSeatByAxios(data) {
+      axios
+        .post(
+          "http://" + host + ":" + portNum + "/seats",
+          JSON.stringify(data),
+          {
+            headers: { "Content-Type": `application/json` },
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+        });
+    },
+    clickLoadBtn() {
+      //이후 getSeats()로 이름 변경할 예정
+      let loadSeatList = new Array();
+      axios
+        .get("http://" + host + ":" + portNum + "/seats")
+        .then(function (response) {
+          for (var i = 0; i < response.data.length; i++) {
+            let newSeat = {}; // to make new SeatObject
+            newSeat.seat_id = response.data[i].seat_id;
+            console.log(newSeat.seat_id + "new object's seat_id");
+            newSeat.floor = response.data[i].floor;
+            newSeat.x = response.data[i].x;
+            newSeat.y = response.data[i].y;
+            newSeat.building_id = response.data[i].building_id;
+            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.width = response.data[i].width;
+            newSeat.height = response.data[i].height;
+            newSeat.degree = response.data[i].degree;
+            newSeat.shape_id = response.data[i].shape_id;
+
+            loadSeatList.push(newSeat);
+          }
+        });
+    },
 
     getSeats() {
       let loadSeatList = new Array();
@@ -607,5 +655,19 @@ export default {
   background: aliceblue;
   height: 800px;
   width: 900px;
+}
+.context-menu {
+  position: absolute;
+  z-index: 999;
+  background: black;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px 0 #eee;
+  display: block;
+  top: 100; left: 10;
+}
+ul {
+  padding: 0px;
+  margin: 0px;
+  display: block;
 }
 </style>

@@ -10,7 +10,7 @@
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js"
   },
-  "dependencies": { 
+  "dependencies": {
     "axios": "^0.20.0",
     "fabric": "^4.2.0",
     "vue": "^2.5.2",
