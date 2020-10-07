@@ -5,7 +5,53 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2020-10-05T19:30:39Z</updated>
+  <updated>2020-10-07T02:23:32Z</updated>
+  <entry>
+    <title>This Week in Spring - October 6th, 2020</title>
+    <link rel="alternate" href="https://spring.io/blog/2020/10/07/this-week-in-spring-october-6th-2020" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Josh Long</name>
+    </author>
+    <id>tag:spring.io,2020-10-07:4223</id>
+    <updated>2020-10-07T02:23:32Z</updated>
+    <content type="html">&lt;p&gt;Hi, Spring fans! Welcome to another installment of &lt;em&gt;This Week in Spring&lt;/em&gt;! It&amp;rsquo;s been a fun week thus far - I spoke Monday at the first ever Garden State JUG event on testing Spring-based application and services and then today I spoke at the NYJava SIG about RSocket. Thank you so much for having me! &lt;/p&gt;
+&lt;p&gt;I can&amp;rsquo;t believe it&amp;rsquo;s already October 6th! We&amp;rsquo;re closer to 2021 than 2019. Crazy. A quarter of a year to go. I just write these roundups and things seem to fly as a result. &lt;/p&gt;
+&lt;p&gt;We&amp;rsquo;ve got a lot to get to, so let&amp;rsquo;s dive right in&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/simviso/status/1311203284569341952?s=12"&gt;I wrote a preface for a Chinese-language book on reactive programming with Spring and you might enjoy the book, too&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2020/10/02/a-bootiful-podcast-long-time-spring-framework-engineer-arjen-poutsma-on-spring-s-web-support-scala-api-design-reactive-programming-and-more"&gt;A Bootiful Podcast: Long time Spring Framework engineer Arjen Poutsma on Spring&amp;rsquo;s web support, Scala, API Design, Reactive programming and more&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2020/10/01/premiering-cloud-native-java-redux"&gt;Premiering: Cloud Native Java, Redux&lt;/a&gt;. I put together this quick, almost 50 minutes-long video, covering a ton of things: distributed locks, reactive service orchestration and composition, service registration and discovery, messaging, centralized configuration, Docker images for Kubernetes, and more. Watch this for a look at building services in 2020 using Spring Boot and Spring Cloud and more&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=bzoi2p0zgcq&amp;feature=share"&gt;A look at the Sentry Spring Boot starter&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/maciejwalkowiak/status/1312492642467409920?s=12"&gt;A promising UI for spring boot startup analysis&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://dzone.com/articles/bootstrapping-java-kubernetes-apps-no-yaml"&gt;Bootstrapping Java Kubernetes Apps With Spring Initializr and K8s Initializer - DZone Java&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://blogs.vmware.com/opensource/2020/10/01/community-signal-is-your-open-source-project-healthy/"&gt;Community Signal: Is Your Open Source Project Healthy?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://useoptic.com/blog/optic-spring-usvc/"&gt;Documenting Spring Boot Microservices with Optic &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://developer.okta.com/blog/2020/10/02/spring-session-mysql?fbclid=IwAR2w83InQ9SgTk_wpzKq7OIaZiJJpRM6Oms6JXRt-vdJM8xHDiRdqJW9uiA"&gt;Easy Session Sharing in Spring Boot with Spring Session and MySQL &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://inside.java/2020/10/05/podcast-004/"&gt;Episode 4 ¡°Record Classes¡± with Gavin Bierman&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://dev.to/tleipzig/how-to-spring-boot-jpa-rest-with-bootify-mp1"&gt;How to: Spring Boot JPA + REST with Bootify - DEV&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://inside.java/2020/10/01/new-panamea-ea-build/"&gt;New Panama/Foreign Early Access Build&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://inside.java/2020/10/06/jextract/"&gt;Project Panama and jextract&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=229gplcc5d8&amp;feature=share"&gt;Reactive Spring Boot&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2020/10/05/spring-data-azure-cosmos-db-v3-generally-available"&gt;Spring Data Azure Cosmos DB V3 ? Generally Available&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=Um9djPTtPe0&amp;lc=Ugzlxnh_UInJwBq9Xdt4AaABAg"&gt;The Path Towards Spring Boot Native Applications - YouTube&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://www.datastax.com/dev/spring"&gt;Using Cassandra with the Java Spring Framework | Datastax&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://www.reactive.foundation/post/why-reactive-principles-ensure-system-scalability-with-josh-long"&gt;Why Reactive Principles Ensure System Scalability: A Conversation with Josh Long&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/JavaAtMicrosoft/status/1311412828352335873"&gt;Github Welcomes the OpenJDK project&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/springcloud/status/1312174376607903744"&gt;We&amp;rsquo;re hiring!&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/JavaAtMicrosoft/status/1311763870139052032"&gt;Async #Java Programming with Project Reactor and the new #Azure SDK for Java&amp;quot; by Srikanta Nagaraja&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/JavaAtMicrosoft/status/1313183939234676736"&gt;The implementation of OpenJDK for #JEP388 Windows AArch64 (Arm) is now complete&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/RabbitMQ/status/1311595552069611526"&gt;A new episode of TGIR is back!&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/JavaAtMicrosoft/status/1313533432933171200"&gt;Check out the upcoming Java conference from Microsoft, JDConf&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/SpringData/status/1312034747795877888"&gt;Redis Client LettuceDriver 6.0 goes GA &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/SpringData/status/1312035790982127623"&gt;Data auditing with Spring Data R2DBC&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/java/status/1311338936556429313"&gt;Java 15 Programmer&amp;rsquo;s Guide To Text Blocks&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/springboot/status/1311220316450979841"&gt;Remember, Spring Boot 2.1.x goes EOL this November&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/springcentral/status/1311289448131424256"&gt;Interest and use of Spring Cloud is growing rapidly. Get the full picture in the State of Spring 2020 report&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://twitter.com/springcloud/status/1312174349919514625"&gt;Maciej Walkowiak took a look at the new Spring Boot 2.4 Actuator &lt;code&gt;startup&lt;/code&gt; endpoint&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
+  </entry>
   <entry>
     <title>Spring Data Azure Cosmos DB V3 ? Generally Available</title>
     <link rel="alternate" href="https://spring.io/blog/2020/10/05/spring-data-azure-cosmos-db-v3-generally-available" />
@@ -1112,43 +1158,6 @@ Artem&lt;/p&gt;
     <content type="html">&lt;p&gt;On behalf of the community and everyone who has contributed, it&amp;rsquo;s my pleasure to announce that &lt;a href="https://spring.io/projects/spring-restdocs"&gt;Spring REST Docs&lt;/a&gt; 2.0.5.RELEASE is available from Maven Central, JCenter, and our &lt;a href="https://repo.spring.io/release"&gt;release repository&lt;/a&gt;. Thank you to everyone who contributed to this release by reporting bugs and opening pull requests.&lt;/p&gt;
 &lt;p&gt;This maintenance release includes a &lt;a href="https://github.com/spring-projects/spring-restdocs/releases/tag/v2.0.5.RELEASE"&gt;small number of fixes and documentation improvements&lt;/a&gt;. It is a recommend upgrade for all Spring REST Docs 2.x users. &lt;/p&gt;
 &lt;p&gt;&lt;a href="https://github.com/spring-projects/spring-restdocs"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-restdocs/issues"&gt;Issues&lt;/a&gt; | &lt;a href="https://docs.spring.io/spring-restdocs/docs/2.0.5.RELEASE"&gt;Documentation&lt;/a&gt; | &lt;a href="https://twitter.com/springrestdocs"&gt;Twitter&lt;/a&gt; | &lt;a href="https://gitter.im/spring-projects/spring-restdocs"&gt;Gitter&lt;/a&gt; | &lt;a href="https://stackoverflow.com/tags/spring-restdocs"&gt;Stack Overflow&lt;/a&gt;&lt;/p&gt;
-&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
-  </entry>
-  <entry>
-    <title>Spring Tools 4.8.0 released</title>
-    <link rel="alternate" href="https://spring.io/blog/2020/09/16/spring-tools-4-8-0-released" />
-    <category term="releases" label="Releases" />
-    <author>
-      <name>Martin Lippert</name>
-    </author>
-    <id>tag:spring.io,2020-09-16:4202</id>
-    <updated>2020-09-16T15:40:14Z</updated>
-    <content type="html">&lt;p&gt;Dear Spring Community,&lt;/p&gt;
-&lt;p&gt;I am happy to announce the 4.8.0 release of the Spring Tools 4 for Eclipse, Visual Studio Code, and Theia.&lt;/p&gt;&lt;h4&gt;&lt;a href="#this-release-includes-major-changes-to-the-spring-tools-4-for-eclipse-distribution" class="anchor" name="this-release-includes-major-changes-to-the-spring-tools-4-for-eclipse-distribution"&gt;&lt;/a&gt;This release includes major changes to the Spring Tools 4 for Eclipse distribution&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;updated to Eclipse 2020-09 release&lt;/li&gt;
-  &lt;li&gt;requires a JDK11 to run on&lt;/li&gt;
-  &lt;li&gt;ships with an embedded JDK14 runtime, no need to install or configure a specific JDK to run the IDE on anymore&lt;/li&gt;
-  &lt;li&gt;includes Eclipse Docker tooling by default now (in addition to the nice docker integration for the Spring Boot Dashboard)&lt;/li&gt;
-  &lt;li&gt;includes Wild Web Developer tooling now (&lt;a href="https://github.com/spring-projects/sts4/issues/354"&gt;#354&lt;/a&gt;), including advanced support for JavaScript, TypeScript, HTML, and more&lt;/li&gt;
-&lt;/ul&gt;&lt;h4&gt;&lt;a href="#additional-changes-and-fixes" class="anchor" name="additional-changes-and-fixes"&gt;&lt;/a&gt;Additional changes and fixes&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;em&gt;(Spring Boot)&lt;/em&gt; fix: Eclips shows error on &lt;code&gt;@ConditionalOnExpression(&amp;quot;${downlink.active:false}&amp;quot;)&lt;/code&gt; (&lt;a href="https://github.com/spring-projects/sts4/issues/529"&gt;#529&lt;/a&gt;)&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; improvement: added action to jump from boot dashboard docker integration to docker explorer&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; improvement: added actions to pause an resume docker containers&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; change: local cloud services are now hidden by default and can be enabled via the boot dashboard view drop-down&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; fixed: run spring boot app in debug mode in docker container now works with Spring Boot Devtools being enabled&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; fixed: add starters wizard now updates the projects definition automatically after pressing finish to get new resources into the right configuration automatically&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; fixed: improved a few icons for dark theme (&lt;a href="https://github.com/spring-projects/sts4/issues/472"&gt;#472&lt;/a&gt;)&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;(Eclipse)&lt;/em&gt; fixed: check for JDK vs. JRE improved for JDK &amp;gt;= 9 case (&lt;a href="https://github.com/spring-projects/sts4/issues/530"&gt;#530&lt;/a&gt;, &lt;a href="https://github.com/spring-projects/sts4/issues/531"&gt;#531&lt;/a&gt;)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;To download the distribution for Eclipse and find links to the marketplace entries for Visual Studio Code and Theia, please go visit:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Spring Tools 4: &lt;a href="https://spring.io/tools/"&gt;https://spring.io/tools/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Detailed changes can be found here: &lt;a href="https://github.com/spring-projects/sts4/wiki/Changelog#2020-09-17-480-release-incl-language-servers-version-1220"&gt;https://github.com/spring-projects/sts4/wiki/Changelog#2020-09-17-480-release-incl-language-servers-version-1220&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Spring Tools 4.8.1 is scheduled to be released in late October 2020.&lt;/p&gt;
-&lt;p&gt;Enjoy!&lt;/p&gt;
 &lt;!-- rendered by Sagan Renderer Service --&gt;</content>
   </entry>
 </feed>
