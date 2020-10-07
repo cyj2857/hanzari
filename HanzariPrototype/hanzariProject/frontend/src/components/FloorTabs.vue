@@ -44,8 +44,8 @@ export default {
         this.seatFloor = floor;
         console.log(this.seatFloor + "가 넘어온 자리 층입니다");
 
-        for(let i=0;i<this.items.length;i++){
-          if(this.seatFloor == this.items[i].id){
+        for (let i = 0; i < this.items.length; i++) {
+          if (this.seatFloor == this.items[i].id) {
             this.floorNum = i;
             this.setFloor(this.items[this.floorNum].id);
           }
@@ -90,15 +90,22 @@ export default {
       this.decreaseTab();
     },
     setFloor(n) {
+      this.floorNum = n;
       eventBus.$emit("changeFloor", n);
+    },
+    getFloorName(floorNum){
+      return this.items[floorNum].id;
     },
     decreaseTab() {
       this.length--;
-      console.log("length" + this.length);
+      this.floorNum = this.length-1;
+      this.setFloor(this.items[this.floorNum].id);
       //pop
     },
     increaseTab() {
       this.length++;
+      this.floorNum = this.length-1;
+      this.setFloor(this.items[this.floorNum].id);
       //push
     }
   },
