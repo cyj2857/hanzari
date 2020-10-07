@@ -5,7 +5,7 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2020-10-07T02:23:32Z</updated>
+  <updated>2020-10-07T02:23:00Z</updated>
   <entry>
     <title>This Week in Spring - October 6th, 2020</title>
     <link rel="alternate" href="https://spring.io/blog/2020/10/07/this-week-in-spring-october-6th-2020" />
@@ -14,7 +14,7 @@
       <name>Josh Long</name>
     </author>
     <id>tag:spring.io,2020-10-07:4223</id>
-    <updated>2020-10-07T02:23:32Z</updated>
+    <updated>2020-10-07T02:23:00Z</updated>
     <content type="html">&lt;p&gt;Hi, Spring fans! Welcome to another installment of &lt;em&gt;This Week in Spring&lt;/em&gt;! It&amp;rsquo;s been a fun week thus far - I spoke Monday at the first ever Garden State JUG event on testing Spring-based application and services and then today I spoke at the NYJava SIG about RSocket. Thank you so much for having me! &lt;/p&gt;
 &lt;p&gt;I can&amp;rsquo;t believe it&amp;rsquo;s already October 6th! We&amp;rsquo;re closer to 2021 than 2019. Crazy. A quarter of a year to go. I just write these roundups and things seem to fly as a result. &lt;/p&gt;
 &lt;p&gt;We&amp;rsquo;ve got a lot to get to, so let&amp;rsquo;s dive right in&lt;/p&gt;
@@ -22,7 +22,7 @@
   &lt;li&gt;&lt;a href="https://twitter.com/simviso/status/1311203284569341952?s=12"&gt;I wrote a preface for a Chinese-language book on reactive programming with Spring and you might enjoy the book, too&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="https://spring.io/blog/2020/10/02/a-bootiful-podcast-long-time-spring-framework-engineer-arjen-poutsma-on-spring-s-web-support-scala-api-design-reactive-programming-and-more"&gt;A Bootiful Podcast: Long time Spring Framework engineer Arjen Poutsma on Spring&amp;rsquo;s web support, Scala, API Design, Reactive programming and more&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="https://spring.io/blog/2020/10/01/premiering-cloud-native-java-redux"&gt;Premiering: Cloud Native Java, Redux&lt;/a&gt;. I put together this quick, almost 50 minutes-long video, covering a ton of things: distributed locks, reactive service orchestration and composition, service registration and discovery, messaging, centralized configuration, Docker images for Kubernetes, and more. Watch this for a look at building services in 2020 using Spring Boot and Spring Cloud and more&lt;/li&gt;
-  &lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=bzoi2p0zgcq&amp;feature=share"&gt;A look at the Sentry Spring Boot starter&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=BZOI2P0zgCQ&amp;feature=emb_title"&gt;A look at the Sentry Spring Boot starter&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="https://twitter.com/maciejwalkowiak/status/1312492642467409920?s=12"&gt;A promising UI for spring boot startup analysis&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="https://dzone.com/articles/bootstrapping-java-kubernetes-apps-no-yaml"&gt;Bootstrapping Java Kubernetes Apps With Spring Initializr and K8s Initializer - DZone Java&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="https://blogs.vmware.com/opensource/2020/10/01/community-signal-is-your-open-source-project-healthy/"&gt;Community Signal: Is Your Open Source Project Healthy?&lt;/a&gt;&lt;/li&gt;
