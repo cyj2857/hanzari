@@ -1,34 +1,16 @@
 <template>
   <div>
-    <canvas
-      ref="canvas"
-      class="canvas"
-      width="950px"
-      height="800px"
-      style="text-align: center"
-    ></canvas>
-    <input
-      v-show="false"
-      ref="inputUpload"
-      type="file"
-      @change="onFileChange"
-    />
-    <v-btn color="success" @click="$refs.inputUpload.click()"
-      >File Upload to Background</v-btn
-    >
+    <canvas ref="canvas" class="canvas" width="950px" height="800px" style="text-align: center"></canvas>
+    <input v-show="false" ref="inputUpload" type="file" @change="onFileChange" />
+    <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
+    <v-btn @click="getSeats">Load Canvas</v-btn>
     <v-btn @click="clickMakeVacant">Make Vacant</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
-    <span
-      class="context-menu"
-      v-show="menuInVisible"
-      tabindex="-1"
-      v-click-outside="closeMenu"
-    >
+    <span class="context-menu" v-show="menuInVisible" tabindex="-1" v-click-outside="closeMenu">
       <ul>
         <v-btn>clickMe</v-btn>
         <v-btn>clickMe2</v-btn>
@@ -58,7 +40,7 @@ export default {
       eachEmployeeSeatMap: null, //each Employee's seats map
       dialogStatus: false,
       menuStatus: false,
-      DBseatsList: [],
+      DBseatsList: []
     };
   },
   created() {
@@ -85,19 +67,18 @@ export default {
   },
   mounted() {
     this.initializing();
-    //this.DBseatsList = this.getSeats();
   },
   computed: {
     menuInVisible() {
       return this.menuStatus;
-    },
+    }
   },
   methods: {
     setMenuPosition(x, y) {
-      console.log(x, y)
-      this.openMenu()
+      console.log(x, y);
+      this.openMenu();
     },
-    openMenu(){
+    openMenu() {
       this.menuStatus = true;
     },
     closeMenu() {
@@ -198,10 +179,10 @@ export default {
     },
     //도형생성시
     createSeat(item) {
-      if(!this.floorImageList.get(this.currentSelectedFloor)){
-        alert('도면 이미지가 없습니다')
-        console.log(this.getEachFloorSeatList(this.currentSelectedFloor))
-        return
+      if (!this.floorImageList.get(this.currentSelectedFloor)) {
+        alert("도면 이미지가 없습니다");
+        console.log(this.getEachFloorSeatList(this.currentSelectedFloor));
+        return;
       }
       console.log("currnet floor is " + this.currentSelectedFloor);
 
@@ -237,7 +218,7 @@ export default {
         top: 150
       });
 
-      group.on("mousedown", (e) => {
+      group.on("mousedown", e => {
         let group = e.target;
         if (e.button === 1) {
           console.log("left click");
@@ -251,7 +232,10 @@ export default {
           //console.log("right click");
 
           //context menu 넣을 곳
-          this.setMenuPosition(group.toObject(["left"]).left, group.toObject(["top"]).top);
+          this.setMenuPosition(
+            group.toObject(["left"]).left,
+            group.toObject(["top"]).top
+          );
         }
       });
 
@@ -292,9 +276,7 @@ export default {
       console.log("eachEmployeeSeatMap-size:" + this.eachEmployeeSeatMap.size);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    clickMakeVacant(){
-
-    },
+    clickMakeVacant() {},
     getColor(department) {
       const Colors = {
         Orange: "orange",
@@ -409,9 +391,10 @@ export default {
             this.floorCanvas.remove(obj);
           });
 
-        let eachFloorSeatList = this.deleteEachFloorSeatList(this.currentSelectedFloor);
+        let eachFloorSeatList = this.deleteEachFloorSeatList(
+          this.currentSelectedFloor
+        );
         if (eachFloorSeatList) {
-          
           alert("success");
         } else alert("fail");
 
@@ -456,7 +439,10 @@ export default {
           eachFloorSeatList.length = 0;
           this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
 
-          eventBus.$emit("eachFloorSeatList", this.getEachFloorSeatList(this.currentSelectedFloor));
+          eventBus.$emit(
+            "eachFloorSeatList",
+            this.getEachFloorSeatList(this.currentSelectedFloor)
+          );
         }
       }
     },
@@ -506,19 +492,16 @@ export default {
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {
-      if (this.allFloorsSeatMap) {
-        for (var i = 0; i < this.allFloorsSeatMap.size; i++) {
-          if (this.eachFloorSeatMap[i]) {
-            console.log(
-              this.eachFloorSeatMap[i].length + "한 층의 자리 개수입니다."
-            );
-          }
+      //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+      console.log(eachFloorSeatList.length + "현재 층의 자리 개수입니다.");
 
-          //console.log(this.allFloorsSeatMap.size+"현재 저장한 층의 개수입니다.");
-          /*for (var j = 0; j < this.eachFloorSeatMap[i].length; j++) {
-          
+      if (eachFloorSeatList) {
+        for (var i = 0; i < eachFloorSeatList.length; i++) {
 
-          let groupToObject = this.eachFloorSeatMap[i].toObject([
+          let groupToObject = eachFloorSeatList[i].toObject([
             "seatId",
             "floor_id",
             "left",
@@ -542,7 +525,6 @@ export default {
           data.shape_id = "1";
 
           this.saveAllSeatByAxios(data);
-        }*/
         }
       }
     },
@@ -557,29 +539,6 @@ export default {
         )
         .then(res => {
           console.log(res.data);
-        });
-    },
-    clickLoadBtn() {
-      //이후 getSeats()로 이름 변경할 예정
-      let loadSeatList = new Array();
-      axios
-        .get("http://" + host + ":" + portNum + "/seats")
-        .then(function (response) {
-          for (var i = 0; i < response.data.length; i++) {
-            let newSeat = {}; // to make new SeatObject
-            newSeat.seat_id = response.data[i].seat_id;
-            console.log(newSeat.seat_id + "new object's seat_id");
-            newSeat.floor = response.data[i].floor;
-            newSeat.x = response.data[i].x;
-            newSeat.y = response.data[i].y;
-            newSeat.building_id = response.data[i].building_id;
-            newSeat.employee_id = response.data[i].employee_id;
-            newSeat.width = response.data[i].width;
-            newSeat.height = response.data[i].height;
-            newSeat.degree = response.data[i].degree;
-            newSeat.shape_id = response.data[i].shape_id;
-            loadSeatList.push(newSeat);
-          }
         });
     },
     getSeats() {
@@ -604,13 +563,9 @@ export default {
             loadSeatList.push(newSeat);
           }
         });
-      return loadSeatList;
-    },
-    clickLoadBtn() {
-      this.loadToCanvas(this.DBseatsList);
+      this.loadToCanvas(loadSeatList)
     },
     loadToCanvas(loadSeatList) {
-      //console.log(loadSeatList[0])
       for (let i = 0; i < loadSeatList.length; i++) {
         let employee = null;
         if (loadSeatList[i].employee_id) {
@@ -630,7 +585,6 @@ export default {
         });
 
         let group = new fabric.Group([rectangle, textObject], {
-          id: loadSeatList[i].employee_id,
           seatId: loadSeatList[i].seat_id,
           employee_name: employee.employee_name,
           employee_department: employee.department_name,
@@ -643,10 +597,6 @@ export default {
 
         this.floorCanvas.add(group);
         this.eachFloorSeatMap.set(loadSeatList[i].floor, loadSeatList);
-        this.allFloorsSeatMap.set(
-          loadSeatList[i].floor,
-          this.eachFloorSeatMap.get(loadSeatList[i].floor)
-        );
       }
     },
     getEmployeeInfo(employee_id) {
@@ -684,7 +634,8 @@ export default {
   border-radius: 4px;
   box-shadow: 0 1px 4px 0 #eee;
   display: block;
-  top: 100; left: 10;
+  top: 100;
+  left: 10;
 }
 ul {
   padding: 0px;
