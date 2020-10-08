@@ -5,15 +5,15 @@ import java.util.List;
 import com.hancom.hanzari.model.Seat;
 
 public interface SeatService {
-	List<Seat> findAll(); // R
+	public List<Seat> findAll(); // R
 
-	Seat findById(String seat_id) throws Exception; // R
+	public Seat findById(String seat_id) throws Exception; // R
 
-	List<Seat> findByEmpId(String employee_id);
+	public List<Seat> findByEmpId(String employee_id);
 	
-	void deleteById(String seat_id); // D
+	public void deleteById(String seat_id); // D
 
-	Seat save(Seat seat); // C
+	public Seat save(Seat seat); // C
 
-	void updateById(String seat_id); // U
+	public void updateById(String seat_id); // U
 }
