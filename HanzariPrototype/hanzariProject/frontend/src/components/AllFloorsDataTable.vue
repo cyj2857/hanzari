@@ -118,6 +118,7 @@ export default {
         console.log(initEmployeeList.length+"employee ???? ?");
         
       });
+      eventBus.$emit("allEmployeeList", initEmployeeList);
       return initEmployeeList;
     }
   }

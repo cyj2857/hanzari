@@ -7,7 +7,7 @@
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="getSeats">Load Canvas</v-btn>
+    <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <v-btn @click="clickMakeVacant">Make Vacant</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
     <span class="context-menu" v-show="menuInVisible" tabindex="-1" v-click-outside="closeMenu">
@@ -24,11 +24,13 @@
 import { eventBus } from "../main.js";
 import axios from "axios";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
+import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 const host = "172.30.1.50";
 const portNum = 8080;
 export default {
   components: {
-    EmployeeDialog
+    EmployeeDialog,
+    AllFloorsDataTable
   },
   data: function() {
     return {
@@ -40,7 +42,8 @@ export default {
       eachEmployeeSeatMap: null, //each Employee's seats map
       dialogStatus: false,
       menuStatus: false,
-      DBseatsList: []
+      DBseatsList: [],
+      allEmployeeList: []
     };
   },
   created() {
@@ -54,6 +57,9 @@ export default {
         this.currentSelectedFloor = floor;
         this.changeFloor(this.currentSelectedFloor);
         console.log(this.currentSelectedFloor + "여기가 현재층");
+      }),
+      eventBus.$on("allEmployeeList", allEmployeeList => {
+        this.allEmployeeList = allEmployeeList;
       });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
@@ -67,6 +73,7 @@ export default {
   },
   mounted() {
     this.initializing();
+    this.DBseatsList = this.getSeats();
   },
   computed: {
     menuInVisible() {
@@ -294,6 +301,7 @@ export default {
     showSeat(seat) {
       console.log(seat.seat_id + "가 해당 자리의 아이디입니다."); // One-0,
       let seatFloor;
+      let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
 
       //seat의 층과 현재층이 같지 않다면
       if (this.currentSelectedFloor != seat.seat_id.split("-")[0]) {
@@ -304,7 +312,6 @@ export default {
       else {
         seatFloor = this.currentSelectedFloor;
       }
-      let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
 
       for (let i = 0; i < eachFloorSeatList.length; i++) {
         let myGroup = eachFloorSeatList[i];
@@ -500,7 +507,6 @@ export default {
 
       if (eachFloorSeatList) {
         for (var i = 0; i < eachFloorSeatList.length; i++) {
-
           let groupToObject = eachFloorSeatList[i].toObject([
             "seatId",
             "floor_id",
@@ -563,41 +569,66 @@ export default {
             loadSeatList.push(newSeat);
           }
         });
-      this.loadToCanvas(loadSeatList)
+      return loadSeatList;
     },
-    loadToCanvas(loadSeatList) {
+    clickLoadBtn() {
+      let loadSeatList = this.DBseatsList; //axios로 seat 받아온 list
+      //일단 자리의 층과 현재 층이 동일할떄를 가정
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+
       for (let i = 0; i < loadSeatList.length; i++) {
-        let employee = null;
-        if (loadSeatList[i].employee_id) {
-          employee = this.getEmployeeInfo(loadSeatList[i].employee_id);
+        let employee = [];
+        employee = this.allEmployeeList; // allfloorsdatatable에서 eventbus로  받아
+
+        for (let j = 0; j < employee.length; j++) {
+          if (loadSeatList[i].employee_id == employee[j].employee_id) {
+            console.log(
+              employee[j].seatIdList.length + "employee seatlist length"
+            );
+
+            for (let k = 0; k < employee[j].seatIdList.length; k++) {
+              console.log(employee[j].seatIdList[k] + "자리의 아이디입니다.");
+              let rectangle = new fabric.Rect({
+                width: loadSeatList[i].width,
+                height: loadSeatList[i].height,
+                fill: this.getColor(employee[j].department),
+                opacity: 1
+              });
+              let textObject = new fabric.IText(employee[j].name, {
+                left: 0,
+                top: rectangle.height / 3,
+                fontSize: 13,
+                fill: "black"
+              });
+
+              let group = new fabric.Group([rectangle, textObject], {
+                seatId: employee[j].seatIdList[k],
+                employee_name: employee[j].name,
+                employee_department: employee[j].department,
+                employee_number: employee[j].number,
+                employee_id: loadSeatList[i].employee_id,
+                floor_id: loadSeatList[i].floor, //One이라고 가정
+                left: loadSeatList[i].x,
+                top: loadSeatList[i].y
+              });
+
+              this.floorCanvas.add(group);
+              eachFloorSeatList.push(group);
+              console.log(
+                "전체층의 자리 맵 size = " + this.eachFloorSeatMap.size
+              );
+              console.log(
+                this.currentSelectedFloor +
+                  "의 자리 리스트 length = " +
+                  eachFloorSeatList.length
+              );
+            }
+          }
         }
-        let rectangle = new fabric.Rect({
-          width: loadSeatList[i].width,
-          height: loadSeatList[i].height,
-          fill: this.getColor(employee.department_name),
-          opacity: 1
-        });
-        let textObject = new fabric.IText(employee.employee_name, {
-          left: 0,
-          top: rectangle.height / 3,
-          fontSize: 13,
-          fill: "black"
-        });
-
-        let group = new fabric.Group([rectangle, textObject], {
-          seatId: loadSeatList[i].seat_id,
-          employee_name: employee.employee_name,
-          employee_department: employee.department_name,
-          employee_number: employee.extension_number,
-          employee_id: loadSeatList[i].employee_id,
-          floor_id: loadSeatList[i].floor,
-          left: loadSeatList[i].x,
-          top: loadSeatList[i].y
-        });
-
-        this.floorCanvas.add(group);
-        this.eachFloorSeatMap.set(loadSeatList[i].floor, loadSeatList);
       }
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
     getEmployeeInfo(employee_id) {
       axios
