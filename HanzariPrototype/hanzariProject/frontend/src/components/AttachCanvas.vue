@@ -228,7 +228,6 @@ export default {
       });
 
       let group = new fabric.Group([rectangle, textObject], {
-        id: item.employee_id,
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
         employee_name: item.name,
         employee_department: item.department,
