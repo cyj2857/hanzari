@@ -18,10 +18,10 @@ public class Building {
 
 	@Id
 	@Column(name = "building_id", nullable = false)
-	String building_id;
+	private String building_id;
 
 	@Column(name = "building_name", nullable = false)
-	String building_name;
+	private String building_name;
 
 	public Building() {
 	};

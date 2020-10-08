@@ -18,11 +18,13 @@ import com.hancom.hanzari.model.Building;
 import com.hancom.hanzari.model.Department;
 import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.Figure;
-import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.model.Shape;
 
+/*
+ * TEST에 필요한 메소드들을 모아놓은 Controller
+*/
 @Controller
-public class HomeController {
+public class TestController {
 
 	@Autowired
 	private static SessionFactory sessionFactory;
@@ -60,16 +62,14 @@ public class HomeController {
 		shapes.add(new Shape("4", "타원"));
 
 		/*
-		List<Figure> figures = new ArrayList<Figure>();
-		figures.add(new Figure("1", shapes.get(0), 50, 50, 0));
-		figures.add(new Figure("2", shapes.get(0), 50, 50, 0));
-		figures.add(new Figure("3", shapes.get(0), 50, 50, 0));
-		figures.add(new Figure("4", shapes.get(0), 50, 50, 0));
-		figures.add(new Figure("5", shapes.get(1), 50, 50, 0));
-		figures.add(new Figure("6", shapes.get(1), 50, 50, 0));
-		figures.add(new Figure("7", shapes.get(2), 50, 50, 0));
-		figures.add(new Figure("8", shapes.get(2), 50, 50, 0));
-		*/
+		 * List<Figure> figures = new ArrayList<Figure>(); figures.add(new Figure("1",
+		 * shapes.get(0), 50, 50, 0)); figures.add(new Figure("2", shapes.get(0), 50,
+		 * 50, 0)); figures.add(new Figure("3", shapes.get(0), 50, 50, 0));
+		 * figures.add(new Figure("4", shapes.get(0), 50, 50, 0)); figures.add(new
+		 * Figure("5", shapes.get(1), 50, 50, 0)); figures.add(new Figure("6",
+		 * shapes.get(1), 50, 50, 0)); figures.add(new Figure("7", shapes.get(2), 50,
+		 * 50, 0)); figures.add(new Figure("8", shapes.get(2), 50, 50, 0));
+		 */
 		List<Department> departments = new ArrayList<Department>();
 		departments.add(new Department("1", "부서1"));
 		departments.add(new Department("2", "부서2"));
@@ -95,27 +95,30 @@ public class HomeController {
 		employee.add(new Employee("19101199", "viewer", "박팀장", departments.get(2), "444-0003", null));
 
 		/*
-		List<Seat> seats = new ArrayList<Seat>();
-		seats.add(new Seat("1", "10", 100.5, 100.5, false, null, building, employee.get(0), figures.get(0)));
-		seats.add(new Seat("2", "10", 500.5, 100.5, false, null, building, employee.get(0), figures.get(1)));
-		seats.add(new Seat("3", "10", 700.5, 200.5, true, "A", building, employee.get(1), figures.get(2)));
-		seats.add(new Seat("4", "10", 750.5, 200.5, true, "A", building, employee.get(1), figures.get(3)));
-		seats.add(new Seat("5", "6", 100.5, 100.5, false, null, building, employee.get(3), figures.get(4)));
-		seats.add(new Seat("6", "6", 200.5, 500.5, false, null, building, employee.get(2), figures.get(5)));
-		seats.add(new Seat("7", "6", 600.5, 600.5, true, "A", building, employee.get(4), figures.get(6)));
-		seats.add(new Seat("8", "6", 650.5, 600.5, true, "A", building, employee.get(5), figures.get(7)));
-		*/
-		
+		 * List<Seat> seats = new ArrayList<Seat>(); seats.add(new Seat("1", "10",
+		 * 100.5, 100.5, false, null, building, employee.get(0), figures.get(0)));
+		 * seats.add(new Seat("2", "10", 500.5, 100.5, false, null, building,
+		 * employee.get(0), figures.get(1))); seats.add(new Seat("3", "10", 700.5,
+		 * 200.5, true, "A", building, employee.get(1), figures.get(2))); seats.add(new
+		 * Seat("4", "10", 750.5, 200.5, true, "A", building, employee.get(1),
+		 * figures.get(3))); seats.add(new Seat("5", "6", 100.5, 100.5, false, null,
+		 * building, employee.get(3), figures.get(4))); seats.add(new Seat("6", "6",
+		 * 200.5, 500.5, false, null, building, employee.get(2), figures.get(5)));
+		 * seats.add(new Seat("7", "6", 600.5, 600.5, true, "A", building,
+		 * employee.get(4), figures.get(6))); seats.add(new Seat("8", "6", 650.5, 600.5,
+		 * true, "A", building, employee.get(5), figures.get(7)));
+		 */
+
 		try {
 			Transaction tx = session.beginTransaction();
 
 			// Query
 			shapes.forEach(e -> session.save(e));
-			//figures.forEach(e -> session.save(e)); // instead of SQL statement
+			// figures.forEach(e -> session.save(e)); // instead of SQL statement
 			departments.forEach(e -> session.save(e)); // instead of SQL statement
 			session.save(building); // instead of SQL statement
 			employee.forEach(e -> session.save(e)); // instead of SQL statement
-			//seats.forEach(e -> session.save(e)); // instead of SQL statement
+			// seats.forEach(e -> session.save(e)); // instead of SQL statement
 
 			tx.commit();
 

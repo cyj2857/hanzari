@@ -28,24 +28,24 @@ public class Employee {
 
 	@Id
 	@Column(name = "employee_id", nullable = false)
-	String employee_id;
+	private String employee_id;
 
 	@Column(name = "authority", nullable = false)
-	String authority;
+	private String authority;
 
 	@Column(name = "employee_name", nullable = false)
-	String employee_name;
+	private String employee_name;
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "department_id")
-	Department department;
+	private Department department;
 
 	@Column(name = "extension_number", nullable = true)
-	String extension_number;
+	private String extension_number;
 
 	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Column(nullable = true)
-	List<Seat> seat = new ArrayList<Seat>();
+	private List<Seat> seat = new ArrayList<Seat>();
 
 	public Employee() {
 	}
@@ -57,7 +57,7 @@ public class Employee {
 
 	public List<String> seatIdList() {
 		List<String> result = new ArrayList<String>();
-		seat.forEach(e -> result.add(e.seat_id));
+		seat.forEach(e -> result.add(e.getSeat_id()));
 		return result;
 	}
 	

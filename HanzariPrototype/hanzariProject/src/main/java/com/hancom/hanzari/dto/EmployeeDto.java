@@ -17,18 +17,18 @@ import lombok.Setter;
 public class EmployeeDto {
 
 	@NotBlank
-	String employee_id;
+	private String employee_id;
 
 	@NotBlank
-	String authority;
+	private String authority;
 
 	@NotBlank
-	String employee_name;
+	private String employee_name;
 
 	@NotBlank
-	String department_name;
+	private String department_name;
 
-	String extension_number;
+	private String extension_number;
 	
-	List<String> seatList = new ArrayList<>();
+	private List<String> seatList = new ArrayList<>();
 }
