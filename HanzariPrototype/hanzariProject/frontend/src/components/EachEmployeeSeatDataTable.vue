@@ -70,7 +70,6 @@ export default {
           this.seats.push(newSeat);
         }
       }
-      console.log("첫번째 자리의 아이디는 "+this.seats[0].seat_id);
     }
   }
 };
