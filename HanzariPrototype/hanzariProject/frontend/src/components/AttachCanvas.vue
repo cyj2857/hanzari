@@ -345,7 +345,7 @@ export default {
     //해당 층의 도형 리스트 삭제하기
     deleteEachFloorSeatList: function(floor) {
       this.getEachFloorSeatList(floor).length = 0;
-      return true;
+      return this.getEachFloorSeatList(floor);
     },
 
     deleteAllBtn() {
@@ -357,9 +357,13 @@ export default {
             this.floorCanvas.remove(obj);
           });
 
-        if (this.deleteEachFloorSeatList(this.currentSelectedFloor)) {
+        let eachFloorSeatList = this.deleteEachFloorSeatList(this.currentSelectedFloor);
+        if (eachFloorSeatList) {
+          
           alert("success");
         } else alert("fail");
+
+        eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       }
     },
 
@@ -399,6 +403,8 @@ export default {
           //modify map(eachFloorSeatMap)
           eachFloorSeatList.length = 0;
           this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
+
+          eventBus.$emit("eachFloorSeatList", this.getEachFloorSeatList(this.currentSelectedFloor));
         }
       }
     },
