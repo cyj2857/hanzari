@@ -27,35 +27,35 @@ public class Seat {
 
 	@Id
 	@Column(name = "seat_id", nullable = false)
-	String seat_id;
+	private String seat_id;
 
 	@Column(name = "floor", nullable = false)
-	String floor;
+	private String floor;
 
 	@Column(name = "x", nullable = false)
-	double x;
+	private double x;
 
 	@Column(name = "y", nullable = false)
-	double y;
+	private double y;
 
 	@Column(name = "is_group", nullable = false)
-	Boolean is_group;
+	private Boolean is_group;
 
 	@Column(name = "group_id", nullable = true)
-	String group_id;
+	private String group_id;
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "building_id")
-	Building building;
+	private Building building;
 
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "employee_id") // 관계의 주인
-	Employee employee;
+	private Employee employee;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "figure_id")
-	Figure figure;
+	private Figure figure;
 
 	public Seat() {
 	};

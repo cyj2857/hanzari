@@ -23,10 +23,10 @@ public class Shape {
 
 	@Id
 	@Column(name = "shape_id", nullable = false)
-	String shape_id; // 그려질 모양의 id
+	private String shape_id; // 그려질 모양의 id
 
 	@Column(name = "shape_name", nullable = false)
-	String shape_name; // 그려질 모양의 이름 (ex. 네모, 세모, 원, 타원, ...)
+	private String shape_name; // 그려질 모양의 이름 (ex. 네모, 세모, 원, 타원, ...)
 
 	public Shape() {
 	};

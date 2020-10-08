@@ -26,27 +26,25 @@ public class Figure {
 
 	@Id
 	@Column(name = "figure_id", nullable = false)
-	String figure_id; // seat_id와 동일
+	private String figure_id; // seat_id와 동일
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "shape_id")
-	Shape shape; // 그려질 모양에 대한 정보 (ex. 네모, 세모, 원 등)
+	private Shape shape; // 그려질 모양에 대한 정보 (ex. 네모, 세모, 원 등)
 
 	@Column(name = "width", nullable = false)
-	double width; // 그려질 너비
+	private double width; // 그려질 너비
 
 	@Column(name = "height", nullable = false)
-	double height; // 그려질 높이
+	private double height; // 그려질 높이
 
 	@Column(name = "degree", nullable = false)
-	double degree; // 그려질 회전율
+	private double degree; // 그려질 회전율
 
 	public Figure() {
 	};
 	
-	void setShape(String shape_id) {
-		/*
-		 * shape table에서 shape_id에 해당하는 Shape 객체를 가져와서 바인딩
-		 */
+	void setShape(Shape shape) {
+		this.shape = shape;
 	}
 }

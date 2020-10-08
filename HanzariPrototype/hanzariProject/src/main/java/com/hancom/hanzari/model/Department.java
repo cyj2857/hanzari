@@ -23,10 +23,10 @@ public class Department {
 
 	@Id
 	@Column(name = "department_id", nullable = false)
-	String department_id;
+	private String department_id;
 
 	@Column(name = "department_name", nullable = false)
-	String department_name;
+	private String department_name;
 
 	public Department() {
 	};
