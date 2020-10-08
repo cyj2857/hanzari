@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hancom.hanzari.exception.ResourceNotFoundException;
-import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.Figure;
 import com.hancom.hanzari.repository.FigureRepository;
 
