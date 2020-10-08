@@ -21,6 +21,7 @@
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
+    <v-btn @click="clickMakeVacant">Make Vacant</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
     <span
       class="context-menu"
@@ -198,6 +199,11 @@ export default {
     },
     //도형생성시
     createSeat(item) {
+      if(!this.floorImageList.get(this.currentSelectedFloor)){
+        alert('도면 이미지가 없습니다')
+        console.log(this.getEachFloorSeatList(this.currentSelectedFloor))
+        return
+      }
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       //각 층에 해당하는 도형 리스트 리턴하기
@@ -236,7 +242,9 @@ export default {
       group.on("mousedown", (e) => {
         let group = e.target;
         if (e.button === 1) {
-          //console.log("left click");
+          console.log("left click");
+          // 삭제될 자리 seatId 보내고
+          // 그 seatId에 있는 employee null
         }
         if (e.button === 2) {
           //console.log("middle click");
@@ -289,6 +297,9 @@ export default {
 
       console.log("eachEmployeeSeatMap-size:" + this.eachEmployeeSeatMap.size);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+    },
+    clickMakeVacant(){
+
     },
     getColor(department) {
       const Colors = {
@@ -560,7 +571,6 @@ export default {
           }
         });
     },
-
     getSeats() {
       let loadSeatList = new Array();
       axios
