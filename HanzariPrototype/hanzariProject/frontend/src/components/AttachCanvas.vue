@@ -8,7 +8,7 @@
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
-    <v-btn @click="clickMakeVacant">Make Vacant</v-btn>
+    <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
     <span class="context-menu" v-show="menuInVisible" tabindex="-1" v-click-outside="closeMenu">
       <ul>
@@ -283,7 +283,45 @@ export default {
       console.log("eachEmployeeSeatMap-size:" + this.eachEmployeeSeatMap.size);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    clickMakeVacant() {},
+    clickChangeToVacant() {
+      let activeObject = this.floorCanvas.getActiveObject();
+
+      console.log(activeObject);
+
+      console.log(activeObject[0]);
+      console.log(activeObject[1]);
+
+      /*let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+      //console.log(eachFloorSeatList);
+      for (let i = 0; i < eachFloorSeatList.length; i++) {
+        //console.log(eachFloorSeatList[i].seatId);
+        if (eachFloorSeatList[i].seatId == this.currentSelectedSeatId) {
+          console.log(eachFloorSeatList[i].seatId + " : seatId in if");
+          console.log(
+            this.currentSelectedSeatId + ":currentSelectedSeatId in if"
+          );
+          eachFloorSeatList[i].employee_name = null;
+          eachFloorSeatList[i].employee_department = null;
+          eachFloorSeatList[i].employee_number = null;
+          eachFloorSeatList[i].employee_id = null;
+
+          //나중에 eachFloorSeatMap eachFloorSeatList로 덮어쓰기
+          this.eachFloorSeatMap.set(
+            this.currentSelectedFloor,
+            eachFloorSeatList
+          );
+          //this.allFloorsSeatMap.set(
+          //  this.currentSelectedFloor,
+          //  this.eachFloorSeatMap.get(this.currentSelectedFloor)
+          //);
+          this.floorCanvas.renderAll.bind(this.floorCanvas);
+        }
+
+        //console.log(this.eachFloorSeatMap);
+      }*/
+    },
     getColor(department) {
       const Colors = {
         Orange: "orange",
