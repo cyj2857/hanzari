@@ -40,12 +40,11 @@
 
 <script>
 import { eventBus } from "../main.js";
-import axios from "axios";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
-const host = "172.30.1.50";
-const portNum = 8080;
+
 export default {
+  props: ['seat'],
   components: {
     EmployeeDialog,
     AllFloorsDataTable,
@@ -60,11 +59,11 @@ export default {
       eachEmployeeSeatMap: null, //each Employee's seats map
       dialogStatus: false,
       menuStatus: false,
-      DBseatsList: [],
+      DBseatsList : this.seat,
       allEmployeeList: [],
     };
   },
-  created() {
+  created() {   
     eventBus.$on("createSeat", (item) => {
       this.createSeat(item);
     }),
@@ -91,7 +90,7 @@ export default {
   },
   mounted() {
     this.initializing();
-    this.DBseatsList = this.getSeats();
+    
   },
   computed: {
     menuInVisible() {
@@ -603,7 +602,7 @@ export default {
           console.log(res.data);
         });
     },
-    getSeats() {
+    /*getSeats() {
       //mounted 될때 불림
       let loadSeatList = new Array();
       axios
@@ -627,7 +626,7 @@ export default {
           }
         });
       return loadSeatList;
-    },
+    },*/
     clickLoadBtn() {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
@@ -635,7 +634,7 @@ export default {
 
       let loadSeatList = this.DBseatsList; //axios로 받아온 seat list
       //일단 자리의 층과 현재 층이 동일할떄를 가정
-
+      console.log("loadSeatList"+ loadSeatList.length)
       let employee = this.allEmployeeList;
 
       let tempLoadSeatList = []

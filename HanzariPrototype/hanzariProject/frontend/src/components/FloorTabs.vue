@@ -2,7 +2,6 @@
   <div>
     <v-card>
       <v-card-text class="text-center">
-        <AttachCanvas></AttachCanvas>
         <v-btn text @click="removeFloor">Remove Floor</v-btn>
         <v-divider class="mx-4" vertical></v-divider>
         <v-btn text @click="getDialog">Add Floor</v-btn>
@@ -17,11 +16,9 @@
 
 <script>
 import { eventBus } from "../main.js";
-import AttachCanvas from "@/components/AttachCanvas.vue";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
   components: {
-    AttachCanvas,
     AddFloorDialog
   },
   data: () => ({
