@@ -25,12 +25,12 @@
 		<property name="hibernate.cache.use_second_level_cache">false</property>
 
 		<!-- Names the annotated entity class -->
-		<mapping class="model.Building" />
-		<mapping class="model.Department" />
-		<mapping class="model.Employee" />
-		<mapping class="model.Figure" />
-		<mapping class="model.Seat" />
-		<mapping class="model.Shape" />
+		<mapping class="com.hancom.hanzari.model.Building" />
+		<mapping class="com.hancom.hanzari.model.Department" />
+		<mapping class="com.hancom.hanzari.model.Employee" />
+		<mapping class="com.hancom.hanzari.model.Figure" />
+		<mapping class="com.hancom.hanzari.model.Seat" />
+		<mapping class="com.hancom.hanzari.model.Shape" />
 
 	</session-factory>
 </hibernate-configuration>

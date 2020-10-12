@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hancom.hanzari.model.Department;
+import com.hancom.hanzari.model.Employee;
+import com.hancom.hanzari.model.Seat;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
-import model.Department;
-import model.Employee;
-import model.Seat;
 
 @Api(tags = { "Employee" })
 @RequiredArgsConstructor

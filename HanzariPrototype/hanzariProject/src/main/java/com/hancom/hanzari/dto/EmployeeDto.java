@@ -1,4 +1,7 @@
-package dto;
+package com.hancom.hanzari.dto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -14,16 +17,18 @@ import lombok.Setter;
 public class EmployeeDto {
 
 	@NotBlank
-	String employee_id;
+	private String employee_id;
 
 	@NotBlank
-	String authority;
+	private String authority;
 
 	@NotBlank
-	String employee_name;
+	private String employee_name;
 
 	@NotBlank
-	String department_name;
+	private String department_name;
 
-	String extension_number;
+	private String extension_number;
+	
+	private List<String> seatList = new ArrayList<>();
 }

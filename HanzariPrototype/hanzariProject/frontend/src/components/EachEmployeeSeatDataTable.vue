@@ -49,6 +49,7 @@ export default {
     showSeatButtonClicked(seat) {
       console.log(seat);
       eventBus.$emit("showSeat", seat);
+      eventBus.$emit("showSeatFloor", seat.seat_id.split("-")[0]);
     },
     renderEachEmployeeSeatList(employee) {
       //리스트 초기화
@@ -69,7 +70,6 @@ export default {
           this.seats.push(newSeat);
         }
       }
-      console.log("첫번째 자리의 아이디는 "+this.seats[0].seat_id);
     }
   }
 };

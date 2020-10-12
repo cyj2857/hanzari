@@ -1,4 +1,4 @@
-package model;
+package com.hancom.hanzari.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
+import com.hancom.hanzari.dto.EmployeeDto;
 
-import dto.EmployeeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -33,24 +28,24 @@ public class Employee {
 
 	@Id
 	@Column(name = "employee_id", nullable = false)
-	String employee_id;
+	private String employee_id;
 
 	@Column(name = "authority", nullable = false)
-	String authority;
+	private String authority;
 
 	@Column(name = "employee_name", nullable = false)
-	String employee_name;
+	private String employee_name;
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "department_id")
-	Department department;
+	private Department department;
 
 	@Column(name = "extension_number", nullable = true)
-	String extension_number;
+	private String extension_number;
 
 	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Column(nullable = true)
-	List<Seat> seat = new ArrayList<Seat>();
+	private List<Seat> seat = new ArrayList<Seat>();
 
 	public Employee() {
 	}
@@ -62,11 +57,11 @@ public class Employee {
 
 	public List<String> seatIdList() {
 		List<String> result = new ArrayList<String>();
-		seat.forEach(e -> result.add(e.seat_id));
+		seat.forEach(e -> result.add(e.getSeat_id()));
 		return result;
 	}
 	
 	public EmployeeDto toDto() {
-		return new EmployeeDto(employee_id, authority, employee_name, department.getDepartment_name(), extension_number);
+		return new EmployeeDto(employee_id, authority, employee_name, department.getDepartment_name(), extension_number, seatIdList());
 	}
 }

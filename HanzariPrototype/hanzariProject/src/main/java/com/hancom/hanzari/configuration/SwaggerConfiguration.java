@@ -1,4 +1,4 @@
-package configuration;
+package com.hancom.hanzari.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;

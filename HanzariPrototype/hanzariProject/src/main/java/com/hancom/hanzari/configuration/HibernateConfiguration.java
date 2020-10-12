@@ -1,4 +1,4 @@
-package configuration;
+package com.hancom.hanzari.configuration;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
