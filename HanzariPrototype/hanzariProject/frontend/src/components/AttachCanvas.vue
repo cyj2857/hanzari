@@ -603,7 +603,7 @@ export default {
           console.log(res.data);
         });
     },
-    getSeats() { 
+    getSeats() {
       //mounted 될때 불림
       let loadSeatList = new Array();
       axios
@@ -629,57 +629,65 @@ export default {
       return loadSeatList;
     },
     clickLoadBtn() {
-      let loadSeatList = this.DBseatsList; //axios로 받아온 seat list
-      //일단 자리의 층과 현재 층이 동일할떄를 가정
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
 
+      let loadSeatList = this.DBseatsList; //axios로 받아온 seat list
+      //일단 자리의 층과 현재 층이 동일할떄를 가정
+
       let employee = [];
-      let employeeSeatList = []
-      employee = this.allEmployeeList; // allfloorsdatatable에서 employee를 eventbus로 받는거
-      employeeSeatList = employee.seatIdList
-      
+      let employeeSeatList = [];
+      employee = this.allEmployeeList; 
+      // allfloorsdatatable에서 employee를 eventbus로 받는거 (created 참고)
+
       for (let i = 0; i < loadSeatList.length; i++) {
         for (let j = 0; j < employee.length; j++) {
-          if (loadSeatList[i].employee_id == employee[j].employee_id) { 
+          if (loadSeatList[i].employee_id == employee[j].employee_id) {
             // seat의 employee_id와 employee 객체의 employee_id를 비교함.
-            for (let k = 0; k < employee[j].seatIdList.length; k++) {
-              console.log(employee[j].seatIdList[k] + "자리의 아이디입니다.");
-              let rectangle = new fabric.Rect({
-                width: loadSeatList[i].width,
-                height: loadSeatList[i].height,
-                fill: this.getColor(employee[j].department),
-                opacity: 1,
-              });
-              let textObject = new fabric.IText(employee[j].name, {
-                left: 0,
-                top: rectangle.height / 3,
-                fontSize: 13,
-                fill: "black",
-              });
-
-              let group = new fabric.Group([rectangle, textObject], {
-                seatId: employee[j].seatIdList[k],
-                employee_name: employee[j].name,
-                employee_department: employee[j].department,
-                employee_number: employee[j].number,
-                employee_id: loadSeatList[i].employee_id,
-                floor_id: loadSeatList[i].floor, //One이라고 가정
-                left: loadSeatList[i].x,
-                top: loadSeatList[i].y,
-              });
-
-              this.floorCanvas.add(group);
-              eachFloorSeatList.push(group);
-            }
+            employeeSeatList = employee[j].seatIdList;
+            this.loadSeatToCanvas(
+              loadSeatList[i],
+              employee[j],
+              employeeSeatList,
+              eachFloorSeatList
+            );
           }
         }
       }
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
-    loadSeatToCanvas(){
+    loadSeatToCanvas(loadSeatList, employee, employeeSeatList, eachFloorSeatList) {
+      for (let i = 0; i < employeeSeatList.length; i++) {
+        let rectangle = new fabric.Rect({
+          width: loadSeatList.width,
+          height: loadSeatList.height,
+          fill: this.getColor(employee.department),
+          opacity: 1,
+        });
+        let textObject = new fabric.IText(employee.name, {
+          left: 0,
+          top: rectangle.height / 3,
+          fontSize: 13,
+          fill: "black",
+        });
 
+        let group = new fabric.Group([rectangle, textObject], {
+          seatId: employee.seatIdList[i],
+          employee_name: employee.name,
+          employee_department: employee.department,
+          employee_number: employee.number,
+          employee_id: loadSeatList.employee_id,
+          floor_id: loadSeatList.floor, //One이라고 가정
+          left: loadSeatList.x,
+          top: loadSeatList.y,
+        });
+
+        this.floorCanvas.add(group);
+        eachFloorSeatList.push(group);
+
+        console.log(eachFloorSeatList.length + "in loadSeatToCanvas")
+      }
     },
     // getEmployeeInfo(employee_id) {
     //   axios
