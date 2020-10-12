@@ -36,6 +36,7 @@ const portNum = 8080;
 const host = "172.30.1.50";
 
 export default {
+  props: ['employee'],
   data() {
     return {
       allEmployeeSeatMap: null,
@@ -52,16 +53,16 @@ export default {
         { text: "", value: "createSeatButton" },
         { text: "", value: "showSeatButton" }
       ],
-      employees: []
+      employees: this.employee
     };
   },
-  mounted() {
-    this.employees = this.getEmployees();
-  },
+
   created() {
     eventBus.$on("eachEmployeeSeatMap", eachEmployeeSeatMap => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
     });
+
+  
   },
   methods: {
     createSeatButtonClicked(item) {
@@ -98,29 +99,7 @@ export default {
         }
       }
     },
-    getEmployees() {
-      let initEmployeeList = new Array();
       
-      axios.get("http://"+host+":"+portNum+"/employee").then(function(response) { 
-        for (var i = 0; i < response.data.length; i++) {
-          var newEmployee = {};
-
-          newEmployee.name = response.data[i].employee_name;
-          console.log(newEmployee.name + "???? employee ?? name");
-          newEmployee.department = response.data[i].department_name;
-          newEmployee.number = response.data[i].extension_number;
-          newEmployee.employee_id = response.data[i].employee_id;
-          newEmployee.seatIdList = response.data[i].seatList;
-          console.log(newEmployee.seatIdList);
-
-          initEmployeeList.push(newEmployee);
-        }
-        console.log(initEmployeeList.length+"employee ???? ?");
-        
-      });
-      eventBus.$emit("allEmployeeList", initEmployeeList);
-      return initEmployeeList;
-    }
   }
 };
 </script>
