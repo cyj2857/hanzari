@@ -636,28 +636,42 @@ export default {
       let loadSeatList = this.DBseatsList; //axios로 받아온 seat list
       //일단 자리의 층과 현재 층이 동일할떄를 가정
 
-      let employee = [];
+      let employee = this.allEmployeeList;
+
+      let tempLoadSeatList = []
+      let tempEmployee = []
       let employeeSeatList = [];
-      employee = this.allEmployeeList; 
+
       // allfloorsdatatable에서 employee를 eventbus로 받는거 (created 참고)
 
       for (let i = 0; i < loadSeatList.length; i++) {
         for (let j = 0; j < employee.length; j++) {
           if (loadSeatList[i].employee_id == employee[j].employee_id) {
             // seat의 employee_id와 employee 객체의 employee_id를 비교함.
+            //console.log(j + "4번 ???") // 4 (자리수대로 찍힘)
+            tempLoadSeatList = loadSeatList[i]
+            tempEmployee = employee[j]
             employeeSeatList = employee[j].seatIdList;
-            this.loadSeatToCanvas(
-              loadSeatList[i],
-              employee[j],
-              employeeSeatList,
-              eachFloorSeatList
-            );
           }
         }
       }
+
+      this.loadSeatToCanvas(
+        tempLoadSeatList,
+        tempEmployee,
+        employeeSeatList,
+        eachFloorSeatList
+      );
+      
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
-    loadSeatToCanvas(loadSeatList, employee, employeeSeatList, eachFloorSeatList) {
+    loadSeatToCanvas(
+      loadSeatList,
+      employee,
+      employeeSeatList,
+      eachFloorSeatList
+    ) {
+      console.log(employeeSeatList + "loadSeatToCanvas");
       for (let i = 0; i < employeeSeatList.length; i++) {
         let rectangle = new fabric.Rect({
           width: loadSeatList.width,
@@ -686,7 +700,7 @@ export default {
         this.floorCanvas.add(group);
         eachFloorSeatList.push(group);
 
-        console.log(eachFloorSeatList.length + "in loadSeatToCanvas")
+        console.log(eachFloorSeatList.length + "in loadSeatToCanvas");
       }
     },
     // getEmployeeInfo(employee_id) {
