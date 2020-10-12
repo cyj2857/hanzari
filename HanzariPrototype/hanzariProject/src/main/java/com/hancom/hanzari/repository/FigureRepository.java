@@ -1,4 +1,4 @@
-package com.hancom.hanzari.repository;
+	package com.hancom.hanzari.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
