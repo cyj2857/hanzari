@@ -2,13 +2,13 @@
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
       <div class="search" id="search">
-        <AllFloorsDataTable></AllFloorsDataTable>
+        <AllFloorsDataTable v-bind:employee="employees"></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>
 
     <div class="d3" id="hr"></div>
-    
+
     <div class="d2" id="d2">
       <FloorTabs></FloorTabs>
     </div>
@@ -19,15 +19,18 @@
         <EachFloorDataTable></EachFloorDataTable>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { eventBus } from "../main.js";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
 import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
+const portNum = 8080;
+const host = "172.30.1.50";
 
 export default {
   name: "HyoriTest",
@@ -35,7 +38,7 @@ export default {
     AllFloorsDataTable,
     FloorTabs,
     EachFloorDataTable,
-    EachEmployeeSeatDataTable
+    EachEmployeeSeatDataTable,
   },
   data() {
     return {
@@ -43,14 +46,39 @@ export default {
       floorMsg: "Choose Floor",
       searchEmployeeMsg: "Search Employee",
       changeText: "Sample Text",
-      selected: ""
+      selected: "",
+      employees: []
     };
+  },
+  created() {
+    this.employees = this.getEmployees();
   },
   methods: {
     updateText() {
       this.changeText = "Click Event Test";
     },
-  },
+    getEmployees(){
+      let initEmployeeList = new Array();
+      
+      axios.get("http://"+host+":"+portNum+"/employee").then(function(response) { 
+        for (var i = 0; i < response.data.length; i++) {
+          var newEmployee = {};
+          newEmployee.name = response.data[i].employee_name;
+          console.log(newEmployee.name + "???? employee ?? name");
+          newEmployee.department = response.data[i].department_name;
+          newEmployee.number = response.data[i].extension_number;
+          newEmployee.employee_id = response.data[i].employee_id;
+          newEmployee.seatIdList = response.data[i].seatList;
+          console.log(newEmployee.seatIdList);
+          initEmployeeList.push(newEmployee);
+        }
+        console.log(initEmployeeList.length+"employee ???? ?");
+        
+      });
+      //eventBus.$emit("sendAxios", initEmployeeList);
+      return initEmployeeList;
+    }
+  }
 };
 </script>
 
@@ -87,7 +115,6 @@ export default {
   margin-right: -1px;
   overflow-y: scroll;
 }
-
 
 #hr {
   cursor: pointer;
