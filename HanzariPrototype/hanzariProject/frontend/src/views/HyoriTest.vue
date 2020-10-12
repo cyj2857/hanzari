@@ -10,7 +10,7 @@
     <div class="d3" id="hr"></div>
 
     <div class="d2" id="d2">
-       <AttachCanvas  v-bind:seat="seats"></AttachCanvas>
+      <AttachCanvas v-bind:seat="seats" v-bind:employee="employees"></AttachCanvas>
       <FloorTabs></FloorTabs>
     </div>
 
@@ -51,7 +51,7 @@ export default {
       changeText: "Sample Text",
       selected: "",
       employees: [],
-      seats : []
+      seats: [],
     };
   },
   created() {
@@ -62,31 +62,33 @@ export default {
     updateText() {
       this.changeText = "Click Event Test";
     },
-    getEmployees(){
+    getEmployees() {
       let initEmployeeList = new Array();
-      
-      axios.get("http://"+host+":"+portNum+"/employee").then(function(response) { 
-        for (var i = 0; i < response.data.length; i++) {
-          var newEmployee = {};
-          newEmployee.name = response.data[i].employee_name;
-          console.log(newEmployee.name + "???? employee ?? name");
-          newEmployee.department = response.data[i].department_name;
-          newEmployee.number = response.data[i].extension_number;
-          newEmployee.employee_id = response.data[i].employee_id;
-          newEmployee.seatIdList = response.data[i].seatList;
-          console.log(newEmployee.seatIdList);
-          initEmployeeList.push(newEmployee);
-        }
-        console.log("employee length"+initEmployeeList.length);
-        
-      });
+
+      axios
+        .get("http://" + host + ":" + portNum + "/employee")
+        .then(function (response) {
+          for (var i = 0; i < response.data.length; i++) {
+            var newEmployee = {};
+            newEmployee.name = response.data[i].employee_name;
+            console.log(newEmployee.name + "???? employee ?? name");
+            newEmployee.department = response.data[i].department_name;
+            newEmployee.number = response.data[i].extension_number;
+            newEmployee.employee_id = response.data[i].employee_id;
+            newEmployee.seatIdList = response.data[i].seatList;
+            console.log(newEmployee.seatIdList);
+            initEmployeeList.push(newEmployee);
+          }
+          console.log("employee length" + initEmployeeList.length);
+        });
       return initEmployeeList;
     },
-      getSeats() {
+    getSeats() {
       //mounted 될때 불림
       let loadSeatList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/seats").then(function (response) {
+        .get("http://" + host + ":" + portNum + "/seats")
+        .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newSeat = {};
             newSeat.seat_id = response.data[i].seat_id;
@@ -103,12 +105,12 @@ export default {
 
             loadSeatList.push(newSeat);
 
-            console.log("loadSeatList length"+loadSeatList.length);
+            console.log("loadSeatList length" + loadSeatList.length);
           }
         });
       return loadSeatList;
     },
-  }
+  },
 };
 </script>
 
