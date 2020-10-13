@@ -30,6 +30,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
+	public List<Employee> findByDepartmentId(String department_id) {
+		List<Employee> employee = new ArrayList<Employee>();
+		employeeRepository.findAll().forEach(e -> {
+			if (e.getDepartment().getDepartment_id().toString().equals(department_id)) {
+				employee.add(e);
+			}
+		});
+		return employee;
+	}
+
+	@Override
 	public void deleteById(String employee_id) {
 		employeeRepository.deleteById(employee_id);
 	}

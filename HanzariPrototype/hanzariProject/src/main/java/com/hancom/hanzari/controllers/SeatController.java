@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,14 +76,10 @@ public class SeatController {
 		figureService.save(figure);
 		Building building = buildingService.findById(seatDto.getBuilding_id());
 		Employee employee = employeeService.findById(seatDto.getEmployee_id()); // read까진 문제없음.
-		System.out.println("seat_id:" + seatDto.getSeat_id());
-		System.out.println("employee_id:" + seatDto.getEmployee_id());
-		System.out.println("group_id:" + seatDto.getGroup_id());
-		System.out.println("x:" + seatDto.getX());
-		System.out.println("shape_id:" + seatDto.getShape_id());
-		System.out.println("employee_name:" + employee.getEmployee_name());
-		System.out.println("employee_id:" + employee.getEmployee_id());
-		System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
+		System.out.println("seat_id:" + seatDto.getSeat_id() + "\n" + "employee_id:" + seatDto.getEmployee_id() + "\n"
+				+ "group_id:" + seatDto.getGroup_id() + "\n" + "x:" + seatDto.getX() + " y:" + seatDto.getY() + "\n"
+				+ "shape_id:" + seatDto.getShape_id() + "\n" + "employee_name:" + employee.getEmployee_name()
+				+ " employee_id:" + employee.getEmployee_id() + "\n\n\n\n\n\n\n\n\n\n\n");
 
 		Seat newSeat = new Seat(seatDto.getSeat_id(), seatDto.getFloor(), seatDto.getX(), seatDto.getY(),
 				seatDto.getIs_group(), seatDto.getGroup_id());
@@ -91,5 +88,14 @@ public class SeatController {
 		newSeat.setBuilding(building);
 		newSeat.setFigure(figure);
 		return new ResponseEntity<Seat>(seatService.save(newSeat), HttpStatus.OK);
+	}
+
+	@DeleteMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Void> deleteSeat(@PathVariable("seat_id") String seat_id) {
+		figureService.deleteById(seat_id); // seat_id랑 동일한 값으로 figure_id가 지정된 1:1로 생성된 figure 레코드 선행 삭제
+		seatService.deleteById(seat_id);
+
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+
 	}
 }
