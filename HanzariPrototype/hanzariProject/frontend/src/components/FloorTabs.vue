@@ -87,7 +87,6 @@ export default {
       this.decreaseTab();
     },
     setFloor(n) {
-      this.floorNum = n;
       eventBus.$emit("changeFloor", n);
     },
     getFloorName(floorNum){
