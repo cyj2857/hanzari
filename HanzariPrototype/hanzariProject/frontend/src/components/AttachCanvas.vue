@@ -473,23 +473,60 @@ export default {
         }
       }
     },
-    addVacantBtn() {
-      console.log("currnet floor is " + this.currentSelectedFloor);
 
+    addVacantBtn(item) {
       //각 층에 해당하는 도형 리스트 리턴하기
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
 
+      eventBus.$on("MappingSeat", (item) => {
+        let activeObject = this.floorCanvas.getActiveObject();
+        let shapearray = new Array();
+
+        this.floorCanvas
+          .getObjects()
+          .slice()
+          .forEach((obj) => {
+            shapearray.push(obj);
+          });
+
+        if (activeObject) {
+          shapearray.slice().forEach((obj) => {
+            if (obj == activeObject) {
+              let index = shapearray.indexOf(activeObject);
+              shapearray.splice(index, 1);
+            }
+          });
+          this.floorCanvas.remove(activeObject);
+          eachFloorSeatList.length = 0;
+          this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
+          //console.log("shapearray length: ");
+          //console.log(shapearray.length);
+        }
+
+        this.createSeat(item);
+
+        // console.log("MappingSeat name = " + item.name);
+        // console.log("MappingSeat department = " + item.department);
+        this.floorCanvas.renderAll();
+      });
+      console.log("currnet floor is " + this.currentSelectedFloor);
+
       let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: this.getColor(null),
+        fill: "green",
         opacity: 1,
       });
 
       let group = new fabric.Group([rectangle], {
+        floor_id: this.currentSelectedFloor,
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
+        //employee_name: item.name,
+        //employee_department: item.department,
+        //employee_number: item.number,
+        //employee_id: item.employee_id,
         employee_name: null,
         employee_department: null,
         employee_number: null,
@@ -507,9 +544,17 @@ export default {
         console.log("left = " + x.left); //150
       });
 
+      group.on("mousedblclick", (e) => {
+        let group = e.target;
+        let asObject = group.toObject(["name", "department"]);
+        console.log("dbMappingSeat name = " + asObject.name);
+        console.log("db MappingSeat department = " + asObject.department);
+      });
+
       this.floorCanvas.add(group);
       eachFloorSeatList.push(group);
 
+      console.log("공석 이름 : " + item.name);
       console.log("전체층의 자리 맵 size = " + this.eachFloorSeatMap.size);
       console.log(
         this.currentSelectedFloor +
