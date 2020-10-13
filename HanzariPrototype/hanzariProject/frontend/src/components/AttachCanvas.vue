@@ -527,12 +527,12 @@ export default {
       });
 
       let group = new fabric.Group([rectangle, textObject], {
-        floor_id: this.currentSelectedFloor,
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
         employee_name: item.name,
         employee_department: item.department,
         employee_number: item.number,
         employee_id: item.employee_id,
+        floor_id: this.currentSelectedFloor,
         left: 150,
         top: 150,
       });
