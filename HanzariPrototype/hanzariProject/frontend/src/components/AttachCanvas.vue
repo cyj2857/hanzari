@@ -460,71 +460,40 @@ export default {
       }
     },
 
-    addVacantBtn(item) {
+ addVacantBtn(item) {
       //각 층에 해당하는 도형 리스트 리턴하기
-      if (!this.floorImageList.get(this.currentSelectedFloor)) {
-        alert("도면 이미지가 없습니다");
-        console.log(this.getEachFloorSeatList(this.currentSelectedFloor));
-        return;
-      }
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
 
-      eventBus.$on("MappingSeat", item => {
-        let activeObject = this.floorCanvas.getActiveObject();
-        let shapearray = new Array();
-
-        this.floorCanvas
-          .getObjects()
-          .slice()
-          .forEach(obj => {
-            shapearray.push(obj);
-          });
-
-        if (activeObject) {
-          shapearray.slice().forEach(obj => {
-            if (obj == activeObject) {
-              let index = shapearray.indexOf(activeObject);
-              shapearray.splice(index, 1);
-            }
-          });
-          this.floorCanvas.remove(activeObject);
-          eachFloorSeatList.length = 0;
-          this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
-        }
-
-        this.createSeat(item);
-        this.floorCanvas.renderAll();
-      });
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
         fill: this.getColor(item.department),
-        opacity: 1
+        opacity: 1,
       });
 
       let textObject = new fabric.IText("", {
         left: 0,
         top: rectangle.height / 3,
         fontSize: 13,
-        fill: "black"
+        fill: "black",
       });
 
       let group = new fabric.Group([rectangle, textObject], {
+        floor_id: this.currentSelectedFloor,
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
         employee_name: item.name,
         employee_department: item.department,
         employee_number: item.number,
         employee_id: item.employee_id,
-        floor_id: this.currentSelectedFloor,
         left: 150,
-        top: 150
+        top: 150,
       });
 
-      group.on("mouseover", function(e) {
+      group.on("mouseover", function (e) {
         let group = e.target;
         let asObject = group.toObject(["seatId"]);
         let x = group.toObject(["left"]);
@@ -533,13 +502,13 @@ export default {
         console.log("left = " + x.left); //150
       });
 
-      group.on("mousedblclick", e => {
+      group.on("mousedblclick", (e) => {
         let group = e.target;
         let groupToObject = group.toObject([
           "employee_id",
           "employee_name",
           "floor_id",
-          "employee_department"
+          "employee_department",
         ]);
         eventBus.$emit("employee_id", groupToObject.employee_id);
         eventBus.$emit("employee_name", groupToObject.employee_name);
@@ -564,6 +533,24 @@ export default {
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
+
+    setVcantSeat(item) {
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+
+      let activeObject = this.floorCanvas.getActiveObject();
+      (activeObject.employee_name = item.name),
+        (activeObject.employee_department = item.department),
+        (activeObject.employee_number = item.number),
+        (activeObject.employee_id = item.employee_id);
+
+      activeObject
+        .item(0)
+        .set("fill", this.getColor(activeObject.employee_department));
+      activeObject._objects[1].text = item.name;
+      this.floorCanvas.renderAll();
+  },
     makeGroupInfo(seat, employee) {
       let rectangle = new fabric.Rect({
         width: seat.width,
