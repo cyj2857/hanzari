@@ -23,18 +23,6 @@
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
-    <span
-      class="context-menu"
-      v-show="menuInVisible"
-      tabindex="-1"
-      v-click-outside="closeMenu"
-    >
-      <ul>
-        <v-btn>clickMe</v-btn>
-        <v-btn>clickMe2</v-btn>
-        <v-btn>clickMe3</v-btn>
-      </ul>
-    </span>
   </div>
 </template>
 
@@ -216,10 +204,8 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
-
       //각 사원의 자리 리스트 리턴하기
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
-
       let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
@@ -232,7 +218,6 @@ export default {
         fontSize: 13,
         fill: "black",
       });
-
       let group = new fabric.Group([rectangle, textObject], {
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
         employee_name: item.name,
@@ -243,7 +228,6 @@ export default {
         left: 150,
         top: 150,
       });
-
       group.on("mousedown", (e) => {
         let group = e.target;
         if (e.button === 1) {
@@ -256,15 +240,10 @@ export default {
         }
         if (e.button === 3) {
           //console.log("right click");
-
           //context menu 넣을 곳
-          this.setMenuPosition(
-            group.toObject(["left"]).left,
-            group.toObject(["top"]).top
-          );
+
         }
       });
-
       group.on("mousedblclick", (e) => {
         let group = e.target;
         let groupToObject = group.toObject([
@@ -282,64 +261,14 @@ export default {
         );
         this.getDialog();
       });
-
       this.floorCanvas.add(group);
       eachFloorSeatList.push(group);
-      console.log("전체층의 자리 맵 size = " + this.eachFloorSeatMap.size);
-      console.log(
-        this.currentSelectedFloor +
-          "의 자리 리스트 length = " +
-          eachFloorSeatList.length
-      );
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
       let groupToObject = group.toObject(["seatId"]);
       eachEmployeeSeatList.push(groupToObject.seatId);
-      console.log(
-        item.name + "의 자리의 개수는 " + eachEmployeeSeatList.length + "입니다"
-      );
 
-      console.log("eachEmployeeSeatMap-size:" + this.eachEmployeeSeatMap.size);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-    },
-    clickChangeToVacant() {
-      let activeObject = this.floorCanvas.getActiveObject();
-
-      console.log(activeObject);
-
-      console.log(activeObject[0]);
-      console.log(activeObject[1]);
-
-      /*let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
-      );
-      //console.log(eachFloorSeatList);
-      for (let i = 0; i < eachFloorSeatList.length; i++) {
-        //console.log(eachFloorSeatList[i].seatId);
-        if (eachFloorSeatList[i].seatId == this.currentSelectedSeatId) {
-          console.log(eachFloorSeatList[i].seatId + " : seatId in if");
-          console.log(
-            this.currentSelectedSeatId + ":currentSelectedSeatId in if"
-          );
-          eachFloorSeatList[i].employee_name = null;
-          eachFloorSeatList[i].employee_department = null;
-          eachFloorSeatList[i].employee_number = null;
-          eachFloorSeatList[i].employee_id = null;
-
-          //나중에 eachFloorSeatMap eachFloorSeatList로 덮어쓰기
-          this.eachFloorSeatMap.set(
-            this.currentSelectedFloor,
-            eachFloorSeatList
-          );
-          //this.allFloorsSeatMap.set(
-          //  this.currentSelectedFloor,
-          //  this.eachFloorSeatMap.get(this.currentSelectedFloor)
-          //);
-          this.floorCanvas.renderAll.bind(this.floorCanvas);
-        }
-
-        //console.log(this.eachFloorSeatMap);
-      }*/
     },
     getColor(department) {
       const Colors = {
@@ -438,13 +367,48 @@ export default {
         return this.eachEmployeeSeatMap.get(employee_id);
       }
     },
-
     //해당 층의 도형 리스트 삭제하기
     deleteEachFloorSeatList: function (floor) {
       this.getEachFloorSeatList(floor).length = 0;
       return this.getEachFloorSeatList(floor);
     },
+    //자리비우기
+    clickChangeToVacant() {
+      let activeObject = null;
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
 
+      if (!this.floorCanvas.getActiveObject()) {
+        return;
+      }
+      if (this.floorCanvas.getActiveObject().type !== "group") {
+        console.log("!!!not group!!!");
+        return;
+      } else {
+        console.log("!!!group!!!!")
+        activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
+
+        activeObject.employee_name = null;
+        activeObject.employee_department = null;
+        activeObject.employee_number = null;
+        activeObject.employee_id = null; // delete employee information in group
+
+        let item = []
+        item =this.floorCanvas.getActiveObject().toActiveSelection()
+        
+        console.log(item[0])
+
+        activeObject.item(0).fill = this.getColor(activeObject.employee_department); 
+        // rect color change
+        activeObject.item(1).text = "";
+        //this.floorCanvas.remove(activeObject.item(1)); // delete textObject
+
+        this.floorCanvas.requestRenderAll();
+        console.log(eachFloorSeatList);
+      }
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+    },
     deleteAllBtn() {
       if (confirm("Are you sure?")) {
         this.floorCanvas
@@ -567,6 +531,7 @@ export default {
         employee_department: null,
         employee_number: null,
         employee_id: null,
+        floor_id: this.currentSelectedFloor,
         left: 150,
         top: 150,
       });
@@ -654,7 +619,7 @@ export default {
         });
     },
     clickLoadBtn() {
-      /*이후에 내부 중복 로직 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
+      /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
       let eachFloorSeatList = null;
       for (let i = 0; i < this.seats.length; i++) {
         for (let j = 0; j < this.employees.length; j++) {
@@ -706,6 +671,7 @@ export default {
             });
             this.floorCanvas.add(group);
             eachFloorSeatList.push(group);
+            console.log(eachFloorSeatList);
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
           } //end of if
 
@@ -755,6 +721,7 @@ export default {
             });
             eachFloorSeatList.push(group);
 
+            console.log(eachFloorSeatList);
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
           } //end of else if
         }
@@ -771,16 +738,6 @@ export default {
   background: aliceblue;
   height: 800px;
   width: 900px;
-}
-.context-menu {
-  position: absolute;
-  z-index: 999;
-  background: black;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px 0 #eee;
-  display: block;
-  top: 100;
-  left: 10;
 }
 ul {
   padding: 0px;
