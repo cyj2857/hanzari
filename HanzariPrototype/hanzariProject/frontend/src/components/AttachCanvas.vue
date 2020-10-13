@@ -462,10 +462,41 @@ export default {
 
     addVacantBtn(item) {
       //각 층에 해당하는 도형 리스트 리턴하기
+      if (!this.floorImageList.get(this.currentSelectedFloor)) {
+        alert("도면 이미지가 없습니다");
+        console.log(this.getEachFloorSeatList(this.currentSelectedFloor));
+        return;
+      }
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
 
+      eventBus.$on("MappingSeat", item => {
+        let activeObject = this.floorCanvas.getActiveObject();
+        let shapearray = new Array();
+
+        this.floorCanvas
+          .getObjects()
+          .slice()
+          .forEach(obj => {
+            shapearray.push(obj);
+          });
+
+        if (activeObject) {
+          shapearray.slice().forEach(obj => {
+            if (obj == activeObject) {
+              let index = shapearray.indexOf(activeObject);
+              shapearray.splice(index, 1);
+            }
+          });
+          this.floorCanvas.remove(activeObject);
+          eachFloorSeatList.length = 0;
+          this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
+        }
+
+        this.createSeat(item);
+        this.floorCanvas.renderAll();
+      });
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       let rectangle = new fabric.Rect({
@@ -533,48 +564,46 @@ export default {
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
-
-    setVcantSeat(item) {
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
-      );
-
-      let activeObject = this.floorCanvas.getActiveObject();
-      (activeObject.employee_name = item.name),
-        (activeObject.employee_department = item.department),
-        (activeObject.employee_number = item.number),
-        (activeObject.employee_id = item.employee_id);
-
-      activeObject
-        .item(0)
-        .set("fill", this.getColor(activeObject.employee_department));
-      activeObject._objects[1].text = item.name;
-      this.floorCanvas.renderAll();
-      /*let shapearray = new Array();
-
-      this.floorCanvas
-        .getObjects()
-        .slice()
-        .forEach((obj) => {
-          shapearray.push(obj);
-        });
-
-      if (activeObject) {
-        shapearray.slice().forEach((obj) => {
-          if (obj == activeObject) {
-            let index = shapearray.indexOf(activeObject);
-            shapearray.splice(index, 1);
-          }
-        });
-        this.floorCanvas.remove(activeObject);
-        eachFloorSeatList.length = 0;
-        this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
-      }
-    
-      //this.addVacantBtn(item)
-      this.createSeat(item, VacantSeatid);
-
-      this.floorCanvas.renderAll();*/
+    makeGroupInfo(seat, employee) {
+      let rectangle = new fabric.Rect({
+        width: seat.width,
+        height: seat.height,
+        fill: this.getColor(employee.department)
+      });
+      let textObject = new fabric.IText(employee.name, {
+        left: 0,
+        top: rectangle.height / 3,
+        fontSize: 13,
+        fill: "black"
+      });
+      let group = new fabric.Group([rectangle, textObject], {
+        seatId: seat.seat_id,
+        employee_name: employee.name,
+        employee_department: employee.department,
+        employee_number: employee.number,
+        employee_id: seat.employee_id,
+        floor_id: seat.floor, //One이라고 가정
+        left: seat.x,
+        top: seat.y
+      });
+      group.on("mousedblclick", e => {
+        let group = e.target;
+        let groupToObject = group.toObject([
+          "employee_id",
+          "employee_name",
+          "floor_id",
+          "employee_department"
+        ]);
+        eventBus.$emit("employee_id", groupToObject.employee_id);
+        eventBus.$emit("employee_name", groupToObject.employee_name);
+        eventBus.$emit("floor_id", groupToObject.floor_id);
+        eventBus.$emit(
+          "employee_department",
+          groupToObject.employee_department
+        );
+        this.getDialog();
+      });
+      return group;
     },
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
@@ -633,7 +662,9 @@ export default {
       /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
       let eachFloorSeatList = null;
       let eachEmployeeSeatList = null;
-      
+
+      let group = null;
+
       for (let i = 0; i < this.seats.length; i++) {
         for (let j = 0; j < this.employees.length; j++) {
           //현재 층 list 다루기
@@ -644,48 +675,13 @@ export default {
             eachFloorSeatList = this.getEachFloorSeatList(
               this.currentSelectedFloor
             );
+
             eachEmployeeSeatList = this.getEachEmployeeSeatList(
               this.seats[i].employee_id
             );
 
-            let rectangle = new fabric.Rect({
-              width: this.seat[i].width,
-              height: this.seat[i].height,
-              fill: this.getColor(this.employees[j].department)
-            });
-            let textObject = new fabric.IText(this.employees[j].name, {
-              left: 0,
-              top: rectangle.height / 3,
-              fontSize: 13,
-              fill: "black"
-            });
-            let group = new fabric.Group([rectangle, textObject], {
-              seatId: this.seat[i].seat_id,
-              employee_name: this.employees[j].name,
-              employee_department: this.employees[j].department,
-              employee_number: this.employees[j].number,
-              employee_id: this.seat[i].employee_id,
-              floor_id: this.seat[i].floor, //One이라고 가정
-              left: this.seat[i].x,
-              top: this.seat[i].y
-            });
-            group.on("mousedblclick", e => {
-              let group = e.target;
-              let groupToObject = group.toObject([
-                "employee_id",
-                "employee_name",
-                "floor_id",
-                "employee_department"
-              ]);
-              eventBus.$emit("employee_id", groupToObject.employee_id);
-              eventBus.$emit("employee_name", groupToObject.employee_name);
-              eventBus.$emit("floor_id", groupToObject.floor_id);
-              eventBus.$emit(
-                "employee_department",
-                groupToObject.employee_department
-              );
-              this.getDialog();
-            });
+            group = this.makeGroupInfo(this.seats[i], this.employee[j]);
+
             this.floorCanvas.add(group);
             eachFloorSeatList.push(group);
             console.log(eachFloorSeatList);
@@ -695,6 +691,15 @@ export default {
             eachEmployeeSeatList.push(groupToObject.seatId);
 
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+            console.log(
+              this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
+            );
+            console.log(
+              this.seats[i].employee_id +
+                "의 자리 리스트 개수는 " +
+                this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
+                "입니다."
+            );
           } //end of if
 
           //다른 층 eachFloorSeatList에 넣기
@@ -703,48 +708,29 @@ export default {
             this.employees[j].employee_id == this.seats[i].employee_id
           ) {
             eachFloorSeatList = this.getEachFloorSeatList(this.seat[i].floor);
-            let rectangle = new fabric.Rect({
-              width: this.seat[i].width,
-              height: this.seat[i].height,
-              fill: this.getColor(this.employees[j].department)
-            });
-            let textObject = new fabric.IText(this.employees[j].name, {
-              left: 0,
-              top: rectangle.height / 3,
-              fontSize: 13,
-              fill: "black"
-            });
-            let group = new fabric.Group([rectangle, textObject], {
-              seatId: this.seat[i].seat_id,
-              employee_name: this.employees[j].name,
-              employee_department: this.employees[j].department,
-              employee_number: this.employees[j].number,
-              employee_id: this.seat[i].employee_id,
-              floor_id: this.seat[i].floor, //One이라고 가정
-              left: this.seat[i].x,
-              top: this.seat[i].y
-            });
-            group.on("mousedblclick", e => {
-              let group = e.target;
-              let groupToObject = group.toObject([
-                "employee_id",
-                "employee_name",
-                "floor_id",
-                "employee_department"
-              ]);
-              eventBus.$emit("employee_id", groupToObject.employee_id);
-              eventBus.$emit("employee_name", groupToObject.employee_name);
-              eventBus.$emit("floor_id", groupToObject.floor_id);
-              eventBus.$emit(
-                "employee_department",
-                groupToObject.employee_department
-              );
-              this.getDialog();
-            });
+            eachEmployeeSeatList = this.getEachEmployeeSeatList(
+              this.seats[i].employee_id
+            );
+
+            group = this.makeGroupInfo(this.seats[i], this.employee[j]);
+
             eachFloorSeatList.push(group);
 
-            console.log(eachFloorSeatList);
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+
+            let groupToObject = group.toObject(["seatId"]);
+            eachEmployeeSeatList.push(groupToObject.seatId);
+
+            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+            console.log(
+              this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
+            );
+            console.log(
+              this.seats[i].employee_id +
+                "의 자리 리스트 개수는 " +
+                this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
+                "입니다."
+            );
           } //end of else if
         }
       }
