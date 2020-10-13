@@ -80,10 +80,10 @@ export default {
 
       for (let k = 0; k < this.employees.length; k++) {
         if (this.employees[k].employee_id == item.employee_id) {
-          //let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
-          //  item.employee_id
-          //);
-          var eachEmployeeSeatList = this.employees[k].seatIdList;
+          let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
+            item.employee_id
+          );
+          //var eachEmployeeSeatList = this.employees[k].seatIdList;
           console.log(eachEmployeeSeatList + "eachEmployeeSeatList");
 
           console.log(
