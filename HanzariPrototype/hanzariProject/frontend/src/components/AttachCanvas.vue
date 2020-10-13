@@ -39,10 +39,12 @@
 </template>
 
 <script>
+import axios from "axios";
 import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
-
+const portNum = 8080;
+const host = "172.30.1.50";
 export default {
   props: ["seat", "employee"],
   components: {
