@@ -69,6 +69,9 @@ export default {
       eventBus.$on("allEmployeeList", (allEmployeeList) => {
         this.allEmployeeList = allEmployeeList;
       });
+    eventBus.$on("MappingSeat", (item) => {
+      this.setVcantSeat(item);
+    });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
     }
@@ -241,7 +244,6 @@ export default {
         if (e.button === 3) {
           //console.log("right click");
           //context menu 넣을 곳
-
         }
       });
       group.on("mousedblclick", (e) => {
@@ -385,7 +387,7 @@ export default {
         console.log("!!!not group!!!");
         return;
       } else {
-        console.log("!!!group!!!!")
+        console.log("!!!group!!!!");
         activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
 
         activeObject.employee_name = null;
@@ -393,10 +395,12 @@ export default {
         activeObject.employee_number = null;
         activeObject.employee_id = null; // delete employee information in group
 
-        activeObject.item(0).set("fill", this.getColor(activeObject.employee_department));
+        activeObject
+          .item(0)
+          .set("fill", this.getColor(activeObject.employee_department));
         this.floorCanvas.remove(activeObject.item(1)); // delete textObject
 
-        activeObject._objects[1].text = ""
+        activeObject._objects[1].text = "";
         //activeObject.item(1).text = null
         //this.floorCanvas.requestRenderAll();
         this.floorCanvas.renderAll();
@@ -475,62 +479,33 @@ export default {
         this.currentSelectedFloor
       );
 
-      eventBus.$on("MappingSeat", (item) => {
-        let activeObject = this.floorCanvas.getActiveObject();
-        let shapearray = new Array();
-
-        this.floorCanvas
-          .getObjects()
-          .slice()
-          .forEach((obj) => {
-            shapearray.push(obj);
-          });
-
-        if (activeObject) {
-          shapearray.slice().forEach((obj) => {
-            if (obj == activeObject) {
-              let index = shapearray.indexOf(activeObject);
-              shapearray.splice(index, 1);
-            }
-          });
-          this.floorCanvas.remove(activeObject);
-          eachFloorSeatList.length = 0;
-          this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
-          //console.log("shapearray length: ");
-          //console.log(shapearray.length);
-        }
-
-        this.createSeat(item);
-
-        // console.log("MappingSeat name = " + item.name);
-        // console.log("MappingSeat department = " + item.department);
-        this.floorCanvas.renderAll();
-      });
       console.log("currnet floor is " + this.currentSelectedFloor);
 
       let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: this.getColor(null),
+        fill: this.getColor(item.department),
         opacity: 1,
       });
+
       let textObject = new fabric.IText("", {
         left: 0,
         top: rectangle.height / 3,
         fontSize: 13,
         fill: "black",
       });
-      let group = new fabric.Group([rectangle], {
+
+      let group = new fabric.Group([rectangle, textObject], {
         floor_id: this.currentSelectedFloor,
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
-        employee_name: null,
-        employee_department: null,
-        employee_number: null,
-        employee_id: null,
-        floor_id: this.currentSelectedFloor,
+        employee_name: item.name,
+        employee_department: item.department,
+        employee_number: item.number,
+        employee_id: item.employee_id,
         left: 150,
         top: 150,
       });
+
       group.on("mouseover", function (e) {
         let group = e.target;
         let asObject = group.toObject(["seatId"]);
@@ -542,9 +517,20 @@ export default {
 
       group.on("mousedblclick", (e) => {
         let group = e.target;
-        let asObject = group.toObject(["name", "department"]);
-        console.log("dbMappingSeat name = " + asObject.name);
-        console.log("db MappingSeat department = " + asObject.department);
+        let groupToObject = group.toObject([
+          "employee_id",
+          "employee_name",
+          "floor_id",
+          "employee_department",
+        ]);
+        eventBus.$emit("employee_id", groupToObject.employee_id);
+        eventBus.$emit("employee_name", groupToObject.employee_name);
+        eventBus.$emit("floor_id", groupToObject.floor_id);
+        eventBus.$emit(
+          "employee_department",
+          groupToObject.employee_department
+        );
+        this.getDialog();
       });
 
       this.floorCanvas.add(group);
@@ -557,9 +543,52 @@ export default {
           "의 자리 리스트 length = " +
           eachFloorSeatList.length
       );
+
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
 
+    setVcantSeat(item) {
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+
+      let activeObject = this.floorCanvas.getActiveObject();
+      (activeObject.employee_name = item.name),
+        (activeObject.employee_department = item.department),
+        (activeObject.employee_number = item.number),
+        (activeObject.employee_id = item.employee_id);
+
+      activeObject
+        .item(0)
+        .set("fill", this.getColor(activeObject.employee_department));
+      activeObject._objects[1].text = item.name;
+      this.floorCanvas.renderAll();
+      /*let shapearray = new Array();
+
+      this.floorCanvas
+        .getObjects()
+        .slice()
+        .forEach((obj) => {
+          shapearray.push(obj);
+        });
+
+      if (activeObject) {
+        shapearray.slice().forEach((obj) => {
+          if (obj == activeObject) {
+            let index = shapearray.indexOf(activeObject);
+            shapearray.splice(index, 1);
+          }
+        });
+        this.floorCanvas.remove(activeObject);
+        eachFloorSeatList.length = 0;
+        this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
+      }
+    
+      //this.addVacantBtn(item)
+      this.createSeat(item, VacantSeatid);
+
+      this.floorCanvas.renderAll();*/
+    },
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
 
@@ -581,7 +610,6 @@ export default {
             "employee_department",
             "employee_id",
           ]);
-
 
           let data = {};
           data.seat_id = groupToObject.seatId;
