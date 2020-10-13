@@ -278,10 +278,9 @@ export default {
         Blue: "blue",
         Gray: "Gray",
       };
-      if (department == "Development Team") return Colors.Orange;
-      else if (department == "Secure Team") return Colors.Yellow;
-      else if (department == "Marketing Team") return Colors.Green;
-      else if (department == "Design Team") return Colors.Blue;
+      if (department == "부서1") return Colors.Orange;
+      else if (department == "부서2") return Colors.Yellow;
+      else if (department == "부서3") return Colors.Green;
       else return Colors.Gray;
     },
     showSeat(seat) {
@@ -394,18 +393,14 @@ export default {
         activeObject.employee_number = null;
         activeObject.employee_id = null; // delete employee information in group
 
-        let item = []
-        item =this.floorCanvas.getActiveObject().toActiveSelection()
-        
-        console.log(item[0])
+        activeObject.item(0).set("fill", this.getColor(activeObject.employee_department));
+        this.floorCanvas.remove(activeObject.item(1)); // delete textObject
 
-        activeObject.item(0).fill = this.getColor(activeObject.employee_department); 
-        // rect color change
-        activeObject.item(1).text = "";
-        //this.floorCanvas.remove(activeObject.item(1)); // delete textObject
-
-        this.floorCanvas.requestRenderAll();
-        console.log(eachFloorSeatList);
+        activeObject._objects[1].text = ""
+        //activeObject.item(1).text = null
+        //this.floorCanvas.requestRenderAll();
+        this.floorCanvas.renderAll();
+        //console.log(eachFloorSeatList);
       }
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
@@ -516,17 +511,18 @@ export default {
       let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: "green",
+        fill: this.getColor(null),
         opacity: 1,
       });
-
+      let textObject = new fabric.IText("", {
+        left: 0,
+        top: rectangle.height / 3,
+        fontSize: 13,
+        fill: "black",
+      });
       let group = new fabric.Group([rectangle], {
         floor_id: this.currentSelectedFloor,
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
-        //employee_name: item.name,
-        //employee_department: item.department,
-        //employee_number: item.number,
-        //employee_id: item.employee_id,
         employee_name: null,
         employee_department: null,
         employee_number: null,
