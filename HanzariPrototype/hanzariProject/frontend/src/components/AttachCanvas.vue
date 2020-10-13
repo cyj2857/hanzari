@@ -69,6 +69,9 @@ export default {
       eventBus.$on("allEmployeeList", (allEmployeeList) => {
         this.allEmployeeList = allEmployeeList;
       });
+    eventBus.$on("MappingSeat", (item) => {
+      this.setVcantSeat(item);
+    });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
     }
@@ -512,26 +515,28 @@ export default {
       let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: this.getColor(null),
+        fill: this.getColor(item.department),
         opacity: 1,
       });
+
       let textObject = new fabric.IText("", {
         left: 0,
         top: rectangle.height / 3,
         fontSize: 13,
         fill: "black",
       });
-      let group = new fabric.Group([rectangle], {
+
+      let group = new fabric.Group([rectangle, textObject], {
         floor_id: this.currentSelectedFloor,
         seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
-        employee_name: null,
-        employee_department: null,
-        employee_number: null,
-        employee_id: null,
-        floor_id: this.currentSelectedFloor,
+        employee_name: item.name,
+        employee_department: item.department,
+        employee_number: item.number,
+        employee_id: item.employee_id,
         left: 150,
         top: 150,
       });
+
       group.on("mouseover", function (e) {
         let group = e.target;
         let asObject = group.toObject(["seatId"]);
@@ -543,9 +548,20 @@ export default {
 
       group.on("mousedblclick", (e) => {
         let group = e.target;
-        let asObject = group.toObject(["name", "department"]);
-        console.log("dbMappingSeat name = " + asObject.name);
-        console.log("db MappingSeat department = " + asObject.department);
+        let groupToObject = group.toObject([
+          "employee_id",
+          "employee_name",
+          "floor_id",
+          "employee_department",
+        ]);
+        eventBus.$emit("employee_id", groupToObject.employee_id);
+        eventBus.$emit("employee_name", groupToObject.employee_name);
+        eventBus.$emit("floor_id", groupToObject.floor_id);
+        eventBus.$emit(
+          "employee_department",
+          groupToObject.employee_department
+        );
+        this.getDialog();
       });
 
       this.floorCanvas.add(group);
@@ -558,6 +574,7 @@ export default {
           "의 자리 리스트 length = " +
           eachFloorSeatList.length
       );
+
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
     makeGroupInfo(seat, employee) {
