@@ -356,9 +356,8 @@ export default {
       else return Colors.Gray;
     },
     showSeat(seat) {
-      console.log(seat.seat_id + "가 해당 자리의 아이디입니다."); // One-0,
+      console.log(seat.seat_id + "가 해당 자리의 아이디입니다."); // One-0
       let seatFloor;
-      let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
 
       //seat의 층과 현재층이 같지 않다면
       if (this.currentSelectedFloor != seat.seat_id.split("-")[0]) {
@@ -370,6 +369,7 @@ export default {
         seatFloor = this.currentSelectedFloor;
       }
 
+      let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
       for (let i = 0; i < eachFloorSeatList.length; i++) {
         let myGroup = eachFloorSeatList[i];
         let asObject = myGroup.toObject([
@@ -414,7 +414,6 @@ export default {
         //자리가 아직 없을때 예외처리 하기
       }
     },
-
     //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
       //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
@@ -604,9 +603,8 @@ export default {
           console.log(res.data);
         });
     },
-    clickLoadBtn() {
+    clickLoadBtn() { /*이후에 내부 중복 로직 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
       let eachFloorSeatList = null;
-
       for (let i = 0; i < this.seats.length; i++) {
         for (let j = 0; j < this.employees.length; j++) {
           //현재 층 list 다루기
@@ -617,20 +615,17 @@ export default {
             eachFloorSeatList = this.getEachFloorSeatList(
               this.currentSelectedFloor
             );
-
             let rectangle = new fabric.Rect({
               width: this.seat[i].width,
               height: this.seat[i].height,
               fill: this.getColor(this.employees[j].department),
             });
-
             let textObject = new fabric.IText(this.employees[j].name, {
               left: 0,
               top: rectangle.height / 3,
               fontSize: 13,
               fill: "black",
             });
-
             let group = new fabric.Group([rectangle, textObject], {
               seatId: this.seat[i].seat_id,
               employee_name: this.employees[j].name,
@@ -641,9 +636,26 @@ export default {
               left: this.seat[i].x,
               top: this.seat[i].y,
             });
-
+            group.on("mousedblclick", (e) => {
+              let group = e.target;
+              let groupToObject = group.toObject([
+                "employee_id",
+                "employee_name",
+                "floor_id",
+                "employee_department",
+              ]);
+              eventBus.$emit("employee_id", groupToObject.employee_id);
+              eventBus.$emit("employee_name", groupToObject.employee_name);
+              eventBus.$emit("floor_id", groupToObject.floor_id);
+              eventBus.$emit(
+                "employee_department",
+                groupToObject.employee_department
+              );
+              this.getDialog();
+            });
             this.floorCanvas.add(group);
             eachFloorSeatList.push(group);
+            eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
           } //end of if
 
           //다른 층 eachFloorSeatList에 넣기
@@ -652,20 +664,17 @@ export default {
             this.employees[j].employee_id == this.seats[i].employee_id
           ) {
             eachFloorSeatList = this.getEachFloorSeatList(this.seat[i].floor);
-
             let rectangle = new fabric.Rect({
               width: this.seat[i].width,
               height: this.seat[i].height,
               fill: this.getColor(this.employees[j].department),
             });
-
             let textObject = new fabric.IText(this.employees[j].name, {
               left: 0,
               top: rectangle.height / 3,
               fontSize: 13,
               fill: "black",
             });
-
             let group = new fabric.Group([rectangle, textObject], {
               seatId: this.seat[i].seat_id,
               employee_name: this.employees[j].name,
@@ -676,13 +685,30 @@ export default {
               left: this.seat[i].x,
               top: this.seat[i].y,
             });
-
+            group.on("mousedblclick", (e) => {
+              let group = e.target;
+              let groupToObject = group.toObject([
+                "employee_id",
+                "employee_name",
+                "floor_id",
+                "employee_department",
+              ]);
+              eventBus.$emit("employee_id", groupToObject.employee_id);
+              eventBus.$emit("employee_name", groupToObject.employee_name);
+              eventBus.$emit("floor_id", groupToObject.floor_id);
+              eventBus.$emit(
+                "employee_department",
+                groupToObject.employee_department
+              );
+              this.getDialog();
+            });
             eachFloorSeatList.push(group);
+
+            eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
           } //end of else if
         }
       }
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-    }
+    },
   },
 };
 </script>
