@@ -2,9 +2,6 @@ package com.hancom.hanzari.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.hancom.hanzari.model.Employee;
-import com.hancom.hanzari.model.Seat;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
