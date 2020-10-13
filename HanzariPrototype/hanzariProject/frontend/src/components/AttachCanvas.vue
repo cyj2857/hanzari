@@ -541,6 +541,7 @@ export default {
             "employee_id",
           ]);
 
+
           let data = {};
           data.seat_id = groupToObject.seatId;
           data.floor = groupToObject.floor_id;

@@ -11,6 +11,8 @@ public interface EmployeeService {
 
 	public void deleteById(String employee_id); // D
 
+	public List<Employee> findByDepartmentId(String department_id);
+
 	public Employee save(Employee employee); // C
 
 	public void updateById(String employee_id); // U
