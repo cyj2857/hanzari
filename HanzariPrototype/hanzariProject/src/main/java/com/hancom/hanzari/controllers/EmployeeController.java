@@ -39,7 +39,7 @@ public class EmployeeController {
           return new ResponseEntity<EmployeeDto>(employeeService.findById(employee_id).toDto(), HttpStatus.OK);
     }
     
- // employee_id로 자리 조회
+    // employee_id로 자리 조회
  	@GetMapping(value = "/by-departmentid/{department_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
  	public ResponseEntity<List<EmployeeDto>> getEmpBydepartmentId(@PathVariable("department_id") String department_id) {
  		List<Employee> employee = employeeService.findByDepartmentId(department_id);
@@ -47,4 +47,14 @@ public class EmployeeController {
  		employee.forEach(e -> result.add(e.toDto()));
  		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
  	}
+ 	/*
+ 	// keyword로 자리 조회 작성중
+  	@GetMapping(value = "/keyword/{keyword}", produces = { MediaType.APPLICATION_JSON_VALUE })
+  	public ResponseEntity<List<EmployeeDto>> getEmpByKeyword(@PathVariable("keyword") String keyword) {
+  		List<Employee> employee = employeeService.findByKeyword(keyword);
+  		List<EmployeeDto> result = new ArrayList<>();
+  		employee.forEach(e -> result.add(e.toDto()));
+  		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
+  	}
+  	*/
 }
