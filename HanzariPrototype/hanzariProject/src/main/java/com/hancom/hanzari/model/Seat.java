@@ -45,7 +45,7 @@ public class Seat {
 	private String group_id;
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
-	@JoinColumn(name = "building_id")
+	@JoinColumn(name = "building_id", nullable = false)
 	private Building building;
 
 	@JsonIgnore
@@ -54,7 +54,7 @@ public class Seat {
 	private Employee employee;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "figure_id")
+	@JoinColumn(name = "figure_id", nullable = false)
 	private Figure figure;
 
 	public Seat() {
@@ -82,9 +82,7 @@ public class Seat {
 	}
 
 	public SeatDto toDto() {
-		String employee_id = null;
-		if (employee != null)
-			employee_id = String.valueOf(employee.getEmployee_id());
+		String employee_id = (employee != null) ? null : String.valueOf(employee.getEmployee_id());
 		return new SeatDto(seat_id, floor, x, y, is_group, group_id, building.getBuilding_id(), employee_id,
 				figure.getWidth(), figure.getHeight(), figure.getDegree(), figure.getShape().getShape_id());
 	}
