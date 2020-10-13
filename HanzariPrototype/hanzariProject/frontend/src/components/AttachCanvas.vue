@@ -563,6 +563,10 @@ export default {
         //employee_department: item.department,
         //employee_number: item.number,
         //employee_id: item.employee_id,
+        employee_name: null,
+        employee_department: null,
+        employee_number: null,
+        employee_id: null,
         left: 150,
         top: 150,
       });
@@ -616,6 +620,7 @@ export default {
             "employee_department",
             "employee_id",
           ]);
+
 
           let data = {};
           data.seat_id = groupToObject.seatId;

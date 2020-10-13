@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-spacer>{{this.currentFloor}} {{this.currentFloorSeatsLength}}Seats </v-spacer>
+      <v-spacer>{{this.currentFloor}} {{this.currentFloorVacantSeatsLength}}좌석 / {{this.currentFloorSeatsLength}}좌석 </v-spacer>
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -20,6 +20,7 @@
 <script>
 //@change="renderEachFloorSeatList(eachFloorSeatList)"
 import { eventBus } from "../main.js";
+import EachEmployeeSeatDataTableVue from './EachEmployeeSeatDataTable.vue';
 export default {
   data() {
     return {
@@ -30,6 +31,7 @@ export default {
       ],
       employees: [],
       currentFloorSeatsLength: 0,
+      currentFloorVacantSeatsLength: 0,
       currentFloor: null
     };
   },
@@ -55,7 +57,14 @@ export default {
       this.employees = [];
       
       if (eachFloorSeatList.length != 0) {
+        let vancantLength = 0;
         for (let i = 0; i < eachFloorSeatList.length; i++) {
+          
+          if(eachFloorSeatList[i].employee_id == null){
+            console.log(eachFloorSeatList[i].seatId +"빈공석의 seatId입니다");
+            vancantLength++;
+          }
+
           let employee = {};
           employee.name = eachFloorSeatList[i].employee_name;
           employee.department = eachFloorSeatList[i].employee_department;
@@ -68,6 +77,7 @@ export default {
           });
 
           this.currentFloorSeatsLength = this.employees.length;
+          this.currentFloorVacantSeatsLength = vancantLength;
           
           console.log(employee.number);
           //this.employees.push(employee);
