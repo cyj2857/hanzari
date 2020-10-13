@@ -18,10 +18,23 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-btn id="createSeatButton" @click="createSeatButtonClicked(row.item)">Create</v-btn>
+            <v-btn
+              id="createSeatButton"
+              @click="createSeatButtonClicked(row.item)"
+              >Create</v-btn
+            >
           </td>
           <td>
-            <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)">Show</v-btn>
+            <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)"
+              >Show</v-btn
+            >
+          </td>
+          <td>
+            <v-btn
+              id="MappingSeatButton"
+              @click="MappingSeatButtonClicked(row.item)"
+              >Mapping</v-btn
+            >
           </td>
         </tr>
       </template>
@@ -32,7 +45,7 @@
 <script>
 import { eventBus } from "../main.js";
 export default {
-  props: ['employee'],
+  props: ["employee"],
   data() {
     return {
       allEmployeeSeatMap: null,
@@ -42,23 +55,21 @@ export default {
           text: "Name",
           align: "start",
           sortable: true,
-          value: "name"
+          value: "name",
         },
         { text: "Department", value: "department" },
         { text: "Number", value: "number" },
         { text: "", value: "createSeatButton" },
-        { text: "", value: "showSeatButton" }
+        { text: "", value: "showSeatButton" },
       ],
-      employees: this.employee
+      employees: this.employee,
     };
   },
 
   created() {
-    eventBus.$on("eachEmployeeSeatMap", eachEmployeeSeatMap => {
+    eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
     });
-
-  
   },
   methods: {
     createSeatButtonClicked(item) {
@@ -73,16 +84,18 @@ export default {
           //  item.employee_id
           //);
           var eachEmployeeSeatList = this.employees[k].seatIdList;
-          console.log(eachEmployeeSeatList+"eachEmployeeSeatList");
+          console.log(eachEmployeeSeatList + "eachEmployeeSeatList");
 
           console.log(
-            this.employees[k].employee_id + "employee_id? length" +
+            this.employees[k].employee_id +
+              "employee_id? length" +
               eachEmployeeSeatList.length
           ); //4
 
           if (eachEmployeeSeatList) {
             console.log(
-              this.employees[k].employee_id + "employee_id? length" +
+              this.employees[k].employee_id +
+                "employee_id? length" +
                 eachEmployeeSeatList[2]
             ); //2
             console.log(this.employees[k].name);
@@ -95,8 +108,11 @@ export default {
         }
       }
     },
-      
-  }
+
+    MappingSeatButtonClicked(item) {
+      eventBus.$emit("MappingSeat", item);
+    },
+  },
 };
 </script>
 
