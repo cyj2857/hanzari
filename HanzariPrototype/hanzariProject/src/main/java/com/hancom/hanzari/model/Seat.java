@@ -82,7 +82,7 @@ public class Seat {
 	}
 
 	public SeatDto toDto() {
-		String employee_id = (employee != null) ? null : String.valueOf(employee.getEmployee_id());
+		String employee_id = (employee == null) ? null : String.valueOf(employee.getEmployee_id());
 		return new SeatDto(seat_id, floor, x, y, is_group, group_id, building.getBuilding_id(), employee_id,
 				figure.getWidth(), figure.getHeight(), figure.getDegree(), figure.getShape().getShape_id());
 	}
