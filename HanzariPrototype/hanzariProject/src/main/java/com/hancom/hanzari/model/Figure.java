@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-@Table(name = "temp_figures")
+@Table(name = "figures")
 public class Figure {
 
 	@Id

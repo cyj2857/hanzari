@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.hancom.hanzari.dto.EmployeeDto;
@@ -33,15 +33,9 @@ public class Employee {
 	@Column(name = "authority", nullable = false)
 	private String authority;
 
-	@Column(name = "employee_name", nullable = false)
-	private String employee_name;
-
-	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
-	@JoinColumn(name = "department_id")
-	private Department department;
-
-	@Column(name = "extension_number", nullable = true)
-	private String extension_number;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "figure_id", nullable = false)
+	private EmployeeAdditionalInfo additionalInfo;
 
 	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Column(nullable = true)
@@ -55,13 +49,23 @@ public class Employee {
 		getSeat().add(seat);
 	}
 
+	public void setAdditionalInfo(EmployeeAdditionalInfo additionalInfo) {
+		this.additionalInfo = additionalInfo;
+	}
+
 	public List<String> seatIdList() {
 		List<String> result = new ArrayList<String>();
 		seat.forEach(e -> result.add(e.getSeat_id()));
 		return result;
 	}
-	
+
 	public EmployeeDto toDto() {
-		return new EmployeeDto(employee_id, authority, employee_name, department.getDepartment_name(), extension_number, seatIdList());
+		String status = (additionalInfo == null) ? null : additionalInfo.getStatus();
+		String employee_name = (additionalInfo == null) ? null : additionalInfo.getEmployee_name();
+		String department_name = (additionalInfo == null) ? null : additionalInfo.getDepartment_name();
+		String extension_number = (additionalInfo == null) ? null : additionalInfo.getExtension_number();
+		return EmployeeDto.builder().employee_id(employee_id).authority(authority).status(status)
+				.employee_name(employee_name).department_name(department_name).extension_number(extension_number)
+				.seatList(seatIdList()).build();
 	}
 }

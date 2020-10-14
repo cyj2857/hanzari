@@ -13,7 +13,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-@Table(name = "temp_buildings")
+@Table(name = "buildings")
 public class Building {
 
 	@Id
