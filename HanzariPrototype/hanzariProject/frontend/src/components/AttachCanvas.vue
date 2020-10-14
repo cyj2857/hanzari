@@ -368,11 +368,6 @@ export default {
         return this.eachEmployeeSeatMap.get(employee_id);
       }
     },
-    //해당 층의 도형 리스트 삭제하기
-    deleteEachFloorSeatList: function (floor) {
-      this.getEachFloorSeatList(floor).length = 0;
-      return this.getEachFloorSeatList(floor);
-    },
     //자리비우기
     clickChangeToVacant() {
       let activeObject = null;
@@ -408,23 +403,53 @@ export default {
       }
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
+    //해당 층의 도형 리스트 삭제하기
+    deleteEachFloorSeatList: function(floor) {
+      this.getEachFloorSeatList(floor).length = 0;
+      return this.getEachFloorSeatList(floor);
+    },
+    //사원의 자리리스트에서 삭제된 자리를 삭제하기
+    deleteEachEmployeeSeatList: function(groupToObject) {
+      let oneEmployeeSeatList = this.getEachEmployeeSeatList(
+        groupToObject.employee_id
+      );
+
+      for (let i = 0; i < oneEmployeeSeatList.length; i++) {
+        if (oneEmployeeSeatList[i] == groupToObject.seatId) {
+          oneEmployeeSeatList.splice(i, 1);
+        }
+      }
+      console.log(
+        oneEmployeeSeatList.length + "전체 삭제한 자리 리스트 길이입니다."
+      );
+    },
     deleteAllBtn() {
+      // let eachFloorSeatList = this.deleteEachFloorSeatList(
+      //   this.currentSelectedFloor
+      // );
+
       if (confirm("Are you sure?")) {
         this.floorCanvas
           .getObjects()
           .slice()
           .forEach((obj) => {
             this.floorCanvas.remove(obj);
+
+            let groupToObject = obj.toObject(["seatId", "employee_id"]);
+
+            this.deleteEachEmployeeSeatList(groupToObject);
           });
 
         let eachFloorSeatList = this.deleteEachFloorSeatList(
           this.currentSelectedFloor
         );
+
         if (eachFloorSeatList) {
           alert("success");
         } else alert("fail");
 
         eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       }
     },
 
@@ -458,6 +483,10 @@ export default {
               //delete
               let index = shapearray.indexOf(activeObject);
               shapearray.splice(index, 1);
+
+              let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
+
+              this.deleteEachEmployeeSeatList(groupToObject);
             }
           });
           this.floorCanvas.remove(activeObject);
@@ -469,6 +498,7 @@ export default {
             "eachFloorSeatList",
             this.getEachFloorSeatList(this.currentSelectedFloor)
           );
+          eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
         }
       }
     },
