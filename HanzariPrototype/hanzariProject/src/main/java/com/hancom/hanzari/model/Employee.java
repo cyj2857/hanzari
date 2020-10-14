@@ -34,7 +34,7 @@ public class Employee {
 	private String authority;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "figure_id", nullable = false)
+	@JoinColumn(name = "additionalInfo", nullable = true)
 	private EmployeeAdditionalInfo additionalInfo;
 
 	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
