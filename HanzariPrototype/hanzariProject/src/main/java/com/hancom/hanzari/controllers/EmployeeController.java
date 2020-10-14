@@ -1,5 +1,7 @@
 package com.hancom.hanzari.controllers;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class EmployeeController {
 	// employee_id로 한명의 사원 조회
     @GetMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<EmployeeDto> getEmp(@PathVariable("employee_id") String employee_id) throws Exception {
-          return new ResponseEntity<EmployeeDto>(employeeService.findById(employee_id).toDto(), HttpStatus.OK);
+    	 return new ResponseEntity<EmployeeDto>(employeeService.findById(employee_id).toDto(), HttpStatus.OK);
     }
     
     // employee_id로 자리 조회
@@ -45,16 +47,27 @@ public class EmployeeController {
  		List<Employee> employee = employeeService.findByDepartmentId(department_id);
  		List<EmployeeDto> result = new ArrayList<>();
  		employee.forEach(e -> result.add(e.toDto()));
+ 		System.out.println("-----------------\n\n\n" + String.valueOf(department_id) + "-----------------\n\n\n");
+        
  		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
  	}
- 	/*
+ 	
  	// keyword로 자리 조회 작성중
   	@GetMapping(value = "/keyword/{keyword}", produces = { MediaType.APPLICATION_JSON_VALUE })
-  	public ResponseEntity<List<EmployeeDto>> getEmpByKeyword(@PathVariable("keyword") String keyword) {
-  		List<Employee> employee = employeeService.findByKeyword(keyword);
+  	public ResponseEntity<List<EmployeeDto>> getEmpByKeyword(@PathVariable("keyword") String keyword) throws Exception {
+  		System.out.println("before Decode:: " + String.valueOf(keyword));
+  		//URLDecoder.decode((URLDecoder.decode(keyword, "8859_1")), "UTF-8"); //방법1
+  		String tempKeyword = URLDecoder.decode(keyword, "UTF-8"); //방법1
+  		System.out.println("after Decode:: " + String.valueOf(tempKeyword));
+  		//new String(param.getBytes("8859_1"), "utf-8"); //방법2
+  		/*
+  		List<Employee> employee = employeeService.findByKeyword(tempKeyword);
   		List<EmployeeDto> result = new ArrayList<>();
   		employee.forEach(e -> result.add(e.toDto()));
   		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
+  		*/
+  		List<EmployeeDto> result = new ArrayList<>();
+  		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
   	}
-  	*/
+  	
 }
