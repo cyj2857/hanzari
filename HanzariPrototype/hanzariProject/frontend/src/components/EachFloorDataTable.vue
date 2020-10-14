@@ -6,7 +6,7 @@
         {{ this.currentFloorSeatsLength }}좌석
       </v-spacer>
     </v-card-title>
-    <v-data-table :headers="headers" :items="employees" class="elevation-1">
+    <v-data-table :headers="headers" :items="employees" class="elevation-1" height="775px">
       <template v-slot:[`item.department`]="{ item }">
         <v-chip :color="getColor(item.department)" dark>{{
           item.department
@@ -54,13 +54,13 @@ export default {
     renderEachFloorSeatList(eachFloorSeatList) {
       //리스트 초기화
       this.employees = [];
+      this.currentFloorVacantSeatsLength = 0;
 
       if (eachFloorSeatList.length != 0) {
-        let vancantLength = 0;
         for (let i = 0; i < eachFloorSeatList.length; i++) {
           if (eachFloorSeatList[i].employee_id == null) {
             console.log(eachFloorSeatList[i].seatId + "빈공석의 seatId입니다");
-            vancantLength++;
+            this.currentFloorVacantSeatsLength++;
           }
 
           let employee = {};
@@ -75,10 +75,8 @@ export default {
           });
 
           this.currentFloorSeatsLength = this.employees.length;
-          this.currentFloorVacantSeatsLength = vancantLength;
-
+          
           console.log(employee.number);
-          //this.employees.push(employee);
         }
       } else {
         //this.employees = [];

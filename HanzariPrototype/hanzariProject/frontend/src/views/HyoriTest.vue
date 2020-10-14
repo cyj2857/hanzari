@@ -35,7 +35,7 @@ const portNum = 8080;
 const host = "172.30.1.50";
 
 export default {
-  name: "HyoriTest",
+  name: "Admin",
   components: {
     AllFloorsDataTable,
     AttachCanvas,
@@ -84,7 +84,7 @@ export default {
       return initEmployeeList;
     },
     getSeats() {
-      //mounted µÉ¶§ ºÒ¸²
+      //mounted ï¿½É¶ï¿½ ï¿½Ò¸ï¿½
       let loadSeatList = new Array();
       axios
         .get("http://" + host + ":" + portNum + "/seats")
@@ -121,14 +121,12 @@ export default {
   height: 100%;
   border-right: 1px solid #b8b8b8;
   margin-right: -1px;
-  overflow-y: scroll;
 }
 
 .d2 {
   float: left;
   width: 50%;
   height: 100%;
-  overflow-y: scroll;
   text-align: center;
 }
 
@@ -145,7 +143,6 @@ export default {
   height: 100%;
   border-right: 1px solid #b8b8b8;
   margin-right: -1px;
-  overflow-y: scroll;
 }
 
 #hr {
