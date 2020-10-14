@@ -54,6 +54,7 @@ export default {
     renderEachFloorSeatList(eachFloorSeatList) {
       //리스트 초기화
       this.employees = [];
+      this.currentFloorVacantSeatsLength = 0;
 
       if (eachFloorSeatList.length != 0) {
         let vancantLength = 0;
