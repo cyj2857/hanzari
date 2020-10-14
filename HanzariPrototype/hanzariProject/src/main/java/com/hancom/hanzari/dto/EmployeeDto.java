@@ -23,11 +23,15 @@ public class EmployeeDto {
 	private String authority;
 
 	@NotBlank
+	private String status;
+	
+	@NotBlank
 	private String employee_name;
 
 	@NotBlank
 	private String department_name;
 
+	@NotBlank
 	private String extension_number;
 	
 	private List<String> seatList = new ArrayList<>();
