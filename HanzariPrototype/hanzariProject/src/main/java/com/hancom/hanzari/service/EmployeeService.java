@@ -16,4 +16,6 @@ public interface EmployeeService {
 	public Employee save(Employee employee); // C
 
 	public void updateById(String employee_id); // U
+	
+	public List<Employee> findByKeyword(String keyword); 
 }

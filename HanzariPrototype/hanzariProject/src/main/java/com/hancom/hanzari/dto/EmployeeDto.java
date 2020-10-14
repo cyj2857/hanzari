@@ -6,14 +6,14 @@ import java.util.List;
 import org.hibernate.validator.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class EmployeeDto {
 
 	@NotBlank
@@ -23,11 +23,15 @@ public class EmployeeDto {
 	private String authority;
 
 	@NotBlank
+	private String status;
+	
+	@NotBlank
 	private String employee_name;
 
 	@NotBlank
 	private String department_name;
 
+	@NotBlank
 	private String extension_number;
 	
 	private List<String> seatList = new ArrayList<>();

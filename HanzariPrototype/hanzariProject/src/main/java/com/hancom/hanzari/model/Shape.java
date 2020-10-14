@@ -13,7 +13,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-@Table(name = "temp_shapes")
+@Table(name = "shapes")
 public class Shape {
 
 	@Id

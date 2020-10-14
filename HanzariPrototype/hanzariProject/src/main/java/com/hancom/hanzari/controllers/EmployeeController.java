@@ -1,5 +1,6 @@
 package com.hancom.hanzari.controllers;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hancom.hanzari.dto.EmployeeDto;
-import com.hancom.hanzari.dto.SeatDto;
 import com.hancom.hanzari.model.Employee;
-import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.service.EmployeeService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -34,19 +33,30 @@ public class EmployeeController {
 		employee.forEach(e -> result.add(e.toDto()));
 		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
 	}
-	
+
 	// employee_id로 한명의 사원 조회
-    @GetMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<EmployeeDto> getEmp(@PathVariable("employee_id") String employee_id) throws Exception {
-          return new ResponseEntity<EmployeeDto>(employeeService.findById(employee_id).toDto(), HttpStatus.OK);
-    }
-    
- // employee_id로 자리 조회
- 	@GetMapping(value = "/by-departmentid/{department_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
- 	public ResponseEntity<List<EmployeeDto>> getEmpBydepartmentId(@PathVariable("department_id") String department_id) {
- 		List<Employee> employee = employeeService.findByDepartmentId(department_id);
- 		List<EmployeeDto> result = new ArrayList<>();
- 		employee.forEach(e -> result.add(e.toDto()));
- 		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
- 	}
+	@GetMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<EmployeeDto> getEmp(@PathVariable("employee_id") String employee_id) throws Exception {
+		return new ResponseEntity<EmployeeDto>(employeeService.findById(employee_id).toDto(), HttpStatus.OK);
+	}
+
+	// employee_id로 자리 조회
+	@GetMapping(value = "/by-departmentid/{department_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<EmployeeDto>> getEmpBydepartmentId(@PathVariable("department_id") String department_id) {
+		List<Employee> employee = employeeService.findByDepartmentId(department_id);
+		List<EmployeeDto> result = new ArrayList<>();
+		employee.forEach(e -> result.add(e.toDto()));
+
+		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
+	}
+
+	// keyword로 자리 조회 작성중
+	@GetMapping(value = "/keyword/{keyword}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<EmployeeDto>> getEmpByKeyword(@PathVariable("keyword") String keyword) throws Exception {
+		keyword = URLDecoder.decode(keyword, "UTF-8"); // 방법1
+		List<Employee> employee = employeeService.findByKeyword(keyword);
+		List<EmployeeDto> result = new ArrayList<>();
+		employee.forEach(e -> result.add(e.toDto()));
+		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
+	}
 }

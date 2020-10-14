@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-@Table(name = "temp_figures")
+@Table(name = "figures")
 public class Figure {
 
 	@Id
@@ -24,7 +24,7 @@ public class Figure {
 	private String figure_id; // seat_id와 동일
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
-	@JoinColumn(name = "shape_id")
+	@JoinColumn(name = "shape_id", nullable = false)
 	private Shape shape; // 그려질 모양에 대한 정보 (ex. 네모, 세모, 원 등)
 
 	@Column(name = "width", nullable = false)
