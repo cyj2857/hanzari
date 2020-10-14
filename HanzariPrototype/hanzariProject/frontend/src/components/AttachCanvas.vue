@@ -560,6 +560,7 @@ export default {
         if (e.button === 3) {
           console.log("right click");
           //자리이동 UI 넣을 곳
+          this.getChangeSeatDialog()
         }
       });
       group.on("mousedblclick", (e) => {
