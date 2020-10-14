@@ -22,7 +22,7 @@
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
-    <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
+    <EmployeeDialog :dialogStatus="this.employeeDialogStatus" @close="closeEmployeeDialog" />
   </div>
 </template>
 
@@ -47,8 +47,7 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
-      dialogStatus: false,
-      menuStatus: false,
+      employeeDialogStatus: false,
       allEmployeeList: [],
       seats: this.seat,
       employees: this.employee,
@@ -85,20 +84,15 @@ export default {
   mounted() {
     this.initializing();
   },
-  computed: {
-    menuInVisible() {
-      return this.menuStatus;
-    },
-  },
   methods: {
-    getDialog() {
-      this.dialogStatus = true;
-      console.log(this.dialogStatus);
+    getEmployeeDialog() {
+      this.employeeDialogStatus = true;
+      console.log(this.employeeDialogStatus);
     },
-    closeDialog() {
+    closeEmployeeDialog() {
       console.log("<<<close dialog>>>");
-      this.dialogStatus = false;
-      console.log(this.dialogStatus);
+      this.employeeDialogStatus = false;
+      console.log(this.employeeDialogStatus);
     },
     //canvas, map 생성
     initializing() {
@@ -250,7 +244,7 @@ export default {
     //       "employee_department",
     //       groupToObject.employee_department
     //     );
-    //     this.getDialog();
+    //     this.getEmployeeDialog();
     //   });
     //   this.floorCanvas.add(group);
     //   eachFloorSeatList.push(group);
@@ -564,7 +558,7 @@ export default {
           "employee_department",
           groupToObject.employee_department
         );
-        this.getDialog();
+        this.getEmployeeDialog();
       });
 
       this.floorCanvas.add(group);
@@ -638,7 +632,7 @@ export default {
           "employee_department",
           groupToObject.employee_department
         );
-        this.getDialog();
+        this.getEmployeeDialog();
       });
       return group;
     },
