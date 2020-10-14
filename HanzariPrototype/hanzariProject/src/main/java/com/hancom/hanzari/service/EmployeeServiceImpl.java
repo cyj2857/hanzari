@@ -33,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public List<Employee> findByDepartmentId(String department_id) {
 		List<Employee> employee = new ArrayList<Employee>();
 		employeeRepository.findAll().forEach(e -> {
-			if (e.getDepartment().getDepartment_id().toString().equals(department_id)) {
+			if (e.getAdditionalInfo().getDepartment_id().toString().equals(department_id)) {
 				employee.add(e);
 			}
 		});
@@ -60,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public List<Employee> findByKeyword(String keyword) {
 		List<Employee> employee = new ArrayList<Employee>();
 		employeeRepository.findAll().forEach(e -> {
-			if (e.getEmployee_name().toString().contains(keyword)||e.getDepartment().getDepartment_name().toString().contains(keyword)){
+			if (e.getAdditionalInfo().getEmployee_name().toString().contains(keyword)||e.getAdditionalInfo().getDepartment_name().toString().contains(keyword)){
 				employee.add(e);
 			}
 		});
