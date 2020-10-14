@@ -80,12 +80,6 @@ export default {
           //var eachEmployeeSeatList = this.employees[k].seatIdList;
           console.log(eachEmployeeSeatList + "eachEmployeeSeatList");
 
-          console.log(
-            this.employees[k].employee_id +
-              "employee_id? length" +
-              eachEmployeeSeatList.length
-          ); //4
-
           if (eachEmployeeSeatList) {
             console.log(
               this.employees[k].employee_id +
