@@ -423,10 +423,6 @@ export default {
       );
     },
     deleteAllBtn() {
-      // let eachFloorSeatList = this.deleteEachFloorSeatList(
-      //   this.currentSelectedFloor
-      // );
-
       if (confirm("Are you sure?")) {
         this.floorCanvas
           .getObjects()
@@ -592,10 +588,13 @@ export default {
     },
 
     setVacantSeat(item) {
+      console.log(this.eachEmployeeSeatMap.size +"맵의 사이즈입니다.");
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
 
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
+      
       let activeObject = this.floorCanvas.getActiveObject();
       (activeObject.employee_name = item.name),
         (activeObject.employee_department = item.department),
@@ -609,6 +608,12 @@ export default {
       this.floorCanvas.renderAll();
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+
+      let groupToObject = activeObject.toObject(["seatId"]);
+      eachEmployeeSeatList.push(groupToObject.seatId);
+
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      console.log(this.eachEmployeeSeatMap.size +"맵의 사이즈입니다.");
       //여기
     },
     makeGroupInfo(seat, employee) {
