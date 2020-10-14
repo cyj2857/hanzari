@@ -9,7 +9,14 @@
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
-    <EmployeeDialog :dialogStatus="this.dialogStatus" @close="closeDialog" />
+    <EmployeeDialog
+      :dialogStatus="this.employeeDialogStatus"
+      @close="closeEmployeeDialog"
+    />
+    <ChangeSeatDialog
+      :dialogStatus="this.changeSeatDialogStatus"
+      @close="closeChangeSeatDialog"
+    />
   </div>
 </template>
 
@@ -17,6 +24,7 @@
 import axios from "axios";
 import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
+import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 const portNum = 8080;
 const host = "172.30.1.50";
@@ -24,7 +32,8 @@ export default {
   props: ["seat", "employee"],
   components: {
     EmployeeDialog,
-    AllFloorsDataTable
+    AllFloorsDataTable,
+    ChangeSeatDialog,
   },
   data: function() {
     return {
@@ -34,8 +43,8 @@ export default {
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
-      dialogStatus: false,
-      menuStatus: false,
+      employeeDialogStatus: false,
+      changeSeatDialogStatus: false,
       allEmployeeList: [],
       seats: this.seat,
       employees: this.employee
@@ -45,10 +54,13 @@ export default {
     // eventBus.$on("createSeat", (item) => {
     //   this.createSeat(item);
     // }),
-    eventBus.$on("showSeat", seat => {
-      this.showSeat(seat);
+    eventBus.$on("confirmChangeSeatDialog", () => {
+      this.confirmChangeSeatDialog();
     }),
-      eventBus.$on("changeFloor", floor => {
+      eventBus.$on("showSeat", (seat) => {
+        this.showSeat(seat);
+      }),
+      eventBus.$on("changeFloor", (floor) => {
         this.currentSelectedFloor = floor;
         this.changeFloor(this.currentSelectedFloor);
         console.log(this.currentSelectedFloor + "여기가 현재층");
@@ -72,30 +84,31 @@ export default {
   mounted() {
     this.initializing();
   },
-  computed: {
-    menuInVisible() {
-      return this.menuStatus;
-    }
-  },
   methods: {
-    setMenuPosition(x, y) {
-      console.log(x, y);
-      this.openMenu();
+    getEmployeeDialog() {
+      this.employeeDialogStatus = true;
+      console.log(this.employeeDialogStatus);
     },
-    openMenu() {
-      this.menuStatus = true;
-    },
-    closeMenu() {
-      this.menuStatus = false;
-    },
-    getDialog() {
-      this.dialogStatus = true;
-      console.log(this.dialogStatus);
-    },
-    closeDialog() {
+    closeEmployeeDialog() {
       console.log("<<<close dialog>>>");
-      this.dialogStatus = false;
-      console.log(this.dialogStatus);
+      this.employeeDialogStatus = false;
+      console.log(this.employeeDialogStatus);
+    },
+    getChangeSeatDialog() {
+      eventBus.$emit("initChangeSeatDialogFloor", null)
+      eventBus.$emit("initChangeSeatDialogX", null)
+      eventBus.$emit("initChangeSeatDialogY", null)
+      this.changeSeatDialogStatus = true;
+      console.log(this.changeSeatDialogStatus);
+    },
+    closeChangeSeatDialog() {
+      console.log("<<<close dialog>>>");
+      this.changeSeatDialogStatus = false;
+      console.log(this.changeSeatDialogStatus);
+    },
+    confirmChangeSeatDialog() {
+      console.log("<<<confirm dialog>>>");
+      this.changeSeatDialogStatus = false;
     },
     //canvas, map 생성
     initializing() {
@@ -256,7 +269,7 @@ export default {
     //       "employee_department",
     //       groupToObject.employee_department
     //     );
-    //     this.getDialog();
+    //     this.getEmployeeDialog();
     //   });
     //   this.floorCanvas.add(group);
     //   eachFloorSeatList.push(group);
@@ -561,9 +574,10 @@ export default {
       });
       group.on("mousedown", e => {
         let group = e.target;
-        if (e.button === 3) {
-          console.log("right click");
+        if (e.button === 2) {
+          console.log("middle click");
           //자리이동 UI 넣을 곳
+          this.getChangeSeatDialog();
         }
       });
       group.on("mousedblclick", e => {
@@ -581,7 +595,7 @@ export default {
           "employee_department",
           groupToObject.employee_department
         );
-        this.getDialog();
+        this.getEmployeeDialog();
       });
 
       this.floorCanvas.add(group);
@@ -670,7 +684,7 @@ export default {
           "employee_department",
           groupToObject.employee_department
         );
-        this.getDialog();
+        this.getEmployeeDialog();
       });
       return group;
     },
