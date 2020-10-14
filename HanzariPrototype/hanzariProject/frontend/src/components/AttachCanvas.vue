@@ -91,16 +91,6 @@ export default {
     },
   },
   methods: {
-    setMenuPosition(x, y) {
-      console.log(x, y);
-      this.openMenu();
-    },
-    openMenu() {
-      this.menuStatus = true;
-    },
-    closeMenu() {
-      this.menuStatus = false;
-    },
     getDialog() {
       this.dialogStatus = true;
       console.log(this.dialogStatus);
