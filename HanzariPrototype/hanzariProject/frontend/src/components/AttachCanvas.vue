@@ -361,7 +361,7 @@ export default {
         return this.eachEmployeeSeatMap.get(employee_id);
       }
     },
-    //자리비우기
+    //자리비우기(allFloorSeatMap에서 seatId 정보는 뺴지 않고 그대로 두기, 사원의 자리 리스트에서만 해당 seatId 제거하기)
     clickChangeToVacant() {
       let activeObject = null;
       let eachFloorSeatList = this.getEachFloorSeatList(
@@ -371,16 +371,19 @@ export default {
       if (!this.floorCanvas.getActiveObject()) {
         return;
       }
-      if (this.floorCanvas.getActiveObject().type !== "group") {
-        console.log("!!!not group!!!");
-        return;
-      } else {
+      if (this.floorCanvas.getActiveObject().type == "group") {
         console.log("!!!group!!!!");
         activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
 
         activeObject.employee_name = null;
         activeObject.employee_department = null;
         activeObject.employee_number = null;
+
+        let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
+        console.log(groupToObject.seatId + "비우고자하는 자리의 SeatId입니다.");
+        console.log(groupToObject.employee_id + "비우고자하는 자리의 employee_id입니다.");
+        this.deleteEachEmployeeSeatList(groupToObject);
+
         activeObject.employee_id = null; // delete employee information in group
 
         activeObject
@@ -395,6 +398,7 @@ export default {
         //console.log(eachFloorSeatList);
       }
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     //해당 층의 도형 리스트 삭제하기
     deleteEachFloorSeatList: function (floor) {
@@ -606,7 +610,6 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
       let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
-      
       eachEmployeeSeatList.push(groupToObject.seatId);
 
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
