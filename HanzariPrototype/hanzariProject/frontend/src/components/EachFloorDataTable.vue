@@ -57,11 +57,10 @@ export default {
       this.currentFloorVacantSeatsLength = 0;
 
       if (eachFloorSeatList.length != 0) {
-        let vancantLength = 0;
         for (let i = 0; i < eachFloorSeatList.length; i++) {
           if (eachFloorSeatList[i].employee_id == null) {
             console.log(eachFloorSeatList[i].seatId + "빈공석의 seatId입니다");
-            vancantLength++;
+            this.currentFloorVacantSeatsLength++;
           }
 
           let employee = {};
@@ -76,10 +75,8 @@ export default {
           });
 
           this.currentFloorSeatsLength = this.employees.length;
-          this.currentFloorVacantSeatsLength = vancantLength;
-
+          
           console.log(employee.number);
-          //this.employees.push(employee);
         }
       } else {
         //this.employees = [];
