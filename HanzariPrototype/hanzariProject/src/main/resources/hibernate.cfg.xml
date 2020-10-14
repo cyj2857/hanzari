@@ -26,9 +26,10 @@
 
 		<!-- Names the annotated entity class -->
 		<mapping class="com.hancom.hanzari.model.Building" />
-		<mapping class="com.hancom.hanzari.model.Department" />
 		<mapping class="com.hancom.hanzari.model.Employee" />
+		<mapping class="com.hancom.hanzari.model.EmployeeAdditionalInfo" />
 		<mapping class="com.hancom.hanzari.model.Figure" />
+		<mapping class="com.hancom.hanzari.model.Floor" />
 		<mapping class="com.hancom.hanzari.model.Seat" />
 		<mapping class="com.hancom.hanzari.model.Shape" />
 

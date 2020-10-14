@@ -1,5 +1,6 @@
 package com.hancom.hanzari.controllers;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,18 +70,24 @@ public class SeatController {
 
 	@PostMapping
 	public ResponseEntity<Seat> save(@RequestBody SeatDto seatDto) throws Exception {
+		for (Field field : seatDto.getClass().getDeclaredFields()) {
+			field.setAccessible(true);
+			Object value = field.get(seatDto);
+			System.out.println(field.getName() + " : " + value);
+		}
 
 		Shape shape = shapeService.findById(seatDto.getShape_id()); // ShapeRepository에서 seatDto의 shape_id를 통해 해당 Shape을
 		Figure figure = Figure.builder().figure_id(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
 		figureService.save(figure);
-		Building building = buildingService.findById(seatDto.getBuilding_id());
-		Employee employee = employeeService.findById(seatDto.getEmployee_id()); // read까진 문제없음.
-		System.out.println("seat_id:" + seatDto.getSeat_id() + "\n" + "employee_id:" + seatDto.getEmployee_id() + "\n"
-				+ "group_id:" + seatDto.getGroup_id() + "\n" + "x:" + seatDto.getX() + " y:" + seatDto.getY() + "\n"
-				+ "shape_id:" + seatDto.getShape_id() + "\n" + "employee_name:" + employee.getEmployee_name()
-				+ " employee_id:" + employee.getEmployee_id() + "\n\n\n\n\n\n\n\n\n\n\n");
-
+		Building building = null;
+		Employee employee = null;
+		if (seatDto.getEmployee_id() != null) {
+			employee = employeeService.findById(seatDto.getEmployee_id());
+		}
+		if (seatDto.getBuilding_id() != null) {
+			building = buildingService.findById(seatDto.getBuilding_id());
+		}
 		Seat newSeat = new Seat(seatDto.getSeat_id(), seatDto.getFloor(), seatDto.getX(), seatDto.getY(),
 				seatDto.getIs_group(), seatDto.getGroup_id());
 

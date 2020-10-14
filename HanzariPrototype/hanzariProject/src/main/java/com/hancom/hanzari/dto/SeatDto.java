@@ -2,18 +2,16 @@ package com.hancom.hanzari.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.hancom.hanzari.model.Employee;
-import com.hancom.hanzari.model.Seat;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SeatDto {
 
 	@NotBlank
@@ -31,8 +29,9 @@ public class SeatDto {
 	@NotBlank
 	private Boolean is_group;
 
-	private String group_id;
+	private String group_id; // nullable
 
+	@NotBlank
 	private String building_id;
 
 	private String employee_id; // nullable
