@@ -1,8 +1,21 @@
 <template>
   <div>
-    <canvas ref="canvas" class="canvas" width="950px" height="800px" style="text-align:center"></canvas>
-    <input v-show="false" ref="inputUpload" type="file" @change="onFileChange"/>
-    <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
+    <canvas
+      ref="canvas"
+      class="canvas"
+      width="950px"
+      height="800px"
+      style="text-align: center"
+    ></canvas>
+    <input
+      v-show="false"
+      ref="inputUpload"
+      type="file"
+      @change="onFileChange"
+    />
+    <v-btn color="success" @click="$refs.inputUpload.click()"
+      >File Upload to Background</v-btn
+    >
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -54,9 +67,12 @@ export default {
     // eventBus.$on("createSeat", (item) => {
     //   this.createSeat(item);
     // }),
-    eventBus.$on("showSeat", (seat) => {
-      this.showSeat(seat);
+    eventBus.$on("confirmChangeSeatDialog", () => {
+      this.confirmChangeSeatDialog();
     }),
+      eventBus.$on("showSeat", (seat) => {
+        this.showSeat(seat);
+      }),
       eventBus.$on("changeFloor", (floor) => {
         this.currentSelectedFloor = floor;
         this.changeFloor(this.currentSelectedFloor);
@@ -92,6 +108,9 @@ export default {
       console.log(this.employeeDialogStatus);
     },
     getChangeSeatDialog() {
+      eventBus.$emit("initChangeSeatDialogFloor", null)
+      eventBus.$emit("initChangeSeatDialogX", null)
+      eventBus.$emit("initChangeSeatDialogY", null)
       this.changeSeatDialogStatus = true;
       console.log(this.changeSeatDialogStatus);
     },
@@ -99,6 +118,10 @@ export default {
       console.log("<<<close dialog>>>");
       this.changeSeatDialogStatus = false;
       console.log(this.changeSeatDialogStatus);
+    },
+    confirmChangeSeatDialog() {
+      console.log("<<<confirm dialog>>>");
+      this.changeSeatDialogStatus = false;
     },
     //canvas, map 생성
     initializing() {
@@ -112,9 +135,11 @@ export default {
       }
     },
     getSeatUUID() {
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+        c
+      ) {
         var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 3) | 8;
+          v = c == "x" ? r : (r & 3) | 8;
         return v.toString(16);
       });
     },
@@ -549,10 +574,10 @@ export default {
       });
       group.on("mousedown", (e) => {
         let group = e.target;
-        if (e.button === 3) {
-          console.log("right click");
+        if (e.button === 2) {
+          console.log("middle click");
           //자리이동 UI 넣을 곳
-          this.getChangeSeatDialog()
+          this.getChangeSeatDialog();
         }
       });
       group.on("mousedblclick", (e) => {
@@ -576,7 +601,6 @@ export default {
       this.floorCanvas.add(group);
       eachFloorSeatList.push(group);
 
-    
       console.log("전체층의 자리 맵 size = " + this.eachFloorSeatMap.size);
       console.log(
         this.currentSelectedFloor +
@@ -610,7 +634,7 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
       let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
-      
+
       eachEmployeeSeatList.push(groupToObject.seatId);
 
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
