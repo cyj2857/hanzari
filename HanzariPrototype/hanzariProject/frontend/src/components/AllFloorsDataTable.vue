@@ -10,7 +10,7 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="employees" :search="search">
+    <v-data-table :headers="headers" :items="employees" :search="search" height="265px">
       <template v-slot:item="row">
         <!--<tr @click="createRect(row.item)">!-->
         <tr>

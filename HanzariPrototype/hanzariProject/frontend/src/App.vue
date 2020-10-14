@@ -3,10 +3,9 @@
     <div id="routerLink">
       <v-card>
         <v-tabs background-color="primary" dark>
-          <v-tab to="/yunjiTest">YunjiTestPage</v-tab>
-          <v-tab to="/hyoriTest">HyoriTestPage</v-tab>
-          <v-tab to="/YujinTest">YujinTestPage</v-tab>
-          <v-tab to="/DongminTest">DongminTestPage</v-tab>
+          <v-tab to="/hyoriTest">Admin</v-tab>
+          <v-tab to="/yunjiTest">Manager</v-tab>
+          <v-tab to="/YujinTest">Viewer</v-tab>
         </v-tabs>
       </v-card>
       <router-view />

@@ -6,7 +6,7 @@
         {{ this.currentFloorSeatsLength }}좌석
       </v-spacer>
     </v-card-title>
-    <v-data-table :headers="headers" :items="employees" class="elevation-1">
+    <v-data-table :headers="headers" :items="employees" class="elevation-1" height="775px">
       <template v-slot:[`item.department`]="{ item }">
         <v-chip :color="getColor(item.department)" dark>{{
           item.department
