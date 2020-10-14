@@ -55,12 +55,12 @@ export default {
     };
   },
   created() {
-    eventBus.$on("createSeat", (item) => {
-      this.createSeat(item);
+    // eventBus.$on("createSeat", (item) => {
+    //   this.createSeat(item);
+    // }),
+    eventBus.$on("showSeat", (seat) => {
+      this.showSeat(seat);
     }),
-      eventBus.$on("showSeat", (seat) => {
-        this.showSeat(seat);
-      }),
       eventBus.$on("changeFloor", (floor) => {
         this.currentSelectedFloor = floor;
         this.changeFloor(this.currentSelectedFloor);
@@ -194,84 +194,83 @@ export default {
       if (!files.length) return;
       this.createImage(files[0]);
     },
-    //도형생성시
-    createSeat(item) {
-      if (!this.floorImageList.get(this.currentSelectedFloor)) {
-        alert("도면 이미지가 없습니다");
-        console.log(this.getEachFloorSeatList(this.currentSelectedFloor));
-        return;
-      }
-      console.log("currnet floor is " + this.currentSelectedFloor);
+    // createSeat(item) {
+    //   if (!this.floorImageList.get(this.currentSelectedFloor)) {
+    //     alert("도면 이미지가 없습니다");
+    //     console.log(this.getEachFloorSeatList(this.currentSelectedFloor));
+    //     return;
+    //   }
+    //   console.log("currnet floor is " + this.currentSelectedFloor);
 
-      //각 층에 해당하는 도형 리스트 리턴하기
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
-      );
-      //각 사원의 자리 리스트 리턴하기
-      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
-      let rectangle = new fabric.Rect({
-        width: 50,
-        height: 50,
-        fill: this.getColor(item.department),
-        opacity: 1,
-      });
-      let textObject = new fabric.IText(item.name, {
-        left: 0,
-        top: rectangle.height / 3,
-        fontSize: 13,
-        fill: "black",
-      });
-      let group = new fabric.Group([rectangle, textObject], {
-        seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
-        employee_name: item.name,
-        employee_department: item.department,
-        employee_number: item.number,
-        employee_id: item.employee_id,
-        floor_id: this.currentSelectedFloor,
-        left: 150,
-        top: 150,
-      });
-      group.on("mousedown", (e) => {
-        let group = e.target;
-        if (e.button === 1) {
-          console.log("left click");
-          // 삭제될 자리 seatId 보내고
-          // 그 seatId에 있는 employee null
-        }
-        if (e.button === 2) {
-          //console.log("middle click");
-        }
-        if (e.button === 3) {
-          //console.log("right click");
-          //context menu 넣을 곳
-        }
-      });
-      group.on("mousedblclick", (e) => {
-        let group = e.target;
-        let groupToObject = group.toObject([
-          "employee_id",
-          "employee_name",
-          "floor_id",
-          "employee_department",
-        ]);
-        eventBus.$emit("employee_id", groupToObject.employee_id);
-        eventBus.$emit("employee_name", groupToObject.employee_name);
-        eventBus.$emit("floor_id", groupToObject.floor_id);
-        eventBus.$emit(
-          "employee_department",
-          groupToObject.employee_department
-        );
-        this.getDialog();
-      });
-      this.floorCanvas.add(group);
-      eachFloorSeatList.push(group);
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+    //   //각 층에 해당하는 도형 리스트 리턴하기
+    //   let eachFloorSeatList = this.getEachFloorSeatList(
+    //     this.currentSelectedFloor
+    //   );
+    //   //각 사원의 자리 리스트 리턴하기
+    //   let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
+    //   let rectangle = new fabric.Rect({
+    //     width: 50,
+    //     height: 50,
+    //     fill: this.getColor(item.department),
+    //     opacity: 1,
+    //   });
+    //   let textObject = new fabric.IText(item.name, {
+    //     left: 0,
+    //     top: rectangle.height / 3,
+    //     fontSize: 13,
+    //     fill: "black",
+    //   });
+    //   let group = new fabric.Group([rectangle, textObject], {
+    //     seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
+    //     employee_name: item.name,
+    //     employee_department: item.department,
+    //     employee_number: item.number,
+    //     employee_id: item.employee_id,
+    //     floor_id: this.currentSelectedFloor,
+    //     left: 150,
+    //     top: 150,
+    //   });
+    //   group.on("mousedown", (e) => {
+    //     let group = e.target;
+    //     if (e.button === 1) {
+    //       console.log("left click");
+    //       // 삭제될 자리 seatId 보내고
+    //       // 그 seatId에 있는 employee null
+    //     }
+    //     if (e.button === 2) {
+    //       //console.log("middle click");
+    //     }
+    //     if (e.button === 3) {
+    //       //console.log("right click");
+    //       //context menu 넣을 곳
+    //     }
+    //   });
+    //   group.on("mousedblclick", (e) => {
+    //     let group = e.target;
+    //     let groupToObject = group.toObject([
+    //       "employee_id",
+    //       "employee_name",
+    //       "floor_id",
+    //       "employee_department",
+    //     ]);
+    //     eventBus.$emit("employee_id", groupToObject.employee_id);
+    //     eventBus.$emit("employee_name", groupToObject.employee_name);
+    //     eventBus.$emit("floor_id", groupToObject.floor_id);
+    //     eventBus.$emit(
+    //       "employee_department",
+    //       groupToObject.employee_department
+    //     );
+    //     this.getDialog();
+    //   });
+    //   this.floorCanvas.add(group);
+    //   eachFloorSeatList.push(group);
+    //   eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-      let groupToObject = group.toObject(["seatId"]);
-      eachEmployeeSeatList.push(groupToObject.seatId);
+    //   let groupToObject = group.toObject(["seatId"]);
+    //   eachEmployeeSeatList.push(groupToObject.seatId);
 
-      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-    },
+    //   eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+    // },
     getColor(department) {
       const Colors = {
         Orange: "orange",
@@ -404,12 +403,12 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
     //해당 층의 도형 리스트 삭제하기
-    deleteEachFloorSeatList: function(floor) {
+    deleteEachFloorSeatList: function (floor) {
       this.getEachFloorSeatList(floor).length = 0;
       return this.getEachFloorSeatList(floor);
     },
     //사원의 자리리스트에서 삭제된 자리를 삭제하기
-    deleteEachEmployeeSeatList: function(groupToObject) {
+    deleteEachEmployeeSeatList: function (groupToObject) {
       let oneEmployeeSeatList = this.getEachEmployeeSeatList(
         groupToObject.employee_id
       );
@@ -484,7 +483,10 @@ export default {
               let index = shapearray.indexOf(activeObject);
               shapearray.splice(index, 1);
 
-              let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
+              let groupToObject = activeObject.toObject([
+                "seatId",
+                "employee_id",
+              ]);
 
               this.deleteEachEmployeeSeatList(groupToObject);
             }
@@ -544,7 +546,13 @@ export default {
         console.log("seatId = " + asObject.seatId);
         console.log("left = " + x.left); //150
       });
-
+      group.on("mousedown", (e) => {
+        let group = e.target;
+        if (e.button === 3) {
+          console.log("right click");
+          //자리이동 UI 넣을 곳
+        }
+      });
       group.on("mousedblclick", (e) => {
         let group = e.target;
         let groupToObject = group.toObject([
