@@ -650,9 +650,10 @@ export default {
 
       group.on("mousedown", (e) => {
         let group = e.target;
-        if (e.button === 3) {
-          console.log("right click");
-          //자리이동 UI 넣을 곳
+         if (e.button === 2) {	      
+         
+          //자리이동 UI 넣을 곳	       
+          this.getChangeSeatDialog(group)
         }
       });
 
