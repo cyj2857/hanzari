@@ -22,7 +22,14 @@
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
-    <EmployeeDialog :dialogStatus="this.employeeDialogStatus" @close="closeEmployeeDialog" />
+    <EmployeeDialog
+      :dialogStatus="this.employeeDialogStatus"
+      @close="closeEmployeeDialog"
+    />
+    <ChangeSeatDialog
+      :dialogStatus="this.changeSeatDialogStatus"
+      @close="closeChangeSeatDialog"
+    />
   </div>
 </template>
 
@@ -30,6 +37,7 @@
 import axios from "axios";
 import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
+import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 const portNum = 8080;
 const host = "172.30.1.50";
@@ -38,6 +46,7 @@ export default {
   components: {
     EmployeeDialog,
     AllFloorsDataTable,
+    ChangeSeatDialog,
   },
   data: function () {
     return {
@@ -48,6 +57,7 @@ export default {
       eachFloorSeatMap: null, //current floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
       employeeDialogStatus: false,
+      changeSeatDialogStatus: false,
       allEmployeeList: [],
       seats: this.seat,
       employees: this.employee,
@@ -93,6 +103,15 @@ export default {
       console.log("<<<close dialog>>>");
       this.employeeDialogStatus = false;
       console.log(this.employeeDialogStatus);
+    },
+    getChangeSeatDialog() {
+      this.changeSeatDialogStatus = true;
+      console.log(this.changeSeatDialogStatus);
+    },
+    closeChangeSeatDialog() {
+      console.log("<<<close dialog>>>");
+      this.changeSeatDialogStatus = false;
+      console.log(this.changeSeatDialogStatus);
     },
     //canvas, map 생성
     initializing() {
