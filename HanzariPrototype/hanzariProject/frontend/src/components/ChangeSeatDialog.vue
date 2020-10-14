@@ -54,9 +54,7 @@ export default {
   },
   data() {
     return {
-      previousFloor: null,
-      previousXLocation: null,
-      previousYLocation: null,
+      group: null,
       seatId: null,
       inputFloor: null,
       inputXLocation: null,
@@ -65,11 +63,9 @@ export default {
   },
   created() {
     eventBus.$on("initChangeSeatDialog", (group) => {
-      let groupToObject = group.toObject(["seatId", "top", "floor_id", "left"]);
-      this.seatId = groupToObject.seatId; // 이후에 random만 올 예정
-      this.previousFloor = groupToObject.floor_id;
-      this.previousXLocation = groupToObject.top;
-      this.previousYLocation = groupToObject.left;
+      this.group = group;
+      let groupToObject = group.toObject(["seatId"]);
+      this.seatId = groupToObject.seatId;
     });
   },
   computed: {
@@ -78,12 +74,7 @@ export default {
     },
   },
   methods: {
-    test() {
-      console.log(this.seatId);
-      console.log(this.previousFloor);
-      console.log(this.previousXLocation);
-      console.log(this.previousYLocation);
-    },
+    test() {},
     confirm() {
       if (
         this.inputFloor == null ||
@@ -92,35 +83,19 @@ export default {
       )
         return;
 
-      let changeSeatInfoMap = new Map();
-      let previousInfoList = new Array();
-      let currentInfoList = new Array();
+      this.group.floor_id = this.inputFloor;
+      this.group.left = this.inputXLocation;
+      this.group.top = this.inputYLocation;
 
-      previousInfoList.push(this.previousFloor);
-      previousInfoList.push(this.previousXLocation);
-      previousInfoList.push(this.previousYLocation);
+      eventBus.$emit("confirmChangeSeatDialog", this.group);
 
-      currentInfoList.push(this.seatId);
-      currentInfoList.push(this.inputFloor);
-      currentInfoList.push(this.inputXLocation);
-      currentInfoList.push(this.inputYLocation);
-
-      changeSeatInfoMap.set("previous", previousInfoList);
-      changeSeatInfoMap.set("current", currentInfoList);
-
-      eventBus.$emit("confirmChangeSeatDialog", changeSeatInfoMap);
-      /* 받는 곳(AttachCanvas)에서 할 일
-      1. 기존 floor를 넘겨받아 eachFloorSeatMap에서 기존 floor 해당하는 list를 가져오고 
-      A) 같은 층일때 (기존 floor == 입력 floor)
-      2-A. group 중 seatId가 같은 group의 정보를 복사해온 후 (employee 정보를 알기위함) x, y를 수정하여 eachFloorSeatMap에 수정된 group push한 후 원래 group delete.
-      3-A. renderAll
-      B) 다른 층일때 (기존 floor != 입력 floor)
-      2-B. group중 seatId가 같은 group 정보를 복사해온 후 (employee 정보를 알기위함) x, y를 수정함. 
-           eachFloorSeatMap에서 입력 floor를 key로 하여 수정한 group을 push 한 후 기존 group delete
-      3-B. 탭 변환 후 renderAll
-      
-      (상상코딩)
-      */
+      /*1. 기존 floor를 넘겨받아 eachFloorSeatMap에서 기존 floor 해당하는 list를 가져오고
+    A) 같은 층일때 (기존 floor == 입력 floor)
+    2-A. x, y가 수정된 group 을 받고 eachFloorSeatMap에 수정된 group push한 후 원래 group delete.
+    3-A. renderAll
+    B) 다른 층일때 (기존 floor != 입력 floor)
+    2-B. floor, x, y가 수정된 group 을 받고 eachFloorSeatMap에서 입력 floor를 key로 하여 수정한 group을 push 한 후 기존 group delete
+    3-B. 탭 변환 후 renderAll */
     },
   },
 };

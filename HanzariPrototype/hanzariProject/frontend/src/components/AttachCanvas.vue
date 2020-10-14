@@ -70,12 +70,12 @@ export default {
     // eventBus.$on("createSeat", (item) => {
     //   this.createSeat(item);
     // }),
-    eventBus.$on("confirmChangeSeatDialog", (changeSeatInfoMap) => {
-      this.confirmChangeSeatDialog(changeSeatInfoMap);
+    eventBus.$on("confirmChangeSeatDialog", (changeGroup) => {
+      this.confirmChangeSeatDialog(changeGroup);
     }),
-    eventBus.$on("showSeat", (seat) => {
+      eventBus.$on("showSeat", (seat) => {
         this.showSeat(seat);
-    }),
+      }),
       eventBus.$on("changeFloor", (floor) => {
         this.currentSelectedFloor = floor;
         this.changeFloor(this.currentSelectedFloor);
@@ -87,7 +87,7 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.on
+    eventBus.on;
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
     }
@@ -121,11 +121,11 @@ export default {
       this.changeSeatDialogStatus = false;
       console.log(this.changeSeatDialogStatus);
     },
-    confirmChangeSeatDialog(changeSeatInfoMap) {
+    confirmChangeSeatDialog(changeGroup) {
       console.log("<<<confirm dialog>>>");
       this.changeSeatDialogStatus = false;
-      console.log(changeSeatInfoMap.get("previous"))
-      console.log(changeSeatInfoMap.get("current"))
+      //복사 -> 삭제
+      this.floorCanvas.renderAll();
     },
     //canvas, map 생성
     initializing() {
