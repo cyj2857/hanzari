@@ -1,21 +1,8 @@
 <template>
   <div>
-    <canvas
-      ref="canvas"
-      class="canvas"
-      width="950px"
-      height="800px"
-      style="text-align: center"
-    ></canvas>
-    <input
-      v-show="false"
-      ref="inputUpload"
-      type="file"
-      @change="onFileChange"
-    />
-    <v-btn color="success" @click="$refs.inputUpload.click()"
-      >File Upload to Background</v-btn
-    >
+    <canvas ref="canvas" class="canvas" width="950px" height="800px" style="text-align:center"></canvas>
+    <input v-show="false" ref="inputUpload" type="file" @change="onFileChange"/>
+    <v-btn color="success" @click="$refs.inputUpload.click()">File Upload to Background</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -52,7 +39,7 @@ export default {
     return {
       floorCanvas: null,
       floorImageList: null,
-      seatId: 0,
+      seatId: null,
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
       eachEmployeeSeatMap: null, //each Employee's seats map
@@ -123,6 +110,13 @@ export default {
           stopContextMenu: true, // <--  prevent context menu from showing
         });
       }
+    },
+    getSeatUUID() {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+        var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 3) | 8;
+        return v.toString(16);
+      });
     },
     changeFloor(floor) {
       //도형 랜더링 전에 화면의 도형들을  초기화
@@ -426,10 +420,6 @@ export default {
       );
     },
     deleteAllBtn() {
-      // let eachFloorSeatList = this.deleteEachFloorSeatList(
-      //   this.currentSelectedFloor
-      // );
-
       if (confirm("Are you sure?")) {
         this.floorCanvas
           .getObjects()
@@ -508,7 +498,7 @@ export default {
       }
     },
 
-    addVacantBtn(item) {
+    addVacantBtn() {
       //각 층에 해당하는 도형 리스트 리턴하기
       if (!this.floorImageList.get(this.currentSelectedFloor)) {
         alert("도면 이미지가 없습니다");
@@ -525,7 +515,7 @@ export default {
       let rectangle = new fabric.Rect({
         width: 50,
         height: 50,
-        fill: this.getColor(item.department),
+        fill: this.getColor(null),
         opacity: 1,
       });
 
@@ -536,13 +526,15 @@ export default {
         fill: "black",
       });
 
+      this.seatid = this.getSeatUUID();
+
       let group = new fabric.Group([rectangle, textObject], {
         floor_id: this.currentSelectedFloor,
-        seatId: this.currentSelectedFloor + "-" + this.seatId++, // currentSelectedFloor-seatId
-        employee_name: item.name,
-        employee_department: item.department,
-        employee_number: item.number,
-        employee_id: item.employee_id,
+        seatId: this.currentSelectedFloor + "-" + this.seatid, // currentSelectedFloor-seatId
+        employee_name: null,
+        employee_department: null,
+        employee_number: null,
+        employee_id: null,
         left: 150,
         top: 150,
       });
@@ -584,7 +576,7 @@ export default {
       this.floorCanvas.add(group);
       eachFloorSeatList.push(group);
 
-      console.log("공석 이름 : " + item.name);
+    
       console.log("전체층의 자리 맵 size = " + this.eachFloorSeatMap.size);
       console.log(
         this.currentSelectedFloor +
@@ -596,9 +588,12 @@ export default {
     },
 
     setVacantSeat(item) {
+      console.log(this.eachEmployeeSeatMap.size + "맵의 사이즈입니다.");
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
+
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
 
       let activeObject = this.floorCanvas.getActiveObject();
       (activeObject.employee_name = item.name),
@@ -613,6 +608,20 @@ export default {
       this.floorCanvas.renderAll();
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+
+      let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
+      
+      eachEmployeeSeatList.push(groupToObject.seatId);
+
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      console.log(this.eachEmployeeSeatMap.size + "맵의 사이즈입니다.");
+
+      console.log(
+        groupToObject.employee_id +
+          "의 자리 리스트 개수는 " +
+          this.getEachEmployeeSeatList(groupToObject.employee_id).length +
+          "입니다."
+      );
       //여기
     },
     makeGroupInfo(seat, employee) {
