@@ -70,8 +70,8 @@ export default {
     // eventBus.$on("createSeat", (item) => {
     //   this.createSeat(item);
     // }),
-    eventBus.$on("confirmChangeSeatDialog", () => {
-      this.confirmChangeSeatDialog();
+    eventBus.$on("confirmChangeSeatDialog", (changeSeatInfoMap) => {
+      this.confirmChangeSeatDialog(changeSeatInfoMap);
     }),
     eventBus.$on("showSeat", (seat) => {
         this.showSeat(seat);
@@ -121,9 +121,11 @@ export default {
       this.changeSeatDialogStatus = false;
       console.log(this.changeSeatDialogStatus);
     },
-    confirmChangeSeatDialog() {
+    confirmChangeSeatDialog(changeSeatInfoMap) {
       console.log("<<<confirm dialog>>>");
       this.changeSeatDialogStatus = false;
+      console.log(changeSeatInfoMap.get("previous"))
+      console.log(changeSeatInfoMap.get("current"))
     },
     //canvas, map 생성
     initializing() {

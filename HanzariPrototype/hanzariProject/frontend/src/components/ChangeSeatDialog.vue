@@ -10,21 +10,21 @@
                 <v-col cols="12">
                   <v-text-field
                     label="Floor*"
-                    v-model="floor"
+                    v-model="inputFloor"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
                     label="X location*"
-                    v-model="XLocation"
+                    v-model="inputXLocation"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
                     label="Y location*"
-                    v-model="YLocation"
+                    v-model="inputYLocation"
                     required
                   ></v-text-field>
                 </v-col>
@@ -58,9 +58,9 @@ export default {
       previousXLocation: null,
       previousYLocation: null,
       seatId: null,
-      floor: null,
-      XLocation: null,
-      YLocation: null,
+      inputFloor: null,
+      inputXLocation: null,
+      inputYLocation: null,
     };
   },
   created() {
@@ -86,17 +86,40 @@ export default {
     },
     confirm() {
       if (
-        this.floor == null ||
-        this.XLocation == null ||
-        this.YLocation == null
+        this.inputFloor == null ||
+        this.inputXLocation == null ||
+        this.inputYLocation == null
       )
         return;
 
-      eventBus.$emit("confirmChangeSeatDialog");
-      /* 받는 곳에서 할 일
-      원래 floor를 넘겨받아 eachFloorSeatMap의 floor에 해당하는 list 가져오고
-      거기에서 group중 seatId가 같은 애를 캔버스에서만 삭제하고 그거 group 정보 복사해와서
-      eachFloorSeatMap에서는 key를 입력 floor로 하여 이동 (되는지는 모르겠음)
+      let changeSeatInfoMap = new Map();
+      let previousInfoList = new Array();
+      let currentInfoList = new Array();
+
+      previousInfoList.push(this.previousFloor);
+      previousInfoList.push(this.previousXLocation);
+      previousInfoList.push(this.previousYLocation);
+
+      currentInfoList.push(this.seatId);
+      currentInfoList.push(this.inputFloor);
+      currentInfoList.push(this.inputXLocation);
+      currentInfoList.push(this.inputYLocation);
+
+      changeSeatInfoMap.set("previous", previousInfoList);
+      changeSeatInfoMap.set("current", currentInfoList);
+
+      eventBus.$emit("confirmChangeSeatDialog", changeSeatInfoMap);
+      /* 받는 곳(AttachCanvas)에서 할 일
+      1. 기존 floor를 넘겨받아 eachFloorSeatMap에서 기존 floor 해당하는 list를 가져오고 
+      A) 같은 층일때 (기존 floor == 입력 floor)
+      2-A. group 중 seatId가 같은 group의 정보를 복사해온 후 (employee 정보를 알기위함) x, y를 수정하여 eachFloorSeatMap에 수정된 group push한 후 원래 group delete.
+      3-A. renderAll
+      B) 다른 층일때 (기존 floor != 입력 floor)
+      2-B. group중 seatId가 같은 group 정보를 복사해온 후 (employee 정보를 알기위함) x, y를 수정함. 
+           eachFloorSeatMap에서 입력 floor를 key로 하여 수정한 group을 push 한 후 기존 group delete
+      3-B. 탭 변환 후 renderAll
+      
+      (상상코딩)
       */
     },
   },
