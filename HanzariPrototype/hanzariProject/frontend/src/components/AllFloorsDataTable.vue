@@ -17,13 +17,7 @@
           <td>{{ row.item.name }}</td>
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
-          <td>
-            <v-btn
-              id="createSeatButton"
-              @click="createSeatButtonClicked(row.item)"
-              >Create</v-btn
-            >
-          </td>
+          <!--<td><v-btn id="createSeatButton" @click="createSeatButtonClicked(row.item)">Create</v-btn></td> !-->
           <td>
             <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)"
               >Show</v-btn
@@ -72,9 +66,9 @@ export default {
     });
   },
   methods: {
-    createSeatButtonClicked(item) {
-      eventBus.$emit("createSeat", item);
-    },
+    // createSeatButtonClicked(item) {
+    //   eventBus.$emit("createSeat", item);
+    // },
     showSeatButtonClicked(item) {
       //console.log("allEmployeeSeatMap? size" + this.allEmployeeSeatMap.size);
 
