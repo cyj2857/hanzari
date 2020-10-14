@@ -507,6 +507,12 @@ export default {
 
     addVacantBtn(item) {
       //각 층에 해당하는 도형 리스트 리턴하기
+      if (!this.floorImageList.get(this.currentSelectedFloor)) {
+        alert("도면 이미지가 없습니다");
+        console.log(this.getEachFloorSeatList(this.currentSelectedFloor));
+        return;
+      }
+
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
