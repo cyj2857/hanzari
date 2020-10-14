@@ -4,7 +4,7 @@
       <v-spacer></v-spacer>
       <v-text-field single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="seats" :search="search">
+    <v-data-table :headers="headers" :items="seats" :search="search" height="265px">
       <template v-slot:item="row">
         <!--<tr @click="createRect(row.item)">!-->
         <tr>

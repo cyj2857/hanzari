@@ -2,10 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import fabric from 'fabric'
 
-import YunjiTest from '@/views/YunjiTest'
-import HyoriTest from '@/views/HyoriTest'
-import YujinTest from '@/views/YujinTest'
-import DongminTest from '@/views/DongminTest'
+import Admin from '@/views/HyoriTest'
+import Manager from '@/views/YujinTest'
+import Viewer from '@/views/YunjiTest'
 
 Vue.use(Router)
 Vue.use(fabric)
@@ -14,24 +13,19 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/yunjiTest',
-      name: 'yunjiTest',
-      component: YunjiTest
-    },
-    {
       path: '/hyoriTest',
-      name: 'hyoriTest',
-      component: HyoriTest
+      name: 'Admin',
+      component: Admin
     },
     {
       path: '/YujinTest',
-      name: 'YujinTest',
-      component: YujinTest
+      name: 'Manager',
+      component: Manager
     },
     {
-      path: '/DongminTest',
-      name: 'dongminTest',
-      component: DongminTest
+      path: '/yunjiTest',
+      name: 'Viewer',
+      component: Viewer
     }
   ]
 })
