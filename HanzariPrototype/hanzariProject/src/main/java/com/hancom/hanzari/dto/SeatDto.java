@@ -1,7 +1,5 @@
 package com.hancom.hanzari.dto;
 
-import java.util.List;
-
 import org.hibernate.validator.constraints.NotBlank;
 
 
