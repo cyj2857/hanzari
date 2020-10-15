@@ -195,13 +195,13 @@ export default {
             if (zoom > 20) zoom = 20;
             if (zoom < 1) zoom = 0.95;
             this.floorCanvas.zoomToPoint(new fabric.Point(evt.offsetX, evt.offsetY),zoom);
-          } else {//scroll
+          } /*else {//scroll event
             this.floorCanvas.viewportTransform[4] += (evt.deltaX)*-1; 
             this.floorCanvas.viewportTransform[5] += (evt.deltaY)*-1;
             this.floorCanvas.requestRenderAll();
             this.setState({ lastPosX: evt.clientX });
             this.setState({ lastPosY: evt.clientY });
-          }
+          }*/
           opt.e.preventDefault();
           opt.e.stopPropagation();
         });
