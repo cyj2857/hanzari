@@ -22,10 +22,10 @@ public class Floor {
 	@Id
 	@GeneratedValue
 	@Column(name = "floor_id", nullable = false)
-	private String floor_id;
+	private String floorId;
 	
 	@Column(name = "floor_name", nullable = false)
-	private String floor_name;
+	private String floorName;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "building_id", nullable = false)

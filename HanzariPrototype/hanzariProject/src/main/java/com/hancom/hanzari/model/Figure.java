@@ -21,7 +21,7 @@ public class Figure {
 
 	@Id
 	@Column(name = "figure_id", nullable = false)
-	private String figure_id; // seat_id와 동일
+	private String figureId; // seat_id와 동일
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "shape_id", nullable = false)
