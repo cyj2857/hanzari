@@ -63,12 +63,6 @@ export default {
     this.seats = this.getSeats();
     this.floors = this.getFloors();
   },
-  mounted(){
-    console.log("here")
-    console.log(this.employees)
-    console.log(this.seats)
-    console.log(this.floors)
-  },
   methods: {
     getEmployees() {
       let initEmployeeList = new Array();
@@ -86,7 +80,6 @@ export default {
             console.log(newEmployee.seatIdList);
             initEmployeeList.push(newEmployee);
           }
-          console.log("employee length" + initEmployeeList.length);
         });
       return initEmployeeList;
     },
@@ -110,8 +103,6 @@ export default {
             newSeat.shape_id = response.data[i].shape_id;
 
             loadSeatList.push(newSeat);
-
-            console.log("loadSeatList length" + loadSeatList.length);
           }
         });
       return loadSeatList;
@@ -127,8 +118,6 @@ export default {
             newFloor.building_id = response.data[i].building_id;
 
             loadFloorList.push(newFloor);
-
-            console.log("loadFloorList length" + loadFloorList.length);
           }
         });
       return loadFloorList;

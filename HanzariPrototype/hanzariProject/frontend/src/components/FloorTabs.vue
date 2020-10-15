@@ -32,6 +32,7 @@ export default {
       length: 3,
       tab: null,
       items: [{ id: "One" }, { id: "Five" }, { id: "Six" }],
+      //items: [{ id: null }],
       floorNum: null,
       dialogStatus: false,
       inputFloor: null,
@@ -65,6 +66,8 @@ export default {
         }
       }
     });
+
+    this.initializingTab();
   },
   mounted() {
     this.floorNum = 0;
@@ -72,11 +75,38 @@ export default {
 
     let allItems = this.items;
     eventBus.$emit("allFloorItems", allItems);
+  },
+  watch: {
+    length(val) {
+      let allItems = this.items;
+      this.floorNum = val - 1;
 
-    console.log("attention");
-    console.log(this.floors);
+      eventBus.$emit("allFloorItems", allItems);
+    },
   },
   methods: {
+    initializingTab() {
+      let tempFloor = this.floors
+      console.log(tempFloor);
+
+      for (let i = 0; i < this.floors.length; i++) {
+        console.log("here");
+        console.log(this.floors[i].floor_name);
+        //this.items.push({ id: this.floors[i].floor_name });
+      }
+    },
+    decreaseTab() {
+      this.length--;
+      this.floorNum = this.length - 1;
+      this.setFloor(this.items[this.floorNum].id);
+      //pop
+    },
+    increaseTab() {
+      this.length++;
+      this.floorNum = this.length - 1;
+      this.setFloor(this.items[this.floorNum].id);
+      //push
+    },
     getDialog() {
       eventBus.$emit("initFloor", null);
       this.dialogStatus = true;
@@ -113,26 +143,6 @@ export default {
     },
     getFloorName(floorNum) {
       return this.items[floorNum].id;
-    },
-    decreaseTab() {
-      this.length--;
-      this.floorNum = this.length - 1;
-      this.setFloor(this.items[this.floorNum].id);
-      //pop
-    },
-    increaseTab() {
-      this.length++;
-      this.floorNum = this.length - 1;
-      this.setFloor(this.items[this.floorNum].id);
-      //push
-    },
-  },
-  watch: {
-    length(val) {
-      let allItems = this.items;
-      this.floorNum = val - 1;
-
-      eventBus.$emit("allFloorItems", allItems);
     },
   },
 };
