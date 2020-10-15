@@ -15,7 +15,10 @@ public class FloorDto {
 
 	@NotBlank
 	private String floor_name;
-	
+
 	@NotBlank
 	private String building_id;
+
+	public FloorDto() {
+	}
 }
