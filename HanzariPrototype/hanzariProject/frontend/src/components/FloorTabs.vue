@@ -55,16 +55,19 @@ export default {
       });
     eventBus.$on("changeFloorCanvas", (floor) => {
       for (let i = 0; i < this.items.length; i++) {
-          if (floor == this.items[i].id) {
-            this.floorNum = i;
-            this.setFloor(this.items[this.floorNum].id);
-          }
+        if (floor == this.items[i].id) {
+          this.floorNum = i;
+          this.setFloor(this.items[this.floorNum].id);
         }
-    })
+      }
+    });
   },
   mounted() {
     this.floorNum = 0;
     this.setFloor(this.items[this.floorNum].id);
+
+    let allItems = this.items;
+    eventBus.$emit("allFloorItems", allItems);
   },
   methods: {
     getDialog() {
@@ -119,7 +122,10 @@ export default {
   },
   watch: {
     length(val) {
+      let allItems = this.items;
       this.floorNum = val - 1;
+
+      eventBus.$emit("allFloorItems", allItems);
     },
   },
 };

@@ -79,12 +79,10 @@ export default {
       seats: this.seat,
       employees: this.employee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
+      allFloorItems: []
     };
   },
   created() {
-    // eventBus.$on("createSeat", (item) => {
-    //   this.createSeat(item);
-    // }),
     eventBus.$on("confirmChangeSeatDialog", (inputInfo) => {
       this.confirmChangeSeatDialog(inputInfo);
     }),
@@ -102,7 +100,10 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.on;
+    eventBus.$on("allFloorItems", (allItems) => { //to save floor information
+      this.allFloorItems = allItems
+      console.log(this.allFloorItems.length + "in AttachCanvas")
+    })
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
     }
