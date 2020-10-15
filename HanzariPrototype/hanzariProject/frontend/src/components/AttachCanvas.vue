@@ -188,7 +188,7 @@ export default {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
         c
       ) {
-        let r = (Math.random() * 16) | 0,
+        var r = (Math.random() * 16) | 0,
           v = c == "x" ? r : (r & 3) | 8;
         return v.toString(16);
       });
@@ -593,7 +593,7 @@ export default {
     },
 
     addVacantBtn(number) {
-      let VacantPositon = [
+      var VacantPositon = [
         { left: 50, top: 100 },
         { left: 125, top: 100 },
         { left: 50, top: 200 },
@@ -627,8 +627,8 @@ export default {
       //n 자리 공석 만들기
       for (let i = 0; i <= this.vacantnumber - 1; i++) {
         this.seatid = this.getSeatUUID();
-        let VP = VacantPositon[i];
-        let group = [];
+        var VP = VacantPositon[i];
+        var group = [];
 
         let rectangle = new fabric.Rect({
           width: 50,
@@ -782,7 +782,6 @@ export default {
           groupToObject.employee_department
         );
         this.getEmployeeDialog();
-
       });
       return group;
     },
@@ -798,7 +797,7 @@ export default {
       console.log(eachFloorSeatList.length + "현재 층의 자리 개수입니다.");
 
       if (eachFloorSeatList) {
-        for (let i = 0; i < eachFloorSeatList.length; i++) {
+        for (var i = 0; i < eachFloorSeatList.length; i++) {
           let groupToObject = eachFloorSeatList[i].toObject([
             "seatId",
             "floor_id",
