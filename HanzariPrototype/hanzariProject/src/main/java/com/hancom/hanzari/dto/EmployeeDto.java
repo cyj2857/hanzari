@@ -24,7 +24,7 @@ public class EmployeeDto {
 
 	@NotBlank
 	private String status;
-	
+
 	@NotBlank
 	private String employee_name;
 
@@ -33,6 +33,9 @@ public class EmployeeDto {
 
 	@NotBlank
 	private String extension_number;
-	
+
 	private List<String> seatList = new ArrayList<>();
+
+	public EmployeeDto() {
+	}
 }

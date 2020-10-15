@@ -27,7 +27,7 @@ public class Seat {
 
 	@Id
 	@Column(name = "seat_id", nullable = false)
-	private String seat_id;
+	private String seatId;
 
 	@Column(name = "floor", nullable = false)
 	private String floor;
@@ -39,10 +39,10 @@ public class Seat {
 	private double y;
 
 	@Column(name = "is_group", nullable = false)
-	private Boolean is_group;
+	private Boolean isGroup;
 
 	@Column(name = "group_id", nullable = true)
-	private String group_id;
+	private String groupId;
 
 	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
 	@JoinColumn(name = "building_id", nullable = false)
@@ -60,13 +60,13 @@ public class Seat {
 	public Seat() {
 	};
 
-	public Seat(String seat_id, String floor, double x, double y, Boolean is_group, String group_id) {
-		this.seat_id = seat_id;
+	public Seat(String seat_id, String floor, double x, double y, Boolean isGroup, String groupId) {
+		this.seatId = seat_id;
 		this.floor = floor;
 		this.x = x;
 		this.y = y;
-		this.is_group = is_group;
-		this.group_id = group_id;
+		this.isGroup = isGroup;
+		this.groupId = groupId;
 	}
 
 	public void setBuilding(Building building) {
@@ -82,8 +82,9 @@ public class Seat {
 	}
 
 	public SeatDto toDto() {
-		String employee_id = (employee == null) ? null : String.valueOf(employee.getEmployee_id());
-		return new SeatDto(seat_id, floor, x, y, is_group, group_id, building.getBuilding_id(), employee_id,
-				figure.getWidth(), figure.getHeight(), figure.getDegree(), figure.getShape().getShape_id());
+		String employeeId = (employee == null) ? null : String.valueOf(employee.getEmployeeId());
+		return SeatDto.builder().seat_id(seatId).floor(floor).x(x).y(y).is_group(isGroup).group_id(groupId)
+				.building_id(building.getBuildingId()).employee_id(employeeId).width(figure.getWidth())
+				.height(figure.getHeight()).degree(figure.getDegree()).shape_id(figure.getShape().getShapeId()).build();
 	}
 }
