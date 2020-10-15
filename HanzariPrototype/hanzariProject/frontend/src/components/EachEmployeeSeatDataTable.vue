@@ -15,7 +15,7 @@
         <tr>
           <td>{{ row.item.name }}</td>
           <td>{{ row.item.department }}</td>
-          <td>{{ row.item.seat_id }}</td>
+          <td>{{ row.item.floor_id }}</td>
           <td>
             <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)"
               >Show</v-btn
@@ -41,7 +41,8 @@ export default {
           value: "name",
         },
         { text: "Department", value: "department" },
-        { text: "SeatID", value: "seat_id" },
+        //{ text: "SeatID", value: "seat_id" },
+        { text: "Floor", value: "floor_id" },
         { text: "", value: "showSeatButton" },
       ],
       seats: [],
