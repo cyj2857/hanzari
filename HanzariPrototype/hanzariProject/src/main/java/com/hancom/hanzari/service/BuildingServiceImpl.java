@@ -24,14 +24,14 @@ public class BuildingServiceImpl implements BuildingService {
 	}
 
 	@Override
-	public Building findById(String building_id) throws Exception {
-		return buildingRepository.findById(building_id)
-				.orElseThrow(() -> new ResourceNotFoundException("Building", "building_id", building_id));
+	public Building findById(String buildingId) throws Exception {
+		return buildingRepository.findById(buildingId)
+				.orElseThrow(() -> new ResourceNotFoundException("Building", "building_id", buildingId));
 	}
 
 	@Override
-	public void deleteById(String building_id) {
-		buildingRepository.deleteById(building_id);
+	public void deleteById(String buildingId) {
+		buildingRepository.deleteById(buildingId);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class BuildingServiceImpl implements BuildingService {
 	}
 
 	@Override
-	public void updateById(String building_id) {
+	public void updateById(String buildingId) {
 		// TODO Auto-generated method stub
 
 	}

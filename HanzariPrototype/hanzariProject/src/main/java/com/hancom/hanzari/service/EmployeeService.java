@@ -7,15 +7,15 @@ import com.hancom.hanzari.model.Employee;
 public interface EmployeeService {
 	public List<Employee> findAll(); // R
 
-	public Employee findById(String employee_id) throws Exception; // R
+	public Employee findById(String employeeId) throws Exception; // R
 
-	public void deleteById(String employee_id); // D
+	public void deleteById(String employeeId); // D
 
-	public List<Employee> findByDepartmentId(String department_id);
+	public List<Employee> findByDepartmentId(String departmentId);
 
 	public Employee save(Employee employee); // C
 
-	public void updateById(String employee_id); // U
+	public void updateById(String employeeId); // U
 	
 	public List<Employee> findByKeyword(String keyword); 
 }

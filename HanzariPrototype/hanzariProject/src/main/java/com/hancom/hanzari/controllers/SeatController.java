@@ -77,7 +77,7 @@ public class SeatController {
 		}
 
 		Shape shape = shapeService.findById(seatDto.getShape_id()); // ShapeRepository에서 seatDto의 shape_id를 통해 해당 Shape을
-		Figure figure = Figure.builder().figure_id(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
+		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
 		figureService.save(figure);
 		Building building = null;

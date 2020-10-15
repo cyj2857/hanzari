@@ -7,11 +7,11 @@ import com.hancom.hanzari.model.Building;
 public interface BuildingService {
 	public List<Building> findAll();
 	
-	public Building findById(String building_id) throws Exception;
+	public Building findById(String buildingId) throws Exception;
 	
-	public void deleteById(String building_id);
+	public void deleteById(String buildingId);
 	
 	public Building save(Building building);
 	
-	public void updateById(String building_id);
+	public void updateById(String buildingId);
 }

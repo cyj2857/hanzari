@@ -2,7 +2,6 @@ package com.hancom.hanzari.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,4 +46,7 @@ public class SeatDto {
 
 	@NotBlank
 	private String shape_id;
+
+	public SeatDto() {
+	}
 }

@@ -28,7 +28,7 @@ public class Employee {
 
 	@Id
 	@Column(name = "employee_id", nullable = false)
-	private String employee_id;
+	private String employeeId;
 
 	@Column(name = "authority", nullable = false)
 	private String authority;
@@ -55,17 +55,17 @@ public class Employee {
 
 	public List<String> seatIdList() {
 		List<String> result = new ArrayList<String>();
-		seat.forEach(e -> result.add(e.getSeat_id()));
+		seat.forEach(e -> result.add(e.getSeatId()));
 		return result;
 	}
 
 	public EmployeeDto toDto() {
 		String status = (additionalInfo == null) ? null : additionalInfo.getStatus();
-		String employee_name = (additionalInfo == null) ? null : additionalInfo.getEmployee_name();
-		String department_name = (additionalInfo == null) ? null : additionalInfo.getDepartment_name();
-		String extension_number = (additionalInfo == null) ? null : additionalInfo.getExtension_number();
-		return EmployeeDto.builder().employee_id(employee_id).authority(authority).status(status)
-				.employee_name(employee_name).department_name(department_name).extension_number(extension_number)
+		String employeeName = (additionalInfo == null) ? null : additionalInfo.getEmployeeName();
+		String departmentName = (additionalInfo == null) ? null : additionalInfo.getDepartmentName();
+		String extensionNumber = (additionalInfo == null) ? null : additionalInfo.getExtensionNumber();
+		return EmployeeDto.builder().employee_id(employeeId).authority(authority).status(status)
+				.employee_name(employeeName).department_name(departmentName).extension_number(extensionNumber)
 				.seatList(seatIdList()).build();
 	}
 }

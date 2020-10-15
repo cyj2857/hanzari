@@ -7,11 +7,11 @@ import com.hancom.hanzari.model.Shape;
 public interface ShapeService {
 	public List<Shape> findAll();
 
-	public Shape findById(String shape_id) throws Exception;
+	public Shape findById(String shapeId) throws Exception;
 
-	public void deleteById(String shape_id);
+	public void deleteById(String shapeId);
 
 	public Shape save(Shape shape);
 
-	public void updateById(String shape_id);
+	public void updateById(String shapeId);
 }
