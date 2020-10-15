@@ -10,8 +10,11 @@
     <div class="d3" id="hr"></div>
 
     <div class="d2" id="d2">
-      <AttachCanvas v-bind:seat="seats" v-bind:employee="employees"></AttachCanvas>
-      <FloorTabs></FloorTabs>
+      <AttachCanvas
+        v-bind:seat="seats"
+        v-bind:employee="employees"
+      ></AttachCanvas>
+      <FloorTabs v-bind:floor="floors"></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -52,39 +55,35 @@ export default {
       selected: "",
       employees: [],
       seats: [],
+      floors: [],
     };
   },
   created() {
     this.employees = this.getEmployees();
     this.seats = this.getSeats();
+    this.floors = this.getFloors();
   },
   methods: {
-    updateText() {
-      this.changeText = "Click Event Test";
-    },
     getEmployees() {
       let initEmployeeList = new Array();
-
       axios
         .get("http://" + host + ":" + portNum + "/employee")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             var newEmployee = {};
             newEmployee.name = response.data[i].employee_name;
-            console.log(newEmployee.name + "???? employee ?? name");
+            //console.log(newEmployee.name + "???? employee ?? name");
             newEmployee.department = response.data[i].department_name;
             newEmployee.number = response.data[i].extension_number;
             newEmployee.employee_id = response.data[i].employee_id;
             newEmployee.seatIdList = response.data[i].seatList;
-            console.log(newEmployee.seatIdList);
+            //console.log(newEmployee.seatIdList);
             initEmployeeList.push(newEmployee);
           }
-          console.log("employee length" + initEmployeeList.length);
         });
       return initEmployeeList;
     },
     getSeats() {
-      //mounted �ɶ� �Ҹ�
       let loadSeatList = new Array();
       axios
         .get("http://" + host + ":" + portNum + "/seats")
@@ -104,11 +103,24 @@ export default {
             newSeat.shape_id = response.data[i].shape_id;
 
             loadSeatList.push(newSeat);
-
-            console.log("loadSeatList length" + loadSeatList.length);
           }
         });
       return loadSeatList;
+    },
+    getFloors() {
+      let loadFloorList = new Array();
+      axios
+        .get("http://" + host + ":" + portNum + "/floors")
+        .then(function (response) {
+          for (var i = 0; i < response.data.length; i++) {
+            let newFloor = {};
+            newFloor.floor_name = response.data[i].floor_name;
+            newFloor.building_id = response.data[i].building_id;
+
+            loadFloorList.push(newFloor);
+          }
+        });
+      return loadFloorList;
     },
   },
 };

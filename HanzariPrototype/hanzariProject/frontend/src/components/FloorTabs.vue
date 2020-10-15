@@ -7,9 +7,13 @@
         <v-btn text @click="getDialog">Add Floor</v-btn>
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
-        <v-tab v-for="tab of items" :key="tab.id" @change="setFloor(tab.id)">{{
-          tab.id
-        }}</v-tab>
+        <v-tab
+          v-for="tab of this.floors"
+          :key="tab.floor_name"
+          @change="setFloor(tab.floor_name)"
+        >
+          {{ tab.floor_name }}</v-tab
+        >
       </v-tabs>
     </v-card>
     <AddFloorDialog
@@ -23,18 +27,21 @@
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
+  props: ["floor"],
   components: {
     AddFloorDialog,
   },
-  data: () => ({
-    length: 3,
-    tab: null,
-    items: [{ id: "One" }, { id: "Five" }, { id: "Six" }],
-    floorNum: null,
-    dialogStatus: false,
-    inputFloor: null,
-    seatFloor: null,
-  }),
+  data() {
+    return {
+      length: 3,
+      tab: null,
+      floorNum: null,
+      dialogStatus: false,
+      inputFloor: null,
+      seatFloor: null,
+      floors: this.floor,
+    };
+  },
   created() {
     eventBus.$on("confirm", () => {
       this.confirmDialog();
@@ -46,27 +53,47 @@ export default {
         this.seatFloor = floor;
         console.log(this.seatFloor + "가 넘어온 자리 층입니다");
 
-        for (let i = 0; i < this.items.length; i++) {
-          if (this.seatFloor == this.items[i].id) {
+        for (let i = 0; i < this.floors.length; i++) {
+          if (this.seatFloor == this.floors[i].floor_name) {
             this.floorNum = i;
-            this.setFloor(this.items[this.floorNum].id);
+            this.setFloor(this.floors[this.floorNum].floor_name);
           }
         }
       });
-    eventBus.$on("changeFloorCanvas", (floor) => {
-      for (let i = 0; i < this.items.length; i++) {
-          if (floor == this.items[i].id) {
-            this.floorNum = i;
-            this.setFloor(this.items[this.floorNum].id);
-          }
-        }
-    })
+    eventBus.$on("initTab", (initFloorNum) => {
+      console.log("init!!!!!!!!!!")
+      this.floorNum = initFloorNum;
+      this.setFloor(this.floors[this.floorNum].floor_name);
+    });
   },
   mounted() {
     this.floorNum = 0;
-    this.setFloor(this.items[this.floorNum].id);
+    console.log(this.floors)
+    console.log(this.floors.__ob__)
+    //this.setFloor(this.floors[this.floorNum].floor_name);
+    this.setFloor("One");
+  },
+  watch: {
+    length(val) {
+      let allItems = this.floors;
+      this.floorNum = val - 1;
+
+      eventBus.$emit("allFloorItems", allItems);
+    },
   },
   methods: {
+    decreaseTab() {
+      this.length--;
+      this.floorNum = this.length - 1;
+      this.setFloor(this.floors[this.floorNum].floor_name);
+      //pop
+    },
+    increaseTab() {
+      this.length++;
+      this.floorNum = this.length - 1;
+      this.setFloor(this.floors[this.floorNum].floor_name);
+      //push
+    },
     getDialog() {
       eventBus.$emit("initFloor", null);
       this.dialogStatus = true;
@@ -77,7 +104,7 @@ export default {
       this.dialogStatus = false;
       console.log(this.dialogStatus);
       console.log(this.inputFloor + "from add floor dialog");
-      this.items.push({ id: this.inputFloor });
+      this.floors.push({ floor_name: this.inputFloor });
 
       this.increaseTab();
       console.log(this.length);
@@ -89,11 +116,11 @@ export default {
     },
     removeFloor() {
       //items에서 id가 현재 floor인 애 index 가져오기
-      let currentFloorId = this.items[this.floorNum].id;
-      const idx = this.items.findIndex(function (item) {
-        return item.id == currentFloorId;
+      let currentFloorId = this.floors[this.floorNum].floor_name;
+      const idx = this.floors.findIndex(function (item) {
+        return item.floor_name == currentFloorId;
       });
-      if (idx > -1) this.items.splice(idx, 1);
+      if (idx > -1) this.floors.splice(idx, 1);
 
       //items에서 그 index 삭제
       this.decreaseTab();
@@ -102,24 +129,7 @@ export default {
       eventBus.$emit("changeFloor", n);
     },
     getFloorName(floorNum) {
-      return this.items[floorNum].id;
-    },
-    decreaseTab() {
-      this.length--;
-      this.floorNum = this.length - 1;
-      this.setFloor(this.items[this.floorNum].id);
-      //pop
-    },
-    increaseTab() {
-      this.length++;
-      this.floorNum = this.length - 1;
-      this.setFloor(this.items[this.floorNum].id);
-      //push
-    },
-  },
-  watch: {
-    length(val) {
-      this.floorNum = val - 1;
+      return this.floors[floorNum].floor_name;
     },
   },
 };

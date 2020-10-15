@@ -79,12 +79,10 @@ export default {
       seats: this.seat,
       employees: this.employee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
+      allFloorItems: [],
     };
   },
   created() {
-    // eventBus.$on("createSeat", (item) => {
-    //   this.createSeat(item);
-    // }),
     eventBus.$on("confirmChangeSeatDialog", (inputInfo) => {
       this.confirmChangeSeatDialog(inputInfo);
     }),
@@ -102,7 +100,12 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.on;
+    eventBus.$on("allFloorItems", (allItems) => {
+      //to save floor information
+      this.allFloorItems = allItems;
+      console.log("in AttachCanvas");
+      console.log(this.allFloorItems); // id 뽑아내야함
+    });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
     }
@@ -169,7 +172,7 @@ export default {
       );
       changeFloorSeatList.push(activeObject);
 
-      eventBus.$emit("changeFloorCanvas", inputInfo[0]);
+      eventBus.$emit("showSeatFloor", inputInfo[0]);
       eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
       this.floorCanvas.renderAll();
     },
@@ -662,7 +665,7 @@ export default {
 
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
 
-      let activeObject = this.floorCanvas.getActiveObject(); //group 객체 
+      let activeObject = this.floorCanvas.getActiveObject(); //group 객체
       (activeObject.employee_name = item.name),
         (activeObject.employee_department = item.department),
         (activeObject.employee_number = item.number),
@@ -683,7 +686,11 @@ export default {
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       console.log(this.eachEmployeeSeatMap.size + "맵의 사이즈입니다.");
 
-      let groupToObject = activeObject.toObject(["seatId", "employee_id","floor_id"]);
+      let groupToObject = activeObject.toObject([
+        "seatId",
+        "employee_id",
+        "floor_id",
+      ]);
       console.log(
         groupToObject.employee_id +
           "의 자리 리스트 개수는 " +
@@ -779,6 +786,16 @@ export default {
           this.saveAllSeatByAxios(data);
         }
       }
+
+      if (this.allFloorItems) {
+        for (let j = 0; j < this.allFloorItems.length; j++) {
+          let floorData = {};
+          floorData.floor_name = this.allFloorItems[j].id;
+          floorData.building_id = "HANCOM01";
+
+          this.saveAllFloorByAxios(floorData);
+        }
+      }
     },
     saveAllSeatByAxios(data) {
       axios
@@ -791,6 +808,19 @@ export default {
         )
         .then((res) => {
           console.log(res.data);
+        });
+    },
+    saveAllFloorByAxios(floorData) {
+      axios
+        .post(
+          "http://" + host + ":" + portNum + "/floors",
+          JSON.stringify(floorData),
+          {
+            headers: { "Content-Type": `application/json` },
+          }
+        )
+        .then((res) => {
+          console.log(res.floorData);
         });
     },
     clickLoadBtn() {
@@ -810,7 +840,6 @@ export default {
             eachFloorSeatList = this.getEachFloorSeatList(
               this.currentSelectedFloor
             );
-
             eachEmployeeSeatList = this.getEachEmployeeSeatList(
               this.seats[i].employee_id
             );
@@ -822,8 +851,6 @@ export default {
             console.log(eachFloorSeatList);
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-            //let groupToObject = group.toObject(["seatId"]);
-            //eachEmployeeSeatList.push(groupToObject.seatId);
             eachEmployeeSeatList.push(group);
 
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -836,8 +863,7 @@ export default {
                 this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
                 "입니다."
             );
-          } //end of if
-
+          }
           //다른 층 eachFloorSeatList에 넣기
           else if (
             this.seat[i].floor != this.currentSelectedFloor &&
@@ -854,8 +880,6 @@ export default {
 
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-            //let groupToObject = group.toObject(["seatId"]);
-            //eachEmployeeSeatList.push(groupToObject.seatId);
             eachEmployeeSeatList.push(group);
 
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -868,7 +892,9 @@ export default {
                 this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
                 "입니다."
             );
-          } //end of else if
+          }
+
+          //tab load 해오는 코드 필요
         }
       }
     },
