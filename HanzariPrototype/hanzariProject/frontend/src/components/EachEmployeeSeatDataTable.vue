@@ -4,15 +4,22 @@
       <v-spacer></v-spacer>
       <v-text-field single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="seats" :search="search" height="265px">
+    <v-data-table
+      :headers="headers"
+      :items="seats"
+      :search="search"
+      height="265px"
+    >
       <template v-slot:item="row">
         <!--<tr @click="createRect(row.item)">!-->
         <tr>
-          <td>{{row.item.name}}</td>
-          <td>{{row.item.department}}</td>
-          <td>{{row.item.seat_id}}</td>
+          <td>{{ row.item.name }}</td>
+          <td>{{ row.item.department }}</td>
+          <td>{{ row.item.seat_id }}</td>
           <td>
-            <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)">Show</v-btn>
+            <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)"
+              >Show</v-btn
+            >
           </td>
         </tr>
       </template>
@@ -31,17 +38,17 @@ export default {
           text: "Name",
           align: "start",
           sortable: true,
-          value: "name"
+          value: "name",
         },
         { text: "Department", value: "department" },
         { text: "SeatID", value: "seat_id" },
-        { text: "", value: "showSeatButton" }
+        { text: "", value: "showSeatButton" },
       ],
-      seats: []
+      seats: [],
     };
   },
   created() {
-    eventBus.$on("showSeatDataTable", employee => {
+    eventBus.$on("showSeatDataTable", (employee) => {
       this.renderEachEmployeeSeatList(employee);
     });
   },
@@ -49,7 +56,7 @@ export default {
     showSeatButtonClicked(seat) {
       console.log(seat);
       eventBus.$emit("showSeat", seat);
-      eventBus.$emit("showSeatFloor", seat.seat_id.split("-")[0]);
+      eventBus.$emit("showSeatFloor", seat.floor_id);
     },
     renderEachEmployeeSeatList(employee) {
       //리스트 초기화
@@ -58,20 +65,27 @@ export default {
 
       if (eachEmployeeSeatList) {
         for (let i = 0; i < eachEmployeeSeatList.length; i++) {
-
           let newSeat = {};
-          newSeat.seat_id = eachEmployeeSeatList[i]+"번";
-          newSeat.employee_id = employee.employee_id;
+
+          let groupToObject = eachEmployeeSeatList[i].toObject([
+            "seatId",
+            "employee_id",
+            "floor_id",
+          ]);
+
+          newSeat.seat_id = groupToObject.seatId + "번";
+          newSeat.employee_id = groupToObject.employee_id;
           newSeat.name = employee.name;
           newSeat.department = employee.department;
-          
-          console.log(newSeat.seat_id+"입니다.");
+          newSeat.floor_id = groupToObject.floor_id;
+
+          console.log(newSeat.seat_id + "입니다.");
 
           this.seats.push(newSeat);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

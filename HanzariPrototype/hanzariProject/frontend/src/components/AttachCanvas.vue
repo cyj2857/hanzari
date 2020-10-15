@@ -367,9 +367,9 @@ export default {
       let seatFloor;
 
       //seat의 층과 현재층이 같지 않다면
-      if (this.currentSelectedFloor != seat.seat_id.split("-")[0]) {
+      if (this.currentSelectedFloor != seat.floor_id) {
         //탭 전환 코드
-        seatFloor = seat.seat_id.split("-")[0];
+        seatFloor = seat.floor_id;
       }
       //seat의 층과 현재층이 같다면
       else {
@@ -646,7 +646,7 @@ export default {
 
         group[i] = new fabric.Group([rectangle, textObject], {
           floor_id: this.currentSelectedFloor,
-          seatId: this.currentSelectedFloor + "-" + this.seatid, // currentSelectedFloor-seatId
+          seatId: this.seatid, // currentSelectedFloor-seatId
           employee_name: null,
           employee_department: null,
           employee_number: null,
@@ -716,7 +716,7 @@ export default {
 
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
 
-      let activeObject = this.floorCanvas.getActiveObject();
+      let activeObject = this.floorCanvas.getActiveObject(); //group 객체 
       (activeObject.employee_name = item.name),
         (activeObject.employee_department = item.department),
         (activeObject.employee_number = item.number),
@@ -730,12 +730,14 @@ export default {
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-      let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
-      eachEmployeeSeatList.push(groupToObject.seatId);
+      //let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
+      //let groupToObject = activeObject.toObject(["seatId", "employee_id","floor_id"]);
+      eachEmployeeSeatList.push(activeObject);
 
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       console.log(this.eachEmployeeSeatMap.size + "맵의 사이즈입니다.");
 
+      let groupToObject = activeObject.toObject(["seatId", "employee_id","floor_id"]);
       console.log(
         groupToObject.employee_id +
           "의 자리 리스트 개수는 " +
@@ -867,8 +869,9 @@ export default {
             console.log(eachFloorSeatList);
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-            let groupToObject = group.toObject(["seatId"]);
-            eachEmployeeSeatList.push(groupToObject.seatId);
+            //let groupToObject = group.toObject(["seatId"]);
+            //eachEmployeeSeatList.push(groupToObject.seatId);
+            eachEmployeeSeatList.push(group);
 
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
             console.log(
@@ -898,8 +901,9 @@ export default {
 
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-            let groupToObject = group.toObject(["seatId"]);
-            eachEmployeeSeatList.push(groupToObject.seatId);
+            //let groupToObject = group.toObject(["seatId"]);
+            //eachEmployeeSeatList.push(groupToObject.seatId);
+            eachEmployeeSeatList.push(group);
 
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
             console.log(
