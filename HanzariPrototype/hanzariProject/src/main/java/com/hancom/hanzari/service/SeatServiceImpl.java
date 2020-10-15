@@ -33,7 +33,7 @@ public class SeatServiceImpl implements SeatService {
 	public List<Seat> findByEmpId(String employee_id) {
 		List<Seat> seats = new ArrayList<Seat>();
 		seatRepository.findAll().forEach(e -> {
-			if (e.getEmployee().getEmployee_id().toString().equals(employee_id)) {
+			if (e.getEmployee().getEmployeeId().toString().equals(employee_id)) {
 				seats.add(e);
 			}
 		});

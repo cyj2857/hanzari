@@ -24,15 +24,15 @@ public class FigureServiceImpl implements FigureService {
 	}
 
 	@Override
-	public Figure findById(String figure_id) throws Exception {
-		return figureRepository.findById(figure_id)
-				.orElseThrow(() -> new ResourceNotFoundException("Figure", "figure_id", figure_id));
+	public Figure findById(String figureId) throws Exception {
+		return figureRepository.findById(figureId)
+				.orElseThrow(() -> new ResourceNotFoundException("Figure", "figure_id", figureId));
 
 	}
 
 	@Override
-	public void deleteById(String figure_id) {
-		figureRepository.deleteById(figure_id);
+	public void deleteById(String figureId) {
+		figureRepository.deleteById(figureId);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class FigureServiceImpl implements FigureService {
 	}
 
 	@Override
-	public void updateById(String figure_id) {
+	public void updateById(String figureId) {
 		// TODO Auto-generated method stub
 
 	}

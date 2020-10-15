@@ -7,11 +7,11 @@ import com.hancom.hanzari.model.Figure;
 public interface FigureService {
 	public List<Figure> findAll();
 
-	public Figure findById(String figure_id) throws Exception;
+	public Figure findById(String figureId) throws Exception;
 
-	public void deleteById(String figure_id);
+	public void deleteById(String figureId);
 
 	public Figure save(Figure figure);
 
-	public void updateById(String figure_id);
+	public void updateById(String figureId);
 }

@@ -63,171 +63,171 @@ public class TestController {
 
 		List<EmployeeAdditionalInfo> additionalInfo = new ArrayList<EmployeeAdditionalInfo>();
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("10052204")
-				.employee_name("김인사")
+				.employeeId("10052204")
+				.employeeName("김인사")
 				.status("재직")
-				.extension_number("111-0001")
-				.department_id("1").department_name("부서1").build());
+				.extensionNumber("111-0001")
+				.departmentId("1").departmentName("부서1").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("19101101")
-				.employee_name("심청일")
+				.employeeId("19101101")
+				.employeeName("심청일")
 				.status("재직")
-				.extension_number("333-0002")
-				.department_id("3").department_name("부서3").build());
+				.extensionNumber("333-0002")
+				.departmentId("3").departmentName("부서3").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("19101102")
-				.employee_name("심청이")
+				.employeeId("19101102")
+				.employeeName("심청이")
 				.status("휴직")
-				.extension_number("333-0003")
-				.department_id("3").department_name("부서3").build());
+				.extensionNumber("333-0003")
+				.departmentId("3").departmentName("부서3").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("19101103")
-				.employee_name("심청삼")
+				.employeeId("19101103")
+				.employeeName("심청삼")
 				.status("재직")
-				.extension_number("333-0004")
-				.department_id("3").department_name("부서3").build());
+				.extensionNumber("333-0004")
+				.departmentId("3").departmentName("부서3").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("19101104")
-				.employee_name("심청넷")
+				.employeeId("19101104")
+				.employeeName("심청넷")
 				.status("재직")
-				.extension_number("333-0005")
-				.department_id("3").department_name("부서3").build());
+				.extensionNumber("333-0005")
+				.departmentId("3").departmentName("부서3").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("19101199")
-				.employee_name("박팀장")
+				.employeeId("19101199")
+				.employeeName("박팀장")
 				.status("재직")
-				.extension_number("444-0003")
-				.department_id("3").department_name("부서3").build());
+				.extensionNumber("444-0003")
+				.departmentId("3").departmentName("부서3").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("20091101")
-				.employee_name("홍길일")
+				.employeeId("20091101")
+				.employeeName("홍길일")
 				.status("재직")
-				.extension_number("222-0002")
-				.department_id("2").department_name("부서2").build());
+				.extensionNumber("222-0002")
+				.departmentId("2").departmentName("부서2").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("20091102")
-				.employee_name("홍길둘")
+				.employeeId("20091102")
+				.employeeName("홍길둘")
 				.status("재직")
-				.extension_number("222-0003")
-				.department_id("2").department_name("부서2").build());
+				.extensionNumber("222-0003")
+				.departmentId("2").departmentName("부서2").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("20091103")
-				.employee_name("홍길삼")
+				.employeeId("20091103")
+				.employeeName("홍길삼")
 				.status("재직")
-				.extension_number("222-0004")
-				.department_id("2").department_name("부서2").build());
+				.extensionNumber("222-0004")
+				.departmentId("2").departmentName("부서2").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("20091104")
-				.employee_name("홍길넷")
+				.employeeId("20091104")
+				.employeeName("홍길넷")
 				.status("재직")
-				.extension_number("222-0005")
-				.department_id("2").department_name("부서2").build());
+				.extensionNumber("222-0005")
+				.departmentId("2").departmentName("부서2").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("94111201")
-				.employee_name("이팀장")
+				.employeeId("94111201")
+				.employeeName("이팀장")
 				.status("재직")
-				.extension_number("222-0001")
-				.department_id("2").department_name("부서2").build());
+				.extensionNumber("222-0001")
+				.departmentId("2").departmentName("부서2").build());
 		
 		additionalInfo.add(EmployeeAdditionalInfo.builder()
-				.employee_id("95032205")
-				.employee_name("박팀장")
+				.employeeId("95032205")
+				.employeeName("박팀장")
 				.status("재직")
-				.extension_number("333-0001")
-				.department_id("3").department_name("부서3").build());
+				.extensionNumber("333-0001")
+				.departmentId("3").departmentName("부서3").build());
 		
 		Session session = sessionFactory.openSession();
 
 		List<Employee> employee = new ArrayList<Employee>();
 		employee.add(Employee.builder()
-				.employee_id("10052204")
+				.employeeId("10052204")
 				.authority("admin")
 				.additionalInfo(additionalInfo.get(0))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("19101101")
+				.employeeId("19101101")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(1))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("19101102")
+				.employeeId("19101102")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(2))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("19101103")
+				.employeeId("19101103")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(3))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("19101104")
+				.employeeId("19101104")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(4))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("19101199")
+				.employeeId("19101199")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(5))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("20091101")
+				.employeeId("20091101")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(6))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("20091102")
+				.employeeId("20091102")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(7))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("20091103")
+				.employeeId("20091103")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(8))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("20091104")
+				.employeeId("20091104")
 				.authority("viewer")
 				.additionalInfo(additionalInfo.get(9))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("94111201")
+				.employeeId("94111201")
 				.authority("manager")
 				.additionalInfo(additionalInfo.get(10))
 				.seat(null)
 				.build());
 		
 		employee.add(Employee.builder()
-				.employee_id("95032205")
+				.employeeId("95032205")
 				.authority("manager")
 				.additionalInfo(additionalInfo.get(11))
 				.seat(null)
