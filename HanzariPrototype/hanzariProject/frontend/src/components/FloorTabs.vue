@@ -53,6 +53,14 @@ export default {
           }
         }
       });
+    eventBus.$on("changeFloorCanvas", (floor) => {
+      for (let i = 0; i < this.items.length; i++) {
+          if (floor == this.items[i].id) {
+            this.floorNum = i;
+            this.setFloor(this.items[this.floorNum].id);
+          }
+        }
+    })
   },
   mounted() {
     this.floorNum = 0;
@@ -86,7 +94,7 @@ export default {
         return item.id == currentFloorId;
       });
       if (idx > -1) this.items.splice(idx, 1);
-      
+
       //items에서 그 index 삭제
       this.decreaseTab();
     },

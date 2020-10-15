@@ -43,7 +43,6 @@
   </v-dialog>
 </template>
 
-<!--여기에서 group의 seatId,x,y 변경한 이후에 group에 다시 매핑해주고 attachCanvas로 넘겨줄 것!-->
 <script>
 import { eventBus } from "../main";
 export default {
@@ -54,18 +53,16 @@ export default {
   },
   data() {
     return {
-      group: null,
-      seatId: null,
       inputFloor: null,
       inputXLocation: null,
       inputYLocation: null,
     };
   },
   created() {
-    eventBus.$on("initChangeSeatDialog", (group) => {
-      this.group = group;
-      let groupToObject = group.toObject(["seatId"]);
-      this.seatId = groupToObject.seatId;
+    eventBus.$on("initChangeSeatDialog", (value) => {
+      this.inputFloor = value
+      this.inputXLocation = value
+      this.inputYLocation = value
     });
   },
   computed: {
@@ -83,19 +80,14 @@ export default {
       )
         return;
 
-      this.group.floor_id = this.inputFloor;
-      this.group.left = this.inputXLocation;
-      this.group.top = this.inputYLocation;
+      let inputInfo = new Array()
+      inputInfo.push(this.inputFloor)
+      inputInfo.push(this.inputXLocation)
+      inputInfo.push(this.inputYLocation)
 
-      eventBus.$emit("confirmChangeSeatDialog", this.group);
+      eventBus.$emit("confirmChangeSeatDialog", inputInfo);
 
-      /*1. 기존 floor를 넘겨받아 eachFloorSeatMap에서 기존 floor 해당하는 list를 가져오고
-    A) 같은 층일때 (기존 floor == 입력 floor)
-    2-A. x, y가 수정된 group 을 받고 eachFloorSeatMap에 수정된 group push한 후 원래 group delete.
-    3-A. renderAll
-    B) 다른 층일때 (기존 floor != 입력 floor)
-    2-B. floor, x, y가 수정된 group 을 받고 eachFloorSeatMap에서 입력 floor를 key로 하여 수정한 group을 push 한 후 기존 group delete
-    3-B. 탭 변환 후 renderAll */
+    /*입력값 넘겨주고 getActiveObject한 이후에 거기에 _obejcts. 으로 변경하고 renderall 할 것. */
     },
   },
 };
