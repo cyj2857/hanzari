@@ -177,13 +177,36 @@ export default {
       this.floorCanvas.renderAll();
     },
     //canvas, map 생성
-    initializing() {
+     initializing() {
       if (this.floorCanvas == null) {
         const ref = this.$refs.canvas;
         this.floorCanvas = new fabric.Canvas(ref, {
           fireRightClick: true, // <-- enable firing of right click events
           fireMiddleClick: true, // <-- enable firing of middle click events
           stopContextMenu: true, // <--  prevent context menu from showing
+        });
+        this.floorCanvas.on("mouse:wheel", (opt) => {
+          if (!this.floorCanvas.viewportTransform) {
+            return;
+          }
+          let evt = opt.e;
+          if (evt.ctrlKey === true) {
+            let evt = opt.e;
+            let deltaY = evt.deltaY;
+            let zoom = this.floorCanvas.getZoom();
+            zoom = zoom - deltaY / 300;
+            if (zoom > 20) zoom = 20;
+            if (zoom < 1) zoom = 0.95;
+            this.floorCanvas.zoomToPoint(new fabric.Point(evt.offsetX, evt.offsetY),zoom);
+          } /*else {//scroll event
+            this.floorCanvas.viewportTransform[4] += (evt.deltaX)*-1; 
+            this.floorCanvas.viewportTransform[5] += (evt.deltaY)*-1;
+            this.floorCanvas.requestRenderAll();
+            this.setState({ lastPosX: evt.clientX });
+            this.setState({ lastPosY: evt.clientY });
+          }*/
+          opt.e.preventDefault();
+          opt.e.stopPropagation();
         });
       }
     },
