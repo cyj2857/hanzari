@@ -172,7 +172,7 @@ export default {
       );
       changeFloorSeatList.push(activeObject);
 
-      eventBus.$emit("changeFloorCanvas", inputInfo[0]);
+      eventBus.$emit("showSeatFloor", inputInfo[0]);
       eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
       this.floorCanvas.renderAll();
     },

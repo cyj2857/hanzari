@@ -72,12 +72,12 @@ export default {
           for (var i = 0; i < response.data.length; i++) {
             var newEmployee = {};
             newEmployee.name = response.data[i].employee_name;
-            console.log(newEmployee.name + "???? employee ?? name");
+            //console.log(newEmployee.name + "???? employee ?? name");
             newEmployee.department = response.data[i].department_name;
             newEmployee.number = response.data[i].extension_number;
             newEmployee.employee_id = response.data[i].employee_id;
             newEmployee.seatIdList = response.data[i].seatList;
-            console.log(newEmployee.seatIdList);
+            //console.log(newEmployee.seatIdList);
             initEmployeeList.push(newEmployee);
           }
         });
