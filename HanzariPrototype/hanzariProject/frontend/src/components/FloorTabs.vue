@@ -40,6 +40,7 @@ export default {
       inputFloor: null,
       seatFloor: null,
       floors: this.floor,
+      initData: null
     };
   },
   created() {
@@ -60,18 +61,15 @@ export default {
           }
         }
       });
-    eventBus.$on("initTab", (initFloorNum) => {
-      console.log("init!!!!!!!!!!")
-      this.floorNum = initFloorNum;
-      this.setFloor(this.floors[this.floorNum].floor_name);
-    });
   },
-  mounted() {
-    this.floorNum = 0;
-    console.log(this.floors)
-    console.log(this.floors.__ob__)
-    //this.setFloor(this.floors[this.floorNum].floor_name);
-    this.setFloor("One");
+  beforeUpdate() {
+    if (this.initData) {
+      return
+    } else {
+      this.floorNum = 0;
+      this.setFloor(this.floors[this.floorNum].floor_name);
+      this.initData = "yes"
+    }
   },
   watch: {
     length(val) {
