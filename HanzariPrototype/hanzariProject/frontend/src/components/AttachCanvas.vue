@@ -79,7 +79,7 @@ export default {
       seats: this.seat,
       employees: this.employee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
-      allFloorItems: []
+      allFloorItems: [],
     };
   },
   created() {
@@ -100,10 +100,11 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.$on("allFloorItems", (allItems) => { //to save floor information
-      this.allFloorItems = allItems
-      console.log(this.allFloorItems.length + "in AttachCanvas")
-    })
+    eventBus.$on("allFloorItems", (allItems) => {
+      //to save floor information
+      this.allFloorItems = allItems;
+      console.log(this.allFloorItems.length + "in AttachCanvas");
+    });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
     }
@@ -640,7 +641,7 @@ export default {
 
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
 
-      let activeObject = this.floorCanvas.getActiveObject(); //group 객체 
+      let activeObject = this.floorCanvas.getActiveObject(); //group 객체
       (activeObject.employee_name = item.name),
         (activeObject.employee_department = item.department),
         (activeObject.employee_number = item.number),
@@ -661,7 +662,11 @@ export default {
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       console.log(this.eachEmployeeSeatMap.size + "맵의 사이즈입니다.");
 
-      let groupToObject = activeObject.toObject(["seatId", "employee_id","floor_id"]);
+      let groupToObject = activeObject.toObject([
+        "seatId",
+        "employee_id",
+        "floor_id",
+      ]);
       console.log(
         groupToObject.employee_id +
           "의 자리 리스트 개수는 " +
@@ -755,6 +760,7 @@ export default {
           data.shape_id = "1";
 
           this.saveAllSeatByAxios(data);
+          this.saveAllFloorByAxios(this.allFloorItems)
         }
       }
     },
@@ -770,6 +776,9 @@ export default {
         .then((res) => {
           console.log(res.data);
         });
+    },
+    saveAllFloorByAxios(allFloorItems){
+      
     },
     clickLoadBtn() {
       /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
