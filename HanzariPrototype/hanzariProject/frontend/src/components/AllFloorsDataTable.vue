@@ -10,7 +10,12 @@
         hide-details
       ></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="employees" :search="search" height="265px">
+    <v-data-table
+      :headers="headers"
+      :items="employees"
+      :search="search"
+      height="265px"
+    >
       <template v-slot:item="row">
         <!--<tr @click="createRect(row.item)">!-->
         <tr>
@@ -57,6 +62,8 @@ export default {
         { text: "", value: "showSeatButton" },
       ],
       employees: this.employee,
+      userAuthority: "Viewer",
+      disabledValue: null,
     };
   },
 
@@ -84,13 +91,13 @@ export default {
             console.log(
               this.employees[k].employee_id +
                 "employee_id? length" +
-                eachEmployeeSeatList[2]
+                eachEmployeeSeatList.length
             ); //2
             console.log(this.employees[k].name);
 
             this.employees[k].seatIdList = eachEmployeeSeatList;
             console.log(this.employees[k].seatIdList);
-
+            
             eventBus.$emit("showSeatDataTable", this.employees[k]);
           }
         }
