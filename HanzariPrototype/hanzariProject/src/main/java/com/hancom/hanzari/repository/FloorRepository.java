@@ -14,4 +14,6 @@ public interface FloorRepository extends JpaRepository<Floor, String> {
 	List<Floor> findByBuilding(Building building);
 	
 	Floor findByFloorNameAndBuilding(String floorName, Building building);
+	
+	void deleteByFloorNameAndBuilding(String floorName, Building building);
 }
