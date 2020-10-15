@@ -84,8 +84,7 @@ export default {
           let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
             item.employee_id
           );
-
-          //var eachEmployeeSeatList = this.employees[k].seatIdList;
+          //let eachEmployeeSeatList = this.employees[k].seatIdList;
           console.log(eachEmployeeSeatList + "eachEmployeeSeatList");
 
           if (eachEmployeeSeatList) {
