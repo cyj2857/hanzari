@@ -767,10 +767,10 @@ export default {
       if (this.allFloorItems) {
         for (let j = 0; j < this.allFloorItems.length; j++) {
           let floorData = {};
-          floorData.floor_name = this.allFloorItems;
+          floorData.floor_name = this.allFloorItems[j].id;
           floorData.building_id = "HANCOM01";
-          
-          //this.saveAllFloorByAxios(this.allFloorItems);
+
+          this.saveAllFloorByAxios(floorData);
         }
       }
     },
@@ -787,17 +787,17 @@ export default {
           console.log(res.data);
         });
     },
-    saveAllFloorByAxios(data) {
+    saveAllFloorByAxios(floorData) {
       axios
         .post(
           "http://" + host + ":" + portNum + "/floors",
-          JSON.stringify(data),
+          JSON.stringify(floorData),
           {
             headers: { "Content-Type": `application/json` },
           }
         )
         .then((res) => {
-          console.log(res.data);
+          console.log(res.floorData);
         });
     },
     clickLoadBtn() {
