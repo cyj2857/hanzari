@@ -604,6 +604,13 @@ export default {
         { left: 275, top: 200 },
       ];
 
+      let vacantnumber;
+      if ((number == 2) | (number == 4) | (number == 6) | (number == 8)) {
+        this.vacantnumber = number;
+      } else {
+        this.vacantnumber = 1;
+      }
+
       //각 층에 해당하는 도형 리스트 리턴하기
       if (!this.floorImageList.get(this.currentSelectedFloor)) {
         alert("도면 이미지가 없습니다");
@@ -617,60 +624,76 @@ export default {
 
       console.log("currnet floor is " + this.currentSelectedFloor);
 
-      let rectangle = new fabric.Rect({
-        width: 50,
-        height: 50,
-        fill: this.getColor(null),
-        opacity: 1,
-      });
-
-      let textObject = new fabric.IText("", {
-        left: 0,
-        top: rectangle.height / 3,
-        fontSize: 13,
-        fill: "black",
-      });
-
-      if ((number == 2) | (number == 4) | (number == 6) | (number == 8)) {
-        //n자리 공석
-
-        for (let i = 0; i <= number - 1; i++) {
-          this.seatid = this.getSeatUUID();
-          var VP = VacantPositon[i];
-          var group = new fabric.Group([rectangle, textObject], {
-            floor_id: this.currentSelectedFloor,
-            seatId: this.currentSelectedFloor + "-" + this.seatid, // currentSelectedFloor-seatId
-            employee_name: null,
-            employee_department: null,
-            employee_number: null,
-            employee_id: null,
-            left: VP.left,
-            top: VP.top,
-          });
-
-          this.setGroupEvent(group);
-          this.floorCanvas.add(group);
-          this.floorCanvas.renderAll();
-          eachFloorSeatList.push(group);
-        }
-      } else {
-        //1자리 공석
+      //n 자리 공석 만들기
+      for (let i = 0; i <= this.vacantnumber - 1; i++) {
         this.seatid = this.getSeatUUID();
+        var VP = VacantPositon[i];
+        var group = [];
 
-        let group = new fabric.Group([rectangle, textObject], {
+        let rectangle = new fabric.Rect({
+          width: 50,
+          height: 50,
+          fill: this.getColor(null),
+          opacity: 1,
+        });
+
+        let textObject = new fabric.IText("", {
+          left: 0,
+          top: rectangle.height / 3,
+          fontSize: 13,
+          fill: "black",
+        });
+
+        group[i] = new fabric.Group([rectangle, textObject], {
           floor_id: this.currentSelectedFloor,
           seatId: this.currentSelectedFloor + "-" + this.seatid, // currentSelectedFloor-seatId
           employee_name: null,
           employee_department: null,
           employee_number: null,
           employee_id: null,
-          left: 150,
-          top: 150,
+          left: VP.left,
+          top: VP.top,
         });
 
-        this.setGroupEvent(group);
-        this.floorCanvas.add(group);
-        eachFloorSeatList.push(group);
+        group[i].on("mouseover", function (e) {
+          let group = e.target;
+          let asObject = group.toObject(["seatId"]);
+          let x = group.toObject(["left"]);
+
+          console.log("seatId = " + asObject.seatId);
+          console.log("left = " + x.left);
+        });
+
+        group[i].on("mousedown", (e) => {
+          let group = e.target;
+          if (e.button === 2) {
+            //자리이동 UI 넣을 곳
+            this.getChangeSeatDialog(group);
+          }
+        });
+
+        group[i].on("mousedblclick", (e) => {
+          let group = e.target;
+          let groupToObject = group.toObject([
+            "employee_id",
+            "employee_name",
+            "floor_id",
+            "employee_department",
+          ]);
+          eventBus.$emit("employee_id", groupToObject.employee_id);
+          eventBus.$emit("employee_name", groupToObject.employee_name);
+          eventBus.$emit("floor_id", groupToObject.floor_id);
+          eventBus.$emit(
+            "employee_department",
+            groupToObject.employee_department
+          );
+          this.getEmployeeDialog();
+        });
+
+        this.floorCanvas.add(group[i]);
+
+        eachFloorSeatList.push(group[i]);
+        this.floorCanvas.renderAll();
       }
 
       this.floorCanvas.renderAll();
@@ -683,42 +706,6 @@ export default {
       );
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-    },
-    setGroupEvent(group) {
-      group.on("mouseover", function (e) {
-        let group = e.target;
-        let asObject = group.toObject(["seatId"]);
-        let x = group.toObject(["left"]);
-
-        console.log("seatId = " + asObject.seatId);
-        console.log("left = " + x.left);
-      });
-
-      group.on("mousedown", (e) => {
-        let group = e.target;
-        if (e.button === 2) {
-          //자리이동 UI 넣을 곳
-          this.getChangeSeatDialog();
-        }
-      });
-
-      group.on("mousedblclick", (e) => {
-        let group = e.target;
-        let groupToObject = group.toObject([
-          "employee_id",
-          "employee_name",
-          "floor_id",
-          "employee_department",
-        ]);
-        eventBus.$emit("employee_id", groupToObject.employee_id);
-        eventBus.$emit("employee_name", groupToObject.employee_name);
-        eventBus.$emit("floor_id", groupToObject.floor_id);
-        eventBus.$emit(
-          "employee_department",
-          groupToObject.employee_department
-        );
-        this.getEmployeeDialog();
-      });
     },
 
     setVacantSeat(item) {
