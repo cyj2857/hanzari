@@ -85,8 +85,8 @@ export default {
     // eventBus.$on("createSeat", (item) => {
     //   this.createSeat(item);
     // }),
-    eventBus.$on("confirmChangeSeatDialog", (changeSeatInfoMap) => {
-      this.confirmChangeSeatDialog(changeSeatInfoMap);
+    eventBus.$on("confirmChangeSeatDialog", (inputInfo) => {
+      this.confirmChangeSeatDialog(inputInfo);
     }),
       eventBus.$on("showSeat", (seat) => {
         this.showSeat(seat);
@@ -126,8 +126,8 @@ export default {
       this.employeeDialogStatus = false;
       console.log(this.employeeDialogStatus);
     },
-    getChangeSeatDialog(group) {
-      eventBus.$emit("initChangeSeatDialog", group);
+    getChangeSeatDialog() {
+      eventBus.$emit("initChangeSeatDialog", null);
       this.changeSeatDialogStatus = true;
       console.log(this.changeSeatDialogStatus);
     },
@@ -136,11 +136,42 @@ export default {
       this.changeSeatDialogStatus = false;
       console.log(this.changeSeatDialogStatus);
     },
-    confirmChangeSeatDialog(changeSeatInfoMap) {
+    // 층간이동
+    confirmChangeSeatDialog(inputInfo) {
       console.log("<<<confirm dialog>>>");
+
       this.changeSeatDialogStatus = false;
-      console.log(changeSeatInfoMap.get("previous"));
-      console.log(changeSeatInfoMap.get("current"));
+
+      if (!this.floorCanvas.getActiveObject()) {
+        return;
+      }
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+
+      let activeObject = this.floorCanvas.getActiveObject();
+
+      activeObject.floor_id = inputInfo[0];
+      activeObject.left = parseInt(inputInfo[1]);
+      activeObject.top = parseInt(inputInfo[2]);
+
+      for (let i = 0; i < eachFloorSeatList.length; i++) {
+        if (eachFloorSeatList[i].seatId == activeObject.seatId) {
+          eachFloorSeatList.splice(i, 1);
+        }
+      }
+
+      console.log("after delete")
+      console.log(eachFloorSeatList.length);
+
+      let changeFloorSeatList = this.getEachFloorSeatList(
+        inputInfo[0] //input floor
+      );
+      changeFloorSeatList.push(activeObject);
+
+      eventBus.$emit("changeFloorCanvas", inputInfo[0])
+      eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
+      this.floorCanvas.renderAll();
     },
     //canvas, map 생성
     initializing() {
@@ -455,7 +486,7 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    //해당 층의 도형 리스트 삭제하기
+    //해당 층의 도형 리스트 전체 삭제하기
     deleteEachFloorSeatList: function (floor) {
       this.getEachFloorSeatList(floor).length = 0;
       return this.getEachFloorSeatList(floor);
