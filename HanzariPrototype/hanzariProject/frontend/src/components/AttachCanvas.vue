@@ -103,7 +103,8 @@ export default {
     eventBus.$on("allFloorItems", (allItems) => {
       //to save floor information
       this.allFloorItems = allItems;
-      console.log(this.allFloorItems.length + "in AttachCanvas");
+      console.log("in AttachCanvas");
+      console.log(this.allFloorItems); // id 뽑아내야함
     });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
@@ -760,7 +761,16 @@ export default {
           data.shape_id = "1";
 
           this.saveAllSeatByAxios(data);
-          this.saveAllFloorByAxios(this.allFloorItems)
+        }
+      }
+
+      if (this.allFloorItems) {
+        for (let j = 0; j < this.allFloorItems.length; j++) {
+          let floorData = {};
+          floorData.floor_name = this.allFloorItems;
+          floorData.building_id = "HANCOM01";
+          
+          //this.saveAllFloorByAxios(this.allFloorItems);
         }
       }
     },
@@ -777,8 +787,18 @@ export default {
           console.log(res.data);
         });
     },
-    saveAllFloorByAxios(allFloorItems){
-      
+    saveAllFloorByAxios(data) {
+      axios
+        .post(
+          "http://" + host + ":" + portNum + "/floors",
+          JSON.stringify(data),
+          {
+            headers: { "Content-Type": `application/json` },
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+        });
     },
     clickLoadBtn() {
       /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
