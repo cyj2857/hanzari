@@ -817,7 +817,6 @@ export default {
             eachFloorSeatList = this.getEachFloorSeatList(
               this.currentSelectedFloor
             );
-
             eachEmployeeSeatList = this.getEachEmployeeSeatList(
               this.seats[i].employee_id
             );
@@ -829,8 +828,6 @@ export default {
             console.log(eachFloorSeatList);
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-            //let groupToObject = group.toObject(["seatId"]);
-            //eachEmployeeSeatList.push(groupToObject.seatId);
             eachEmployeeSeatList.push(group);
 
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -843,8 +840,7 @@ export default {
                 this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
                 "입니다."
             );
-          } //end of if
-
+          }
           //다른 층 eachFloorSeatList에 넣기
           else if (
             this.seat[i].floor != this.currentSelectedFloor &&
@@ -861,8 +857,6 @@ export default {
 
             eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-            //let groupToObject = group.toObject(["seatId"]);
-            //eachEmployeeSeatList.push(groupToObject.seatId);
             eachEmployeeSeatList.push(group);
 
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -875,7 +869,9 @@ export default {
                 this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
                 "입니다."
             );
-          } //end of else if
+          }
+
+          //tab load 해오는 코드 필요
         }
       }
     },

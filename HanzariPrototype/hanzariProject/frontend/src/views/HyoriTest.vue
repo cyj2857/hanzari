@@ -10,8 +10,11 @@
     <div class="d3" id="hr"></div>
 
     <div class="d2" id="d2">
-      <AttachCanvas v-bind:seat="seats" v-bind:employee="employees"></AttachCanvas>
-      <FloorTabs></FloorTabs>
+      <AttachCanvas
+        v-bind:seat="seats"
+        v-bind:employee="employees"
+      ></AttachCanvas>
+      <FloorTabs v-bind:floor="floors"></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -52,19 +55,23 @@ export default {
       selected: "",
       employees: [],
       seats: [],
+      floors: [],
     };
   },
   created() {
     this.employees = this.getEmployees();
     this.seats = this.getSeats();
+    this.floors = this.getFloors();
+  },
+  mounted(){
+    console.log("here")
+    console.log(this.employees)
+    console.log(this.seats)
+    console.log(this.floors)
   },
   methods: {
-    updateText() {
-      this.changeText = "Click Event Test";
-    },
     getEmployees() {
       let initEmployeeList = new Array();
-
       axios
         .get("http://" + host + ":" + portNum + "/employee")
         .then(function (response) {
@@ -84,7 +91,6 @@ export default {
       return initEmployeeList;
     },
     getSeats() {
-      //mounted �ɶ� �Ҹ�
       let loadSeatList = new Array();
       axios
         .get("http://" + host + ":" + portNum + "/seats")
@@ -109,6 +115,23 @@ export default {
           }
         });
       return loadSeatList;
+    },
+    getFloors() {
+      let loadFloorList = new Array();
+      axios
+        .get("http://" + host + ":" + portNum + "/floors")
+        .then(function (response) {
+          for (var i = 0; i < response.data.length; i++) {
+            let newFloor = {};
+            newFloor.floor_name = response.data[i].floor_name;
+            newFloor.building_id = response.data[i].building_id;
+
+            loadFloorList.push(newFloor);
+
+            console.log("loadFloorList length" + loadFloorList.length);
+          }
+        });
+      return loadFloorList;
     },
   },
 };

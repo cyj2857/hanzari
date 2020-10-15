@@ -23,18 +23,22 @@
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
+  props: ["floor"],
   components: {
     AddFloorDialog,
   },
-  data: () => ({
-    length: 3,
-    tab: null,
-    items: [{ id: "One" }, { id: "Five" }, { id: "Six" }],
-    floorNum: null,
-    dialogStatus: false,
-    inputFloor: null,
-    seatFloor: null,
-  }),
+  data() {
+    return {
+      length: 3,
+      tab: null,
+      items: [{ id: "One" }, { id: "Five" }, { id: "Six" }],
+      floorNum: null,
+      dialogStatus: false,
+      inputFloor: null,
+      seatFloor: null,
+      floors: this.floor,
+    };
+  },
   created() {
     eventBus.$on("confirm", () => {
       this.confirmDialog();
@@ -68,6 +72,9 @@ export default {
 
     let allItems = this.items;
     eventBus.$emit("allFloorItems", allItems);
+
+    console.log("attention");
+    console.log(this.floors);
   },
   methods: {
     getDialog() {
