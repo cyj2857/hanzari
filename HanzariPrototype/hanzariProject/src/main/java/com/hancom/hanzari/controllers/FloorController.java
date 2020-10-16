@@ -70,7 +70,7 @@ public class FloorController {
 	}
 
 	@DeleteMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-	public void delete(@RequestBody FloorDto floorDto) throws Exception  {
+	public void delete(@RequestBody FloorDto floorDto) throws Exception {
 		for (Field field : floorDto.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(floorDto);

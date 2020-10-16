@@ -19,6 +19,9 @@ public class FloorDto {
 	@NotBlank
 	private String building_id;
 
+	@NotBlank
+	private int floor_index;
+	
 	public FloorDto() {
 	}
 }

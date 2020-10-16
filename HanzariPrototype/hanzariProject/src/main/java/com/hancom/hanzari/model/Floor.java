@@ -36,15 +36,18 @@ public class Floor {
 	@JoinColumn(name = "building_id", nullable = false)
 	private Building building;
 
+	@Column(name = "floor_index", nullable = false)
+	private int floorIndex;
+
 	public void setBuilding(Building building) {
 		this.building = building;
 	}
-
+	
 	public Floor() {
 	}
 
 	public FloorDto toDto() {
 		String buildingId = (building == null) ? null : building.getBuildingId();
-		return FloorDto.builder().floor_name(floorName).building_id(buildingId).build();
+		return FloorDto.builder().floor_name(floorName).building_id(buildingId).floor_index(floorIndex).build();
 	}
 }
