@@ -39,11 +39,4 @@ public class BuildingServiceImpl implements BuildingService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void updateById(String buildingId) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

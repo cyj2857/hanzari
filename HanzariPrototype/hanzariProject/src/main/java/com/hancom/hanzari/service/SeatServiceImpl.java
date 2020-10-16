@@ -3,6 +3,8 @@ package com.hancom.hanzari.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,11 +52,4 @@ public class SeatServiceImpl implements SeatService {
 		seatRepository.save(seat);
 		return seat;
 	}
-
-	@Override
-	public void updateById(String seat_id) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

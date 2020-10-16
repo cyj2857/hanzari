@@ -12,6 +12,4 @@ public interface BuildingService {
 	public void deleteById(String buildingId);
 	
 	public Building save(Building building);
-	
-	public void updateById(String buildingId);
 }

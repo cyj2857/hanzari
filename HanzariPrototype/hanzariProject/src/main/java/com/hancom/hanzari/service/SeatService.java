@@ -14,6 +14,4 @@ public interface SeatService {
 	public void deleteById(String seatId); // D
 
 	public Seat save(Seat seat); // C
-
-	public void updateById(String seatId); // U
 }

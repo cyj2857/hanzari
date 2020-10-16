@@ -12,6 +12,4 @@ public interface FigureService {
 	public void deleteById(String figureId);
 
 	public Figure save(Figure figure);
-
-	public void updateById(String figureId);
 }

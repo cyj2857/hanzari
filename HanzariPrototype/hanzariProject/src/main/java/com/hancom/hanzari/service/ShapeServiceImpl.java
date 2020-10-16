@@ -39,11 +39,4 @@ public class ShapeServiceImpl implements ShapeService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void updateById(String shape_id) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

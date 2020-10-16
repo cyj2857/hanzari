@@ -14,8 +14,6 @@ public interface EmployeeService {
 	public List<Employee> findByDepartmentId(String departmentId);
 
 	public Employee save(Employee employee); // C
-
-	public void updateById(String employeeId); // U
 	
 	public List<Employee> findByKeyword(String keyword); 
 }
