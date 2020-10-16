@@ -61,11 +61,11 @@ public class FloorController {
 		for (Field field : floorDto.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(floorDto);
-			System.out.println(field.getName() + " : " + value);
+			System.out.println(field.getName() + " : " + value + " // type : " + value.getClass());
 		}
 
 		Building building = buildingService.findById(floorDto.getBuilding_id());
-		Floor floor = Floor.builder().floorName(floorDto.getFloor_name()).building(building).build();
+		Floor floor = Floor.builder().floorName(floorDto.getFloor_name()).building(building).floorIndex(floorDto.getFloor_index()).build();
 		return new ResponseEntity<Floor>(floorService.save(floor), HttpStatus.OK);
 	}
 
@@ -79,6 +79,13 @@ public class FloorController {
 
 		Building building = buildingService.findById(floorDto.getBuilding_id());
 		floorService.deleteByFloorNameAndBuilding(floorDto.getFloor_name(), building);
+	}
+
+	// employee_id로 삭제
+	@DeleteMapping(value = "/delete/all", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Void> deleteAll() {
+		floorService.truncate();
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
 }
