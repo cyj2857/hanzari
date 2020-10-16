@@ -71,7 +71,7 @@ export default {
     eventBus.$emit("allFloorItems", allItems); // 만약 처음에 null이라면 null 인걸 canvas도 알아야 exception 처리가능
   },
   beforeUpdate() {
-    if (this.initData) {
+    if (this.initData && this.length != 0) {
       //일단 한 층이 무조건 DB에 있다는 전제하에 돌아감
       this.setFloor(this.floors[this.floorNum].floor_name);
       return;
@@ -84,8 +84,8 @@ export default {
           ? 1
           : 0;
       });
-      
-      this.length = this.floor.length
+
+      this.length = this.floor.length;
       //this.setFloor(this.floors[this.floorNum].floor_name);
       this.initData = "yes";
     }
@@ -102,9 +102,17 @@ export default {
   },
   methods: {
     decreaseTab() {
+      console.log(this.length);
+
       this.length--;
       this.floorNum = this.length - 1;
-      this.setFloor(this.floors[this.floorNum].floor_name);
+      if (this.length == 0) {
+        this.setFloor(null);
+      } else {
+        this.setFloor(this.floors[this.floorNum].floor_name);
+      }
+
+      console.log(this.length);
       //pop
     },
     increaseTab() {
@@ -140,20 +148,23 @@ export default {
       console.log(this.dialogStatus);
     },
     removeFloor() {
-      //items에서 id가 현재 floor인 애 index 가져오기
-      let currentFloorId = this.floors[this.floorNum].floor_name;
-      const idx = this.floors.findIndex(function (item) {
-        return item.floor_name == currentFloorId;
-      });
-      if (idx > -1) this.floors.splice(idx, 1);
+      if (this.length > 0) {
+        //items에서 id가 현재 floor인 애 index 가져오기
+        let currentFloorId = this.floors[this.floorNum].floor_name;
+        const idx = this.floors.findIndex(function (item) {
+          return item.floor_name == currentFloorId;
+        });
+        if (idx > -1) this.floors.splice(idx, 1);
 
-      //items에서 그 index 삭제
-      this.decreaseTab();
+        //items에서 그 index 삭제
+        this.decreaseTab();
+      } else {
+        alert("no!");
+      }
     },
     setFloor(n) {
       eventBus.$emit("changeFloor", n);
     },
-
   },
 };
 </script>
