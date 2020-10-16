@@ -848,12 +848,21 @@ export default {
         employee.name = this.employees[i].name;
         employee.department = this.employees[i].department;
         employee.number = this.employees[i].number;
-        employee.employee_id = this.employees[i].employee_id;
+
         employeeInfoList.push(employee);
       }
+      
       for (let j = 0; j < employeeInfoList.length; j++) {
         if (employee_id == employeeInfoList[j].employee_id) {
           employeeObject = employeeInfoList[j];
+        } else {
+          // employee_id 가 null인 경우.
+          let employee = {};
+          employee.name = null;
+          employee.department = null;
+          employee.number = null;
+
+          employeeObject = employee;
         }
       }
       return employeeObject; // return 받아서 department, name, number 뽑아쓰기
