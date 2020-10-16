@@ -2,7 +2,9 @@
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
       <div class="search" id="search">
-        <AllFloorsDataTable v-bind:employee="employees"></AllFloorsDataTable>
+        <AllFloorsDataTable
+          v-bind:employee="employees"
+        ></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>
@@ -121,16 +123,6 @@ export default {
             loadFloorList.push(newFloor);
           }
         });
-
-      loadFloorList.sort(function (a, b) {
-        return a.floor_index < b.floor_index
-          ? -1
-          : a.floor_index > b.floor_index
-          ? 1
-          : 0;
-      });
-      console.log("!!here!!");
-      console.log(loadFloorList);
       return loadFloorList;
     },
   },

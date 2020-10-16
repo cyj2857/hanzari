@@ -791,7 +791,7 @@ export default {
               seatData.degree = 0;
               seatData.shape_id = "1";
 
-              this.saveByAxios(seatData, "seats");
+              //this.saveByAxios(seatData, "seats");
             }
           }
         }
@@ -831,7 +831,10 @@ export default {
 
       for (let i = 0; i < this.seats.length; i++) {
         for (let j = 0; j < this.employees.length; j++) {
-          //현재 층 list 다루기
+          // 현재 층 list 다루기
+
+          // !!!!!!!!!!공석 고려 하기!!!!!!!
+          // employee id로 객체 정보 뽑아오기
           if (
             this.seats[i].floor == this.currentSelectedFloor &&
             this.employees[j].employee_id == this.seats[i].employee_id
@@ -892,8 +895,6 @@ export default {
                 "입니다."
             );
           }
-
-          //tab load 해오는 코드 필요
         }
       }
     },

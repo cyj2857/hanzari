@@ -33,13 +33,18 @@ export default {
   },
   data() {
     return {
-      length: 3,
-      tab: null,
-      floorNum: null,
+      floorNum: null, //v-tabs v-model
       dialogStatus: false,
       inputFloor: null,
       seatFloor: null,
-      floors: this.floor,
+      floors: this.floor.sort(function (a, b) {
+        return a.floor_index < b.floor_index
+          ? -1
+          : a.floor_index > b.floor_index
+          ? 1
+          : 0;
+      }),
+      length: this.floor.length,
       initData: null,
     };
   },
@@ -63,24 +68,36 @@ export default {
       });
 
     let allItems = this.floors;
-    eventBus.$emit("allFloorItems", allItems);
+    eventBus.$emit("allFloorItems", allItems); // 만약 처음에 null이라면 null 인걸 canvas도 알아야 exception 처리가능
   },
   beforeUpdate() {
     if (this.initData) {
+      //일단 한 층이 무조건 DB에 있다는 전제하에 돌아감
+      this.setFloor(this.floors[this.floorNum].floor_name);
       return;
     } else {
-      this.floorNum = 0;
-      this.setFloor(this.floors[this.floorNum].floor_name);
+      // 초기
+      this.floors = this.floor.sort(function (a, b) {
+        return a.floor_index < b.floor_index
+          ? -1
+          : a.floor_index > b.floor_index
+          ? 1
+          : 0;
+      });
+      
+      this.length = this.floor.length
+      //this.setFloor(this.floors[this.floorNum].floor_name);
       this.initData = "yes";
     }
   },
   watch: {
-    length(val) {
+    length(length) {
       let allItems = this.floors;
-      
-      this.floorNum = val - 1;
+
+      this.floorNum = length - 1; // floor의 index가 되는
 
       eventBus.$emit("allFloorItems", allItems);
+      console.log(this.length);
     },
   },
   methods: {
@@ -93,7 +110,9 @@ export default {
     increaseTab() {
       this.length++;
       this.floorNum = this.length + 1;
-      this.setFloor(this.floors[this.floorNum].floor_name);
+      if (!this.dialogStatus && this.inputFloor) {
+        this.setFloor(this.floors[this.floorNum].floor_name);
+      }
       //push
     },
     getDialog() {
@@ -106,7 +125,11 @@ export default {
       this.dialogStatus = false;
       console.log(this.dialogStatus);
       console.log(this.inputFloor + "from add floor dialog");
-      this.floors.push({floor_name: this.inputFloor, building_id: "HANCOM01", floor_index: this.floors.length});
+      this.floors.push({
+        floor_name: this.inputFloor,
+        building_id: "HANCOM01",
+        floor_index: this.floors.length,
+      });
 
       this.increaseTab();
       console.log(this.length);
@@ -130,9 +153,7 @@ export default {
     setFloor(n) {
       eventBus.$emit("changeFloor", n);
     },
-    getFloorName(floorNum) {
-      return this.floors[floorNum].floor_name;
-    },
+
   },
 };
 </script>
