@@ -682,8 +682,6 @@ export default {
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-      //let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
-      //let groupToObject = activeObject.toObject(["seatId", "employee_id","floor_id"]);
       eachEmployeeSeatList.push(activeObject);
 
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -821,6 +819,26 @@ export default {
         .then((res) => {
           console.log(res.data);
         });
+    },
+    getEmployeeObjcet(employee_id) {
+      // seat table의 employee_id를 받으면 그에 맞는 정보 알아오기 위함
+      // group 만들때 필요한 employee 정보 : department, name, number
+      let employeeInfoList = new Array();
+      let employeeObject = {};
+      for (let i = 0; i < this.employees.length; i++) {
+        let employee = {};
+        employee.name = this.employees[i].name;
+        employee.department = this.employees[i].department;
+        employee.number = this.employees[i].number;
+        employee.employee_id = this.employees[i].employee_id;
+        employeeInfoList.push(employee);
+      }
+      for (let j = 0; j < employeeInfoList.length; j++) {
+        if (employee_id == employeeInfoList[j].employee_id) {
+          employeeObject = employeeInfoList[j]
+        }
+      }
+      return employeeObject; // return 받아서 department, name, number 뽑아쓰기
     },
     clickLoadBtn() {
       /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
