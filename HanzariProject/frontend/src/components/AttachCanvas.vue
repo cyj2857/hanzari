@@ -700,56 +700,6 @@ export default {
       );
       //여기
     },
-    makeGroupInfo(seat) {
-      let employee = this.getEmployeeObjcet(seat.employee_id);
-
-      let rectangle = new fabric.Rect({
-        width: seat.width,
-        height: seat.height,
-        fill: this.getColor(employee.department),
-      });
-      let textObject = new fabric.IText(employee.name, {
-        left: 0,
-        top: rectangle.height / 3,
-        fontSize: 13,
-        fill: "black",
-      });
-      let group = new fabric.Group([rectangle, textObject], {
-        seatId: seat.seat_id,
-        employee_name: employee.name,
-        employee_department: employee.department,
-        employee_number: employee.number,
-        employee_id: seat.employee_id,
-        floor_id: seat.floor, //One이라고 가정
-        left: seat.x,
-        top: seat.y,
-      });
-      group.on("mousedown", (e) => {
-        let group = e.target;
-        if (e.button === 2) {
-          let groupToObject = group.toObject([
-            "employee_id",
-            "employee_name",
-            "floor_id",
-            "employee_department",
-          ]);
-          eventBus.$emit("employee_id", groupToObject.employee_id);
-          eventBus.$emit("employee_name", groupToObject.employee_name);
-          eventBus.$emit("floor_id", groupToObject.floor_id);
-          eventBus.$emit(
-            "employee_department",
-            groupToObject.employee_department
-          );
-          this.getEmployeeDialog();
-        }
-      });
-      group.on("mousedblclick", (e) => {
-        //자리이동 UI 넣을 곳
-        this.getChangeSeatDialog();
-      });
-
-      return group;
-    },
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
 
@@ -822,26 +772,6 @@ export default {
           console.log(res.data);
         });
     },
-    getEmployeeObjcet(employee_id) {
-      // seat table의 employee_id를 받으면 그에 맞는 정보 알아오기 위함
-      // group 만들때 필요한 employee 정보 : department, name, number
-      let employeeInfoList = new Array();
-      let employeeObject = {};
-      for (let i = 0; i < this.employees.length; i++) {
-        let employee = {};
-        employee.name = this.employees[i].name;
-        employee.department = this.employees[i].department;
-        employee.number = this.employees[i].number;
-        employee.employee_id = this.employees[i].employee_id;
-        employeeInfoList.push(employee);
-      }
-      for (let j = 0; j < employeeInfoList.length; j++) {
-        if (employee_id == employeeInfoList[j].employee_id) {
-          employeeObject = employeeInfoList[j];
-        }
-      }
-      return employeeObject; // return 받아서 department, name, number 뽑아쓰기
-    },
     clickLoadBtn() {
       /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
       let eachFloorSeatList = null;
@@ -907,6 +837,76 @@ export default {
           );
         }
       }
+    },
+    getEmployeeObjcet(employee_id) {
+      // seat table의 employee_id를 받으면 그에 맞는 정보 알아오기 위함
+      // group 만들때 필요한 employee 정보 : department, name, number
+      let employeeInfoList = new Array();
+      let employeeObject = {};
+      for (let i = 0; i < this.employees.length; i++) {
+        let employee = {};
+        employee.name = this.employees[i].name;
+        employee.department = this.employees[i].department;
+        employee.number = this.employees[i].number;
+        employee.employee_id = this.employees[i].employee_id;
+        employeeInfoList.push(employee);
+      }
+      for (let j = 0; j < employeeInfoList.length; j++) {
+        if (employee_id == employeeInfoList[j].employee_id) {
+          employeeObject = employeeInfoList[j];
+        }
+      }
+      return employeeObject; // return 받아서 department, name, number 뽑아쓰기
+    },
+    makeGroupInfo(seat) {
+      let employee = this.getEmployeeObjcet(seat.employee_id);
+
+      let rectangle = new fabric.Rect({
+        width: seat.width,
+        height: seat.height,
+        fill: this.getColor(employee.department),
+      });
+      let textObject = new fabric.IText(employee.name, {
+        left: 0,
+        top: rectangle.height / 3,
+        fontSize: 13,
+        fill: "black",
+      });
+      let group = new fabric.Group([rectangle, textObject], {
+        seatId: seat.seat_id,
+        employee_name: employee.name,
+        employee_department: employee.department,
+        employee_number: employee.number,
+        employee_id: seat.employee_id,
+        floor_id: seat.floor, //One이라고 가정
+        left: seat.x,
+        top: seat.y,
+      });
+      group.on("mousedown", (e) => {
+        let group = e.target;
+        if (e.button === 2) {
+          let groupToObject = group.toObject([
+            "employee_id",
+            "employee_name",
+            "floor_id",
+            "employee_department",
+          ]);
+          eventBus.$emit("employee_id", groupToObject.employee_id);
+          eventBus.$emit("employee_name", groupToObject.employee_name);
+          eventBus.$emit("floor_id", groupToObject.floor_id);
+          eventBus.$emit(
+            "employee_department",
+            groupToObject.employee_department
+          );
+          this.getEmployeeDialog();
+        }
+      });
+      group.on("mousedblclick", (e) => {
+        //자리이동 UI 넣을 곳
+        this.getChangeSeatDialog();
+      });
+
+      return group;
     },
   },
 };
