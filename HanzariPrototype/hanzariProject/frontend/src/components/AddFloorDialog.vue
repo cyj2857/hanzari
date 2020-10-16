@@ -8,7 +8,7 @@
         <v-text-field label="Floor" v-model="floor" required></v-text-field>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="confirm" >Confirm</v-btn>
+          <v-btn @click="confirm">Confirm</v-btn>
           <v-btn @click="$emit('close')">Close</v-btn>
         </v-card-actions>
       </v-card>
@@ -30,9 +30,9 @@ export default {
     };
   },
   created() {
-    eventBus.$on("initFloor", (initFloor)=>{
-      this.floor = initFloor
-    })
+    eventBus.$on("initFloor", (initFloor) => {
+      this.floor = initFloor;
+    });
   },
   computed: {
     dialog() {
@@ -41,9 +41,8 @@ export default {
   },
   methods: {
     confirm() {
-      if(this.floor==null)
-        return;
-        
+      if (this.floor == null) return;
+
       eventBus.$emit("floorInfo", this.floor);
       eventBus.$emit("confirm");
     },
