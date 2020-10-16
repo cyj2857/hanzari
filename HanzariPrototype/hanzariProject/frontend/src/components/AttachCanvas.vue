@@ -759,12 +759,12 @@ export default {
       if (this.allFloorItems) {
         for (let j = 0; j < this.allFloorItems.length; j++) {
           let eachFloorSeatList = this.getEachFloorSeatList(
-            this.allFloorItems[j].id
+            this.allFloorItems[j].floor_name
           );
           if (eachFloorSeatList.length > 0) {
             console.log(
               eachFloorSeatList.length +
-                this.allFloorItems[j].id +
+                this.allFloorItems[j].floor_name +
                 "층의 자리 개수입니다."
             );
             for (let i = 0; i < eachFloorSeatList.length; i++) {
@@ -805,7 +805,7 @@ export default {
           floorData.floor_index = this.allFloorItems[j].floor_index; // 이후에 삭제된 floor tab들 따로 관리해줘서 같은 index 충돌 안나게 해줘야 함.
 
           console.log(floorData);
-          this.saveByAxios(floorData);
+          this.saveByAxios(floorData, "floors");
         }
       }
     },
