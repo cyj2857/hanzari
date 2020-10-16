@@ -92,7 +92,7 @@ export default {
     },
     increaseTab() {
       this.length++;
-      this.floorNum = this.length - 1;
+      this.floorNum = this.length + 1;
       this.setFloor(this.floors[this.floorNum].floor_name);
       //push
     },
