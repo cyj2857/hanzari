@@ -700,7 +700,9 @@ export default {
       );
       //여기
     },
-    makeGroupInfo(seat, employee) {
+    makeGroupInfo(seat) {
+      let employee = this.getEmployeeObjcet(seat.employee_id);
+
       let rectangle = new fabric.Rect({
         width: seat.width,
         height: seat.height,
@@ -835,7 +837,7 @@ export default {
       }
       for (let j = 0; j < employeeInfoList.length; j++) {
         if (employee_id == employeeInfoList[j].employee_id) {
-          employeeObject = employeeInfoList[j]
+          employeeObject = employeeInfoList[j];
         }
       }
       return employeeObject; // return 받아서 department, name, number 뽑아쓰기
@@ -847,72 +849,62 @@ export default {
 
       let group = null;
 
+      // 현재 층 list 다루기
       for (let i = 0; i < this.seats.length; i++) {
-        for (let j = 0; j < this.employees.length; j++) {
-          // 현재 층 list 다루기
+        // !!!!!!!!!!공석 고려 하기!!!!!!!
+        if (this.seats[i].floor == this.currentSelectedFloor) {
+          eachFloorSeatList = this.getEachFloorSeatList(
+            this.currentSelectedFloor
+          );
+          eachEmployeeSeatList = this.getEachEmployeeSeatList(
+            this.seats[i].employee_id
+          );
 
-          // !!!!!!!!!!공석 고려 하기!!!!!!!
-          // employee id로 객체 정보 뽑아오기
-          if (
-            this.seats[i].floor == this.currentSelectedFloor &&
-            this.employees[j].employee_id == this.seats[i].employee_id
-          ) {
-            eachFloorSeatList = this.getEachFloorSeatList(
-              this.currentSelectedFloor
-            );
-            eachEmployeeSeatList = this.getEachEmployeeSeatList(
-              this.seats[i].employee_id
-            );
+          group = this.makeGroupInfo(this.seats[i]);
 
-            group = this.makeGroupInfo(this.seats[i], this.employee[j]);
+          this.floorCanvas.add(group);
+          eachFloorSeatList.push(group);
+          console.log(eachFloorSeatList);
+          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-            this.floorCanvas.add(group);
-            eachFloorSeatList.push(group);
-            console.log(eachFloorSeatList);
-            eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+          eachEmployeeSeatList.push(group);
 
-            eachEmployeeSeatList.push(group);
+          eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+          console.log(
+            this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
+          );
+          console.log(
+            this.seats[i].employee_id +
+              "의 자리 리스트 개수는 " +
+              this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
+              "입니다."
+          );
+        }
+        //다른 층 eachFloorSeatList에 넣기
+        else if (this.seat[i].floor != this.currentSelectedFloor) {
+          eachFloorSeatList = this.getEachFloorSeatList(this.seat[i].floor);
+          eachEmployeeSeatList = this.getEachEmployeeSeatList(
+            this.seats[i].employee_id
+          );
 
-            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-            console.log(
-              this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
-            );
-            console.log(
-              this.seats[i].employee_id +
-                "의 자리 리스트 개수는 " +
-                this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
-                "입니다."
-            );
-          }
-          //다른 층 eachFloorSeatList에 넣기
-          else if (
-            this.seat[i].floor != this.currentSelectedFloor &&
-            this.employees[j].employee_id == this.seats[i].employee_id
-          ) {
-            eachFloorSeatList = this.getEachFloorSeatList(this.seat[i].floor);
-            eachEmployeeSeatList = this.getEachEmployeeSeatList(
-              this.seats[i].employee_id
-            );
+          group = this.makeGroupInfo(this.seats[i]);
 
-            group = this.makeGroupInfo(this.seats[i], this.employee[j]);
+          eachFloorSeatList.push(group);
 
-            eachFloorSeatList.push(group);
+          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
-            eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+          eachEmployeeSeatList.push(group);
 
-            eachEmployeeSeatList.push(group);
-
-            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-            console.log(
-              this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
-            );
-            console.log(
-              this.seats[i].employee_id +
-                "의 자리 리스트 개수는 " +
-                this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
-                "입니다."
-            );
-          }
+          eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+          console.log(
+            this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
+          );
+          console.log(
+            this.seats[i].employee_id +
+              "의 자리 리스트 개수는 " +
+              this.getEachEmployeeSeatList(this.seats[i].employee_id).length +
+              "입니다."
+          );
         }
       }
     },
