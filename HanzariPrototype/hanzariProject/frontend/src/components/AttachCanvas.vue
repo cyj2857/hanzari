@@ -104,7 +104,7 @@ export default {
       //to save floor information
       this.allFloorItems = allItems;
       console.log("in AttachCanvas");
-      console.log(this.allFloorItems); // id 뽑아내야함
+      console.log(this.allFloorItems); // floor_name 뽑아내야함
     });
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
@@ -177,7 +177,7 @@ export default {
       this.floorCanvas.renderAll();
     },
     //canvas, map 생성
-     initializing() {
+    initializing() {
       if (this.floorCanvas == null) {
         const ref = this.$refs.canvas;
         this.floorCanvas = new fabric.Canvas(ref, {
@@ -197,7 +197,10 @@ export default {
             zoom = zoom - deltaY / 300;
             if (zoom > 20) zoom = 20;
             if (zoom < 1) zoom = 0.95;
-            this.floorCanvas.zoomToPoint(new fabric.Point(evt.offsetX, evt.offsetY),zoom);
+            this.floorCanvas.zoomToPoint(
+              new fabric.Point(evt.offsetX, evt.offsetY),
+              zoom
+            );
           } /*else {//scroll event
             this.floorCanvas.viewportTransform[4] += (evt.deltaX)*-1; 
             this.floorCanvas.viewportTransform[5] += (evt.deltaY)*-1;
@@ -790,9 +793,11 @@ export default {
       if (this.allFloorItems) {
         for (let j = 0; j < this.allFloorItems.length; j++) {
           let floorData = {};
-          floorData.floor_name = this.allFloorItems[j].id;
-          floorData.building_id = "HANCOM01";
+          floorData.floor_name = this.allFloorItems[j].floor_name;
+          floorData.building_id = this.allFloorItems[j].building_id;
+          floorData.floor_index = this.allFloorItems[j].floor_index; // 이후에 삭제된 floor tab들 따로 관리해줘서 같은 index 충돌 안나게 해줘야 함.
 
+          console.log(floorData);
           this.saveAllFloorByAxios(floorData);
         }
       }

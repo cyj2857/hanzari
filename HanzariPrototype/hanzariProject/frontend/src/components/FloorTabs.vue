@@ -40,7 +40,7 @@ export default {
       inputFloor: null,
       seatFloor: null,
       floors: this.floor,
-      initData: null
+      initData: null,
     };
   },
   created() {
@@ -61,19 +61,23 @@ export default {
           }
         }
       });
+
+    let allItems = this.floors;
+    eventBus.$emit("allFloorItems", allItems);
   },
   beforeUpdate() {
     if (this.initData) {
-      return
+      return;
     } else {
       this.floorNum = 0;
       this.setFloor(this.floors[this.floorNum].floor_name);
-      this.initData = "yes"
+      this.initData = "yes";
     }
   },
   watch: {
     length(val) {
       let allItems = this.floors;
+      
       this.floorNum = val - 1;
 
       eventBus.$emit("allFloorItems", allItems);
@@ -102,7 +106,7 @@ export default {
       this.dialogStatus = false;
       console.log(this.dialogStatus);
       console.log(this.inputFloor + "from add floor dialog");
-      this.floors.push({ floor_name: this.inputFloor });
+      this.floors.push({floor_name: this.inputFloor, building_id: "HANCOM01", floor_index: this.floors.length});
 
       this.increaseTab();
       console.log(this.length);
