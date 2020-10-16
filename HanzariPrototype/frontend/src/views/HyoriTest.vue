@@ -36,7 +36,7 @@ import AttachCanvas from "@/components/AttachCanvas.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
 import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
-const portNum = 8080;
+const portNum = 8081;
 const host = "172.30.1.50";
 
 export default {
