@@ -49,6 +49,10 @@ export default {
     };
   },
   created() {
+    let allItems = this.floors;
+    eventBus.$emit("allFloorItems", allItems); 
+    // 만약 처음에 null이라면 null 인걸 canvas도 알아야 exception 처리가능해서 created에서 넘겨줌
+    
     eventBus.$on("confirm", () => {
       this.confirmDialog();
     }),
@@ -66,9 +70,6 @@ export default {
           }
         }
       });
-
-    let allItems = this.floors;
-    eventBus.$emit("allFloorItems", allItems); // 만약 처음에 null이라면 null 인걸 canvas도 알아야 exception 처리가능
   },
   beforeUpdate() {
     if (this.initData && this.length != 0) {
@@ -86,7 +87,6 @@ export default {
       });
 
       this.length = this.floor.length;
-      //this.setFloor(this.floors[this.floorNum].floor_name);
       this.initData = "yes";
     }
   },
@@ -119,7 +119,7 @@ export default {
       this.length++;
       this.floorNum = this.length + 1;
       if (!this.dialogStatus && this.inputFloor) {
-        this.setFloor(this.floors[this.floorNum].floor_name);
+        this.setFloor(this.inputFloor);
       }
       //push
     },
@@ -159,7 +159,7 @@ export default {
         //items에서 그 index 삭제
         this.decreaseTab();
       } else {
-        alert("no!");
+        alert("there are no seats to delete!");
       }
     },
     setFloor(n) {
