@@ -791,7 +791,7 @@ export default {
               seatData.degree = 0;
               seatData.shape_id = "1";
 
-              //this.saveByAxios(seatData, "seats");
+              this.saveByAxios(seatData, "seats");
             }
           }
         }
