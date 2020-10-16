@@ -12,6 +12,4 @@ public interface ShapeService {
 	public void deleteById(String shapeId);
 
 	public Shape save(Shape shape);
-
-	public void updateById(String shapeId);
 }

@@ -49,15 +49,18 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
+	public void deleteByBuilding(Building building) {
+		floorRepository.deleteByBuilding(building);
+	}
+
+	@Override
+	public void truncate() {
+		floorRepository.truncate();
+	}
+
+	@Override
 	public Floor save(Floor floor) {
 		floorRepository.save(floor);
 		return floor;
 	}
-
-	@Override
-	public Floor updateByFloorNameAndBuilding(String floorName, Building building) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

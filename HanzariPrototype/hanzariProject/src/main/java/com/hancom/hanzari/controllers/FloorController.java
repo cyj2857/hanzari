@@ -61,16 +61,17 @@ public class FloorController {
 		for (Field field : floorDto.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(floorDto);
-			System.out.println(field.getName() + " : " + value);
+			System.out.println(field.getName() + " : " + value + " // type : " + value.getClass());
 		}
 
 		Building building = buildingService.findById(floorDto.getBuilding_id());
-		Floor floor = Floor.builder().floorName(floorDto.getFloor_name()).building(building).build();
+		Floor floor = Floor.builder().floorName(floorDto.getFloor_name()).building(building)
+				.floorIndex(floorDto.getFloor_index()).build();
 		return new ResponseEntity<Floor>(floorService.save(floor), HttpStatus.OK);
 	}
 
 	@DeleteMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-	public void delete(@RequestBody FloorDto floorDto) throws Exception  {
+	public void delete(@RequestBody FloorDto floorDto) throws Exception {
 		for (Field field : floorDto.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(floorDto);
@@ -79,6 +80,22 @@ public class FloorController {
 
 		Building building = buildingService.findById(floorDto.getBuilding_id());
 		floorService.deleteByFloorNameAndBuilding(floorDto.getFloor_name(), building);
+	}
+
+	@DeleteMapping(value = "/{building_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public void delete(@PathVariable("building_id") String building_id) throws Exception {
+		Building building = buildingService.findById(building_id);
+		if (building == null) {
+			throw new ResourceNotFoundException("Building", "building_id", building_id);
+		}
+		floorService.deleteByBuilding(building);
+	}
+
+	// 전체삭제
+	@DeleteMapping(value = "/truncate", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Void> truncate() {
+		floorService.truncate();
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
 }

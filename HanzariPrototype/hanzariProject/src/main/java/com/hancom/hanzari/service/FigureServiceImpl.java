@@ -40,11 +40,4 @@ public class FigureServiceImpl implements FigureService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void updateById(String figureId) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
