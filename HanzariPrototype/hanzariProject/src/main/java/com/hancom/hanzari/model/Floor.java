@@ -33,7 +33,7 @@ public class Floor {
 	private String floorName;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "building_id", nullable = false)
+	@JoinColumn(name = "building_id", nullable = true)
 	private Building building;
 
 	@Column(name = "floor_index", nullable = false)

@@ -14,6 +14,8 @@ public interface FloorService {
 	
 	public void deleteByFloorNameAndBuilding(String floorName, Building building);
 	
+	public void deleteByBuilding(Building building);
+	
 	public void truncate();
 
 	public Floor save(Floor floor);

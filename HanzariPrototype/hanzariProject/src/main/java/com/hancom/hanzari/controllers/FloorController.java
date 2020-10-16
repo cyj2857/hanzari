@@ -65,7 +65,8 @@ public class FloorController {
 		}
 
 		Building building = buildingService.findById(floorDto.getBuilding_id());
-		Floor floor = Floor.builder().floorName(floorDto.getFloor_name()).building(building).floorIndex(floorDto.getFloor_index()).build();
+		Floor floor = Floor.builder().floorName(floorDto.getFloor_name()).building(building)
+				.floorIndex(floorDto.getFloor_index()).build();
 		return new ResponseEntity<Floor>(floorService.save(floor), HttpStatus.OK);
 	}
 
@@ -81,9 +82,18 @@ public class FloorController {
 		floorService.deleteByFloorNameAndBuilding(floorDto.getFloor_name(), building);
 	}
 
-	// employee_id로 삭제
-	@DeleteMapping(value = "/delete/all", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Void> deleteAll() {
+	@DeleteMapping(value = "/{building_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public void delete(@PathVariable("building_id") String building_id) throws Exception {
+		Building building = buildingService.findById(building_id);
+		if (building == null) {
+			throw new ResourceNotFoundException("Building", "building_id", building_id);
+		}
+		floorService.deleteByBuilding(building);
+	}
+
+	// 전체삭제
+	@DeleteMapping(value = "/truncate", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Void> truncate() {
 		floorService.truncate();
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
