@@ -26,15 +26,18 @@ export default {
   components: {
     AddFloorDialog,
   },
-  data: () => ({
-    length: 3,
-    tab: null,
-    items: [{ id: "One" }, { id: "Five" }, { id: "Six" }],
-    floorNum: null,
-    dialogStatus: false,
-    inputFloor: null,
-    seatFloor: null,
-  }),
+  data() {
+    return {
+      length: 3,
+      tab: null,
+      floorNum: null,
+      dialogStatus: false,
+      inputFloor: null,
+      seatFloor: null,
+      floors: this.floor,
+      initData: null,
+    };
+  },
   created() {
     eventBus.$on("confirm", () => {
       this.confirmDialog();
@@ -53,71 +56,90 @@ export default {
           }
         }
       });
-  },
-  mounted() {
-    this.floorNum = 0;
-    this.setFloor(this.items[this.floorNum].id);
 
-    let allItems = this.items;
+    let allItems = this.floors;
     eventBus.$emit("allFloorItems", allItems);
   },
-  methods: {
-    getDialog() {
-      eventBus.$emit("initFloor", null);
-      this.dialogStatus = true;
-      console.log(this.dialogStatus);
-    },
-    confirmDialog() {
-      console.log("<<<confirm dialog>>>");
-      this.dialogStatus = false;
-      console.log(this.dialogStatus);
-      console.log(this.inputFloor + "from add floor dialog");
-      this.items.push({ id: this.inputFloor });
-
-      this.increaseTab();
-      console.log(this.length);
-    },
-    closeDialog() {
-      console.log("<<<close dialog>>>");
-      this.dialogStatus = false;
-      console.log(this.dialogStatus);
-    },
-    removeFloor() {
-      //items에서 id가 현재 floor인 애 index 가져오기
-      let currentFloorId = this.items[this.floorNum].id;
-      const idx = this.items.findIndex(function (item) {
-        return item.id == currentFloorId;
-      });
-      if (idx > -1) this.items.splice(idx, 1);
-
-      //items에서 그 index 삭제
-      this.decreaseTab();
-    },
-    setFloor(n) {
-      eventBus.$emit("changeFloor", n);
-    },
-    getFloorName(floorNum) {
-      return this.items[floorNum].id;
-    },
-    decreaseTab() {
-      this.length--;
-      this.floorNum = this.length - 1;
-      this.setFloor(this.items[this.floorNum].id);
-      //pop
-    },
-    increaseTab() {
-      this.length++;
-      this.floorNum = this.length - 1;
-      this.setFloor(this.items[this.floorNum].id);
-      //push
-    },
+  beforeUpdate() {
+    if (this.initData) {
+      return;
+    } else {
+      this.floorNum = 0;
+      this.setFloor(this.floors[this.floorNum].floor_name);
+      this.initData = "yes";
+    }
   },
   watch: {
     length(val) {
-      let allItems = this.items;
+      let allItems = this.floors;
+
       this.floorNum = val - 1;
 
+      let allItems = this.items;
       eventBus.$emit("allFloorItems", allItems);
+    },
+    methods: {
+      getDialog() {
+        eventBus.$emit("initFloor", null);
+        this.dialogStatus = true;
+        console.log(this.dialogStatus);
+      },
+      confirmDialog() {
+        console.log("<<<confirm dialog>>>");
+        this.dialogStatus = false;
+        console.log(this.dialogStatus);
+        console.log(this.inputFloor + "from add floor dialog");
+        this.floors.push({
+          floor_name: this.inputFloor,
+          building_id: "HANCOM01",
+          floor_index: this.floors.length,
+        });
+
+        this.increaseTab();
+        console.log(this.length);
+      },
+      closeDialog() {
+        console.log("<<<close dialog>>>");
+        this.dialogStatus = false;
+        console.log(this.dialogStatus);
+      },
+      removeFloor() {
+        //items에서 id가 현재 floor인 애 index 가져오기
+        let currentFloorId = this.items[this.floorNum].id;
+        const idx = this.items.findIndex(function (item) {
+          return item.id == currentFloorId;
+        });
+        if (idx > -1) this.items.splice(idx, 1);
+
+        //items에서 그 index 삭제
+        this.decreaseTab();
+      },
+      setFloor(n) {
+        eventBus.$emit("changeFloor", n);
+      },
+      getFloorName(floorNum) {
+        return this.items[floorNum].id;
+      },
+      decreaseTab() {
+        this.length--;
+        this.floorNum = this.length - 1;
+        this.setFloor(this.items[this.floorNum].id);
+        //pop
+      },
+      increaseTab() {
+        this.length++;
+        this.floorNum = this.length - 1;
+        this.setFloor(this.items[this.floorNum].id);
+        //push
+      },
+    },
+    watch: {
+      length(val) {
+        let allItems = this.items;
+        this.floorNum = val - 1;
+
+        eventBus.$emit("allFloorItems", allItems);
+      },
     },
   },
 };

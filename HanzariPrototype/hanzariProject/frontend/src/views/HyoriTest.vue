@@ -116,6 +116,7 @@ export default {
             let newFloor = {};
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
+            newFloor.floor_index = response.data[i].floor_index;
 
             loadFloorList.push(newFloor);
           }
