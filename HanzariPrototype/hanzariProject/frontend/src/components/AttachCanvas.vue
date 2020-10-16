@@ -753,38 +753,39 @@ export default {
     //아직 구현중에 있습니다.
     clickSaveBtn() {
       //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
-      );
-      console.log(eachFloorSeatList.length + "현재 층의 자리 개수입니다.");
+      if (this.allFloorItems) {
+        for (let j = 0; j < this.allFloorItems.length; j++) {
+          let eachFloorSeatList = this.getEachFloorSeatList(this.allFloorItems[j].id);
+          if(eachFloorSeatList.length>0){
+            console.log(eachFloorSeatList.length + this.allFloorItems[j].id+ "층의 자리 개수입니다.");
+            for (let i = 0; i < eachFloorSeatList.length; i++) {
+              let groupToObject = eachFloorSeatList[i].toObject([
+                "seatId",
+                "floor_id",
+                "left",
+                "top",
+                "employee_department",
+                "employee_id",
+                ]);
+                
+              let seatData = {};
+              seatData.seat_id = groupToObject.seatId;
+              seatData.floor = groupToObject.floor_id;
+              seatData.x = groupToObject.left;
+              seatData.y = groupToObject.top;
+              seatData.is_group = false;
+              seatData.group_id = null;
+              seatData.building_id = "HANCOM01";
+              seatData.employee_id = groupToObject.employee_id;
+              seatData.width = 50.5;
+              seatData.height = 50.5;
+              seatData.degree = 0;
+              seatData.shape_id = "1";
 
-      if (eachFloorSeatList) {
-        for (let i = 0; i < eachFloorSeatList.length; i++) {
-          let groupToObject = eachFloorSeatList[i].toObject([
-            "seatId",
-            "floor_id",
-            "left",
-            "top",
-            "employee_department",
-            "employee_id",
-          ]);
-
-          let data = {};
-          data.seat_id = groupToObject.seatId;
-          data.floor = groupToObject.floor_id;
-          data.x = groupToObject.left;
-          data.y = groupToObject.top;
-          data.is_group = false;
-          data.group_id = null;
-          data.building_id = "HANCOM01";
-          data.employee_id = groupToObject.employee_id;
-          data.width = 50.5;
-          data.height = 50.5;
-          data.degree = 0;
-          data.shape_id = "1";
-
-          this.saveAllSeatByAxios(data);
-        }
+              this.saveByAxios(seatData , "seats");
+               }
+             }
+          }
       }
 
       if (this.allFloorItems) {
@@ -793,14 +794,14 @@ export default {
           floorData.floor_name = this.allFloorItems[j].id;
           floorData.building_id = "HANCOM01";
 
-          this.saveAllFloorByAxios(floorData);
+          //this.saveByAxios(floorData, "floors");
         }
       }
     },
-    saveAllSeatByAxios(data) {
+    saveByAxios(data, tableName) {
       axios
         .post(
-          "http://" + host + ":" + portNum + "/seats",
+          "http://" + host + ":" + portNum + "/"+ tableName,
           JSON.stringify(data),
           {
             headers: { "Content-Type": `application/json` },
@@ -808,19 +809,6 @@ export default {
         )
         .then((res) => {
           console.log(res.data);
-        });
-    },
-    saveAllFloorByAxios(floorData) {
-      axios
-        .post(
-          "http://" + host + ":" + portNum + "/floors",
-          JSON.stringify(floorData),
-          {
-            headers: { "Content-Type": `application/json` },
-          }
-        )
-        .then((res) => {
-          console.log(res.floorData);
         });
     },
     clickLoadBtn() {
