@@ -5,6 +5,8 @@
         <v-btn text @click="removeFloor">Remove Floor</v-btn>
         <v-divider class="mx-4" vertical></v-divider>
         <v-btn text @click="getDialog">Add Floor</v-btn>
+        <v-divider class="mx-4" vertical></v-divider>
+        <v-btn text>Edit Floor name</v-btn>
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
         <v-tab
