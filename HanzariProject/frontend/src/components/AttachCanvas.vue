@@ -598,7 +598,6 @@ export default {
           height: 50,
           fill: this.getColor(null),
           opacity: 1,
-          angle: 0,
         });
 
         let textObject = new fabric.IText("", {
@@ -617,6 +616,7 @@ export default {
           employee_id: null,
           left: VP.left,
           top: VP.top,
+          angle: 0,
         });
 
         group[i].on("mouseover", function (e) {
@@ -889,7 +889,6 @@ export default {
         height: seat.height,
         fill: this.getColor(employee.department),
         opacity: 1,
-        angle: 0,
       });
 
       let textObject = null;
@@ -919,6 +918,7 @@ export default {
         floor_id: seat.floor, //One이라고 가정
         left: seat.x,
         top: seat.y,
+        angle: 0,
       });
       group.on("mousedown", (e) => {
         let group = e.target;
