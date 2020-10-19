@@ -451,7 +451,7 @@ export default {
       );
 
       for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-        if (oneEmployeeSeatList[i] == groupToObject.seatId) {
+        if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
           oneEmployeeSeatList.splice(i, 1);
         }
       }
@@ -666,14 +666,45 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
-
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
-
       let activeObject = this.floorCanvas.getActiveObject(); //group 객체
-      (activeObject.employee_name = item.name),
-        (activeObject.employee_department = item.department),
-        (activeObject.employee_number = item.number),
-        (activeObject.employee_id = item.employee_id);
+      
+      //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
+      if (
+        activeObject.employee_id != null &&
+        activeObject.employee_id != item.employee_id
+      ) {
+        if (
+          confirm(
+            activeObject.employee_name +
+              "사원의 자리를 " +
+              item.name +
+              "자리로 변경하시겠습니까?"
+          )
+        ) {
+          let groupToObject = activeObject.toObject([
+            "seatId",
+            "employee_id",
+            "floor_id",
+          ]);
+
+          this.deleteEachEmployeeSeatList(groupToObject);
+        }
+      }
+      //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
+      else if (
+        activeObject.employee_id != null &&
+        activeObject.employee_id == item.employee_id
+      ) {
+        alert("이 자리는 이미 " + item.name + "의 자리입니다.");
+        return;
+      }
+     
+      //해당 자리가 사원이 매핑되어있지않으면 바로 이 시점으로..
+      activeObject.employee_name = item.name;
+      activeObject.employee_department = item.department;
+      activeObject.employee_number = item.number;
+      activeObject.employee_id = item.employee_id;
 
       activeObject
         .item(0)
@@ -681,25 +712,9 @@ export default {
       activeObject._objects[1].text = item.name;
       this.floorCanvas.renderAll();
 
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-
       eachEmployeeSeatList.push(activeObject);
-
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-      console.log(this.eachEmployeeSeatMap.size + "맵의 사이즈입니다.");
-
-      let groupToObject = activeObject.toObject([
-        "seatId",
-        "employee_id",
-        "floor_id",
-      ]);
-      console.log(
-        groupToObject.employee_id +
-          "의 자리 리스트 개수는 " +
-          this.getEachEmployeeSeatList(groupToObject.employee_id).length +
-          "입니다."
-      );
-      //여기
     },
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
