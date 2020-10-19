@@ -271,6 +271,11 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
+    onFileChange(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
     createImage(file) {
       this.loadImage(file);
       this.saveImage(file);
@@ -295,11 +300,6 @@ export default {
       this.floorImageList.set(this.currentSelectedFloor, file);
       console.log("floorImageList : ");
       console.log(this.floorImageList.get(this.currentSelectedFloor));
-    },
-    onFileChange(e) {
-      let files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
     },
     getColor(department) {
       const Colors = {
