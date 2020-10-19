@@ -616,17 +616,20 @@ export default {
           employee_id: null,
           left: VP.left,
           top: VP.top,
-          angle: 0,
+          angle: 0
         });
 
-        group[i].on("mouseover", function (e) {
-          let group = e.target;
-          let asObject = group.toObject(["seatId"]);
-          let x = group.toObject(["left"]);
+        this.floorCanvas.on("object:scaling", onObjectScaled);
+        function onObjectScaled(e) {
+          var scaledObject = e.target;
+          let groupx = scaledObject.toObject(["width","height", "scaleX","scaleY"]);
+          scaledObject.set("scaleX", groupx.scaleX);
+          scaledObject.set("scaleY", groupx.scaleY);
 
-          console.log("seatId = " + asObject.seatId);
-          console.log("left = " + x.left);
-        });
+          console.log(groupx.width*groupx.scaleX+"저장할 width");
+          console.log(group[i].scaleX+"그룹의 스케일엑스");
+          console.log(groupx.height*groupx.scaleY+"저장할 height");
+        }
 
         group[i].on("mousedown", (e) => {
           let group = e.target;
@@ -752,6 +755,7 @@ export default {
                 "층의 자리 개수입니다."
             );
             for (let i = 0; i < eachFloorSeatList.length; i++) {
+
               let groupToObject = eachFloorSeatList[i].toObject([
                 "seatId",
                 "floor_id",
@@ -759,6 +763,8 @@ export default {
                 "top",
                 "employee_department",
                 "employee_id",
+                "width","height",
+                "scaleX","scaleY"
               ]);
 
               let seatData = {};
@@ -770,8 +776,10 @@ export default {
               seatData.group_id = null;
               seatData.building_id = "HANCOM01";
               seatData.employee_id = groupToObject.employee_id;
-              seatData.width = 50.5;
-              seatData.height = 50.5;
+              seatData.width = groupToObject.width*groupToObject.scaleX;
+              seatData.height = groupToObject.height*groupToObject.scaleY;
+              seatData.scaleX = eachFloorSeatList[i].scaleX,
+              seatData.scaleY = eachFloorSeatList[i].scaleY,
               seatData.degree = 0;
               seatData.shape_id = "1";
 
