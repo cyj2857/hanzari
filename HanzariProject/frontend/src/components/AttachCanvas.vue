@@ -36,6 +36,7 @@
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
+    <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <EmployeeDialog
       :dialogStatus="this.employeeDialogStatus"
       @close="closeEmployeeDialog"
@@ -201,17 +202,17 @@ export default {
               new fabric.Point(evt.offsetX, evt.offsetY),
               zoom
             );
-          } /*else {//scroll event
-            this.floorCanvas.viewportTransform[4] += (evt.deltaX)*-1; 
-            this.floorCanvas.viewportTransform[5] += (evt.deltaY)*-1;
-            this.floorCanvas.requestRenderAll();
-            this.setState({ lastPosX: evt.clientX });
-            this.setState({ lastPosY: evt.clientY });
-          }*/
+          } else {
+            //reset canvas ratio
+            this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+          }
           opt.e.preventDefault();
           opt.e.stopPropagation();
         });
       }
+    },
+    clickResetToRatio() {
+      this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
     getSeatUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
