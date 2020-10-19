@@ -37,6 +37,7 @@
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
+     <v-btn @click="clickTest" color="pink">Test</v-btn>
     <EmployeeDialog
       :dialogStatus="this.employeeDialogStatus"
       @close="closeEmployeeDialog"
@@ -544,6 +545,13 @@ export default {
         }
       }
     },
+    clickTest(){
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+
+      console.log(eachFloorSeatList);
+    },
 
     addVacantBtn(number) {
       let VacantPositon = [
@@ -597,7 +605,6 @@ export default {
           fontSize: 13,
           fill: "black",
         });
-
         group[i] = new fabric.Group([rectangle, textObject], {
           floor_id: this.currentSelectedFloor,
           seatId: this.seatid, // currentSelectedFloor-seatId
@@ -607,16 +614,18 @@ export default {
           employee_id: null,
           left: VP.left,
           top: VP.top,
+          width: rectangle.width,
+          height: rectangle.height
         });
 
-        group[i].on("mouseover", function (e) {
-          let group = e.target;
-          let asObject = group.toObject(["seatId"]);
-          let x = group.toObject(["left"]);
+        this.floorCanvas.on("object:scaling", onObjectScaled);
+        function onObjectScaled(e) {
+          var scaledObject = e.target;
+          let groupx = scaledObject.toObject(["width","height"]);
 
-          console.log("seatId = " + asObject.seatId);
-          console.log("left = " + x.left);
-        });
+          console.log(groupx.width*groupx.scaleX+"저장할 width");
+          console.log(groupx.height*groupx.scaleY+"저장할 height");
+        }
 
         group[i].on("mousedown", (e) => {
           let group = e.target;
@@ -899,8 +908,8 @@ export default {
       let employee = this.getEmployeeObjcet(seat.employee_id);
 
       let rectangle = new fabric.Rect({
-        width: seat.width,
-        height: seat.height,
+        width: seat.width * seat.scaleX,
+        height: seat.height * seat.scaleY,
         fill: this.getColor(employee.department),
       });
 
@@ -930,7 +939,7 @@ export default {
         employee_id: seat.employee_id,
         floor_id: seat.floor, //One이라고 가정
         left: seat.x,
-        top: seat.y,
+        top: seat.y
       });
       group.on("mousedown", (e) => {
         let group = e.target;
