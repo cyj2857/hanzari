@@ -30,6 +30,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
+    <v-btn @click="test" color="primary" dark>test</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -70,6 +71,8 @@ export default {
       seatId: null,
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
+      createSeatMap: null,
+      deleteSeatMap: null,
       eachEmployeeSeatMap: null, //each Employee's seats map
       employeeDialogStatus: false,
       changeSeatDialogStatus: false,
@@ -121,6 +124,13 @@ export default {
     this.initializing();
   },
   methods: {
+    test() {
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+
+      console.log(eachFloorSeatList);
+    },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
       console.log(this.employeeDialogStatus);
@@ -794,8 +804,6 @@ export default {
 
           this.floorCanvas.add(group);
           eachFloorSeatList.push(group);
-          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-
           eachEmployeeSeatList.push(group);
 
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -817,7 +825,6 @@ export default {
           );
           group = this.makeGroupInfo(this.seats[i]);
           eachFloorSeatList.push(group);
-          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
           eachEmployeeSeatList.push(group);
 
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -831,6 +838,11 @@ export default {
               "입니다."
           );
         }
+        eachFloorSeatList = this.getEachFloorSeatList(
+          this.currentSelectedFloor
+        );
+
+        eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       }
     },
     getEmployeeObjcet(employee_id) {
