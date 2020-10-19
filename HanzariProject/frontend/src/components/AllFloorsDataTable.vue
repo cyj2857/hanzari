@@ -78,27 +78,28 @@ export default {
     // },
     showSeatButtonClicked(item) {
       //console.log("allEmployeeSeatMap? size" + this.allEmployeeSeatMap.size);
-
-      for (let k = 0; k < this.employees.length; k++) {
-        if (this.employees[k].employee_id == item.employee_id) {
-          let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
-            item.employee_id
-          );
+      if(this.allEmployeeSeatMap){
+        for (let k = 0; k < this.employees.length; k++) {
+          if (this.employees[k].employee_id == item.employee_id) {
+            let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
+              item.employee_id
+            );
           //let eachEmployeeSeatList = this.employees[k].seatIdList;
-          console.log(eachEmployeeSeatList + "eachEmployeeSeatList");
+            console.log(eachEmployeeSeatList + "eachEmployeeSeatList");
 
-          if (eachEmployeeSeatList) {
-            console.log(
-              this.employees[k].employee_id +
-                "employee_id? length" +
-                eachEmployeeSeatList.length
-            ); //2
-            console.log(this.employees[k].name);
+            if (eachEmployeeSeatList) {
+              console.log(
+                this.employees[k].employee_id +
+                 "employee_id? length" +
+                  eachEmployeeSeatList.length
+              ); //2
+              console.log(this.employees[k].name);
 
-            this.employees[k].seatIdList = eachEmployeeSeatList;
-            console.log(this.employees[k].seatIdList);
+              this.employees[k].seatIdList = eachEmployeeSeatList;
+              console.log(this.employees[k].seatIdList);
             
-            eventBus.$emit("showSeatDataTable", this.employees[k]);
+              eventBus.$emit("showSeatDataTable", this.employees[k]);
+            }
           }
         }
       }
