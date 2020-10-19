@@ -419,7 +419,6 @@ export default {
         return;
       }
       if (this.floorCanvas.getActiveObject().type == "group") {
-        console.log("!!!group!!!!");
         activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
 
         activeObject.employee_name = null;
@@ -599,6 +598,7 @@ export default {
           height: 50,
           fill: this.getColor(null),
           opacity: 1,
+          angle: 0,
         });
 
         let textObject = new fabric.IText("", {
@@ -656,6 +656,7 @@ export default {
         this.floorCanvas.add(group[i]);
 
         eachFloorSeatList.push(group[i]);
+
         this.floorCanvas.renderAll();
       }
 
@@ -887,6 +888,8 @@ export default {
         width: seat.width,
         height: seat.height,
         fill: this.getColor(employee.department),
+        opacity: 1,
+        angle: 0,
       });
 
       let textObject = null;
