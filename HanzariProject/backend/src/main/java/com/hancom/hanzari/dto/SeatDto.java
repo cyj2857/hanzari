@@ -42,6 +42,12 @@ public class SeatDto {
 	private double height;
 
 	@NotBlank
+	private double scaleX;
+	
+	@NotBlank
+	private double scaleY;
+	
+	@NotBlank
 	private double degree;
 
 	@NotBlank
