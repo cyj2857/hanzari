@@ -30,6 +30,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
+    <v-btn @click="test" color="primary" dark>test</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -37,7 +38,6 @@
     <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
-     <v-btn @click="clickTest" color="pink">Test</v-btn>
     <EmployeeDialog
       :dialogStatus="this.employeeDialogStatus"
       @close="closeEmployeeDialog"
@@ -71,6 +71,8 @@ export default {
       seatId: null,
       currentSelectedFloor: null,
       eachFloorSeatMap: null, //current floor's seat map
+      createSeatMap: null,
+      deleteSeatMap: null,
       eachEmployeeSeatMap: null, //each Employee's seats map
       employeeDialogStatus: false,
       changeSeatDialogStatus: false,
@@ -122,6 +124,13 @@ export default {
     this.initializing();
   },
   methods: {
+    test() {
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+
+      console.log(eachFloorSeatList);
+    },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
       console.log(this.employeeDialogStatus);
@@ -273,6 +282,11 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
+    onFileChange(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
     createImage(file) {
       this.loadImage(file);
       this.saveImage(file);
@@ -297,11 +311,6 @@ export default {
       this.floorImageList.set(this.currentSelectedFloor, file);
       console.log("floorImageList : ");
       console.log(this.floorImageList.get(this.currentSelectedFloor));
-    },
-    onFileChange(e) {
-      let files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
     },
     getColor(department) {
       const Colors = {
@@ -410,7 +419,6 @@ export default {
         return;
       }
       if (this.floorCanvas.getActiveObject().type == "group") {
-        console.log("!!!group!!!!");
         activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
 
         activeObject.employee_name = null;
@@ -452,7 +460,7 @@ export default {
       );
 
       for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-        if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
+        if (oneEmployeeSeatList[i] == groupToObject.seatId) {
           oneEmployeeSeatList.splice(i, 1);
         }
       }
@@ -545,13 +553,6 @@ export default {
         }
       }
     },
-    clickTest(){
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
-      );
-
-      console.log(eachFloorSeatList);
-    },
 
     addVacantBtn(number) {
       let VacantPositon = [
@@ -593,8 +594,8 @@ export default {
         let group = [];
 
         let rectangle = new fabric.Rect({
-          width: 50,
-          height: 50,
+          width: 100,
+          height: 100,
           fill: this.getColor(null),
           opacity: 1,
         });
@@ -605,6 +606,7 @@ export default {
           fontSize: 13,
           fill: "black",
         });
+
         group[i] = new fabric.Group([rectangle, textObject], {
           floor_id: this.currentSelectedFloor,
           seatId: this.seatid, // currentSelectedFloor-seatId
@@ -613,7 +615,8 @@ export default {
           employee_number: null,
           employee_id: null,
           left: VP.left,
-          top: VP.top
+          top: VP.top,
+          angle: 0
         });
 
         this.floorCanvas.on("object:scaling", onObjectScaled);
@@ -653,9 +656,32 @@ export default {
           this.getChangeSeatDialog();
         });
 
+        this.floorCanvas.on("object:scaling", onObjectScaled);
+        function onObjectScaled(e) {
+          let scaledObject = e.target;
+          console.log("Width =  " + scaledObject.getScaledWidth());
+          console.log("X =  " + scaledObject.scaleX);
+          console.log("Height = " + scaledObject.getScaledHeight());
+
+          let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
+          let height = scaledObject.getScaledHeight() / scaledObject.scaleY;
+
+          scaledObject.width = width;
+          scaledObject.height = height;
+          let groupx = scaledObject.toObject([
+            "width",
+            "height",
+            "scaleX",
+            "scaleY",
+          ]);
+          console.log(groupx.width * groupx.scaleX + "저장할 width");
+          console.log(groupx.height * groupx.scaleY + "저장할 height");
+        }
+
         this.floorCanvas.add(group[i]);
 
         eachFloorSeatList.push(group[i]);
+
         this.floorCanvas.renderAll();
       }
 
@@ -676,45 +702,14 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
-      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
-      let activeObject = this.floorCanvas.getActiveObject(); //group 객체
-      
-      //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
-      if (
-        activeObject.employee_id != null &&
-        activeObject.employee_id != item.employee_id
-      ) {
-        if (
-          confirm(
-            activeObject.employee_name +
-              "사원의 자리를 " +
-              item.name +
-              "자리로 변경하시겠습니까?"
-          )
-        ) {
-          let groupToObject = activeObject.toObject([
-            "seatId",
-            "employee_id",
-            "floor_id",
-          ]);
 
-          this.deleteEachEmployeeSeatList(groupToObject);
-        }
-      }
-      //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
-      else if (
-        activeObject.employee_id != null &&
-        activeObject.employee_id == item.employee_id
-      ) {
-        alert("이 자리는 이미 " + item.name + "의 자리입니다.");
-        return;
-      }
-     
-      //해당 자리가 사원이 매핑되어있지않으면 바로 이 시점으로..
-      activeObject.employee_name = item.name;
-      activeObject.employee_department = item.department;
-      activeObject.employee_number = item.number;
-      activeObject.employee_id = item.employee_id;
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
+
+      let activeObject = this.floorCanvas.getActiveObject(); //group 객체
+      (activeObject.employee_name = item.name),
+        (activeObject.employee_department = item.department),
+        (activeObject.employee_number = item.number),
+        (activeObject.employee_id = item.employee_id);
 
       activeObject
         .item(0)
@@ -722,9 +717,25 @@ export default {
       activeObject._objects[1].text = item.name;
       this.floorCanvas.renderAll();
 
-      eachEmployeeSeatList.push(activeObject);
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+
+      eachEmployeeSeatList.push(activeObject);
+
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      console.log(this.eachEmployeeSeatMap.size + "맵의 사이즈입니다.");
+
+      let groupToObject = activeObject.toObject([
+        "seatId",
+        "employee_id",
+        "floor_id",
+      ]);
+      console.log(
+        groupToObject.employee_id +
+          "의 자리 리스트 개수는 " +
+          this.getEachEmployeeSeatList(groupToObject.employee_id).length +
+          "입니다."
+      );
+      //여기
     },
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
@@ -769,7 +780,7 @@ export default {
               seatData.height = groupToObject.height*groupToObject.scaleY;
               seatData.scaleX = eachFloorSeatList[i].scaleX,
               seatData.scaleY = eachFloorSeatList[i].scaleY,
-              seatData.degree = 0;
+              seatData.degree = eachFloorSeatList[i].angle;
               seatData.shape_id = "1";
 
               this.saveByAxios(seatData, "seats");
@@ -820,16 +831,10 @@ export default {
           eachEmployeeSeatList = this.getEachEmployeeSeatList(
             this.seats[i].employee_id
           );
-
-          console.log(this.seats[i]);
-
           group = this.makeGroupInfo(this.seats[i]);
 
           this.floorCanvas.add(group);
           eachFloorSeatList.push(group);
-          console.log(eachFloorSeatList);
-          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-
           eachEmployeeSeatList.push(group);
 
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -849,15 +854,8 @@ export default {
           eachEmployeeSeatList = this.getEachEmployeeSeatList(
             this.seats[i].employee_id
           );
-
-          console.log(this.seats[i]);
-
           group = this.makeGroupInfo(this.seats[i]);
-
           eachFloorSeatList.push(group);
-
-          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-
           eachEmployeeSeatList.push(group);
 
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -871,11 +869,15 @@ export default {
               "입니다."
           );
         }
+        eachFloorSeatList = this.getEachFloorSeatList(
+          this.currentSelectedFloor
+        );
+
+        eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       }
     },
     getEmployeeObjcet(employee_id) {
       // seat table의 employee_id를 받으면 그에 맞는 정보 알아오기 위함
-      // group 만들때 필요한 employee 정보 : department, name, number
       let employeeInfoList = new Array();
       let employeeObject = {}; // return 될 Object
       for (let i = 0; i < this.employees.length; i++) {
@@ -895,7 +897,6 @@ export default {
         employee.name = null;
         employee.department = null;
         employee.number = null;
-        employee.employee_id = null;
 
         employeeObject = employee;
       } else {
@@ -917,6 +918,7 @@ export default {
         width: seat.width,
         height: seat.height,
         fill: this.getColor(employee.department),
+        opacity: 1,
       });
 
       let textObject = null;
@@ -945,7 +947,8 @@ export default {
         employee_id: seat.employee_id,
         floor_id: seat.floor, //One이라고 가정
         left: seat.x,
-        top: seat.y
+        top: seat.y,
+        angle: seat.degree,
       });
       group.on("mousedown", (e) => {
         let group = e.target;
