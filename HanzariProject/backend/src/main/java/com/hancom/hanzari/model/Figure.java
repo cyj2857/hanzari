@@ -32,12 +32,6 @@ public class Figure {
 
 	@Column(name = "height", nullable = false)
 	private double height; // 그려질 높이
-	
-	@Column(name = "scale_x", nullable = false)
-	private double scaleX; // 그려질 너비
-
-	@Column(name = "scale_y", nullable = false)
-	private double scaleY; // 그려질 높이
 
 	@Column(name = "degree", nullable = false)
 	private double degree; // 그려질 회전율
