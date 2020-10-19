@@ -789,14 +789,10 @@ export default {
           eachEmployeeSeatList = this.getEachEmployeeSeatList(
             this.seats[i].employee_id
           );
-
-          console.log(this.seats[i]);
-
           group = this.makeGroupInfo(this.seats[i]);
 
           this.floorCanvas.add(group);
           eachFloorSeatList.push(group);
-          console.log(eachFloorSeatList);
           eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
 
           eachEmployeeSeatList.push(group);
@@ -818,15 +814,9 @@ export default {
           eachEmployeeSeatList = this.getEachEmployeeSeatList(
             this.seats[i].employee_id
           );
-
-          console.log(this.seats[i]);
-
           group = this.makeGroupInfo(this.seats[i]);
-
           eachFloorSeatList.push(group);
-
           eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-
           eachEmployeeSeatList.push(group);
 
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -844,7 +834,6 @@ export default {
     },
     getEmployeeObjcet(employee_id) {
       // seat table의 employee_id를 받으면 그에 맞는 정보 알아오기 위함
-      // group 만들때 필요한 employee 정보 : department, name, number
       let employeeInfoList = new Array();
       let employeeObject = {}; // return 될 Object
       for (let i = 0; i < this.employees.length; i++) {
@@ -864,7 +853,6 @@ export default {
         employee.name = null;
         employee.department = null;
         employee.number = null;
-        employee.employee_id = null;
 
         employeeObject = employee;
       } else {
