@@ -780,7 +780,7 @@ export default {
               seatData.height = groupToObject.height*groupToObject.scaleY;
               seatData.scaleX = eachFloorSeatList[i].scaleX,
               seatData.scaleY = eachFloorSeatList[i].scaleY,
-              seatData.degree = 0;
+              seatData.degree = eachFloorSeatList[i].angle;
               seatData.shape_id = "1";
 
               this.saveByAxios(seatData, "seats");
