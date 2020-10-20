@@ -31,7 +31,7 @@ import com.hancom.hanzari.service.ShapeService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("seats")
+@RequestMapping("api/seats")
 public class SeatController {
 
 	@Autowired
