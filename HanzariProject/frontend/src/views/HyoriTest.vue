@@ -12,7 +12,7 @@
     <div class="d2" id="d2">
       <AttachCanvas
         v-bind:seat="seats"
-        v-bind:employee="employees"
+        v-bind:copyEmployee="employees"
         v-on:saveByAxios="SaveData"
         v-on:deleteByAxios="DeleteData"
       ></AttachCanvas>
