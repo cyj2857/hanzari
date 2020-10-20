@@ -10,7 +10,7 @@
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
         <v-tab
-          v-for="tab of this.floors"
+          v-for="tab of this.allFloorItems"
           :key="tab.floor_name"
           @change="setFloor(tab.floor_name)"
         >
@@ -39,7 +39,7 @@ export default {
       dialogStatus: false,
       inputFloor: null,
       seatFloor: null,
-      floors: this.copyFloors.sort(function (a, b) {
+      allFloorItems: this.copyFloors.sort(function (a, b) {
         return a.floor_index < b.floor_index
           ? -1
           : a.floor_index > b.floor_index
@@ -48,11 +48,13 @@ export default {
       }),
       length: this.copyFloors.length,
       initData: null,
+      createFloorList: [], // DB에 새로 생긴 애들을 추가해주기 위함
+      deleteFloorList: [], // createFloorList 와 allFloorItems에서 삭제된 것 관리하기 위함.
     };
   },
   created() {
     //!! 처음 정의!!
-    let allItems = this.floors;
+    let allItems = this.allFloorItems;
     eventBus.$emit("allFloorItems", allItems);
     // 만약 처음에 null이라면 null 인걸 canvas도 알아야 exception 처리가능해서 created에서 넘겨줌
 
@@ -66,10 +68,10 @@ export default {
         this.seatFloor = floor;
         console.log(this.seatFloor + "가 넘어온 자리 층입니다");
 
-        for (let i = 0; i < this.floors.length; i++) {
-          if (this.seatFloor == this.floors[i].floor_name) {
+        for (let i = 0; i < this.allFloorItems.length; i++) {
+          if (this.seatFloor == this.allFloorItems[i].floor_name) {
             this.floorNum = i;
-            this.setFloor(this.floors[this.floorNum].floor_name);
+            this.setFloor(this.allFloorItems[this.floorNum].floor_name);
           }
         }
       });
@@ -77,11 +79,11 @@ export default {
   beforeUpdate() {
     if (this.initData && this.length != 0) {
       //일단 한 층이 무조건 DB에 있다는 전제하에 돌아감
-      this.setFloor(this.floors[this.floorNum].floor_name);
+      this.setFloor(this.allFloorItems[this.floorNum].floor_name);
       return;
     } else {
       // 초기
-      this.floors = this.copyFloors.sort(function (a, b) {
+      this.allFloorItems = this.copyFloors.sort(function (a, b) {
         return a.floor_index < b.floor_index
           ? -1
           : a.floor_index > b.floor_index
@@ -95,10 +97,8 @@ export default {
   },
   watch: {
     length(length) {
-      let allItems = this.floors;
-
+      let allItems = this.allFloorItems;
       this.floorNum = length - 1; // floor의 index가 되는
-
       eventBus.$emit("allFloorItems", allItems);
       console.log(this.length);
     },
@@ -112,7 +112,7 @@ export default {
       if (this.length == 0) {
         this.setFloor(null);
       } else {
-        this.setFloor(this.floors[this.floorNum].floor_name);
+        this.setFloor(this.allFloorItems[this.floorNum].floor_name);
       }
 
       console.log(this.length);
@@ -136,11 +136,11 @@ export default {
       this.dialogStatus = false;
       console.log(this.dialogStatus);
       console.log(this.inputFloor + "from add floor dialog");
-      this.floors.push({
+      this.allFloorItems.push({
         floor_id: this.getFloorUUID(),
         floor_name: this.inputFloor,
         building_id: "HANCOM01",
-        floor_index: this.floors.length,
+        floor_index: this.allFloorItems.length,
       });
 
       this.increaseTab();
@@ -154,11 +154,11 @@ export default {
     removeFloor() {
       if (this.length > 0) {
         //items에서 id가 현재 floor인 애 index 가져오기
-        let currentFloorId = this.floors[this.floorNum].floor_name;
-        const idx = this.floors.findIndex(function (item) {
+        let currentFloorId = this.allFloorItems[this.floorNum].floor_name;
+        const idx = this.allFloorItems.findIndex(function (item) {
           return item.floor_name == currentFloorId;
         });
-        if (idx > -1) this.floors.splice(idx, 1);
+        if (idx > -1) this.allFloorItems.splice(idx, 1);
 
         //items에서 그 index 삭제
         this.decreaseTab();
