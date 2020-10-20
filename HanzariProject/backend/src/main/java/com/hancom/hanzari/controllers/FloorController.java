@@ -26,7 +26,7 @@ import com.hancom.hanzari.service.FloorService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("floors")
+@RequestMapping("api/floors")
 public class FloorController {
 
 	@Autowired
