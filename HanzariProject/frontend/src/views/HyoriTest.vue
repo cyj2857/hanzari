@@ -2,9 +2,7 @@
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
       <div class="search" id="search">
-        <AllFloorsDataTable
-          v-bind:employee="employees"
-        ></AllFloorsDataTable>
+        <AllFloorsDataTable v-bind:copyEmployee="employees"></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>
@@ -14,9 +12,11 @@
     <div class="d2" id="d2">
       <AttachCanvas
         v-bind:seat="seats"
-        v-bind:employee="employees"
+        v-bind:copyEmployee="employees"
+        v-on:saveByAxios="SaveData"
+        v-on:deleteByAxios="DeleteData"
       ></AttachCanvas>
-      <FloorTabs v-bind:floor="floors"></FloorTabs>
+      <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -36,7 +36,7 @@ import AttachCanvas from "@/components/AttachCanvas.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
 import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
-const portNum = 8081;
+const portNum = 6080;
 const host = "172.30.1.50";
 
 export default {
@@ -69,7 +69,7 @@ export default {
     getEmployees() {
       let initEmployeeList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/employee")
+        .get("http://" + host + ":" + portNum + "/api/employee")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             var newEmployee = {};
@@ -88,7 +88,7 @@ export default {
     getSeats() {
       let loadSeatList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/seats")
+        .get("http://" + host + ":" + portNum + "/api/seats")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newSeat = {};
@@ -112,10 +112,11 @@ export default {
     getFloors() {
       let loadFloorList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/floors")
+        .get("http://" + host + ":" + portNum + "/api/floors")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newFloor = {};
+            newFloor.floor_id = response.data[i].floor_id;
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
             newFloor.floor_index = response.data[i].floor_index;
@@ -124,6 +125,41 @@ export default {
           }
         });
       return loadFloorList;
+    },
+    SaveData(data, tableName) {
+      let Savedata = data;
+      let SavetableName = tableName;
+      console.log("Savedata is");
+      console.log(Savedata);
+      console.log("------------");
+      console.log("SavetableName is");
+      console.log(SavetableName);
+
+      axios
+        .post(
+          "http://" + host + ":" + portNum + "/api/" + SavetableName,
+          JSON.stringify(Savedata),
+          {
+            headers: { "Content-Type": `application/json` },
+          }
+        )
+        .then((res) => {
+          console.log(res.Savedata);
+        });
+    },
+    DeleteData(data, tableName) {
+      let deleteData = data;
+      let deleteTableName = tableName
+      axios
+        .delete("http://" + host + ":" + portNum + "/api/" + deleteTableName + "/" + deleteData)
+        .then(function (response) {
+          // handle success
+          console.log(response);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        });
     },
   },
 };

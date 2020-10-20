@@ -44,7 +44,7 @@
 <script>
 import { eventBus } from "../main.js";
 export default {
-  props: ["employee"],
+  props: ["copyEmployee"],
   data() {
     return {
       allEmployeeSeatMap: null,
@@ -61,7 +61,7 @@ export default {
         { text: "", value: "createSeatButton" },
         { text: "", value: "showSeatButton" },
       ],
-      employees: this.employee,
+      employees: this.copyEmployee,
       userAuthority: "Viewer",
       disabledValue: null,
     };

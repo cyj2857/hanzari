@@ -22,7 +22,7 @@ import com.hancom.hanzari.service.EmployeeService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("employee")
+@RequestMapping("api/employee")
 public class EmployeeController {
 
 	@Autowired

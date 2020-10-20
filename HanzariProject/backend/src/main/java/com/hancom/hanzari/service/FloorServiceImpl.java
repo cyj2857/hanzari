@@ -18,6 +18,12 @@ public class FloorServiceImpl implements FloorService {
 	private FloorRepository floorRepository;
 
 	@Override
+	public Floor findById(String floorId) throws Exception {
+		return floorRepository.findById(floorId)
+				.orElseThrow(() -> new ResourceNotFoundException("Floor", "floor_id", floorId));
+	}
+
+	@Override
 	public List<Floor> findAll() {
 		List<Floor> floor = new ArrayList<Floor>();
 		floorRepository.findAll().forEach(e -> floor.add(e));
