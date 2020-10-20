@@ -59,10 +59,6 @@ export default {
     // 만약 처음에 null이라면
     // 층 없는 상태에서 자리 생성 exception 처리 위해 created에서 넘겨줌
 
-    for(let i=0;i<this.copyFloors;i++){
-      this.loadFloorList.push(this.copyFloors[i])
-    }
-
     eventBus.$on("confirm", () => {
       this.confirmDialog();
     }),
