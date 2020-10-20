@@ -29,7 +29,7 @@
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
-  props: ["floor"],
+  props: ["copyFloors"],
   components: {
     AddFloorDialog,
   },
@@ -39,18 +39,19 @@ export default {
       dialogStatus: false,
       inputFloor: null,
       seatFloor: null,
-      floors: this.floor.sort(function (a, b) {
+      floors: this.copyFloors.sort(function (a, b) {
         return a.floor_index < b.floor_index
           ? -1
           : a.floor_index > b.floor_index
           ? 1
           : 0;
       }),
-      length: this.floor.length,
+      length: this.copyFloors.length,
       initData: null,
     };
   },
   created() {
+    //!! 처음 정의!!
     let allItems = this.floors;
     eventBus.$emit("allFloorItems", allItems);
     // 만약 처음에 null이라면 null 인걸 canvas도 알아야 exception 처리가능해서 created에서 넘겨줌
@@ -80,7 +81,7 @@ export default {
       return;
     } else {
       // 초기
-      this.floors = this.floor.sort(function (a, b) {
+      this.floors = this.copyFloors.sort(function (a, b) {
         return a.floor_index < b.floor_index
           ? -1
           : a.floor_index > b.floor_index
@@ -88,7 +89,7 @@ export default {
           : 0;
       });
 
-      this.length = this.floor.length;
+      this.length = this.copyFloors.length;
       this.initData = "yes";
     }
   },

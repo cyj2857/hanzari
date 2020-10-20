@@ -15,7 +15,7 @@
         v-bind:employee="employees"
         v-on:saveByAxios="SaveData"
       ></AttachCanvas>
-      <FloorTabs v-bind:floor="floors"></FloorTabs>
+      <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
