@@ -615,19 +615,24 @@ export default {
           employee_id: null,
           left: VP.left,
           top: VP.top,
-          angle: 0
+          angle: 0,
         });
 
         this.floorCanvas.on("object:scaling", onObjectScaled);
         function onObjectScaled(e) {
           var scaledObject = e.target;
-          let groupx = scaledObject.toObject(["width","height", "scaleX","scaleY"]);
+          let groupx = scaledObject.toObject([
+            "width",
+            "height",
+            "scaleX",
+            "scaleY",
+          ]);
           scaledObject.set("scaleX", groupx.scaleX);
           scaledObject.set("scaleY", groupx.scaleY);
 
-          console.log(groupx.width*groupx.scaleX+"저장할 width");
-          console.log(group[i].scaleX+"그룹의 스케일엑스");
-          console.log(groupx.height*groupx.scaleY+"저장할 height");
+          console.log(groupx.width * groupx.scaleX + "저장할 width");
+          console.log(group[i].scaleX + "그룹의 스케일엑스");
+          console.log(groupx.height * groupx.scaleY + "저장할 height");
         }
 
         group[i].on("mousedown", (e) => {
@@ -754,7 +759,6 @@ export default {
                 "층의 자리 개수입니다."
             );
             for (let i = 0; i < eachFloorSeatList.length; i++) {
-
               let groupToObject = eachFloorSeatList[i].toObject([
                 "seatId",
                 "floor_id",
@@ -762,8 +766,10 @@ export default {
                 "top",
                 "employee_department",
                 "employee_id",
-                "width","height",
-                "scaleX","scaleY"
+                "width",
+                "height",
+                "scaleX",
+                "scaleY",
               ]);
 
               let seatData = {};
@@ -775,15 +781,15 @@ export default {
               seatData.group_id = null;
               seatData.building_id = "HANCOM01";
               seatData.employee_id = groupToObject.employee_id;
-              seatData.width = groupToObject.width*groupToObject.scaleX;
-              seatData.height = groupToObject.height*groupToObject.scaleY;
-              seatData.scaleX = eachFloorSeatList[i].scaleX,
-              seatData.scaleY = eachFloorSeatList[i].scaleY,
-              seatData.degree = eachFloorSeatList[i].angle;
+              seatData.width = groupToObject.width * groupToObject.scaleX;
+              seatData.height = groupToObject.height * groupToObject.scaleY;
+              (seatData.scaleX = eachFloorSeatList[i].scaleX),
+                (seatData.scaleY = eachFloorSeatList[i].scaleY),
+                (seatData.degree = eachFloorSeatList[i].angle);
               seatData.shape_id = "1";
 
               //this.saveByAxios(seatData, "seats");
-              this.$emit('saveByAxios', seatData, "seats");
+              this.$emit("saveByAxios", seatData, "seats");
             }
           }
         }
@@ -792,13 +798,14 @@ export default {
       if (this.allFloorItems) {
         for (let j = 0; j < this.allFloorItems.length; j++) {
           let floorData = {};
+          floorData.floor_id = this.allFloorItems[j].floor_id;
           floorData.floor_name = this.allFloorItems[j].floor_name;
           floorData.building_id = this.allFloorItems[j].building_id;
           floorData.floor_index = this.allFloorItems[j].floor_index; // 이후에 삭제된 floor tab들 따로 관리해줘서 같은 index 충돌 안나게 해줘야 함.
 
           //console.log(floorData);
           //this.saveByAxios(floorData, "floors");
-          this.$emit('saveByAxios', floorData, "floors");
+          this.$emit("saveByAxios", floorData, "floors");
         }
       }
     },

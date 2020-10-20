@@ -2,9 +2,7 @@
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
       <div class="search" id="search">
-        <AllFloorsDataTable
-          v-bind:employee="employees"
-        ></AllFloorsDataTable>
+        <AllFloorsDataTable v-bind:employee="employees"></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>
@@ -37,7 +35,7 @@ import AttachCanvas from "@/components/AttachCanvas.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
 import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
-const portNum = 8081;
+const portNum = 6080;
 const host = "172.30.1.50";
 
 export default {
@@ -117,6 +115,7 @@ export default {
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newFloor = {};
+            newFloor.floor_id = response.data[i].floor_id;
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
             newFloor.floor_index = response.data[i].floor_index;
@@ -126,16 +125,16 @@ export default {
         });
       return loadFloorList;
     },
-    SaveData(data,tableName){
-       let Savedata = data;
-       let SavetableName = tableName;
-       console.log("Savedata is")
-       console.log(Savedata)
-       console.log("------------")
-       console.log("SavetableName is")
-       console.log(SavetableName)
+    SaveData(data, tableName) {
+      let Savedata = data;
+      let SavetableName = tableName;
+      console.log("Savedata is");
+      console.log(Savedata);
+      console.log("------------");
+      console.log("SavetableName is");
+      console.log(SavetableName);
 
-       axios
+      axios
         .post(
           "http://" + host + ":" + portNum + "/" + SavetableName,
           JSON.stringify(Savedata),
@@ -146,9 +145,7 @@ export default {
         .then((res) => {
           console.log(res.Savedata);
         });
-  
     },
-
   },
 };
 </script>

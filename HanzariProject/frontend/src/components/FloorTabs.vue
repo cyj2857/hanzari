@@ -136,7 +136,7 @@ export default {
       console.log(this.dialogStatus);
       console.log(this.inputFloor + "from add floor dialog");
       this.floors.push({
-        floor_id: this.getFloorUUID,
+        floor_id: this.getFloorUUID(),
         floor_name: this.inputFloor,
         building_id: "HANCOM01",
         floor_index: this.floors.length,
