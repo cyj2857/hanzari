@@ -65,7 +65,7 @@ public class FloorController {
 		}
 
 		Building building = buildingService.findById(floorDto.getBuilding_id());
-		Floor floor = Floor.builder().floorName(floorDto.getFloor_name()).building(building)
+		Floor floor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name()).building(building)
 				.floorIndex(floorDto.getFloor_index()).build();
 		return new ResponseEntity<Floor>(floorService.save(floor), HttpStatus.OK);
 	}

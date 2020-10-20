@@ -23,9 +23,8 @@ import lombok.Getter;
 @Table(name = "floors")
 @Builder
 public class Floor {
+	
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
 	@Column(name = "floor_id", nullable = false)
 	private String floorId;
 
@@ -48,6 +47,6 @@ public class Floor {
 
 	public FloorDto toDto() {
 		String buildingId = (building == null) ? null : building.getBuildingId();
-		return FloorDto.builder().floor_name(floorName).building_id(buildingId).floor_index(floorIndex).build();
+		return FloorDto.builder().floor_id(floorId).floor_name(floorName).building_id(buildingId).floor_index(floorIndex).build();
 	}
 }
