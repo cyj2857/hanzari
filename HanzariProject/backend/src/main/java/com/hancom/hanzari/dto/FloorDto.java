@@ -14,6 +14,9 @@ import lombok.Setter;
 public class FloorDto {
 
 	@NotBlank
+	private String floor_id;
+	
+	@NotBlank
 	private String floor_name;
 
 	@NotBlank
