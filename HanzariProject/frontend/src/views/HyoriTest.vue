@@ -2,7 +2,7 @@
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
       <div class="search" id="search">
-        <AllFloorsDataTable v-bind:employee="employees"></AllFloorsDataTable>
+        <AllFloorsDataTable v-bind:copyEmployee="employees"></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>

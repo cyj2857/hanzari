@@ -56,7 +56,7 @@ import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 
 export default {
-  props: ["seat", "employee"],
+  props: ["seat", "copyEmployee"],
   components: {
     EmployeeDialog,
     AllFloorsDataTable,
@@ -79,7 +79,7 @@ export default {
       inputChangeSeatY: null,
       allEmployeeList: [],
       seats: this.seat,
-      employees: this.employee,
+      employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
       allFloorItems: [],
       createFloorList: [],
