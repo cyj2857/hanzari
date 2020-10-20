@@ -28,7 +28,7 @@
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
-  props: ["copyFloors"], // DB 사본 건들지말것. post 저장 1순서(저장 눌리면 eventBus로 보낼거) modify 감지하기 위함
+  props: ["copyFloors"],
   components: {
     AddFloorDialog,
   },
@@ -38,7 +38,8 @@ export default {
       dialogStatus: false,
       inputFloor: null,
       seatFloor: null,
-      allFloorItems: this.copyFloors.sort(function (a, b) { // 가시적 리스트
+      allFloorItems: this.copyFloors.sort(function (a, b) {
+        // viewmodel(사본)
         return a.floor_index < b.floor_index
           ? -1
           : a.floor_index > b.floor_index
@@ -47,15 +48,20 @@ export default {
       }),
       length: this.copyFloors.length,
       initData: null,
-      createFloorList: [], // DB에 새로 생긴 애들을 추가해주기 위함
-      deleteFloorList: [], // createFloorList 와 allFloorItems에서 삭제된 것 관리하기 위함.
+      createFloorList: [], // DB에 새로 생긴 애들을 추가해주기 위함 post 저장 2순서 객체 가지고 있음
+      deleteFloorList: [], // 삭제된 것 관리하기 위함. delete 삭제 3순서  객체의 floor_id 가지고 있음
     };
   },
   created() {
     //!! 처음 정의!!
     let allItems = this.allFloorItems;
     eventBus.$emit("allFloorItems", allItems);
-    // 만약 처음에 null이라면 null 인걸 canvas도 알아야 exception 처리가능해서 created에서 넘겨줌
+    // 만약 처음에 null이라면
+    // 층 없는 상태에서 자리 생성 exception 처리 위해 created에서 넘겨줌
+
+    for(let i=0;i<this.copyFloors;i++){
+      this.loadFloorList.push(this.copyFloors[i])
+    }
 
     eventBus.$on("confirm", () => {
       this.confirmDialog();
@@ -95,13 +101,19 @@ export default {
   },
   watch: {
     length(length) {
-      let allItems = this.allFloorItems;
       this.floorNum = length - 1; // floor의 index가 되는
+
+      let allItems = this.allFloorItems;
       eventBus.$emit("allFloorItems", allItems);
-      console.log(this.copyFloors.length + "copyFloors length")
-      console.log(this.createFloorList.length + "createFloorList length");
-      console.log(this.deleteFloorList.length + "deleteFloorList length");
-      console.log(this.allFloorItems.length + "allFloorItems length");
+
+      let createFloorList = this.createFloorList
+      let deleteFloorList = this.deleteFloorList
+
+      eventBus.$emit("createFloorList", createFloorList)
+      eventBus.$emit("deleteFloorList", deleteFloorList)
+
+      console.log(this.createFloorList)
+      console.log(this.deleteFloorList)
     },
   },
   methods: {
@@ -123,13 +135,15 @@ export default {
       this.dialogStatus = false;
       console.log(this.dialogStatus);
       console.log(this.inputFloor + "from add floor dialog");
-      let newFloor = {}
-      newFloor.floor_id = this.getFloorUUID()
-      newFloor.floor_name = this.inputFloor
-      newFloor.building_id = "HANCOM01"
-      newFloor.floor_index = this.allFloorItems.length
+
+      let newFloor = {};
+      newFloor.floor_id = this.getFloorUUID();
+      newFloor.floor_name = this.inputFloor;
+      newFloor.building_id = "HANCOM01";
+      newFloor.floor_index = this.allFloorItems.length;
+
       this.allFloorItems.push(newFloor);
-      this.createFloorList.push(newFloor)
+      this.createFloorList.push(newFloor);
       this.increaseTab();
       console.log(this.length);
     },
@@ -148,7 +162,7 @@ export default {
           return item.floor_name == currentFloorId;
         });
         if (idx > -1) {
-          this.deleteFloorList.push(this.allFloorItems[this.floorNum].floor_id)
+          this.deleteFloorList.push(this.allFloorItems[this.floorNum].floor_id);
           this.allFloorItems.splice(idx, 1);
         }
         //items에서 그 index 삭제
