@@ -6,7 +6,6 @@
         <v-divider class="mx-4" vertical></v-divider>
         <v-btn text @click="getDialog">Add Floor</v-btn>
         <v-divider class="mx-4" vertical></v-divider>
-        <v-btn text>Edit Floor name</v-btn>
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
         <v-tab
@@ -29,7 +28,7 @@
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
-  props: ["copyFloors"],
+  props: ["copyFloors"], // DB 사본 건들지말것. post 저장 1순서(저장 눌리면 eventBus로 보낼거) modify 감지하기 위함
   components: {
     AddFloorDialog,
   },
@@ -39,7 +38,7 @@ export default {
       dialogStatus: false,
       inputFloor: null,
       seatFloor: null,
-      allFloorItems: this.copyFloors.sort(function (a, b) {
+      allFloorItems: this.copyFloors.sort(function (a, b) { // 가시적 리스트
         return a.floor_index < b.floor_index
           ? -1
           : a.floor_index > b.floor_index
@@ -90,9 +89,8 @@ export default {
           ? 1
           : 0;
       });
-
       this.length = this.copyFloors.length;
-      this.initData = "yes";
+      this.initData = "init";
     }
   },
   watch: {
@@ -100,10 +98,65 @@ export default {
       let allItems = this.allFloorItems;
       this.floorNum = length - 1; // floor의 index가 되는
       eventBus.$emit("allFloorItems", allItems);
-      console.log(this.length);
+      console.log(this.copyFloors.length + "copyFloors length")
+      console.log(this.createFloorList.length + "createFloorList length");
+      console.log(this.deleteFloorList.length + "deleteFloorList length");
+      console.log(this.allFloorItems.length + "allFloorItems length");
     },
   },
   methods: {
+    setFloor(n) {
+      eventBus.$emit("changeFloor", n);
+    },
+    getDialog() {
+      eventBus.$emit("initFloor", null);
+      this.dialogStatus = true;
+      console.log(this.dialogStatus);
+    },
+    closeDialog() {
+      console.log("<<<close dialog>>>");
+      this.dialogStatus = false;
+      console.log(this.dialogStatus);
+    },
+    confirmDialog() {
+      console.log("<<<confirm dialog>>>");
+      this.dialogStatus = false;
+      console.log(this.dialogStatus);
+      console.log(this.inputFloor + "from add floor dialog");
+      let newFloor = {}
+      newFloor.floor_id = this.getFloorUUID()
+      newFloor.floor_name = this.inputFloor
+      newFloor.building_id = "HANCOM01"
+      newFloor.floor_index = this.allFloorItems.length
+      this.allFloorItems.push(newFloor);
+      this.createFloorList.push(newFloor)
+      this.increaseTab();
+      console.log(this.length);
+    },
+    increaseTab() {
+      this.length++;
+      this.floorNum = this.length + 1;
+      if (!this.dialogStatus && this.inputFloor) {
+        this.setFloor(this.inputFloor);
+      }
+    },
+    removeFloor() {
+      if (this.length > 0) {
+        //items에서 id가 현재 floor인 애 index 가져오기
+        let currentFloorId = this.allFloorItems[this.floorNum].floor_name;
+        const idx = this.allFloorItems.findIndex(function (item) {
+          return item.floor_name == currentFloorId;
+        });
+        if (idx > -1) {
+          this.deleteFloorList.push(this.allFloorItems[this.floorNum].floor_id)
+          this.allFloorItems.splice(idx, 1);
+        }
+        //items에서 그 index 삭제
+        this.decreaseTab();
+      } else {
+        alert("there are no seats to delete!");
+      }
+    },
     decreaseTab() {
       console.log(this.length);
 
@@ -117,57 +170,6 @@ export default {
 
       console.log(this.length);
       //pop
-    },
-    increaseTab() {
-      this.length++;
-      this.floorNum = this.length + 1;
-      if (!this.dialogStatus && this.inputFloor) {
-        this.setFloor(this.inputFloor);
-      }
-      //push
-    },
-    getDialog() {
-      eventBus.$emit("initFloor", null);
-      this.dialogStatus = true;
-      console.log(this.dialogStatus);
-    },
-    confirmDialog() {
-      console.log("<<<confirm dialog>>>");
-      this.dialogStatus = false;
-      console.log(this.dialogStatus);
-      console.log(this.inputFloor + "from add floor dialog");
-      this.allFloorItems.push({
-        floor_id: this.getFloorUUID(),
-        floor_name: this.inputFloor,
-        building_id: "HANCOM01",
-        floor_index: this.allFloorItems.length,
-      });
-
-      this.increaseTab();
-      console.log(this.length);
-    },
-    closeDialog() {
-      console.log("<<<close dialog>>>");
-      this.dialogStatus = false;
-      console.log(this.dialogStatus);
-    },
-    removeFloor() {
-      if (this.length > 0) {
-        //items에서 id가 현재 floor인 애 index 가져오기
-        let currentFloorId = this.allFloorItems[this.floorNum].floor_name;
-        const idx = this.allFloorItems.findIndex(function (item) {
-          return item.floor_name == currentFloorId;
-        });
-        if (idx > -1) this.allFloorItems.splice(idx, 1);
-
-        //items에서 그 index 삭제
-        this.decreaseTab();
-      } else {
-        alert("there are no seats to delete!");
-      }
-    },
-    setFloor(n) {
-      eventBus.$emit("changeFloor", n);
     },
     getFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
