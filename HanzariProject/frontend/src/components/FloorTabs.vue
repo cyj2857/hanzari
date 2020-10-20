@@ -52,9 +52,9 @@ export default {
   },
   created() {
     let allItems = this.floors;
-    eventBus.$emit("allFloorItems", allItems); 
+    eventBus.$emit("allFloorItems", allItems);
     // 만약 처음에 null이라면 null 인걸 canvas도 알아야 exception 처리가능해서 created에서 넘겨줌
-    
+
     eventBus.$on("confirm", () => {
       this.confirmDialog();
     }),
@@ -136,6 +136,7 @@ export default {
       console.log(this.dialogStatus);
       console.log(this.inputFloor + "from add floor dialog");
       this.floors.push({
+        floor_id: this.getFloorUUID(),
         floor_name: this.inputFloor,
         building_id: "HANCOM01",
         floor_index: this.floors.length,
@@ -166,6 +167,15 @@ export default {
     },
     setFloor(n) {
       eventBus.$emit("changeFloor", n);
+    },
+    getFloorUUID() {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+        c
+      ) {
+        let r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 3) | 8;
+        return v.toString(16);
+      });
     },
   },
 };
