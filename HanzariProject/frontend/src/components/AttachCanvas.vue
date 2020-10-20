@@ -683,7 +683,7 @@ export default {
         eachFloorSeatList.push(group[i]);
 
         this.floorCanvas.renderAll();
-      }
+      } // end of for
 
       this.floorCanvas.renderAll();
 
