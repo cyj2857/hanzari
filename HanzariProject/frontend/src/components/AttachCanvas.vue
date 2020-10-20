@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
@@ -783,7 +782,8 @@ export default {
               seatData.degree = eachFloorSeatList[i].angle;
               seatData.shape_id = "1";
 
-              this.saveByAxios(seatData, "seats");
+              //this.saveByAxios(seatData, "seats");
+              this.$emit('saveByAxios', seatData, "seats");
             }
           }
         }
@@ -796,12 +796,13 @@ export default {
           floorData.building_id = this.allFloorItems[j].building_id;
           floorData.floor_index = this.allFloorItems[j].floor_index; // 이후에 삭제된 floor tab들 따로 관리해줘서 같은 index 충돌 안나게 해줘야 함.
 
-          console.log(floorData);
-          this.saveByAxios(floorData, "floors");
+          //console.log(floorData);
+          //this.saveByAxios(floorData, "floors");
+          this.$emit('saveByAxios', floorData, "floors");
         }
       }
     },
-    saveByAxios(data, tableName) {
+    /*saveByAxios(data, tableName) {
       axios
         .post(
           "http://" + host + ":" + portNum + "/" + tableName,
@@ -813,7 +814,7 @@ export default {
         .then((res) => {
           console.log(res.data);
         });
-    },
+    },*/
     clickLoadBtn() {
       /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
       let eachFloorSeatList = null;
