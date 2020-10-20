@@ -15,6 +15,7 @@
       <AttachCanvas
         v-bind:seat="seats"
         v-bind:employee="employees"
+        v-on:saveByAxios="SaveData"
       ></AttachCanvas>
       <FloorTabs v-bind:floor="floors"></FloorTabs>
     </div>
@@ -125,6 +126,29 @@ export default {
         });
       return loadFloorList;
     },
+    SaveData(data,tableName){
+       let Savedata = data;
+       let SavetableName = tableName;
+       console.log("Savedata is")
+       console.log(Savedata)
+       console.log("------------")
+       console.log("SavetableName is")
+       console.log(SavetableName)
+
+       axios
+        .post(
+          "http://" + host + ":" + portNum + "/" + SavetableName,
+          JSON.stringify(Savedata),
+          {
+            headers: { "Content-Type": `application/json` },
+          }
+        )
+        .then((res) => {
+          console.log(res.Savedata);
+        });
+  
+    },
+
   },
 };
 </script>
