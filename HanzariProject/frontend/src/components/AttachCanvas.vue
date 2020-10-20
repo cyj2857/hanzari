@@ -54,10 +54,9 @@ import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
-const portNum = 8081;
-const host = "172.30.1.50";
+
 export default {
-  props: ["seat", "employee"],
+  props: ["seat", "copyEmployee"],
   components: {
     EmployeeDialog,
     AllFloorsDataTable,
@@ -80,9 +79,11 @@ export default {
       inputChangeSeatY: null,
       allEmployeeList: [],
       seats: this.seat,
-      employees: this.employee,
+      employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
       allFloorItems: [],
+      createFloorList: [],
+      deleteFloorList: [],
     };
   },
   created() {
@@ -104,11 +105,18 @@ export default {
       this.setVacantSeat(item);
     });
     eventBus.$on("allFloorItems", (allItems) => {
-      //to save floor information
       this.allFloorItems = allItems;
-      console.log("in AttachCanvas");
-      console.log(this.allFloorItems); // floor_name 뽑아내야함
+      console.log(this.allFloorItems);
     });
+    eventBus.$on("createFloorList", (createFloorList) => {
+      this.createFloorList = createFloorList;
+      console.log(this.createFloorList);
+    });
+    eventBus.$on("deleteFloorList", (deleteFloorList) => {
+      this.deleteFloorList = deleteFloorList;
+      console.log(this.deleteFloorList);
+    });
+
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
     }
@@ -788,40 +796,49 @@ export default {
                 (seatData.degree = eachFloorSeatList[i].angle);
               seatData.shape_id = "1";
 
-              //this.saveByAxios(seatData, "seats");
               this.$emit("saveByAxios", seatData, "seats");
             }
           }
         }
       }
 
-      if (this.allFloorItems) {
-        for (let j = 0; j < this.allFloorItems.length; j++) {
+      if (this.createFloorList) {
+        for (let j = 0; j < this.createFloorList.length; j++) {
           let floorData = {};
-          floorData.floor_id = this.allFloorItems[j].floor_id;
-          floorData.floor_name = this.allFloorItems[j].floor_name;
-          floorData.building_id = this.allFloorItems[j].building_id;
-          floorData.floor_index = this.allFloorItems[j].floor_index; // 이후에 삭제된 floor tab들 따로 관리해줘서 같은 index 충돌 안나게 해줘야 함.
+          floorData.floor_id = this.createFloorList[j].floor_id;
+          floorData.floor_name = this.createFloorList[j].floor_name;
+          floorData.building_id = this.createFloorList[j].building_id;
+          floorData.floor_index = this.createFloorList[j].floor_index;
 
-          //console.log(floorData);
-          //this.saveByAxios(floorData, "floors");
           this.$emit("saveByAxios", floorData, "floors");
         }
       }
+
+      if (this.allFloorItems) {
+        for (let j = 0; j < this.allFloorItems.length; j++) {
+          let floorData = {};
+          floorData.floor_id = this.createFloorList[j].floor_id;
+          floorData.floor_name = this.allFloorItems[j].floor_name;
+          floorData.building_id = this.allFloorItems[j].building_id;
+          floorData.floor_index = this.allFloorItems[j].floor_index;
+
+          this.$emit("saveByAxios", floorData, "floors");
+        }
+      }
+
+      if (this.deleteFloorList) {
+        for (let i = 0; i < this.deleteFloorList.length; i++) {
+          //this.$emit("deleteByAxios", this.deleteFloorList[i], "floors")
+          //delete 할 floor_id, floors table
+
+           console.log("delete FloorList azios")
+           console.log(this.deleteFloorList);
+
+        }
+      }
+
+
     },
-    /*saveByAxios(data, tableName) {
-      axios
-        .post(
-          "http://" + host + ":" + portNum + "/" + tableName,
-          JSON.stringify(data),
-          {
-            headers: { "Content-Type": `application/json` },
-          }
-        )
-        .then((res) => {
-          console.log(res.data);
-        });
-    },*/
     clickLoadBtn() {
       /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
       let eachFloorSeatList = null;

@@ -2,7 +2,7 @@
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
       <div class="search" id="search">
-        <AllFloorsDataTable v-bind:employee="employees"></AllFloorsDataTable>
+        <AllFloorsDataTable v-bind:copyEmployee="employees"></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>
@@ -14,8 +14,9 @@
         v-bind:seat="seats"
         v-bind:employee="employees"
         v-on:saveByAxios="SaveData"
+        v-on:deleteByAxios="DeleteData"
       ></AttachCanvas>
-      <FloorTabs v-bind:floor="floors"></FloorTabs>
+      <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -68,7 +69,7 @@ export default {
     getEmployees() {
       let initEmployeeList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/employee")
+        .get("http://" + host + ":" + portNum + "/api/employee")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             var newEmployee = {};
@@ -87,7 +88,7 @@ export default {
     getSeats() {
       let loadSeatList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/seats")
+        .get("http://" + host + ":" + portNum + "/api/seats")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newSeat = {};
@@ -111,7 +112,7 @@ export default {
     getFloors() {
       let loadFloorList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/floors")
+        .get("http://" + host + ":" + portNum + "/api/floors")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newFloor = {};
@@ -136,7 +137,7 @@ export default {
 
       axios
         .post(
-          "http://" + host + ":" + portNum + "/" + SavetableName,
+          "http://" + host + ":" + portNum + "/api/" + SavetableName,
           JSON.stringify(Savedata),
           {
             headers: { "Content-Type": `application/json` },
@@ -144,6 +145,20 @@ export default {
         )
         .then((res) => {
           console.log(res.Savedata);
+        });
+    },
+    DeleteData(data, tableName) {
+      let deleteData = data;
+      let deleteTableName = tableName
+      axios
+        .delete("http://" + host + ":" + portNum + "/api/" + deleteTableName + "/" + deleteData)
+        .then(function (response) {
+          // handle success
+          console.log(response);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
         });
     },
   },
