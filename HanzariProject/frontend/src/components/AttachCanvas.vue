@@ -648,23 +648,6 @@ export default {
           angle: 0,
         });
 
-        this.floorCanvas.on("object:scaling", onObjectScaled);
-        function onObjectScaled(e) {
-          var scaledObject = e.target;
-          let groupx = scaledObject.toObject([
-            "width",
-            "height",
-            "scaleX",
-            "scaleY",
-          ]);
-          scaledObject.set("scaleX", groupx.scaleX);
-          scaledObject.set("scaleY", groupx.scaleY);
-
-          //console.log(groupx.width * groupx.scaleX + "저장할 width");
-          //console.log(group[i].scaleX + "그룹의 스케일엑스");
-          //console.log(groupx.height * groupx.scaleY + "저장할 height");
-        }
-
         group[i].on("mousedown", (e) => {
           let group = e.target;
           if (e.button === 2) {
