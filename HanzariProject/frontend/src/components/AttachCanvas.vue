@@ -81,7 +81,7 @@ export default {
       seats: this.seat,
       employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
-      allFloorList: [],
+      allFloorItems: [],
       createFloorList: [],
       deleteFloorList: [],
     };
@@ -104,9 +104,9 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.$on("allFloorList", (allItems) => {
-      this.allFloorList = allItems;
-      console.log(this.allFloorList);
+    eventBus.$on("allFloorItems", (allItems) => {
+      this.allFloorItems = allItems;
+      console.log(this.allFloorItems);
     });
     eventBus.$on("createFloorList", (createFloorList) => {
       this.createFloorList = createFloorList;
@@ -486,7 +486,7 @@ export default {
       );
 
       for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-        if (oneEmployeeSeatList[i] == groupToObject.seatId) {
+        if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
           oneEmployeeSeatList.splice(i, 1);
         }
       }
@@ -752,40 +752,53 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
-
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
-
       let activeObject = this.floorCanvas.getActiveObject(); //group 객체
-      (activeObject.employee_name = item.name),
-        (activeObject.employee_department = item.department),
-        (activeObject.employee_number = item.number),
-        (activeObject.employee_id = item.employee_id);
-
+      
+      //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
+      if (
+        activeObject.employee_id != null &&
+        activeObject.employee_id != item.employee_id
+      ) {
+        if (
+          confirm(
+            activeObject.employee_name +
+              "사원의 자리를 " +
+              item.name +
+              "자리로 변경하시겠습니까?"
+          )
+        ) {
+          let groupToObject = activeObject.toObject([
+            "seatId",
+            "employee_id",
+            "floor_id",
+          ]);
+          this.deleteEachEmployeeSeatList(groupToObject);
+        }
+      }
+      //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
+      else if (
+        activeObject.employee_id != null &&
+        activeObject.employee_id == item.employee_id
+      ) {
+        alert("이 자리는 이미 " + item.name + "의 자리입니다.");
+        return;
+      }
+     
+      //해당 자리가 사원이 매핑되어있지않으면 바로 이 시점으로..
+      activeObject.employee_name = item.name;
+      activeObject.employee_department = item.department;
+      activeObject.employee_number = item.number;
+      activeObject.employee_id = item.employee_id;
       activeObject
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
       activeObject._objects[1].text = item.name;
       this.floorCanvas.renderAll();
 
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-
       eachEmployeeSeatList.push(activeObject);
-
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-      console.log(this.eachEmployeeSeatMap.size + "맵의 사이즈입니다.");
-
-      let groupToObject = activeObject.toObject([
-        "seatId",
-        "employee_id",
-        "floor_id",
-      ]);
-      console.log(
-        groupToObject.employee_id +
-          "의 자리 리스트 개수는 " +
-          this.getEachEmployeeSeatList(groupToObject.employee_id).length +
-          "입니다."
-      );
-      //여기
     },
     /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
     seat VM , employee VM 만 보고 view(component) 다루기위함 */
@@ -793,10 +806,10 @@ export default {
     //아직 구현중에 있습니다.
     clickSaveBtn() {
       //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
-      if (this.allFloorList) {
-        for (let j = 0; j < this.allFloorList.length; j++) {
+      if (this.allFloorItems) {
+        for (let j = 0; j < this.allFloorItems.length; j++) {
           let eachFloorSeatList = this.getEachFloorSeatList(
-            this.allFloorList[j].floor_name
+            this.allFloorItems[j].floor_name
           );
           let createSeatList = this.getCreateSeatList(
             this.allFloorItems[j].floor_name
@@ -807,7 +820,7 @@ export default {
 
           //사본 createSeatList
           if (createSeatList.length > 0) {
-            console.log(createSeatList.length +this.allFloorList[j].floor_name + "층의 자리 개수입니다.");
+            console.log(createSeatList.length +this.allFloorItems[j].floor_name + "층의 자리 개수입니다.");
 
             for (let i = 0; i < createSeatList.length; i++) {
               let groupToObject = createSeatList[i].toObject([
@@ -845,7 +858,7 @@ export default {
 
           //사본 eachFloorSeatList
           if (eachFloorSeatList.length > 0) {
-            console.log( eachFloorSeatList.length +this.allFloorList[j].floor_name +"층의 자리 개수입니다.");
+            console.log( eachFloorSeatList.length +this.allFloorItems[j].floor_name +"층의 자리 개수입니다.");
 
             for (let i = 0; i < eachFloorSeatList.length; i++) {
               let groupToObject = eachFloorSeatList[i].toObject([
@@ -883,7 +896,7 @@ export default {
 
           //사본 deleteSeatList
           if (deleteSeatList.length > 0) {
-            console.log(deleteSeatList.length +this.allFloorList[j].floor_name + "층의 자리 개수입니다.");
+            console.log(deleteSeatList.length +this.allFloorItems[j].floor_name + "층의 자리 개수입니다.");
             for (let i = 0; i < deleteSeatList.length; i++) {
               //deleteSeatList의 seatid
               let deleteSeatid = deleteSeatList[i]; 
@@ -907,13 +920,13 @@ export default {
         }
       }
 
-      if (this.allFloorList) {
-        for (let j = 0; j < this.allFloorList.length; j++) {
+      if (this.allFloorItems) {
+        for (let j = 0; j < this.allFloorItems.length; j++) {
           let floorData = {};
-          floorData.floor_id = this.allFloorList[j].floor_id;
-          floorData.floor_name = this.allFloorList[j].floor_name;
-          floorData.building_id = this.allFloorList[j].building_id;
-          floorData.floor_index = this.allFloorList[j].floor_index;
+          floorData.floor_id = this.createFloorList[j].floor_id;
+          floorData.floor_name = this.allFloorItems[j].floor_name;
+          floorData.building_id = this.allFloorItems[j].building_id;
+          floorData.floor_index = this.allFloorItems[j].floor_index;
 
           this.$emit("saveByAxios", floorData, "floors");
         }
