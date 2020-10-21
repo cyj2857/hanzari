@@ -49,6 +49,11 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
+	public void deleteById(String floorId) {
+		floorRepository.deleteById(floorId);
+	}
+
+	@Override
 	public void deleteByFloorNameAndBuilding(String floorName, Building building) {
 		floorRepository.deleteByFloorNameAndBuilding(floorName, building);
 
