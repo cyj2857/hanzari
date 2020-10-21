@@ -1,0 +1,44 @@
+docker
+
+컨테이너 재시작하기
+docker restart hanzaridb
+컨테이너 bash 접속
+docker container exec -it hanzaridb /bin/bash
+한글 입력 되게 컨테이너 bash 접속
+docker container exec -it -e LC_ALL=C.UTF-8 mariadb /bin/bash
+컨테이너 안의 mariadb 실행
+mariadb -u root -p
+비밀번호
+mariadb
+데이터베이스 선택
+use hanzari
+
+ko_KR.UTF-8
+
+docker commit -m "메시지" 컨테이너명 이미지명:태그
+
+docker locale 설정
+apt-get update
+apt-get install locales
+export LANGUAGE=ko_KR.UTF-8
+export LANG=ko_KR.UTF-8
+locale-gen ko_KR ko_KR.UTF-8
+update-locale LANG=ko_KR.UTF-8
+dpkg-reconfigure locales
+
+mariadb 안에서 한글 설정 확인
+show variables like 'c%';
+
+도커 컨테이너별 bash들어가는 것과 wsl의 bash에 들어가는 것은 다르다.
+컨테이너 실행
+실행된 컨테이너에서 내용 추가
+컨테이너 종료
+컨테이너 커밋하여 이미지 만들기
+이미지 도커파일 이용하여 빌드하기
+
+컨테이너 접속시마다 utf-8 설정변수 주지 않도록 도커파일 만들어 utf-8 설정 해두기
+
+도커 이미지 만들기
+설정 완료한 MariaDB 컨테이너 이미지로 만들어 도커 허브에 업로드하기
+
+윈도우에서는 wsl 접속하고 vim 설치하여 Dockerfile 만들기

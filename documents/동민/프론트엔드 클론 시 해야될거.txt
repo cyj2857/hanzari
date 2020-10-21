@@ -1,0 +1,5 @@
+build 파일 풀기
+npm run build
+npm install fabric
+npm install --save axios
+npm run dev

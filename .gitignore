@@ -71,6 +71,9 @@ local.properties
 # Spring Boot Tooling
 .sts4-cache/
 
+### gradle ###
+.gradle/
+
 ### Vue ###
 # gitignore template for Vue.js projects
 #
