@@ -1,17 +1,17 @@
 package com.hancom.hanzari.model;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.hancom.hanzari.dto.FloorDto;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,13 +31,16 @@ public class Floor {
 	@Column(name = "floor_name", nullable = false)
 	private String floorName;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "building_id", nullable = true)
 	private Building building;
 
 	@Column(name = "floor_index", nullable = false)
 	private int floorIndex;
 
+	@OneToMany
+	private List<Seat> seats;
+	
 	public void setBuilding(Building building) {
 		this.building = building;
 	}

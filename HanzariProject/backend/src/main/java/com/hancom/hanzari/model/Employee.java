@@ -39,7 +39,7 @@ public class Employee {
 
 	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Column(nullable = true)
-	private List<Seat> seat = new ArrayList<Seat>();
+	private List<Seat> seat; // = new ArrayList<Seat>();
 
 	public Employee() {
 	}

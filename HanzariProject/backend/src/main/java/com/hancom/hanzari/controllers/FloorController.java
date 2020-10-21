@@ -71,20 +71,13 @@ public class FloorController {
 		return new ResponseEntity<Floor>(floorService.save(floor), HttpStatus.OK);
 	}
 
-	@DeleteMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-	public void delete(@RequestBody FloorDto floorDto) throws Exception {
-		for (Field field : floorDto.getClass().getDeclaredFields()) {
-			field.setAccessible(true);
-			Object value = field.get(floorDto);
-			System.out.println(field.getName() + " : " + value);
-		}
-
-		Building building = buildingService.findById(floorDto.getBuilding_id());
-		floorService.deleteByFloorNameAndBuilding(floorDto.getFloor_name(), building);
-	}
 	
 	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteFloorById(@PathVariable("floor_id") String floor_id) {
+		System.out.println("==================================================================");
+		System.out.println("seatId: " + floor_id);
+		System.out.println("==================================================================");
+		
 		floorService.deleteById(floor_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
