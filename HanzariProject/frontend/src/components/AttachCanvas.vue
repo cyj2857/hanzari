@@ -782,6 +782,38 @@ export default {
     //아직 구현중에 있습니다.
     clickSaveBtn() {
       //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
+
+      if (this.createFloorList) {
+        for (let j = 0; j < this.createFloorList.length; j++) {
+          let floorData = {};
+          floorData.floor_id = this.createFloorList[j].floor_id;
+          floorData.floor_name = this.createFloorList[j].floor_name;
+          floorData.building_id = this.createFloorList[j].building_id;
+          floorData.floor_index = this.createFloorList[j].floor_index;
+
+          this.$emit("saveByAxios", floorData, "floors");
+        }
+      }
+
+      if (this.allFloorList) {
+        for (let j = 0; j < this.allFloorList.length; j++) {
+          let floorData = {};
+          floorData.floor_id = this.allFloorList[j].floor_id;
+          floorData.floor_name = this.allFloorList[j].floor_name;
+          floorData.building_id = this.allFloorList[j].building_id;
+          floorData.floor_index = this.allFloorList[j].floor_index;
+
+          this.$emit("saveByAxios", floorData, "floors");
+        }
+      }
+
+      if (this.deleteFloorList) {
+        for (let i = 0; i < this.deleteFloorList.length; i++) {
+          this.$emit("deleteByAxios", this.deleteFloorList[i], "floors");
+          //delete 할 floor_id, floors table
+        }
+      }
+
       if (this.allFloorList) {
         for (let j = 0; j < this.allFloorList.length; j++) {
           let eachFloorSeatList = this.getEachFloorSeatList(
@@ -878,40 +910,6 @@ export default {
               this.$emit("deleteByAxios", deleteSeatid, "seats");
             }
           }
-        }
-      }
-
-      if (this.createFloorList) {
-        for (let j = 0; j < this.createFloorList.length; j++) {
-          let floorData = {};
-          floorData.floor_id = this.createFloorList[j].floor_id;
-          floorData.floor_name = this.createFloorList[j].floor_name;
-          floorData.building_id = this.createFloorList[j].building_id;
-          floorData.floor_index = this.createFloorList[j].floor_index;
-
-          this.$emit("saveByAxios", floorData, "floors");
-        }
-      }
-
-      if (this.allFloorList) {
-        for (let j = 0; j < this.allFloorList.length; j++) {
-          let floorData = {};
-          floorData.floor_id = this.allFloorList[j].floor_id;
-          floorData.floor_name = this.allFloorList[j].floor_name;
-          floorData.building_id = this.allFloorList[j].building_id;
-          floorData.floor_index = this.allFloorList[j].floor_index;
-
-          this.$emit("saveByAxios", floorData, "floors");
-        }
-      }
-
-      if (this.deleteFloorList) {
-        for (let i = 0; i < this.deleteFloorList.length; i++) {
-          this.$emit("deleteByAxios", this.deleteFloorList[i], "floors");
-          //delete 할 floor_id, floors table
-
-          //console.log("delete FloorList azios")
-          //console.log(this.deleteFloorList);
         }
       }
     },
