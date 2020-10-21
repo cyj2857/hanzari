@@ -5,6 +5,8 @@
 openIssueColumns:
   - Backlog
   - To do
+  - In progress
+  - Review in progress
 
 # Close issues that are moved to these project columns. Set to `[]` to disable
 closedIssueColumns:
