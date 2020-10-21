@@ -796,12 +796,6 @@ export default {
 
           //사본 createSeatList
           if (createSeatList.length > 0) {
-            console.log(
-              createSeatList.length +
-                this.allFloorList[j].floor_name +
-                "층의 자리 개수입니다."
-            );
-
             for (let i = 0; i < createSeatList.length; i++) {
               let groupToObject = createSeatList[i].toObject([
                 "seatId",
@@ -818,7 +812,7 @@ export default {
 
               let seatData = {};
               seatData.seat_id = groupToObject.seatId;
-              seatData.floor = groupToObject.floor_id;
+              seatData.floor = allFloorList[j].floor_id;
               seatData.x = groupToObject.left;
               seatData.y = groupToObject.top;
               seatData.is_group = false;
@@ -858,7 +852,7 @@ export default {
 
               let seatData = {};
               seatData.seat_id = groupToObject.seatId;
-              seatData.floor = groupToObject.floor_id;
+              seatData.floor = allFloorList[j].floor_id;
               seatData.x = groupToObject.left;
               seatData.y = groupToObject.top;
               seatData.is_group = false;
@@ -876,11 +870,6 @@ export default {
 
           //사본 deleteSeatList
           if (deleteSeatList.length > 0) {
-            console.log(
-              deleteSeatList.length +
-                this.allFloorList[j].floor_name +
-                "층의 자리 개수입니다."
-            );
             for (let i = 0; i < deleteSeatList.length; i++) {
               //deleteSeatList의 seatid
               let deleteSeatid = deleteSeatList[i];
