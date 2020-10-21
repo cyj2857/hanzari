@@ -127,24 +127,24 @@ export default {
       return loadFloorList;
     },
     saveData(data, tableName) {
-      let Savedata = data;
-      let SavetableName = tableName;
-      console.log("Savedata is");
-      console.log(Savedata);
+      let saveData = data;
+      let saveTableName = tableName;
+      console.log("saveData is");
+      console.log(saveData);
       console.log("------------");
-      console.log("SavetableName is");
-      console.log(SavetableName);
+      console.log("saveTableName is");
+      console.log(saveTableName);
 
       axios
         .post(
-          "http://" + host + ":" + portNum + "/api/" + SavetableName,
-          JSON.stringify(Savedata),
+          "http://" + host + ":" + portNum + "/api/" + saveTableName,
+          JSON.stringify(saveData),
           {
             headers: { "Content-Type": `application/json` },
           }
         )
         .then((res) => {
-          console.log(res.Savedata);
+          console.log(res.saveData);
         });
     },
     deleteData(data, tableName) {
