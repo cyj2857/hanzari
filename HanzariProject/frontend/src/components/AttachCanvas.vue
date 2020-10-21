@@ -812,7 +812,7 @@ export default {
 
               let seatData = {};
               seatData.seat_id = groupToObject.seatId;
-              seatData.floor = allFloorList[j].floor_id;
+              seatData.floor = groupToObject.floor_id;
               seatData.x = groupToObject.left;
               seatData.y = groupToObject.top;
               seatData.is_group = false;
@@ -852,7 +852,7 @@ export default {
 
               let seatData = {};
               seatData.seat_id = groupToObject.seatId;
-              seatData.floor = allFloorList[j].floor_id;
+              seatData.floor = groupToObject.floor_id;
               seatData.x = groupToObject.left;
               seatData.y = groupToObject.top;
               seatData.is_group = false;

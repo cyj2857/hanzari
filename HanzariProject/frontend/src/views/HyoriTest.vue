@@ -172,11 +172,11 @@ export default {
           console.log(error);
         });
 
-      if (tableName == "seats") {
-        this.getSeats();
-      } else if (tableName == "floors") {
-        this.getFloors();
-      }
+      // if (tableName == "seats") {
+      //   this.getSeats();
+      // } else if (tableName == "floors") {
+      //   this.getFloors();
+      // }
     },
   },
 };
