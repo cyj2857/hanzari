@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -81,9 +82,15 @@ public class FloorController {
 		Building building = buildingService.findById(floorDto.getBuilding_id());
 		floorService.deleteByFloorNameAndBuilding(floorDto.getFloor_name(), building);
 	}
+	
+	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Void> deleteFloorById(@PathVariable("floor_id") String floor_id) {
+		floorService.deleteById(floor_id);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	}
 
-	@DeleteMapping(value = "/{building_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public void delete(@PathVariable("building_id") String building_id) throws Exception {
+	@DeleteMapping(value = "/by-building/{building_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public void deleteByBuildingId(@PathVariable("building_id") String building_id) throws Exception {
 		Building building = buildingService.findById(building_id);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", building_id);

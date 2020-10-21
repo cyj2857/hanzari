@@ -186,9 +186,6 @@ export default {
         }
       }
 
-      console.log("after delete");
-      console.log(eachFloorSeatList.length);
-
       let changeFloorSeatList = this.getEachFloorSeatList(
         inputInfo[0] //input floor
       );
@@ -320,7 +317,6 @@ export default {
     },
     saveImage(file) {
       this.floorImageList.set(this.currentSelectedFloor, file);
-      console.log("floorImageList : ");
       console.log(this.floorImageList.get(this.currentSelectedFloor));
     },
     getColor(department) {
@@ -363,7 +359,6 @@ export default {
 
         let objectSeatId = asObject.seatId + "번";
         if (seat.seat_id == objectSeatId) {
-          console.log("hihi");
           this.floorCanvas
             .getObjects()
             .slice()
@@ -388,7 +383,6 @@ export default {
           });
           let color = this.getColor(asObject.employee_department);
           function orgincolor() {
-            //console.log(color);
             myGroup.item(0).set("fill", color);
           }
         }
@@ -402,14 +396,12 @@ export default {
       if (!this.createSeatMap.get(floor)) {
         let newSeatsList = new Array();
         this.createSeatMap.set(floor, newSeatsList);
-        //console.log(this.createSeatMap.size + " createSeatMap 처음의 자리 맵 사이즈입니다");
         return this.createSeatMap.get(floor);
       } else {
-        //console.log(this.createSeatMap.size + "createSeatMap 현재 자리 맵 사이즈입니다");
         return this.createSeatMap.get(floor);
       }
     },
-
+    //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
       //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
       if (!this.allSeatMap.get(floor)) {
@@ -452,9 +444,7 @@ export default {
 
         let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
         console.log(groupToObject.seatId + "비우고자하는 자리의 SeatId입니다.");
-        console.log(
-          groupToObject.employee_id + "비우고자하는 자리의 employee_id입니다."
-        );
+        console.log( groupToObject.employee_id + "비우고자하는 자리의 employee_id입니다.");
         this.deleteEachEmployeeSeatList(groupToObject);
 
         activeObject.employee_id = null; // delete employee information in group
@@ -479,14 +469,8 @@ export default {
       if (!this.deleteSeatMap.get(floor)) {
         let newSeatsList = new Array();
         this.deleteSeatMap.set(floor, newSeatsList);
-        //console.log(
-        //  this.deleteSeatMap.size + " deleteSeatMap 처음의 자리 맵 사이즈입니다"
-        //);
         return this.deleteSeatMap.get(floor);
       } else {
-        //console.log(
-        //  this.deleteSeatMap.size + "deleteSeatMap 현재 자리 맵 사이즈입니다"
-        //);
         return this.deleteSeatMap.get(floor);
       }
     },
@@ -523,11 +507,8 @@ export default {
           .forEach((obj) => {
 
             let groupToObject = obj.toObject(["seatId", "employee_id"]);
-            //사본 deleteSeatList push
             deleteSeatList.push(groupToObject.seatId);
-            //console.log("deleteSeatList = " + deleteSeatList);
             this.floorCanvas.remove(obj);
-
             this.deleteEachEmployeeSeatList(groupToObject);
           });
 
@@ -535,9 +516,6 @@ export default {
           this.currentSelectedFloor
         );
 
-        if (eachFloorSeatList) {
-          alert("success");
-        } else alert("fail");
 
         eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
         eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -554,18 +532,17 @@ export default {
       let eachFloorSeatList = this.deleteEachFloorSeatList(
         this.currentSelectedFloor
       );
+
       let shapearray = new Array();
 
       if (confirm("Are you sure?")) {
         if (this.floorCanvas.getActiveObjects().length == 1) {
-          activeObject = this.floorCanvas.getActiveObject();
-          //console.log("단일객체 선택");
+          activeObject = this.floorCanvas.getActiveObject();//console.log("단일객체 선택");
 
           let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
           this.deleteEachEmployeeSeatList(groupToObject);
         } else {
-          activeObject = this.floorCanvas.getActiveObjects();
-          //console.log("복수객체 선택");
+          activeObject = this.floorCanvas.getActiveObjects();//console.log("복수객체 선택");
 
           for (let i = 0; i < activeObject.length; i++) {
             let groupToObject = activeObject[i].toObject([
@@ -574,7 +551,6 @@ export default {
             ]);
             this.deleteEachEmployeeSeatList(groupToObject);
           }
-
           activeObject = this.floorCanvas.getActiveObject().toGroup();
         }
 
@@ -590,8 +566,6 @@ export default {
           shapearray.slice().forEach((obj) => {
             if (obj == activeObject) {
               let groupToObject = activeObject.toObject(["seatId"]);
-          
-              //사본 deleteSeatList push
               //문제점 => 그룹을 한개로 인식한다....
               deleteSeatList.push(groupToObject.seatId);
               let index = shapearray.indexOf(activeObject);
@@ -645,8 +619,6 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
       );
-
-
 
       console.log("currnet floor is " + this.currentSelectedFloor);
 
@@ -867,9 +839,6 @@ export default {
               (seatData.degree = createSeatList[i].angle);
               seatData.shape_id = "1";
 
-              //console.log("axios createSeatlist : ");
-              //console.log(seatData);
-
               this.$emit("saveByAxios", seatData, "seats");
             }
           }
@@ -906,10 +875,7 @@ export default {
               (seatData.scaleX = eachFloorSeatList[i].scaleX),
               (seatData.scaleY = eachFloorSeatList[i].scaleY),
               (seatData.degree = eachFloorSeatList[i].angle);
-              seatData.shape_id = "1";
-
-              //console.log("axios eachFloorSeatList : ");
-              //console.log(seatData);
+              seatData.shape_id = "1";;
 
               this.$emit("saveByAxios", seatData, "seats");
             }
@@ -921,9 +887,6 @@ export default {
             for (let i = 0; i < deleteSeatList.length; i++) {
               //deleteSeatList의 seatid
               let deleteSeatid = deleteSeatList[i]; 
-
-              //console.log("axios deleteSeatList : ");
-              //console.log(deleteSeatid);
 
               ///////////////////////delete api 만들어줘야함!!
               this.$emit("deleteByAxios", deleteSeatid, "seats");
