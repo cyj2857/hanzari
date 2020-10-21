@@ -13,8 +13,8 @@
       <AttachCanvas
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
-        v-on:saveByAxios="SaveData"
-        v-on:deleteByAxios="DeleteData"
+        v-on:saveByAxios="saveData"
+        v-on:deleteByAxios="deleteData"
       ></AttachCanvas>
       <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
@@ -126,28 +126,28 @@ export default {
         });
       return loadFloorList;
     },
-    SaveData(data, tableName) {
-      let Savedata = data;
-      let SavetableName = tableName;
-      console.log("Savedata is");
-      console.log(Savedata);
+    saveData(data, tableName) {
+      let saveData = data;
+      let saveTableName = tableName;
+      console.log("saveData is");
+      console.log(saveData);
       console.log("------------");
-      console.log("SavetableName is");
-      console.log(SavetableName);
+      console.log("saveTableName is");
+      console.log(saveTableName);
 
       axios
         .post(
-          "http://" + host + ":" + portNum + "/api/" + SavetableName,
-          JSON.stringify(Savedata),
+          "http://" + host + ":" + portNum + "/api/" + saveTableName,
+          JSON.stringify(saveData),
           {
             headers: { "Content-Type": `application/json` },
           }
         )
         .then((res) => {
-          console.log(res.Savedata);
+          console.log(res.saveData);
         });
     },
-    DeleteData(data, tableName) {
+    deleteData(data, tableName) {
       let deleteData = data;
       let deleteTableName = tableName
       axios

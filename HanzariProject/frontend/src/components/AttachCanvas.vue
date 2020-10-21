@@ -68,7 +68,7 @@ export default {
       floorImageList: null,
       seatId: null,
       currentSelectedFloor: null,
-      eachFloorSeatMap: null, //current floor's seat map
+      allSeatMap: null, //current floor's seat map
       createSeatMap: null,
       deleteSeatMap: null,
       eachEmployeeSeatMap: null, //each Employee's seats map
@@ -120,8 +120,8 @@ export default {
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
     }
-    if (this.eachFloorSeatMap == null) {
-      this.eachFloorSeatMap = new Map();
+    if (this.allSeatMap == null) {
+      this.allSeatMap = new Map();
     }
     if (this.eachEmployeeSeatMap == null) {
       this.eachEmployeeSeatMap = new Map();
@@ -389,8 +389,10 @@ export default {
         //자리가 아직 없을때 예외처리 하기
       }
     },
-    //각 층의 도형 createseatlist 저장하기
-    getcreateSeatList: function (floor) {
+    //각 층의 도형 리스트 반환하기
+    getCreateSeatList: function (floor) {
+      //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
+      //사본 createSeatMap
       if (!this.createSeatMap.get(floor)) {
         let newSeatsList = new Array();
         this.createSeatMap.set(floor, newSeatsList);
@@ -402,11 +404,14 @@ export default {
     //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
       //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
-      if (!this.eachFloorSeatMap.get(floor)) {
+      if (!this.allSeatMap.get(floor)) {
         let newSeatsList = new Array();
-        return this.eachFloorSeatMap.get(floor);
+        this.allSeatMap.set(floor, newSeatsList);
+        //console.log(this.allSeatMap.size + "allSeatMap 처음의 자리 맵 사이즈입니다");
+        return this.allSeatMap.get(floor);
       } else {
-        return this.eachFloorSeatMap.get(floor);
+        //console.log(this.allSeatMap.size + "allSeatMap 현재 자리 맵 사이즈입니다" );
+        return this.allSeatMap.get(floor);
       }
     },
 
@@ -458,8 +463,9 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    //해당 층의 getdeleteSeatList 저장하기
-    getdeleteSeatList: function (floor) {
+    //해당 층의 도형 리스트 전체 삭제하기
+    getDeleteSeatList: function (floor) {
+      //사본 deleteSeatMap
       if (!this.deleteSeatMap.get(floor)) {
         let newSeatsList = new Array();
         this.deleteSeatMap.set(floor, newSeatsList);
@@ -467,6 +473,11 @@ export default {
       } else {
         return this.deleteSeatMap.get(floor);
       }
+    },
+    //해당 층의 도형 리스트 전체 삭제하기
+    deleteEachFloorSeatList: function (floor) {
+      this.getEachFloorSeatList(floor).length = 0;
+      return this.getEachFloorSeatList(floor);
     },
     //사원의 자리리스트에서 삭제된 자리를 삭제하기
     deleteEachEmployeeSeatList: function (groupToObject) {
@@ -485,7 +496,7 @@ export default {
     },
     deleteAllBtn() {
       //사본 deleteSeatList
-      let deleteSeatList = this.getdeleteSeatList(
+      let deleteSeatList = this.getDeleteSeatList(
         this.currentSelectedFloor
       );
 
@@ -501,8 +512,9 @@ export default {
             this.deleteEachEmployeeSeatList(groupToObject);
           });
 
-        this.getEachFloorSeatList(floor).length = 0;
-        alert("success");
+        let eachFloorSeatList = this.deleteEachFloorSeatList(
+          this.currentSelectedFloor
+        );
 
 
         eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
@@ -514,7 +526,10 @@ export default {
       //좌석 지우면 list에 있는거 없애기
       let activeObject = null;
       // 사본 deleteSeatList
-      let deleteSeatList = this.getdeleteSeatList(
+      let deleteSeatList = this.getDeleteSeatList(
+        this.currentSelectedFloor
+      );
+      let eachFloorSeatList = this.deleteEachFloorSeatList(
         this.currentSelectedFloor
       );
 
@@ -558,9 +573,9 @@ export default {
             }
           });
           this.floorCanvas.remove(activeObject);
-          //modify map(eachFloorSeatMap)
-          this.getEachFloorSeatList(this.currentSelectedFloor).length = 0;
-          this.eachFloorSeatMap.set(this.currentSelectedFloor, shapearray);
+          //modify map(allSeatMap)
+          eachFloorSeatList.length = 0;
+          this.allSeatMap.set(this.currentSelectedFloor, shapearray);
 
           eventBus.$emit(
             "eachFloorSeatList",
@@ -599,7 +614,7 @@ export default {
       }
 
       //사본 createSeatList
-      let createSeatList = this.getcreateSeatList(this.currentSelectedFloor);
+      let createSeatList = this.getCreateSeatList(this.currentSelectedFloor);
       ///getEachFloorSeatList
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloor
@@ -715,12 +730,19 @@ export default {
 
       this.floorCanvas.renderAll();
 
-      console.log("전체층의 자리 맵 size = " + this.eachFloorSeatMap.size);
+      console.log("전체층의 자리 맵 size = " + this.allSeatMap.size);
       console.log(
         this.currentSelectedFloor +
           "의 자리 리스트 length = " +
           eachFloorSeatList.length
       );
+
+      //console.log("createSeatList size = " + this.createSeatMap.size);
+      //console.log("createSeatList length = " + createSeatList.length);
+
+      //console.log("visible allSeatMap size = " + this.allSeatMap.size);
+      //console.log("visible eachFloorSeatList length = " + eachFloorSeatList.length);
+
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
@@ -776,10 +798,10 @@ export default {
           let eachFloorSeatList = this.getEachFloorSeatList(
             this.allFloorItems[j].floor_name
           );
-          let createSeatList = this.getcreateSeatList(
+          let createSeatList = this.getCreateSeatList(
             this.allFloorItems[j].floor_name
           );
-          let deleteSeatList = this.getdeleteSeatList(
+          let deleteSeatList = this.getDeleteSeatList(
             this.allFloorItems[j].floor_name
           );
 
@@ -867,7 +889,7 @@ export default {
               let deleteSeatid = deleteSeatList[i]; 
 
               ///////////////////////delete api 만들어줘야함!!
-              this.$emit("saveByAxios", deleteSeatid, "seats");
+              this.$emit("deleteByAxios", deleteSeatid, "seats");
             }
           }
         }
@@ -899,7 +921,7 @@ export default {
 
       if (this.deleteFloorList) {
         for (let i = 0; i < this.deleteFloorList.length; i++) {
-          //this.$emit("deleteByAxios", this.deleteFloorList[i], "floors")
+          this.$emit("deleteByAxios", this.deleteFloorList[i], "floors")
           //delete 할 floor_id, floors table
 
            //console.log("delete FloorList azios")
