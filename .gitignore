@@ -15,6 +15,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+.project
+.classpath
 
 # External tool builders
 .externalToolBuilders/
@@ -68,6 +70,9 @@ local.properties
 ### Eclipse Patch ###
 # Spring Boot Tooling
 .sts4-cache/
+
+### gradle ###
+.gradle/
 
 ### Vue ###
 # gitignore template for Vue.js projects
