@@ -73,18 +73,13 @@ export default {
     });
   },
   methods: {
-    // createSeatButtonClicked(item) {
-    //   eventBus.$emit("createSeat", item);
-    // },
     showSeatButtonClicked(item) {
-      //console.log("allEmployeeSeatMap? size" + this.allEmployeeSeatMap.size);
       if(this.allEmployeeSeatMap){
         for (let k = 0; k < this.employees.length; k++) {
           if (this.employees[k].employee_id == item.employee_id) {
             let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
               item.employee_id
             );
-          //let eachEmployeeSeatList = this.employees[k].seatIdList;
             console.log(eachEmployeeSeatList + "eachEmployeeSeatList");
 
             if (eachEmployeeSeatList) {

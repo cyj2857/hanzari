@@ -136,11 +136,12 @@ export default {
   },
   methods: {
     test() {
-      let eachFloorSeatList = this.getEachFloorSeatList(
+      let create = this.getCreateSeatList(
         this.currentSelectedFloor
       );
 
-      console.log(eachFloorSeatList);
+      console.log(create);
+      console.log(this.allFloorList)
     },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
@@ -812,10 +813,10 @@ export default {
             this.allFloorItems[j].floor_name
           );
           let createSeatList = this.getCreateSeatList(
-            this.allFloorItems[j].floor_name
+            this.allFloorList[j].floor_name
           );
           let deleteSeatList = this.getDeleteSeatList(
-            this.allFloorItems[j].floor_name
+            this.allFloorList[j].floor_name
           );
 
           //사본 createSeatList
