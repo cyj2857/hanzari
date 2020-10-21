@@ -2,7 +2,9 @@
   <div class="hanzari" id="hanzari">
     <div class="d1" id="d1">
       <div class="search" id="search">
-        <AllFloorsDataTable v-bind:copyEmployee="employees"></AllFloorsDataTable>
+        <AllFloorsDataTable
+          v-bind:copyEmployee="employees"
+        ></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
     </div>
@@ -149,9 +151,18 @@ export default {
     },
     deleteData(data, tableName) {
       let deleteData = data;
-      let deleteTableName = tableName
+      let deleteTableName = tableName;
       axios
-        .delete("http://" + host + ":" + portNum + "/api/" + deleteTableName + "/" + deleteData)
+        .delete(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/" +
+            deleteTableName +
+            "/" +
+            deleteData
+        )
         .then(function (response) {
           // handle success
           console.log(response);
@@ -160,6 +171,12 @@ export default {
           // handle error
           console.log(error);
         });
+
+      if (tableName == "seats") {
+        this.getSeats();
+      } else if (tableName == "floors") {
+        this.getFloors();
+      }
     },
   },
 };
