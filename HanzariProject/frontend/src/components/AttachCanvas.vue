@@ -300,15 +300,13 @@ export default {
     loadImage(file) {
       let reader = new FileReader();
       reader.onload = (e) => {
-        fabric.Image.fromURL(e.target.result, (img) => {
+        fabric.Image.fromURL("http://172.30.1.56:9000/hanzari/%ED%95%9C%EA%B8%80%EA%B3%BC%EC%BB%B4%ED%93%A8%ED%84%B0-11%EC%B8%B5.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201021%2F%2Fs3%2Faws4_request&X-Amz-Date=20201021T050105Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=ef64de2377c218ea88610991d08880710aba5dc01789f0bf37d7434424620df3", (img) => {
           img.set({
             scaleX: this.floorCanvas.width / img.width,
             scaleY: this.floorCanvas.height / img.height,
           });
-          this.floorCanvas.setBackgroundImage(
-            img,
-            this.floorCanvas.renderAll.bind(this.floorCanvas)
-          );
+          this.floorCanvas.setBackgroundImage(img,this.floorCanvas.renderAll.bind(this.floorCanvas));
+          this.floorCanvas.renderAll();
         });
       };
       reader.readAsDataURL(file);
@@ -361,6 +359,7 @@ export default {
             .getObjects()
             .slice()
             .forEach((obj) => {
+              
               this.floorCanvas.remove(obj);
             });
 
