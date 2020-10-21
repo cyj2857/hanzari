@@ -81,7 +81,7 @@ export default {
       seats: this.seat,
       employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
-      allFloorItems: [],
+      allFloorList: [],
       createFloorList: [],
       deleteFloorList: [],
     };
@@ -104,9 +104,9 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.$on("allFloorItems", (allItems) => {
-      this.allFloorItems = allItems;
-      console.log(this.allFloorItems);
+    eventBus.$on("allFloorList", (allItems) => {
+      this.allFloorList = allItems;
+      console.log(this.allFloorList);
     });
     eventBus.$on("createFloorList", (createFloorList) => {
       this.createFloorList = createFloorList;
@@ -821,21 +821,21 @@ export default {
     //아직 구현중에 있습니다.
     clickSaveBtn() {
       //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
-      if (this.allFloorItems) {
-        for (let j = 0; j < this.allFloorItems.length; j++) {
+      if (this.allFloorList) {
+        for (let j = 0; j < this.allFloorList.length; j++) {
           let eachFloorSeatList = this.getEachFloorSeatList(
-            this.allFloorItems[j].floor_name
+            this.allFloorList[j].floor_name
           );
           let createSeatList = this.CreateEachFloorSeatList(
-            this.allFloorItems[j].floor_name
+            this.allFloorList[j].floor_name
           );
           let deleteSeatList = this.deleteEachFloorSeatList(
-            this.allFloorItems[j].floor_name
+            this.allFloorList[j].floor_name
           );
 
           //사본 createSeatList
           if (createSeatList.length > 0) {
-            console.log(createSeatList.length +this.allFloorItems[j].floor_name + "층의 자리 개수입니다.");
+            console.log(createSeatList.length +this.allFloorList[j].floor_name + "층의 자리 개수입니다.");
 
             for (let i = 0; i < createSeatList.length; i++) {
               let groupToObject = createSeatList[i].toObject([
@@ -876,7 +876,7 @@ export default {
 
           //사본 eachFloorSeatList
           if (eachFloorSeatList.length > 0) {
-            console.log( eachFloorSeatList.length +this.allFloorItems[j].floor_name +"층의 자리 개수입니다.");
+            console.log( eachFloorSeatList.length +this.allFloorList[j].floor_name +"층의 자리 개수입니다.");
 
             for (let i = 0; i < eachFloorSeatList.length; i++) {
               let groupToObject = eachFloorSeatList[i].toObject([
@@ -917,7 +917,7 @@ export default {
 
           //사본 deleteSeatList
           if (deleteSeatList.length > 0) {
-            console.log(deleteSeatList.length +this.allFloorItems[j].floor_name + "층의 자리 개수입니다.");
+            console.log(deleteSeatList.length +this.allFloorList[j].floor_name + "층의 자리 개수입니다.");
             for (let i = 0; i < deleteSeatList.length; i++) {
               //deleteSeatList의 seatid
               let deleteSeatid = deleteSeatList[i]; 
@@ -926,7 +926,7 @@ export default {
               //console.log(deleteSeatid);
 
               ///////////////////////delete api 만들어줘야함!!
-              //this.$emit("saveByAxios", deleteSeatid, "seats");
+              this.$emit("deleteByAxios", deleteSeatid, "seats");
             }
           }
         }
@@ -944,13 +944,13 @@ export default {
         }
       }
 
-      if (this.allFloorItems) {
-        for (let j = 0; j < this.allFloorItems.length; j++) {
+      if (this.allFloorList) {
+        for (let j = 0; j < this.allFloorList.length; j++) {
           let floorData = {};
-          floorData.floor_id = this.createFloorList[j].floor_id;
-          floorData.floor_name = this.allFloorItems[j].floor_name;
-          floorData.building_id = this.allFloorItems[j].building_id;
-          floorData.floor_index = this.allFloorItems[j].floor_index;
+          floorData.floor_id = this.allFloorList[j].floor_id;
+          floorData.floor_name = this.allFloorList[j].floor_name;
+          floorData.building_id = this.allFloorList[j].building_id;
+          floorData.floor_index = this.allFloorList[j].floor_index;
 
           this.$emit("saveByAxios", floorData, "floors");
         }
@@ -958,7 +958,7 @@ export default {
 
       if (this.deleteFloorList) {
         for (let i = 0; i < this.deleteFloorList.length; i++) {
-          //this.$emit("deleteByAxios", this.deleteFloorList[i], "floors")
+          this.$emit("deleteByAxios", this.deleteFloorList[i], "floors")
           //delete 할 floor_id, floors table
 
            //console.log("delete FloorList azios")

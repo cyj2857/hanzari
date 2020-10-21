@@ -9,7 +9,7 @@
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
         <v-tab
-          v-for="tab of this.allFloorItems"
+          v-for="tab of this.allFloorList"
           :key="tab.floor_name"
           @change="setFloor(tab.floor_name)"
         >
@@ -38,7 +38,7 @@ export default {
       dialogStatus: false,
       inputFloor: null,
       seatFloor: null,
-      allFloorItems: this.copyFloors.sort(function (a, b) {
+      allFloorList: this.copyFloors.sort(function (a, b) {
         // viewmodel(사본을 가공함)
         return a.floor_index < b.floor_index
           ? -1
@@ -54,8 +54,8 @@ export default {
   },
   created() {
     //!! 처음 정의!!
-    let allItems = this.allFloorItems;
-    eventBus.$emit("allFloorItems", allItems);
+    let allItems = this.allFloorList;
+    eventBus.$emit("allFloorList", allItems);
     // 만약 처음에 null이라면
     // 층 없는 상태에서 자리 생성 exception 처리 위해 created에서 넘겨줌
 
@@ -69,10 +69,10 @@ export default {
         this.seatFloor = floor;
         console.log(this.seatFloor + "가 넘어온 자리 층입니다");
 
-        for (let i = 0; i < this.allFloorItems.length; i++) {
-          if (this.seatFloor == this.allFloorItems[i].floor_name) {
+        for (let i = 0; i < this.allFloorList.length; i++) {
+          if (this.seatFloor == this.allFloorList[i].floor_name) {
             this.floorNum = i;
-            this.setFloor(this.allFloorItems[this.floorNum].floor_name);
+            this.setFloor(this.allFloorList[this.floorNum].floor_name);
           }
         }
       });
@@ -80,11 +80,11 @@ export default {
   beforeUpdate() {
     if (this.initData && this.length != 0) {
       //일단 한 층이 무조건 DB에 있다는 전제하에 돌아감
-      this.setFloor(this.allFloorItems[this.floorNum].floor_name);
+      this.setFloor(this.allFloorList[this.floorNum].floor_name);
       return;
     } else {
       // 초기
-      this.allFloorItems = this.copyFloors.sort(function (a, b) {
+      this.allFloorList = this.copyFloors.sort(function (a, b) {
         return a.floor_index < b.floor_index
           ? -1
           : a.floor_index > b.floor_index
@@ -99,8 +99,8 @@ export default {
     length(length) {
       this.floorNum = length - 1; // floor의 index가 되는
 
-      let allItems = this.allFloorItems;
-      eventBus.$emit("allFloorItems", allItems);
+      let allItems = this.allFloorList;
+      eventBus.$emit("allFloorList", allItems);
 
       let createFloorList = this.createFloorList
       let deleteFloorList = this.deleteFloorList
@@ -136,9 +136,9 @@ export default {
       newFloor.floor_id = this.getFloorUUID();
       newFloor.floor_name = this.inputFloor;
       newFloor.building_id = "HANCOM01";
-      newFloor.floor_index = this.allFloorItems.length;
+      newFloor.floor_index = this.allFloorList.length;
 
-      this.allFloorItems.push(newFloor);
+      this.allFloorList.push(newFloor);
       this.createFloorList.push(newFloor);
       this.increaseTab();
       console.log(this.length);
@@ -153,13 +153,13 @@ export default {
     removeFloor() {
       if (this.length > 0) {
         //items에서 id가 현재 floor인 애 index 가져오기
-        let currentFloorId = this.allFloorItems[this.floorNum].floor_name;
-        const idx = this.allFloorItems.findIndex(function (item) {
+        let currentFloorId = this.allFloorList[this.floorNum].floor_name;
+        const idx = this.allFloorList.findIndex(function (item) {
           return item.floor_name == currentFloorId;
         });
         if (idx > -1) {
-          this.deleteFloorList.push(this.allFloorItems[this.floorNum].floor_id);
-          this.allFloorItems.splice(idx, 1);
+          this.deleteFloorList.push(this.allFloorList[this.floorNum].floor_id);
+          this.allFloorList.splice(idx, 1);
         }
         //items에서 그 index 삭제
         this.decreaseTab();
@@ -175,7 +175,7 @@ export default {
       if (this.length == 0) {
         this.setFloor(null);
       } else {
-        this.setFloor(this.allFloorItems[this.floorNum].floor_name);
+        this.setFloor(this.allFloorList[this.floorNum].floor_name);
       }
 
       console.log(this.length);

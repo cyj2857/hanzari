@@ -13,8 +13,8 @@
       <AttachCanvas
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
-        v-on:saveByAxios="SaveData"
-        v-on:deleteByAxios="DeleteData"
+        v-on:saveByAxios="saveData"
+        v-on:deleteByAxios="deleteData"
       ></AttachCanvas>
       <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
@@ -126,7 +126,7 @@ export default {
         });
       return loadFloorList;
     },
-    SaveData(data, tableName) {
+    saveData(data, tableName) {
       let Savedata = data;
       let SavetableName = tableName;
       console.log("Savedata is");
@@ -147,7 +147,7 @@ export default {
           console.log(res.Savedata);
         });
     },
-    DeleteData(data, tableName) {
+    deleteData(data, tableName) {
       let deleteData = data;
       let deleteTableName = tableName
       axios
