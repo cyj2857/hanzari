@@ -126,12 +126,10 @@ export default {
     if (this.eachEmployeeSeatMap == null) {
       this.eachEmployeeSeatMap = new Map();
     }
-    if (this.createSeatMap == null) {
-      this.createSeatMap = new Map();
-    }
-    if (this.deleteSeatMap == null) {
-      this.deleteSeatMap = new Map();
-    }
+
+    this.createSeatMap = new Map();
+    this.deleteSeatMap = new Map();
+    
   },
   mounted() {
     this.initializing();
@@ -493,7 +491,7 @@ export default {
       }
     },
     //해당 층의 도형 리스트 전체 삭제하기
-    visibledeleteEachFloorSeatList: function (floor) {
+    deletevisibleEachFloorSeatList: function (floor) {
       this.getEachFloorSeatList(floor).length = 0;
       return this.getEachFloorSeatList(floor);
     },
@@ -533,7 +531,7 @@ export default {
             this.deleteEachEmployeeSeatList(groupToObject);
           });
 
-        let eachFloorSeatList = this.visibledeleteEachFloorSeatList(
+        let eachFloorSeatList = this.deletevisibleEachFloorSeatList(
           this.currentSelectedFloor
         );
 
@@ -553,7 +551,7 @@ export default {
       let deleteSeatList = this.deleteEachFloorSeatList(
         this.currentSelectedFloor
       );
-      let eachFloorSeatList = this.visibledeleteEachFloorSeatList(
+      let eachFloorSeatList = this.deletevisibleEachFloorSeatList(
         this.currentSelectedFloor
       );
       let shapearray = new Array();
