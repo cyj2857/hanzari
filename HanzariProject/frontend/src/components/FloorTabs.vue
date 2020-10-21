@@ -39,7 +39,7 @@ export default {
       inputFloor: null,
       seatFloor: null,
       allFloorItems: this.copyFloors.sort(function (a, b) {
-        // viewmodel(사본)
+        // viewmodel(사본을 가공함)
         return a.floor_index < b.floor_index
           ? -1
           : a.floor_index > b.floor_index
