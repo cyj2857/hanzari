@@ -1,0 +1,93 @@
+create table buildings(
+building_id varchar(255) PRIMARY KEY NOT NULL,
+building_name varchar(255) NOT NULL
+);
+
+create table employee(
+employee_id varchar(255) PRIMARY KEY NOT NULL,
+authority varchar(255) NOT NULL,
+additional_info varchar(255),
+index(additional_info)
+);
+
+* MUL(multiple occurences) 같은 열 정보들에서 동일한 값이 여러번 나올 수 있다는 의미
+* 내부적으로 저장되는 값의 상태에 따라 인덱스를 할당하여 검색속도를 빠르게 처리하기 위한 키
+
+create table employee_additional_info(
+employee_id varchar(255) NOT NULL PRIMARY KEY,
+department_id varchar(255) NOT NULL,
+department_name varchar(255) NOT NULL,
+employee_name varchar(255) NOT NULL,
+extension_number varchar(255),
+status varchar(255) NOT NULL
+);
+
+create table figures(
+figure_id varchar(255) NOT NULL PRIMARY KEY,
+degree double NOT NULL,
+height double NOT NULL,
+width double NOT NULL,
+shape_id varchar(255) NOT NULL,
+index(shape_id)
+);
+
+create table floors(
+floor_id varchar(255) NOT NULL PRIMARY KEY,
+floor_name varchar(255) NOT NULL,
+building_id varchar(255) NOT NULL,
+index(building_id)
+);
+
+create table seats(
+seat_id varchar(255) NOT NULL PRIMARY KEY,
+floor varchar(255) NOT NULL,
+group_id varchar(255),
+is_group bit(1) NOT NULL,
+x double NOT NULL,
+y double NOT NULL,
+building_id varchar(255) NOT NULL,
+employee_id varchar(255),
+figure_id varchar(255) NOT NULL,
+index(building_id),
+index(employee_id),
+index(figure_id)
+);
+
+create table shapes(
+shape_id varchar(255) NOT NULL PRIMARY KEY,
+shape_name varchar(255) NOT NULL
+);
+
+INSERT buildings VALUES ('HANCOM01', '한컴타워');
+INSERT buildings VALUES ('HANCOM02', '청리움');
+
+INSERT employee VALUES ('10052204', 'admin', '10052204');
+INSERT employee VALUES ('19101101', 'viewer', '19101101');
+INSERT employee VALUES ('19101102', 'viewer', '19101102');
+INSERT employee VALUES ('19101103', 'viewer', '19101103');
+INSERT employee VALUES ('19101104', 'viewer', '19101104');
+INSERT employee VALUES ('19101199', 'viewer', '19101199');
+INSERT employee VALUES ('20091101', 'viewer', '20091101');
+INSERT employee VALUES ('20091102', 'viewer', '20091102');
+INSERT employee VALUES ('20091103', 'viewer', '20091103');
+INSERT employee VALUES ('20091104', 'viewer', '20091104');
+INSERT employee VALUES ('94111201', 'manager', '94111201');
+INSERT employee VALUES ('95032205', 'manager', '95032205');
+
+INSERT employee_additional_info VALUES ('10052204', '1', '인사팀', '김인사', '111-0001', '재직');
+INSERT employee_additional_info VALUES ('19101101', '3', '인프라팀', '심청일', '333-0002', '재직');
+INSERT employee_additional_info VALUES ('19101102', '3', '인프라팀', '심청이', '333-0003', '휴직');
+INSERT employee_additional_info VALUES ('19101103', '3', '인프라팀', '심청삼', '333-0004', '재직');
+INSERT employee_additional_info VALUES ('19101104', '3', '인프라팀', '심청넷', '333-0005', '재직');
+INSERT employee_additional_info VALUES ('19101199', '3', '인프라팀', '박팀장', '444-0003', '재직');
+INSERT employee_additional_info VALUES ('20091101', '2', '개발팀', '홍길일', '222-0002', '재직');
+INSERT employee_additional_info VALUES ('20091102', '2', '개발팀', '홍길둘', '222-0003', '재직');
+INSERT employee_additional_info VALUES ('20091103', '2', '개발팀', '홍길삼', '222-0004', '재직');
+INSERT employee_additional_info VALUES ('20091104', '2', '개발팀', '홍길넷', '222-0005', '재직');
+INSERT employee_additional_info VALUES ('94111201', '2', '개발팀', '이팀장', '222-0001', '재직');
+INSERT employee_additional_info VALUES ('95032205', '3', '인프라팀', '박팀장', '333-0001', '재직');
+
+INSERT shapes VALUES ('1', '네모');
+INSERT shapes VALUES('2', '세모');
+INSERT shapes VALUES('3', '원');
+INSERT shapes VALUES('4', '타원');
