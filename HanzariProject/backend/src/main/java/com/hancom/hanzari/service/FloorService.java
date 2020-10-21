@@ -14,6 +14,8 @@ public interface FloorService {
 
 	public List<Floor> findByBuiding(Building building);
 
+	public void deleteById(String floorId); // D
+	
 	public void deleteByFloorNameAndBuilding(String floorName, Building building);
 
 	public void deleteByBuilding(Building building);
