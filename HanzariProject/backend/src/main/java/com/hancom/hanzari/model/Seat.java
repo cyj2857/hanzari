@@ -11,7 +11,6 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hancom.hanzari.dto.SeatDto;
 
 import lombok.AllArgsConstructor;
