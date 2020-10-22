@@ -17,9 +17,11 @@
         v-bind:copyEmployee="employees"
         v-on:saveByAxios="saveData"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
-        v-on:saveByFloorAxiosWtihKey="saveFloorByKey"
       ></AttachCanvas>
-      <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
+      <FloorTabs
+        v-bind:copyFloors="floors"
+        v-bind:copyManageFloors="floors"
+      ></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -132,7 +134,7 @@ export default {
         });
       return loadFloorList;
     },
-    saveData(data, tableName) {
+    saveData(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
@@ -144,37 +146,6 @@ export default {
       axios
         .post(
           "http://" + host + ":" + portNum + "/api/" + saveTableName,
-          JSON.stringify(saveData),
-          {
-            headers: { "Content-Type": `application/json` },
-          }
-        )
-        .then((res) => {
-          console.log(res.saveData);
-        });
-    },
-    saveFloorByKey(tableName, data, key) {
-      // floors / seats api 구성 달라질테니 같은 함수 X
-      let saveTableName = tableName;
-      let saveData = data;
-      let saveKey = key;
-
-      console.log("saveData is");
-      console.log(saveData);
-      console.log("------------");
-      console.log("saveTableName is");
-      console.log(saveTableName);
-
-      axios
-        .post(
-          "http://" +
-            host +
-            ":" +
-            portNum +
-            "/api/" +
-            saveTableName +
-            "/" +
-            saveKey,
           JSON.stringify(saveData),
           {
             headers: { "Content-Type": `application/json` },

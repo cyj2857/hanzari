@@ -29,7 +29,7 @@
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
-  props: ["copyFloors"],
+  props: ["copyFloors", "copyManageFloors"],
   components: {
     AddFloorDialog,
   },
@@ -47,14 +47,7 @@ export default {
           ? 1
           : 0;
       }),
-      managerFloorList: this.copyFloors.sort(function (a, b) {
-        // DB에 저장하기 위한 관리 리스트
-        return a.floor_order < b.floor_order
-          ? -1
-          : a.floor_order > b.floor_order
-          ? 1
-          : 0;
-      }),
+      managerFloorList: null, // DB에 save 할 리스트
       length: this.copyFloors.length,
       initData: null,
     };
@@ -65,6 +58,7 @@ export default {
     eventBus.$emit("allFloorList", allFloors);
     // 만약 처음에 null이라면
     // 층 없는 상태에서 자리 생성 exception 처리 위해 created에서 넘겨줌
+    this.managerFloorList = allFloors.slice()
 
     let managerFloors = this.managerFloorList;
     eventBus.$emit("managerFloorList", managerFloors);

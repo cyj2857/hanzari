@@ -30,7 +30,6 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-btn @click="test" color="primary" dark>test</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -736,17 +735,15 @@ export default {
             } else if (this.managerFloorList[i].modify) {
               //010 그 id에 대하여 post
               let floorData = {};
-              floorData.floor_id = this.managerFloorList[i].floor_id;
+              floorData.floor_id = this.managerFloorList[i].floor_id; 
               floorData.floor_name = this.managerFloorList[i].floor_name;
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              let saveFloorKey = floorData.floor_id;
               this.$emit(
-                "saveByFloorAxiosWtihKey",
+                "saveByAxios",
                 "floors",
-                floorData,
-                saveFloorKey
+                floorData
               );
             }
           } else {
@@ -756,19 +753,16 @@ export default {
               return;
             } else {
               //100 110 그 id에 대하여 post
-
               let floorData = {};
               floorData.floor_id = this.managerFloorList[i].floor_id;
               floorData.floor_name = this.managerFloorList[i].floor_name;
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              let saveFloorKey = floorData.floor_id;
               this.$emit(
-                "saveByFloorAxiosWtihKey",
+                "saveByAxios",
                 "floors",
-                floorData,
-                saveFloorKey
+                floorData
               );
             }
           }
