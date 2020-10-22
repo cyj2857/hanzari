@@ -297,7 +297,7 @@ export default {
       this.loadImage(file);
       this.saveImage(file);
     },
-    loadImage(file) {
+   loadImage(file) {
       let reader = new FileReader();
       reader.onload = (e) => {
         fabric.Image.fromURL(e.target.result, (img) => {

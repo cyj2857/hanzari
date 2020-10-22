@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +23,7 @@ import com.jlefebure.spring.boot.minio.MinioService;
 
 import io.minio.messages.Item;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/images")
 public class TestImageController {
@@ -48,4 +49,5 @@ public class TestImageController {
 		IOUtils.copy(inputStream, response.getOutputStream());
 		response.flushBuffer();
 	}
+	
 }
