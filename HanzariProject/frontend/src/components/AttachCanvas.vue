@@ -785,7 +785,7 @@ export default {
               ]);
 
               console.log(groupToObject)
-
+               //axios api 호출
               if (groupToObject.create == false) {
                 if (groupToObject.delete == true) {
                   //axios.delete
@@ -800,13 +800,6 @@ export default {
                 }
               }
 
-              //초기화
-              //groupToObject.create = false;
-              //groupToObject.modify = false;
-              //groupToObject.delete = false;
-
-           
-
               let seatData = {};
               seatData.seat_id = groupToObject.seatId;
               seatData.floor = groupToObject.floor_id;
@@ -820,7 +813,12 @@ export default {
               seatData.height = groupToObject.height * groupToObject.scaleY;
               seatData.degree = groupToObject.angle;
               seatData.shape_id = "1";
+              //원본DB의 create/modify/delete를 false로 설정해야함(초기화)
+              seatData.create = false;
+              seatData.modify = false;
+              seatData.delete = false;
 
+              console.log(seatData)
               this.$emit("saveByAxios", seatData, "seats");
             }
           }
