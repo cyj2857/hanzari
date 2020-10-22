@@ -16,8 +16,8 @@
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
         v-on:saveByAxios="saveData"
-        v-on:saveByAxiosWtihKey="saveDataByKey"
-        v-on:deleteByAxios="deleteData"
+        v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
+        v-on:saveByFloorAxiosWtihKey="saveFloorByKey"
       ></AttachCanvas>
       <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
@@ -153,9 +153,12 @@ export default {
           console.log(res.saveData);
         });
     },
-    saveDataByKey(data, tableName, key) {
-      let saveData = data;
+    saveFloorByKey(tableName, data, key) {
+      // floors / seats api 구성 달라질테니 같은 함수 X
       let saveTableName = tableName;
+      let saveData = data;
+      let saveKey = key;
+
       console.log("saveData is");
       console.log(saveData);
       console.log("------------");
@@ -164,7 +167,14 @@ export default {
 
       axios
         .post(
-          "http://" + host + ":" + portNum + "/api/" + saveTableName,
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/" +
+            saveTableName +
+            "/" +
+            saveKey,
           JSON.stringify(saveData),
           {
             headers: { "Content-Type": `application/json` },
@@ -174,9 +184,9 @@ export default {
           console.log(res.saveData);
         });
     },
-    deleteData(data, tableName) {
-      let deleteData = data;
+    deleteFloorByKey(tableName, key) {
       let deleteTableName = tableName;
+      let deleteKey = key;
       axios
         .delete(
           "http://" +
@@ -186,7 +196,7 @@ export default {
             "/api/" +
             deleteTableName +
             "/" +
-            deleteData
+            deleteKey
         )
         .then(function (response) {
           // handle success

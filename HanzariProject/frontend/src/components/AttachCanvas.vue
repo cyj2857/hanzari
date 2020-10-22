@@ -725,54 +725,52 @@ export default {
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {
-      for (let i = 0; i < this.managerFloorList.length; i++) {
-        // 원본
-        if (!this.managerFloorList[i].create) {
-          if (this.managerFloorList[i].delete) {
-            // 001 011
-            // delete
-          } else if (this.managerFloorList[i].modify) {
-            //010
-            //그 id에 대하여 post
-          }
-        } else {
-          // front에서 생성
-          if (this.managerFloorList[i].delete) {
-            //101 111
-            return;
+      if (this.managerFloorList) {
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          if (!this.managerFloorList[i].create) {
+            // 원본
+            if (this.managerFloorList[i].delete) {
+              // 001 011 delete
+              let deleteFloorKey = this.managerFloorList[i].floor_id;
+              this.$emit("deleteFloorByAxiosWithKey", "floors", deleteFloorKey);
+            } else if (this.managerFloorList[i].modify) {
+              //010 그 id에 대하여 post
+              let floorData = {};
+              floorData.floor_id = this.managerFloorList[i].floor_id;
+              floorData.floor_name = this.managerFloorList[i].floor_name;
+              floorData.building_id = this.managerFloorList[i].building_id;
+              floorData.floor_order = this.managerFloorList[i].floor_order;
+
+              let saveFloorKey = floorData.floor_id;
+              this.$emit(
+                "saveByFloorAxiosWtihKey",
+                "floors",
+                floorData,
+                saveFloorKey
+              );
+            }
           } else {
-            //100 && 110
-            //그 id에 대하여 post
-          }
-        }
-      }
+            // front에서 생성
+            if (this.managerFloorList[i].delete) {
+              //101 111 nothing
+              return;
+            } else {
+              //100 110 그 id에 대하여 post
 
-      if (this.allFloorList) {
-        for (let i = 0; i < this.allFloorList.length; i++) {
-          if (this.allFloorList[i].create) {
-            //create가 true일때, front에서 create 된 것들 먼저 저장
-            let floorData = {};
-            floorData.floor_id = this.allFloorList[i].floor_id;
-            floorData.floor_name = this.allFloorList[i].floor_name;
-            floorData.building_id = this.allFloorList[i].building_id;
-            floorData.floor_order = this.allFloorList[i].floor_order;
+              let floorData = {};
+              floorData.floor_id = this.managerFloorList[i].floor_id;
+              floorData.floor_name = this.managerFloorList[i].floor_name;
+              floorData.building_id = this.managerFloorList[i].building_id;
+              floorData.floor_order = this.managerFloorList[i].floor_order;
 
-            this.$emit("saveByAxios", floorData, "floors");
-          } else if (this.allFloorList[i].modify) {
-            let floorData = {};
-            floorData.floor_id = this.allFloorList[i].floor_id;
-            floorData.floor_name = this.allFloorList[i].floor_name;
-            floorData.building_id = this.allFloorList[i].building_id;
-            floorData.floor_order = this.allFloorList[i].floor_order;
-            floorData.modify = false;
-            floorData.create = false;
-
-            this.$emit(
-              "saveByAxiosWtihKey",
-              floorData,
-              "floors",
-              this.allFloorList[i].floor_id
-            );
+              let saveFloorKey = floorData.floor_id;
+              this.$emit(
+                "saveByFloorAxiosWtihKey",
+                "floors",
+                floorData,
+                saveFloorKey
+              );
+            }
           }
         }
       }
