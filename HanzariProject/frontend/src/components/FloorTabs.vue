@@ -66,6 +66,10 @@ export default {
     // 만약 처음에 null이라면
     // 층 없는 상태에서 자리 생성 exception 처리 위해 created에서 넘겨줌
 
+    let managerFloors = this.managerFloorList;
+    eventBus.$emit("managerFloorList", managerFloors);
+    //만약 층 한개 load해오고 그 한개를 삭제후 바로 저장할 가능성
+
     eventBus.$on("confirm", () => {
       this.confirmDialog();
     }),
@@ -107,6 +111,9 @@ export default {
 
       let allFloors = this.allFloorList;
       eventBus.$emit("allFloorList", allFloors);
+      
+      let managerFloors = this.managerFloorList;
+      eventBus.$emit("managerFloorList", managerFloors);
     },
   },
   methods: {

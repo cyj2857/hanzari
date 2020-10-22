@@ -80,6 +80,9 @@ export default {
       employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
       allFloorList: [],
+      // 자리들 저장될 때 사용되는데 managerFloorList를 사용하지 않은 이유는 층이 가시적으로 없어지게 되면
+      // managerFloorList에는 남아있는데 가시적으로 없어진 층의 자리들을 저장하는 것은 옳지않다고 판단
+      managerFloorList: [],
     };
   },
   created() {
@@ -104,6 +107,10 @@ export default {
       this.allFloorList = allFloors;
       console.log(this.allFloorList);
     });
+    eventBus.$on("managerFloorList", (managerFloors) => {
+      this.managerFloorList = managerFloors;
+      console.log(this.managerFloorList);
+    });
 
     if (this.floorImageList == null) {
       this.floorImageList = new Map();
@@ -119,9 +126,6 @@ export default {
     this.initializing();
   },
   methods: {
-    test() {
-      console.log(this.allFloorList);
-    },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
       console.log(this.employeeDialogStatus);
@@ -721,6 +725,28 @@ export default {
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {
+      for (let i = 0; i < this.managerFloorList.length; i++) {
+        // 원본
+        if (!this.managerFloorList[i].create) {
+          if (this.managerFloorList[i].delete) {
+            // 001 011
+            // delete
+          } else if (this.managerFloorList[i].modify) {
+            //010
+            //그 id에 대하여 post
+          }
+        } else {
+          // front에서 생성
+          if (this.managerFloorList[i].delete) {
+            //101 111
+            return;
+          } else {
+            //100 && 110
+            //그 id에 대하여 post
+          }
+        }
+      }
+
       if (this.allFloorList) {
         for (let i = 0; i < this.allFloorList.length; i++) {
           if (this.allFloorList[i].create) {

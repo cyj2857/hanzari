@@ -196,12 +196,6 @@ export default {
           // handle error
           console.log(error);
         });
-
-      // if (tableName == "seats") {
-      //   this.getSeats();
-      // } else if (tableName == "floors") {
-      //   this.getFloors();
-      // }
     },
   },
 };
