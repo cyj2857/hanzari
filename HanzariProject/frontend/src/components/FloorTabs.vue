@@ -6,6 +6,7 @@
         <v-divider class="mx-4" vertical></v-divider>
         <v-btn text @click="getDialog">Add Floor</v-btn>
         <v-divider class="mx-4" vertical></v-divider>
+        <!-- <v-btn text @click="changeFloorName">Change Floor Name</v-btn> 추후에 구현 예정-->
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
         <v-tab
@@ -28,7 +29,7 @@
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
-  props: ["copyFloors"],
+  props: ["copyFloors", "copyManageFloors"],
   components: {
     AddFloorDialog,
   },
@@ -39,23 +40,29 @@ export default {
       inputFloor: null,
       seatFloor: null,
       allFloorList: this.copyFloors.sort(function (a, b) {
-        // viewmodel(사본을 가공함)
-        return a.floor_index < b.floor_index
+        // viewmodel (가시적인 리스트)
+        return a.floor_order < b.floor_order
           ? -1
-          : a.floor_index > b.floor_index
+          : a.floor_order > b.floor_order
           ? 1
           : 0;
       }),
+      managerFloorList: null, // DB에 save 할 리스트
       length: this.copyFloors.length,
-      initData: null
+      initData: null,
     };
   },
   created() {
     //!! 처음 정의!!
-    let allItems = this.allFloorList;
-    eventBus.$emit("allFloorList", allItems);
+    let allFloors = this.allFloorList;
+    eventBus.$emit("allFloorList", allFloors);
     // 만약 처음에 null이라면
     // 층 없는 상태에서 자리 생성 exception 처리 위해 created에서 넘겨줌
+    this.managerFloorList = allFloors.slice()
+
+    let managerFloors = this.managerFloorList;
+    eventBus.$emit("managerFloorList", managerFloors);
+    //만약 층 한개 load해오고 그 한개를 삭제후 바로 저장할 가능성
 
     eventBus.$on("confirm", () => {
       this.confirmDialog();
@@ -77,15 +84,14 @@ export default {
   },
   beforeUpdate() {
     if (this.initData && this.length != 0) {
-      //일단 한 층이 무조건 DB에 있다는 전제하에 돌아감
       this.setFloor(this.allFloorList[this.floorNum].floor_name);
       return;
     } else {
       // 초기
       this.allFloorList = this.copyFloors.sort(function (a, b) {
-        return a.floor_index < b.floor_index
+        return a.floor_order < b.floor_order
           ? -1
-          : a.floor_index > b.floor_index
+          : a.floor_order > b.floor_order
           ? 1
           : 0;
       });
@@ -97,8 +103,11 @@ export default {
     length(length) {
       this.floorNum = length - 1; // floor의 index가 되는
 
-      let allItems = this.allFloorList;
-      eventBus.$emit("allFloorList", allItems);
+      let allFloors = this.allFloorList;
+      eventBus.$emit("allFloorList", allFloors);
+      
+      let managerFloors = this.managerFloorList;
+      eventBus.$emit("managerFloorList", managerFloors);
     },
   },
   methods: {
@@ -125,9 +134,14 @@ export default {
       newFloor.floor_id = this.getFloorUUID();
       newFloor.floor_name = this.inputFloor;
       newFloor.building_id = "HANCOM01";
-      newFloor.floor_index = this.allFloorList.length;
+      newFloor.floor_order = this.allFloorList.length;
+      newFloor.create = true;
+      newFloor.modify = false;
+      newFloor.delete = false;
 
       this.allFloorList.push(newFloor);
+      this.managerFloorList.push(newFloor);
+
       this.increaseTab();
       console.log(this.length);
     },
@@ -147,6 +161,7 @@ export default {
         });
         if (idx > -1) {
           this.allFloorList.splice(idx, 1);
+          this.managerFloorList[idx].delete = true;
         }
         //items에서 그 index 삭제
         this.decreaseTab();
@@ -167,6 +182,18 @@ export default {
 
       console.log(this.length);
       //pop
+    },
+    changeFloorName() {
+      // 여기에서 floor의 modify true 해줄 예정
+      let currentFloorId = this.allFloorList[this.floorNum].floor_name;
+      const idx = this.allFloorList.findIndex(function (item) {
+        return item.floor_name == currentFloorId;
+      });
+      this.allFloorList[idx].floor_name = "변경된 floor name";
+      this.allFloorList[idx].modify = true;
+
+      this.managerFloorList[idx].floor_name = "변경된 floor name";
+      this.managerFloorList[idx].modify = true;
     },
     getFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (

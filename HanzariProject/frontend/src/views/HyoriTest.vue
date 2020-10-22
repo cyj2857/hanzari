@@ -16,9 +16,12 @@
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
         v-on:saveByAxios="saveData"
-        v-on:deleteByAxios="deleteData"
+        v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
       ></AttachCanvas>
-      <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
+      <FloorTabs
+        v-bind:copyFloors="floors"
+        v-bind:copyManageFloors="floors"
+      ></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -121,14 +124,17 @@ export default {
             newFloor.floor_id = response.data[i].floor_id;
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
-            newFloor.floor_index = response.data[i].floor_index;
+            newFloor.floor_order = response.data[i].floor_order;
+            newFloor.create = null;
+            newFloor.modify = null;
+            newFloor.delete = null;
 
             loadFloorList.push(newFloor);
           }
         });
       return loadFloorList;
     },
-    saveData(data, tableName) {
+    saveData(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
@@ -149,9 +155,9 @@ export default {
           console.log(res.saveData);
         });
     },
-    deleteData(data, tableName) {
-      let deleteData = data;
+    deleteFloorByKey(tableName, key) {
       let deleteTableName = tableName;
+      let deleteKey = key;
       axios
         .delete(
           "http://" +
@@ -161,7 +167,7 @@ export default {
             "/api/" +
             deleteTableName +
             "/" +
-            deleteData
+            deleteKey
         )
         .then(function (response) {
           // handle success
@@ -171,12 +177,6 @@ export default {
           // handle error
           console.log(error);
         });
-
-      // if (tableName == "seats") {
-      //   this.getSeats();
-      // } else if (tableName == "floors") {
-      //   this.getFloors();
-      // }
     },
   },
 };

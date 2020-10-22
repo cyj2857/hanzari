@@ -30,7 +30,6 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-btn @click="test" color="primary" dark>test</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -80,6 +79,9 @@ export default {
       employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
       allFloorList: [],
+      // 자리들 저장될 때 사용되는데 managerFloorList를 사용하지 않은 이유는 층이 가시적으로 없어지게 되면
+      // managerFloorList에는 남아있는데 가시적으로 없어진 층의 자리들을 저장하는 것은 옳지않다고 판단
+      managerFloorList: [],
     };
   },
   created() {
@@ -100,9 +102,13 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.$on("allFloorList", (allItems) => {
-      this.allFloorList = allItems;
+    eventBus.$on("allFloorList", (allFloors) => {
+      this.allFloorList = allFloors;
       console.log(this.allFloorList);
+    });
+    eventBus.$on("managerFloorList", (managerFloors) => {
+      this.managerFloorList = managerFloors;
+      console.log(this.managerFloorList);
     });
 
     if (this.floorImageList == null) {
@@ -119,9 +125,6 @@ export default {
     this.initializing();
   },
   methods: {
-    test() {
-      console.log(this.allFloorList);
-    },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
       console.log(this.employeeDialogStatus);
@@ -739,17 +742,48 @@ export default {
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {
-      //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
+      if (this.managerFloorList) {
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          if (!this.managerFloorList[i].create) {
+            // 원본
+            if (this.managerFloorList[i].delete) {
+              // 001 011 delete
+              let deleteFloorKey = this.managerFloorList[i].floor_id;
+              this.$emit("deleteFloorByAxiosWithKey", "floors", deleteFloorKey);
+            } else if (this.managerFloorList[i].modify) {
+              //010 그 id에 대하여 post
+              let floorData = {};
+              floorData.floor_id = this.managerFloorList[i].floor_id; 
+              floorData.floor_name = this.managerFloorList[i].floor_name;
+              floorData.building_id = this.managerFloorList[i].building_id;
+              floorData.floor_order = this.managerFloorList[i].floor_order;
 
-      if (this.allFloorList) {
-        for (let j = 0; j < this.allFloorList.length; j++) {
-          let floorData = {};
-          floorData.floor_id = this.allFloorList[j].floor_id;
-          floorData.floor_name = this.allFloorList[j].floor_name;
-          floorData.building_id = this.allFloorList[j].building_id;
-          floorData.floor_index = this.allFloorList[j].floor_index;
+              this.$emit(
+                "saveByAxios",
+                "floors",
+                floorData
+              );
+            }
+          } else {
+            // front에서 생성
+            if (this.managerFloorList[i].delete) {
+              //101 111 nothing
+              return;
+            } else {
+              //100 110 그 id에 대하여 post
+              let floorData = {};
+              floorData.floor_id = this.managerFloorList[i].floor_id;
+              floorData.floor_name = this.managerFloorList[i].floor_name;
+              floorData.building_id = this.managerFloorList[i].building_id;
+              floorData.floor_order = this.managerFloorList[i].floor_order;
 
-          this.$emit("saveByAxios", floorData, "floors");
+              this.$emit(
+                "saveByAxios",
+                "floors",
+                floorData
+              );
+            }
+          }
         }
       }
 
@@ -834,7 +868,6 @@ export default {
 
       // 현재 층 list 다루기
       for (let i = 0; i < this.seats.length; i++) {
-        // !!!!!!!!!!공석 고려 하기!!!!!!!
         if (this.seats[i].floor == this.currentSelectedFloor) {
           eachFloorSeatList = this.getEachFloorSeatList(
             this.currentSelectedFloor
