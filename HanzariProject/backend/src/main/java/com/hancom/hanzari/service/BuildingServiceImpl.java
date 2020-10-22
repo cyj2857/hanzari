@@ -36,7 +36,7 @@ public class BuildingServiceImpl implements BuildingService {
 
 	@Override
 	public Building save(Building building) {
-		// TODO Auto-generated method stub
-		return null;
+		buildingRepository.save(building);
+		return building;
 	}
 }

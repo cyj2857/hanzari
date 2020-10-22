@@ -11,6 +11,7 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.hancom.hanzari.dto.BuildingDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +46,8 @@ public class Building {
 
 	public Building() {
 	};
+
+	public BuildingDto toDto() {
+		return BuildingDto.builder().building_id(buildingId).building_name(buildingName).build();
+	}
 }
