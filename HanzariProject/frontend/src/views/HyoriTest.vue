@@ -4,6 +4,7 @@
       <div class="search" id="search">
         <AllFloorsDataTable
           v-bind:copyEmployee="employees"
+          v-bind:currentFloorSeatsList="currentFloorSeats"
         ></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
@@ -52,20 +53,33 @@ export default {
   },
   data() {
     return {
-      msg: "This is hyori page.",
-      floorMsg: "Choose Floor",
-      searchEmployeeMsg: "Search Employee",
-      changeText: "Sample Text",
-      selected: "",
       employees: [],
-      seats: [],
       floors: [],
+      seats: [],
+      currentFloorSeats: [],
     };
   },
   created() {
     this.employees = this.getEmployees();
-    this.seats = this.getSeats();
     this.floors = this.getFloors();
+    this.seats = this.getAllSeats();
+
+    console.log(this.floors.length + "층의 개수입니다.");//0
+  },
+  mounted() {
+    //changeFloor될때 넘어오는 floor_id를 넣어야함.
+    // console.log(
+    //   this.floors[this.floors.length - 1].floor_id +
+    //     "디비로부터 가지고온 층들의 맨 마지막 층의 아이디입니다."
+    // );
+    console.log(this.floors.length+"층의 개수입니다."); //0 
+    // this.currentFloorSeats = this.getCurrentFloorSeats(
+    //   this.floors[this.floors.length - 1].floor_id
+    // )
+    //console.log(this.currentFloorSeats.length+"디비로부터 가지고온 현재층의 자리리스트 길이입니다.");
+  },
+  beforeUpdate(){
+    console.log(this.floors.length+"층의 개수입니다."); //0 
   },
   methods: {
     getEmployees() {
@@ -87,10 +101,18 @@ export default {
         });
       return initEmployeeList;
     },
-    getSeats() {
-      let loadSeatList = new Array();
+    getCurrentFloorSeats(floor_id) {
+      let currentFloorSeatList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/api/seats")
+        .get(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/floors/" +
+            floor_id +
+            "/seats"
+        )
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newSeat = {};
@@ -106,13 +128,52 @@ export default {
             newSeat.degree = response.data[i].degree;
             newSeat.shape_id = response.data[i].shape_id;
 
-            loadSeatList.push(newSeat);
+            currentFloorSeatList.push(newSeat);
           }
         });
-      return loadSeatList;
+      return currentFloorSeatList;
+    },
+    getOneFloorSeats(floor_id) {
+      let oneFloorSeatList = new Array();
+      axios
+        .get(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/floors/" +
+            floor_id +
+            "/seats"
+        )
+        .then(function (response) {
+          for (var i = 0; i < response.data.length; i++) {
+            let newSeat = {};
+            newSeat.seat_id = response.data[i].seat_id;
+            newSeat.floor = response.data[i].floor;
+            newSeat.x = response.data[i].x;
+            newSeat.y = response.data[i].y;
+            newSeat.is_group = response.data[i].is_group;
+            newSeat.building_id = response.data[i].building_id;
+            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.width = response.data[i].width;
+            newSeat.height = response.data[i].height;
+            newSeat.degree = response.data[i].degree;
+            newSeat.shape_id = response.data[i].shape_id;
+          }
+        });
+        return oneFloorSeatList;
+    },
+    getAllSeats() {
+      let allDBSeatMap = new Map();
+      console.log(this.floors.length + "층의 개수입니다. 함수안에서요"); //0
+      for (let i = 0; i < this.floors.length; i++) {
+        allDBSeatMap.set(this.floors[i].floor_name,this.getOneFloorSeats(this.floors[i].floor_id));
+      }
+      //console.log(this.floors.length+"층의 개수입니다. 함수안에서요")
+      return allDBSeatMap;
     },
     getFloors() {
-      let loadFloorList = new Array();
+      let allFloorList = new Array();
       axios
         .get("http://" + host + ":" + portNum + "/api/floors")
         .then(function (response) {
@@ -121,12 +182,12 @@ export default {
             newFloor.floor_id = response.data[i].floor_id;
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
-            newFloor.floor_index = response.data[i].floor_index;
+            newFloor.floor_order = response.data[i].floor_order;
 
-            loadFloorList.push(newFloor);
+            allFloorList.push(newFloor);
           }
         });
-      return loadFloorList;
+      return allFloorList;
     },
     saveData(data, tableName) {
       let saveData = data;

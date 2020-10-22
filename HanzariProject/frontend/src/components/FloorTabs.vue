@@ -40,14 +40,14 @@ export default {
       seatFloor: null,
       allFloorList: this.copyFloors.sort(function (a, b) {
         // viewmodel(사본을 가공함)
-        return a.floor_index < b.floor_index
+        return a.floor_order < b.floor_order
           ? -1
-          : a.floor_index > b.floor_index
+          : a.floor_order > b.floor_order
           ? 1
           : 0;
       }),
       length: this.copyFloors.length,
-      initData: null
+      initData: null,
     };
   },
   created() {
@@ -59,33 +59,32 @@ export default {
 
     eventBus.$on("confirm", () => {
       this.confirmDialog();
-    }),
-      eventBus.$on("floorInfo", (floor) => {
-        this.inputFloor = floor;
-      }),
-      eventBus.$on("showSeatFloor", (floor) => {
-        this.seatFloor = floor;
-        console.log(this.seatFloor + "가 넘어온 자리 층입니다");
+    });
+    eventBus.$on("floorInfo", (floor) => {
+      this.inputFloor = floor;
+    });
+    eventBus.$on("showSeatFloor", (floor) => {
+      this.seatFloor = floor;
+      console.log(this.seatFloor + "가 넘어온 자리 층입니다");
 
-        for (let i = 0; i < this.allFloorList.length; i++) {
-          if (this.seatFloor == this.allFloorList[i].floor_name) {
-            this.floorNum = i;
-            this.setFloor(this.allFloorList[this.floorNum].floor_name);
-          }
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        if (this.seatFloor == this.allFloorList[i].floor_name) {
+          this.floorNum = i;
+          this.setFloor(this.allFloorList[this.floorNum].floor_name);
         }
-      });
+      }
+    });
   },
   beforeUpdate() {
     if (this.initData && this.length != 0) {
-      //일단 한 층이 무조건 DB에 있다는 전제하에 돌아감
       this.setFloor(this.allFloorList[this.floorNum].floor_name);
       return;
     } else {
       // 초기
       this.allFloorList = this.copyFloors.sort(function (a, b) {
-        return a.floor_index < b.floor_index
+        return a.floor_order < b.floor_order
           ? -1
-          : a.floor_index > b.floor_index
+          : a.floor_order > b.floor_order
           ? 1
           : 0;
       });
@@ -125,7 +124,7 @@ export default {
       newFloor.floor_id = this.getFloorUUID();
       newFloor.floor_name = this.inputFloor;
       newFloor.building_id = "HANCOM01";
-      newFloor.floor_index = this.allFloorList.length;
+      newFloor.floor_order = this.allFloorList.length;
 
       this.allFloorList.push(newFloor);
       this.increaseTab();
