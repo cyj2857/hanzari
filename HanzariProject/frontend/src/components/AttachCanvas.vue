@@ -80,8 +80,6 @@ export default {
       employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
       allFloorList: [],
-      createFloorList: [],
-      deleteFloorList: [],
     };
   },
   created() {
@@ -105,14 +103,6 @@ export default {
     eventBus.$on("allFloorList", (allItems) => {
       this.allFloorList = allItems;
       console.log(this.allFloorList);
-    });
-    eventBus.$on("createFloorList", (createFloorList) => {
-      this.createFloorList = createFloorList;
-      console.log(this.createFloorList);
-    });
-    eventBus.$on("deleteFloorList", (deleteFloorList) => {
-      this.deleteFloorList = deleteFloorList;
-      console.log(this.deleteFloorList);
     });
 
     if (this.floorImageList == null) {
@@ -734,18 +724,6 @@ export default {
     clickSaveBtn() {
       //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
 
-      if (this.createFloorList) {
-        for (let j = 0; j < this.createFloorList.length; j++) {
-          let floorData = {};
-          floorData.floor_id = this.createFloorList[j].floor_id;
-          floorData.floor_name = this.createFloorList[j].floor_name;
-          floorData.building_id = this.createFloorList[j].building_id;
-          floorData.floor_index = this.createFloorList[j].floor_index;
-
-          this.$emit("saveByAxios", floorData, "floors");
-        }
-      }
-
       if (this.allFloorList) {
         for (let j = 0; j < this.allFloorList.length; j++) {
           let floorData = {};
@@ -755,13 +733,6 @@ export default {
           floorData.floor_index = this.allFloorList[j].floor_index;
 
           this.$emit("saveByAxios", floorData, "floors");
-        }
-      }
-
-      if (this.deleteFloorList) {
-        for (let i = 0; i < this.deleteFloorList.length; i++) {
-          this.$emit("deleteByAxios", this.deleteFloorList[i], "floors");
-          //delete 할 floor_id, floors table
         }
       }
 
