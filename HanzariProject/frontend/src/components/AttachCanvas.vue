@@ -730,7 +730,7 @@ export default {
           floorData.floor_id = this.allFloorList[j].floor_id;
           floorData.floor_name = this.allFloorList[j].floor_name;
           floorData.building_id = this.allFloorList[j].building_id;
-          floorData.floor_index = this.allFloorList[j].floor_index;
+          floorData.floor_order = this.allFloorList[j].floor_order;
 
           this.$emit("saveByAxios", floorData, "floors");
         }

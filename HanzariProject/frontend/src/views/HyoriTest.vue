@@ -121,7 +121,7 @@ export default {
             newFloor.floor_id = response.data[i].floor_id;
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
-            newFloor.floor_index = response.data[i].floor_index;
+            newFloor.floor_order = response.data[i].floor_order;
 
             loadFloorList.push(newFloor);
           }

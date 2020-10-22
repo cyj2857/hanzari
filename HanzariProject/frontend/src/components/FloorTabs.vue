@@ -40,9 +40,9 @@ export default {
       seatFloor: null,
       allFloorList: this.copyFloors.sort(function (a, b) {
         // viewmodel(사본을 가공함)
-        return a.floor_index < b.floor_index
+        return a.floor_order < b.floor_order
           ? -1
-          : a.floor_index > b.floor_index
+          : a.floor_order > b.floor_order
           ? 1
           : 0;
       }),
@@ -83,9 +83,9 @@ export default {
     } else {
       // 초기
       this.allFloorList = this.copyFloors.sort(function (a, b) {
-        return a.floor_index < b.floor_index
+        return a.floor_order < b.floor_order
           ? -1
-          : a.floor_index > b.floor_index
+          : a.floor_order > b.floor_order
           ? 1
           : 0;
       });
@@ -125,7 +125,7 @@ export default {
       newFloor.floor_id = this.getFloorUUID();
       newFloor.floor_name = this.inputFloor;
       newFloor.building_id = "HANCOM01";
-      newFloor.floor_index = this.allFloorList.length;
+      newFloor.floor_order = this.allFloorList.length;
 
       this.allFloorList.push(newFloor);
       this.increaseTab();
