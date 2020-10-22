@@ -279,7 +279,7 @@ export default {
       this.loadImage(file);
       this.saveImage(file);
     },
-   loadImage(file) {
+    loadImage(file) {
       let reader = new FileReader();
       reader.onload = (e) => {
         fabric.Image.fromURL(e.target.result, (img) => {
@@ -452,12 +452,12 @@ export default {
       );
     },
     deleteAllBtn() {
-
       if (confirm("Are you sure?")) {
         this.floorCanvas
           .getObjects()
           .slice()
           .forEach((obj) => {
+            obj.set('delete',true);
             let groupToObject = obj.toObject(["seatId", "employee_id"]);
             this.deleteEachEmployeeSeatList(groupToObject);
             this.floorCanvas.remove(obj);
@@ -484,11 +484,13 @@ export default {
       if (confirm("Are you sure?")) {
         if (this.floorCanvas.getActiveObjects().length == 1) {
           activeObject = this.floorCanvas.getActiveObject(); //console.log("단일객체 선택");
+          activeObject.set('delete',true);
 
           let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
           this.deleteEachEmployeeSeatList(groupToObject);
         } else {
           activeObject = this.floorCanvas.getActiveObjects(); //console.log("복수객체 선택");
+          activeObject.set('delete',true);
 
           for (let i = 0; i < activeObject.length; i++) {
             let groupToObject = activeObject[i].toObject([
@@ -593,6 +595,9 @@ export default {
           left: VP.left,
           top: VP.top,
           angle: 0,
+          create: true, //생성
+          modify: false, //변경
+          delete: false, //삭제
         });
 
         group[i].on("mousedown", (e) => {
@@ -641,6 +646,17 @@ export default {
           //console.log(groupx.width * groupx.scaleX + "저장할 width");
           //console.log(groupx.height * groupx.scaleY + "저장할 height");
         }
+
+        //modify
+        this.floorCanvas.on("object:modified", function (e) {
+         //크기, 이동, 회전 
+         let modifyObject = e.target; 
+         modifyObject.set('modify', true);
+        });
+        //this.floorCanvas.on("object:remove", function (e) {
+        //});
+        //this.floorCanvas.on("object:add", function (e) {
+        //});
 
         this.floorCanvas.add(group[i]);
 
@@ -762,7 +778,33 @@ export default {
                 "height",
                 "scaleX",
                 "scaleY",
+                "create",
+                "modify",
+                "delete",
               ]);
+
+              console.log(groupToObject)
+
+              if (groupToObject.create == false) {
+                if (groupToObject.delete == true) {
+                  //axios.delete
+                } else if (groupToObject.modify == true) {
+                  //axios.post
+                }
+              } else {//groupToObject.create == true
+                if (groupToObject.true == false) {
+                  break;
+                } else {
+                  //axios.post
+                }
+              }
+
+              //초기화
+              //groupToObject.create = false;
+              //groupToObject.modify = false;
+              //groupToObject.delete = false;
+
+           
 
               let seatData = {};
               seatData.seat_id = groupToObject.seatId;
