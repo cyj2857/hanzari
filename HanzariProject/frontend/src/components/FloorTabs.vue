@@ -47,9 +47,7 @@ export default {
           : 0;
       }),
       length: this.copyFloors.length,
-      initData: null,
-      createFloorList: [], // DB에 새로 생긴 애들을 추가해주기 위함 post 저장 2순서 객체 가지고 있음
-      deleteFloorList: [], // 삭제된 것 관리하기 위함. delete 삭제 3순서  객체의 floor_id 가지고 있음
+      initData: null
     };
   },
   created() {
@@ -101,15 +99,6 @@ export default {
 
       let allItems = this.allFloorList;
       eventBus.$emit("allFloorList", allItems);
-
-      let createFloorList = this.createFloorList
-      let deleteFloorList = this.deleteFloorList
-
-      eventBus.$emit("createFloorList", createFloorList)
-      eventBus.$emit("deleteFloorList", deleteFloorList)
-
-      console.log(this.createFloorList)
-      console.log(this.deleteFloorList)
     },
   },
   methods: {
@@ -139,7 +128,6 @@ export default {
       newFloor.floor_index = this.allFloorList.length;
 
       this.allFloorList.push(newFloor);
-      this.createFloorList.push(newFloor);
       this.increaseTab();
       console.log(this.length);
     },
@@ -158,7 +146,6 @@ export default {
           return item.floor_name == currentFloorId;
         });
         if (idx > -1) {
-          this.deleteFloorList.push(this.allFloorList[this.floorNum].floor_id);
           this.allFloorList.splice(idx, 1);
         }
         //items에서 그 index 삭제
