@@ -62,7 +62,8 @@ export default {
   created() {
     this.employees = this.getEmployees();
     this.floors = this.getFloors();
-    this.seats = this.getAllSeats();
+    this.seats = this.getAllSeats(); //Map
+    this.currentFloorSeats = this.getCurrentFloorSeats(); //currentFloor's seatList
 
     console.log(this.floors.length + "층의 개수입니다.");//0
   },
@@ -72,7 +73,7 @@ export default {
     //   this.floors[this.floors.length - 1].floor_id +
     //     "디비로부터 가지고온 층들의 맨 마지막 층의 아이디입니다."
     // );
-    console.log(this.floors.length+"층의 개수입니다."); //0 
+    //console.log(this.floors.length+"층의 개수입니다."); //0 
     // this.currentFloorSeats = this.getCurrentFloorSeats(
     //   this.floors[this.floors.length - 1].floor_id
     // )
@@ -163,7 +164,7 @@ export default {
         });
         return oneFloorSeatList;
     },
-    getAllSeats() {
+    getAllSeats() { //all seats // 현재 층 제외한 all seats로 다시 구현해야함.
       let allDBSeatMap = new Map();
       console.log(this.floors.length + "층의 개수입니다. 함수안에서요"); //0
       for (let i = 0; i < this.floors.length; i++) {
