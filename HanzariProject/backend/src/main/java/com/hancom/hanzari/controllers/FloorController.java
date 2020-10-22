@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,6 +59,7 @@ public class FloorController {
 		return new ResponseEntity<List<FloorDto>>(result, HttpStatus.OK);
 	}
 
+	@Transactional
 	@PostMapping
 	public ResponseEntity<Floor> save(@RequestBody FloorDto floorDto) throws Exception {
 		for (Field field : floorDto.getClass().getDeclaredFields()) {
