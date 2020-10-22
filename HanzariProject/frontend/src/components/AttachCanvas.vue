@@ -100,8 +100,8 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.$on("allFloorList", (allItems) => {
-      this.allFloorList = allItems;
+    eventBus.$on("allFloorList", (allFloors) => {
+      this.allFloorList = allFloors;
       console.log(this.allFloorList);
     });
 
@@ -279,7 +279,7 @@ export default {
       this.loadImage(file);
       this.saveImage(file);
     },
-   loadImage(file) {
+    loadImage(file) {
       let reader = new FileReader();
       reader.onload = (e) => {
         fabric.Image.fromURL(e.target.result, (img) => {
@@ -452,7 +452,6 @@ export default {
       );
     },
     deleteAllBtn() {
-
       if (confirm("Are you sure?")) {
         this.floorCanvas
           .getObjects()
@@ -722,17 +721,33 @@ export default {
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {
-      //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
-
       if (this.allFloorList) {
-        for (let j = 0; j < this.allFloorList.length; j++) {
-          let floorData = {};
-          floorData.floor_id = this.allFloorList[j].floor_id;
-          floorData.floor_name = this.allFloorList[j].floor_name;
-          floorData.building_id = this.allFloorList[j].building_id;
-          floorData.floor_order = this.allFloorList[j].floor_order;
+        for (let i = 0; i < this.allFloorList.length; i++) {
+          if (this.allFloorList[i].create) {
+            //create가 true일때, front에서 create 된 것들 먼저 저장
+            let floorData = {};
+            floorData.floor_id = this.allFloorList[i].floor_id;
+            floorData.floor_name = this.allFloorList[i].floor_name;
+            floorData.building_id = this.allFloorList[i].building_id;
+            floorData.floor_order = this.allFloorList[i].floor_order;
 
-          this.$emit("saveByAxios", floorData, "floors");
+            this.$emit("saveByAxios", floorData, "floors");
+          } else if (this.allFloorList[i].modify) {
+            let floorData = {};
+            floorData.floor_id = this.allFloorList[i].floor_id;
+            floorData.floor_name = this.allFloorList[i].floor_name;
+            floorData.building_id = this.allFloorList[i].building_id;
+            floorData.floor_order = this.allFloorList[i].floor_order;
+            floorData.modify = false;
+            floorData.create = false;
+
+            this.$emit(
+              "saveByAxiosWtihKey",
+              floorData,
+              "floors",
+              this.allFloorList[i].floor_id
+            );
+          }
         }
       }
 
@@ -793,7 +808,6 @@ export default {
 
       // 현재 층 list 다루기
       for (let i = 0; i < this.seats.length; i++) {
-        // !!!!!!!!!!공석 고려 하기!!!!!!!
         if (this.seats[i].floor == this.currentSelectedFloor) {
           eachFloorSeatList = this.getEachFloorSeatList(
             this.currentSelectedFloor

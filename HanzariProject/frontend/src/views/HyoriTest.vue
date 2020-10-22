@@ -16,6 +16,7 @@
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
         v-on:saveByAxios="saveData"
+        v-on:saveByAxiosWtihKey="saveDataByKey"
         v-on:deleteByAxios="deleteData"
       ></AttachCanvas>
       <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
@@ -122,6 +123,9 @@ export default {
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
             newFloor.floor_order = response.data[i].floor_order;
+            newFloor.create = null;
+            newFloor.modify = null;
+            newFloor.delete = null;
 
             loadFloorList.push(newFloor);
           }
@@ -129,6 +133,27 @@ export default {
       return loadFloorList;
     },
     saveData(data, tableName) {
+      let saveData = data;
+      let saveTableName = tableName;
+      console.log("saveData is");
+      console.log(saveData);
+      console.log("------------");
+      console.log("saveTableName is");
+      console.log(saveTableName);
+
+      axios
+        .post(
+          "http://" + host + ":" + portNum + "/api/" + saveTableName,
+          JSON.stringify(saveData),
+          {
+            headers: { "Content-Type": `application/json` },
+          }
+        )
+        .then((res) => {
+          console.log(res.saveData);
+        });
+    },
+    saveDataByKey(data, tableName, key) {
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
