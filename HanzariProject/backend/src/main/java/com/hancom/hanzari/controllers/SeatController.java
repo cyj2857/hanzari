@@ -1,6 +1,5 @@
 package com.hancom.hanzari.controllers;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.model.Shape;
 import com.hancom.hanzari.service.BuildingService;
 import com.hancom.hanzari.service.EmployeeService;
-import com.hancom.hanzari.service.FigureService;
 import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
 import com.hancom.hanzari.service.ShapeService;
@@ -42,8 +40,6 @@ public class SeatController {
 	private EmployeeService employeeService;
 	@Autowired
 	private ShapeService shapeService;
-	@Autowired
-	private FigureService figureService;
 	@Autowired
 	private BuildingService buildingService;
 	@Autowired
@@ -74,21 +70,20 @@ public class SeatController {
 
 	@PostMapping
 	public ResponseEntity<Seat> save(@RequestBody SeatDto seatDto) throws Exception {
-		for (Field field : seatDto.getClass().getDeclaredFields()) {
+		/*for (Field field : seatDto.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(seatDto);
 			System.out.println(field.getName() + " : " + value);
-		}
+		}*/
 
 		Shape shape = shapeService.findById(seatDto.getShape_id()); // ShapeRepository에서 seatDto의 shape_id를 통해 해당 Shape을
 		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
-		figureService.save(figure);
 
 		Building building = buildingService.findById(seatDto.getBuilding_id());
 		Employee employee = null;
 		Floor floor = floorService.findByFloorNameAndBuilding(seatDto.getFloor(), building);
-		System.out.println("FLOOR:: " + floor.getFloorId() + " / " + floor.getFloorName());
+		//System.out.println("FLOOR:: " + floor.getFloorId() + " / " + floor.getFloorName());
 		if (seatDto.getEmployee_id() != null) {
 			employee = employeeService.findById(seatDto.getEmployee_id());
 		}
