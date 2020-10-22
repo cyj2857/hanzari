@@ -405,6 +405,8 @@ export default {
       if (this.floorCanvas.getActiveObject().type == "group") {
         activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
 
+        activeObject.set('modify', true)
+
         activeObject.employee_name = null;
         activeObject.employee_department = null;
         activeObject.employee_number = null;
@@ -625,11 +627,9 @@ export default {
           this.getChangeSeatDialog();
         });
 
-        this.floorCanvas.on("object:scaling", onObjectScaled);
-        function onObjectScaled(e) {
+       this.floorCanvas.on("object:scaling", (e) => {
           let scaledObject = e.target;
           //console.log("Width =  " + scaledObject.getScaledWidth());
-          //console.log("X =  " + scaledObject.scaleX);
           //console.log("Height = " + scaledObject.getScaledHeight());
 
           let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
@@ -645,9 +645,8 @@ export default {
           ]);
           //console.log(groupx.width * groupx.scaleX + "저장할 width");
           //console.log(groupx.height * groupx.scaleY + "저장할 height");
-        }
+        }),
 
-        //modify
         this.floorCanvas.on("object:modified", function (e) {
          //크기, 이동, 회전 
          let modifyObject = e.target; 
@@ -706,6 +705,7 @@ export default {
             "employee_id",
             "floor_id",
           ]);
+          activeObject.set('modify', true);
           this.deleteEachEmployeeSeatList(groupToObject);
         }
       }
@@ -727,6 +727,7 @@ export default {
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
       activeObject._objects[1].text = item.name;
+      activeObject.set('modify', true);
       this.floorCanvas.renderAll();
 
       eachEmployeeSeatList.push(activeObject);
