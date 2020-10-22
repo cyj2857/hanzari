@@ -67,7 +67,7 @@ public class FloorController {
 
 		Building building = buildingService.findById(floorDto.getBuilding_id());
 		Floor floor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name()).building(building)
-				.floorIndex(floorDto.getFloor_index()).build();
+				.floorOrder(floorDto.getFloor_order()).build();
 		return new ResponseEntity<Floor>(floorService.save(floor), HttpStatus.OK);
 	}
 
@@ -81,7 +81,7 @@ public class FloorController {
 		floorService.deleteById(floor_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
-
+	/*
 	@DeleteMapping(value = "/by-building/{building_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public void deleteByBuildingId(@PathVariable("building_id") String building_id) throws Exception {
 		Building building = buildingService.findById(building_id);
@@ -97,5 +97,6 @@ public class FloorController {
 		floorService.truncate();
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
+	*/
 
 }

@@ -88,7 +88,7 @@ public class SeatController {
 		Building building = buildingService.findById(seatDto.getBuilding_id());
 		Employee employee = null;
 		Floor floor = floorService.findByFloorNameAndBuilding(seatDto.getFloor(), building);
-
+		System.out.println("FLOOR:: " + floor.getFloorId() + " / " + floor.getFloorName());
 		if (seatDto.getEmployee_id() != null) {
 			employee = employeeService.findById(seatDto.getEmployee_id());
 		}

@@ -7,8 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hancom.hanzari.dto.SeatDto;
 
@@ -30,9 +32,10 @@ public class Seat {
 	private String seatId;
 
 	@ManyToOne
-	@JoinColumn(name = "floor_id", nullable = false)
+	@JoinColumn(name = "floor_id", nullable = false) // 관계의 주인
+	@JsonBackReference
 	private Floor floor;
-	
+
 	@Column(name = "x", nullable = false)
 	private double x;
 
@@ -45,34 +48,33 @@ public class Seat {
 	@Column(name = "group_id", nullable = true)
 	private String groupId;
 
-	//@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "employee_id") // 관계의 주인
+	@JsonBackReference
 	private Employee employee;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "figure_id", nullable = false)
 	private Figure figure;
 
 	public Seat() {
 	};
 
-	public void setFloor(Floor floor) {
-		this.floor = floor;
-	}
-	
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
-
-	public void setFigure(Figure figure) {
-		this.figure = figure;
+	@PreRemove
+	public void preRemove() {
+		if (figure != null) {
+			figure.setShape(null);
+		}
+		if (employee != null) {
+			setEmployee(null);
+		}
 	}
 
 	public SeatDto toDto() {
 		String employeeId = (employee == null) ? null : String.valueOf(employee.getEmployeeId());
-		return SeatDto.builder().seat_id(seatId).floor(floor.getFloorName()).x(x).y(y).is_group(isGroup).group_id(groupId)
-				.building_id(floor.getBuilding().getBuildingId()).employee_id(employeeId).width(figure.getWidth())
-				.height(figure.getHeight()).degree(figure.getDegree()).shape_id(figure.getShape().getShapeId()).build();
+		return SeatDto.builder().seat_id(seatId).floor(floor.getFloorName()).x(x).y(y).is_group(isGroup)
+				.group_id(groupId).building_id(floor.getBuilding().getBuildingId()).employee_id(employeeId)
+				.width(figure.getWidth()).height(figure.getHeight()).degree(figure.getDegree())
+				.shape_id(figure.getShape().getShapeId()).build();
 	}
 }

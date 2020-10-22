@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hancom.hanzari.dto.EmployeeDto;
 
 import lombok.AllArgsConstructor;
@@ -37,8 +38,9 @@ public class Employee {
 	@JoinColumn(name = "additionalInfo", nullable = true)
 	private EmployeeAdditionalInfo additionalInfo;
 
-	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
 	@Column(nullable = true)
+	@JsonManagedReference
 	private List<Seat> seat; // = new ArrayList<Seat>();
 
 	public Employee() {

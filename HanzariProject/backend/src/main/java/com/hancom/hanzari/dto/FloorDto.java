@@ -23,7 +23,7 @@ public class FloorDto {
 	private String building_id;
 
 	@NotBlank
-	private int floor_index;
+	private int floor_order;
 	
 	public FloorDto() {
 	}
