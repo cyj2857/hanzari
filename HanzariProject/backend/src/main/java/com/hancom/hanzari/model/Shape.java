@@ -1,8 +1,11 @@
 package com.hancom.hanzari.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +25,9 @@ public class Shape {
 
 	@Column(name = "shape_name", nullable = false)
 	private String shapeName; // 그려질 모양의 이름 (ex. 네모, 세모, 원, 타원, ...)
+	
+	@OneToMany
+	private List<Figure> figures;
 
 	public Shape() {
 	};

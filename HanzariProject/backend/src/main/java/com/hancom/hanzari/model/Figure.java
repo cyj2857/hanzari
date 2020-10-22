@@ -39,7 +39,7 @@ public class Figure {
 	public Figure() {
 	};
 	
-	void setShape(Shape shape) {
+	public void setShape(Shape shape) {
 		this.shape = shape;
 	}
 }
