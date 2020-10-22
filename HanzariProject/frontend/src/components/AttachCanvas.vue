@@ -819,46 +819,6 @@ export default {
           let eachFloorSeatList = this.getEachFloorSeatList(
             this.allFloorList[j].floor_name
           );
-          let createSeatList = this.getCreateSeatList(
-            this.allFloorList[j].floor_name
-          );
-          let deleteSeatList = this.getDeleteSeatList(
-            this.allFloorList[j].floor_name
-          );
-
-          //사본 createSeatList
-          if (createSeatList.length > 0) {
-            for (let i = 0; i < createSeatList.length; i++) {
-              let groupToObject = createSeatList[i].toObject([
-                "seatId",
-                "floor_id",
-                "left",
-                "top",
-                "employee_department",
-                "employee_id",
-                "width",
-                "height",
-                "scaleX",
-                "scaleY",
-              ]);
-
-              let seatData = {};
-              seatData.seat_id = groupToObject.seatId;
-              seatData.floor = groupToObject.floor_id;
-              seatData.x = groupToObject.left;
-              seatData.y = groupToObject.top;
-              seatData.is_group = false;
-              seatData.group_id = null;
-              seatData.building_id = "HANCOM01";
-              seatData.employee_id = groupToObject.employee_id;
-              seatData.width = groupToObject.width * groupToObject.scaleX;
-              seatData.height = groupToObject.height * groupToObject.scaleY;
-              seatData.degree = groupToObject.angle;
-              seatData.shape_id = "1";
-
-              this.$emit("saveByAxios", seatData, "seats");
-            }
-          }
 
           //사본 eachFloorSeatList
           if (eachFloorSeatList.length > 0) {
@@ -897,17 +857,6 @@ export default {
               seatData.shape_id = "1";
 
               this.$emit("saveByAxios", seatData, "seats");
-            }
-          }
-
-          //사본 deleteSeatList
-          if (deleteSeatList.length > 0) {
-            for (let i = 0; i < deleteSeatList.length; i++) {
-              //deleteSeatList의 seatid
-              let deleteSeatid = deleteSeatList[i];
-
-              ///////////////////////delete api 만들어줘야함!!
-              this.$emit("deleteByAxios", deleteSeatid, "seats");
             }
           }
         }
