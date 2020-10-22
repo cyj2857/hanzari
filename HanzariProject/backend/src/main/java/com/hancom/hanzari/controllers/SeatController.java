@@ -21,11 +21,13 @@ import com.hancom.hanzari.dto.SeatDto;
 import com.hancom.hanzari.model.Building;
 import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.Figure;
+import com.hancom.hanzari.model.Floor;
 import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.model.Shape;
 import com.hancom.hanzari.service.BuildingService;
 import com.hancom.hanzari.service.EmployeeService;
 import com.hancom.hanzari.service.FigureService;
+import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
 import com.hancom.hanzari.service.ShapeService;
 
@@ -44,6 +46,8 @@ public class SeatController {
 	private FigureService figureService;
 	@Autowired
 	private BuildingService buildingService;
+	@Autowired
+	private FloorService floorService;
 
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> getAllSeats() {
@@ -80,26 +84,30 @@ public class SeatController {
 		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
 		figureService.save(figure);
-		Building building = null;
+
+		Building building = buildingService.findById(seatDto.getBuilding_id());
 		Employee employee = null;
+		Floor floor = floorService.findByFloorNameAndBuilding(seatDto.getFloor(), building);
+		System.out.println("FLOOR:: " + floor.getFloorId() + " / " + floor.getFloorName());
 		if (seatDto.getEmployee_id() != null) {
 			employee = employeeService.findById(seatDto.getEmployee_id());
 		}
-		if (seatDto.getBuilding_id() != null) {
-			building = buildingService.findById(seatDto.getBuilding_id());
-		}
-		Seat newSeat = new Seat(seatDto.getSeat_id(), seatDto.getFloor(), seatDto.getX(), seatDto.getY(),
-				seatDto.getIs_group(), seatDto.getGroup_id());
 
-		newSeat.setEmployee(employee);
-		newSeat.setBuilding(building);
-		newSeat.setFigure(figure);
+		Seat newSeat = Seat.builder().seatId(seatDto.getSeat_id()).floor(floor).x(seatDto.getX()).y(seatDto.getY())
+				.isGroup(seatDto.getIs_group()).groupId(seatDto.getGroup_id()).employee(employee).figure(figure)
+				.build();
+
 		return new ResponseEntity<Seat>(seatService.save(newSeat), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteSeat(@PathVariable("seat_id") String seat_id) {
-		figureService.deleteById(seat_id); // seat_id랑 동일한 값으로 figure_id가 지정된 1:1로 생성된 figure 레코드 선행 삭제
+		System.out.println("==================================================================");
+		System.out.println("seatId: " + seat_id);
+		System.out.println("==================================================================");
+
+		// figureService.deleteById(seat_id); // seat_id랑 동일한 값으로 figure_id가 지정된 1:1로
+		// 생성된 figure 레코드 선행 삭제
 		seatService.deleteById(seat_id);
 
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);

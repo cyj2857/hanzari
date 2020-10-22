@@ -408,6 +408,8 @@ export default {
       if (this.floorCanvas.getActiveObject().type == "group") {
         activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
 
+        activeObject.set('modify', true)
+
         activeObject.employee_name = null;
         activeObject.employee_department = null;
         activeObject.employee_number = null;
@@ -460,6 +462,7 @@ export default {
           .getObjects()
           .slice()
           .forEach((obj) => {
+            obj.set('delete',true);
             let groupToObject = obj.toObject(["seatId", "employee_id"]);
             this.deleteEachEmployeeSeatList(groupToObject);
             this.floorCanvas.remove(obj);
@@ -486,11 +489,13 @@ export default {
       if (confirm("Are you sure?")) {
         if (this.floorCanvas.getActiveObjects().length == 1) {
           activeObject = this.floorCanvas.getActiveObject(); //console.log("단일객체 선택");
+          activeObject.set('delete',true);
 
           let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
           this.deleteEachEmployeeSeatList(groupToObject);
         } else {
           activeObject = this.floorCanvas.getActiveObjects(); //console.log("복수객체 선택");
+          activeObject.set('delete',true);
 
           for (let i = 0; i < activeObject.length; i++) {
             let groupToObject = activeObject[i].toObject([
@@ -595,6 +600,9 @@ export default {
           left: VP.left,
           top: VP.top,
           angle: 0,
+          create: true, //생성
+          modify: false, //변경
+          delete: false, //삭제
         });
 
         group[i].on("mousedown", (e) => {
@@ -622,11 +630,9 @@ export default {
           this.getChangeSeatDialog();
         });
 
-        this.floorCanvas.on("object:scaling", onObjectScaled);
-        function onObjectScaled(e) {
+       this.floorCanvas.on("object:scaling", (e) => {
           let scaledObject = e.target;
           //console.log("Width =  " + scaledObject.getScaledWidth());
-          //console.log("X =  " + scaledObject.scaleX);
           //console.log("Height = " + scaledObject.getScaledHeight());
 
           let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
@@ -642,7 +648,17 @@ export default {
           ]);
           //console.log(groupx.width * groupx.scaleX + "저장할 width");
           //console.log(groupx.height * groupx.scaleY + "저장할 height");
-        }
+        }),
+
+        this.floorCanvas.on("object:modified", function (e) {
+         //크기, 이동, 회전 
+         let modifyObject = e.target; 
+         modifyObject.set('modify', true);
+        });
+        //this.floorCanvas.on("object:remove", function (e) {
+        //});
+        //this.floorCanvas.on("object:add", function (e) {
+        //});
 
         this.floorCanvas.add(group[i]);
 
@@ -692,6 +708,7 @@ export default {
             "employee_id",
             "floor_id",
           ]);
+          activeObject.set('modify', true);
           this.deleteEachEmployeeSeatList(groupToObject);
         }
       }
@@ -713,6 +730,7 @@ export default {
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
       activeObject._objects[1].text = item.name;
+      activeObject.set('modify', true);
       this.floorCanvas.renderAll();
 
       eachEmployeeSeatList.push(activeObject);
@@ -795,7 +813,26 @@ export default {
                 "height",
                 "scaleX",
                 "scaleY",
+                "create",
+                "modify",
+                "delete",
               ]);
+
+              console.log(groupToObject)
+               //axios api 호출
+              if (groupToObject.create == false) {
+                if (groupToObject.delete == true) {
+                  //axios.delete
+                } else if (groupToObject.modify == true) {
+                  //axios.post
+                }
+              } else {//groupToObject.create == true
+                if (groupToObject.true == false) {
+                  break;
+                } else {
+                  //axios.post
+                }
+              }
 
               let seatData = {};
               seatData.seat_id = groupToObject.seatId;
@@ -810,7 +847,12 @@ export default {
               seatData.height = groupToObject.height * groupToObject.scaleY;
               seatData.degree = groupToObject.angle;
               seatData.shape_id = "1";
+              //원본DB의 create/modify/delete를 false로 설정해야함(초기화)
+              seatData.create = false;
+              seatData.modify = false;
+              seatData.delete = false;
 
+              console.log(seatData)
               this.$emit("saveByAxios", seatData, "seats");
             }
           }

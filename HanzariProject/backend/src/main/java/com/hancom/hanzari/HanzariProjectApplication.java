@@ -23,7 +23,7 @@ public class HanzariProjectApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HanzariProjectApplication.class, args);
 			
-		new TestController().InsertTestData(); // 나중에 삭제될 코드
+		//new TestController().InsertTestData(); // 나중에 삭제될 코드
 	}
 	
 	@Bean
