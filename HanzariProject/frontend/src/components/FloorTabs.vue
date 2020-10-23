@@ -73,7 +73,7 @@ export default {
       });
   },
   beforeUpdate() {
-    // 실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의 
+    // 실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의
     // 새로운 상태를 가져와야하는 경우 사용
     if (this.initData && this.length != 0) {
       this.setFloor(this.allFloorList[this.floorNum].floor_name);
@@ -126,18 +126,18 @@ export default {
     getDialog() {
       eventBus.$emit("initFloor", null);
       this.dialogStatus = true;
-      console.log(this.dialogStatus);
+      //console.log(this.dialogStatus);
     },
     closeDialog() {
-      console.log("<<<close dialog>>>");
+      //console.log("<<<close dialog>>>");
       this.dialogStatus = false;
-      console.log(this.dialogStatus);
+      //console.log(this.dialogStatus);
     },
     confirmDialog() {
-      console.log("<<<confirm dialog>>>");
+      //console.log("<<<confirm dialog>>>");
       this.dialogStatus = false;
-      console.log(this.dialogStatus);
-      console.log(this.inputFloor + "from add floor dialog");
+      //console.log(this.dialogStatus);
+      //console.log(this.inputFloor + "from add floor dialog");
 
       let newFloor = {};
       newFloor.floor_id = this.getFloorUUID();
@@ -152,7 +152,7 @@ export default {
       this.managerFloorList.push(newFloor);
 
       this.increaseTab();
-      console.log(this.length);
+      console.log(this.length + "length");
     },
     increaseTab() {
       this.length++;
@@ -173,23 +173,20 @@ export default {
           this.managerFloorList[idx].delete = true;
         }
         //items에서 그 index 삭제
-        this.decreaseTab();
       } else {
         alert("there are no seats to delete!");
       }
     },
     decreaseTab() {
-      console.log(this.length);
-
       this.length--;
       this.floorNum = this.length - 1;
+
       if (this.length == 0) {
         this.setFloor(null);
       } else {
         this.setFloor(this.allFloorList[this.floorNum].floor_name);
       }
-
-      console.log(this.length);
+      console.log(this.length + "length");
       //pop
     },
     changeFloorName() {
