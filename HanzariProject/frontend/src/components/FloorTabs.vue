@@ -39,22 +39,15 @@ export default {
       dialogStatus: false,
       inputFloor: null,
       seatFloor: null,
-      allFloorList: this.copyFloors.sort(function (a, b) {
-        // viewmodel (가시적인 리스트)
-        return a.floor_order < b.floor_order
-          ? -1
-          : a.floor_order > b.floor_order
-          ? 1
-          : 0;
-      }),
+      allFloorList: this.copyFloors, // 여기에서 sort 안먹음
       managerFloorList: [], // DB에 save 할 리스트
-      length: this.copyFloors.length,
+      length: null,
       initData: null,
       firstLoadWatch: null,
     };
   },
   created() {
-    if (this.allFloorList.length == 0) {
+    if (this.copyFloors.length == 0) {
       /* 층 없는 상태에서 자리 생성 막기위해 넘겨줌
        이 경우 길이가 늘어나지 않으므로 watch에서 불리지 않음
        그래서 created에서 불러주기*/
@@ -79,13 +72,9 @@ export default {
         }
       });
   },
-  beforeMount(){
-
-  },
-  mounted(){
-
-  },
   beforeUpdate() {
+    // 실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의 
+    // 새로운 상태를 가져와야하는 경우 사용
     if (this.initData && this.length != 0) {
       this.setFloor(this.allFloorList[this.floorNum].floor_name);
       return;
