@@ -856,7 +856,7 @@ export default {
               seatData.delete = false;
 
               console.log(seatData)
-              this.$emit("saveByAxios", seatData, "seats");
+              this.$emit("saveByAxios", "seats", seatData);
             }
           }
         }

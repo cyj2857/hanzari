@@ -133,8 +133,8 @@ export default {
         )
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
-            //console.log(reseponse.data[i].floor);
-            //if (response.data[i].floor == floor) {
+            console.log(reseponse.data[i].floor+"---------------------------<<<<<<<<<<");
+            if (response.data[i].floor == floor) {
               let newSeat = {};
               newSeat.seat_id = response.data[i].seat_id;
               newSeat.floor = response.data[i].floor;
@@ -149,7 +149,7 @@ export default {
               newSeat.shape_id = response.data[i].shape_id;
 
               currentFloorSeatList.push(newSeat);
-            //}
+            }
           }
         });
       //console.log("넘어온 현재층에 대한 자리리스트 개수입니다. -> "+currentFloorSeatList.length);
@@ -206,7 +206,7 @@ export default {
     getFloors() {
       let allFloorList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/api/floors")
+        .get("http://" + host + ":" + portNum + "/api/buildings/HANCOM01/floors")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newFloor = {};
