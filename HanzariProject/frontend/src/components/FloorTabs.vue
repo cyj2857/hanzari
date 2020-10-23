@@ -29,7 +29,7 @@
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
 export default {
-  props: ["copyFloors", "copyManageFloors"],
+  props: ["copyFloors"],
   components: {
     AddFloorDialog,
   },
@@ -39,50 +39,42 @@ export default {
       dialogStatus: false,
       inputFloor: null,
       seatFloor: null,
-      allFloorList: this.copyFloors.sort(function (a, b) {
-        // viewmodel (가시적인 리스트)
-        return a.floor_order < b.floor_order
-          ? -1
-          : a.floor_order > b.floor_order
-          ? 1
-          : 0;
-      }),
-      managerFloorList: null, // DB에 save 할 리스트
-      length: this.copyFloors.length,
+      allFloorList: this.copyFloors, // 여기에서 sort 안먹음
+      managerFloorList: [], // DB에 save 할 리스트
+      length: null,
       initData: null,
+      firstLoadWatch: null,
     };
   },
   created() {
-    //!! 처음 정의!!
-    let allFloors = this.allFloorList;
-    eventBus.$emit("allFloorList", allFloors);
-    // 만약 처음에 null이라면
-    // 층 없는 상태에서 자리 생성 exception 처리 위해 created에서 넘겨줌
-    this.managerFloorList = allFloors.slice()
-
-    let managerFloors = this.managerFloorList;
-    eventBus.$emit("managerFloorList", managerFloors);
-    //만약 층 한개 load해오고 그 한개를 삭제후 바로 저장할 가능성
+    if (this.copyFloors.length == 0) {
+      /* 층 없는 상태에서 자리 생성 막기위해 넘겨줌
+       이 경우 길이가 늘어나지 않으므로 watch에서 불리지 않음
+       그래서 created에서 불러주기*/
+      let allFloors = this.allFloorList;
+      eventBus.$emit("allFloorList", allFloors);
+    }
 
     eventBus.$on("confirm", () => {
       this.confirmDialog();
-    }),
-      eventBus.$on("floorInfo", (floor) => {
-        this.inputFloor = floor;
-      }),
-      eventBus.$on("showSeatFloor", (floor) => {
-        this.seatFloor = floor;
-        console.log(this.seatFloor + "가 넘어온 자리 층입니다");
+    });
+    eventBus.$on("floorInfo", (floor) => {
+      this.inputFloor = floor;
+    });
+    eventBus.$on("showSeatFloor", (floor) => {
+      this.seatFloor = floor;
+      console.log(this.seatFloor + "가 넘어온 자리 층입니다");
 
-        for (let i = 0; i < this.allFloorList.length; i++) {
-          if (this.seatFloor == this.allFloorList[i].floor_name) {
-            this.floorNum = i;
-            this.setFloor(this.allFloorList[this.floorNum].floor_name);
-          }
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        if (this.seatFloor == this.allFloorList[i].floor_name) {
+          this.floorNum = i;
+          this.setFloor(this.allFloorList[this.floorNum].floor_name);
         }
-      });
+      }
+    });
   },
   beforeUpdate() {
+    /*실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의 새로운 상태를 가져와야하는 경우 사용*/
     if (this.initData && this.length != 0) {
       this.setFloor(this.allFloorList[this.floorNum].floor_name);
       return;
@@ -96,18 +88,35 @@ export default {
           : 0;
       });
       this.length = this.copyFloors.length;
-      this.initData = "init";
+      this.initData = true;
     }
   },
   watch: {
     length(length) {
-      this.floorNum = length - 1; // floor의 index가 되는
+      /* DB에서 로드해올때도 length가 늘어나기 때문에 watch가 불림
+      층을 삭제하는 경우에도 managerFloors 에는 남아있으므로 삭제된 층의 자리들도 저장하는 경우가 있을수 있기 때문에
+      둘다 eventBus로 보내줘야함*/
+      if (!this.firstLoadWatch) {
+        this.floorNum = length - 1; // floor의 index가 되는 floorNum
 
-      let allFloors = this.allFloorList;
-      eventBus.$emit("allFloorList", allFloors);
-      
-      let managerFloors = this.managerFloorList;
-      eventBus.$emit("managerFloorList", managerFloors);
+        let allFloors = this.allFloorList;
+        eventBus.$emit("allFloorList", allFloors);
+
+        this.managerFloorList = allFloors.slice();
+        let managerFloors = this.managerFloorList;
+        eventBus.$emit("managerFloorList", managerFloors);
+
+        this.firstLoadWatch = true;
+      } else {
+        //DB 로드 끝낸 후에 불리는 부분
+        this.floorNum = length - 1; // floor의 index가 되는 floorNum
+
+        let allFloors = this.allFloorList;
+        eventBus.$emit("allFloorList", allFloors);
+
+        let managerFloors = this.managerFloorList;
+        eventBus.$emit("managerFloorList", managerFloors);
+      }
     },
   },
   methods: {
@@ -117,18 +126,18 @@ export default {
     getDialog() {
       eventBus.$emit("initFloor", null);
       this.dialogStatus = true;
-      console.log(this.dialogStatus);
+      //console.log(this.dialogStatus);
     },
     closeDialog() {
-      console.log("<<<close dialog>>>");
+      //console.log("<<<close dialog>>>");
       this.dialogStatus = false;
-      console.log(this.dialogStatus);
+      //console.log(this.dialogStatus);
     },
     confirmDialog() {
-      console.log("<<<confirm dialog>>>");
+      //console.log("<<<confirm dialog>>>");
       this.dialogStatus = false;
-      console.log(this.dialogStatus);
-      console.log(this.inputFloor + "from add floor dialog");
+      //console.log(this.dialogStatus);
+      //console.log(this.inputFloor + "from add floor dialog");
 
       let newFloor = {};
       newFloor.floor_id = this.getFloorUUID();
@@ -143,7 +152,7 @@ export default {
       this.managerFloorList.push(newFloor);
 
       this.increaseTab();
-      console.log(this.length);
+      console.log(this.length + "length");
     },
     increaseTab() {
       this.length++;
@@ -164,23 +173,24 @@ export default {
           this.managerFloorList[idx].delete = true;
         }
         //items에서 그 index 삭제
-        this.decreaseTab();
+
+        this.decreaseTab(this.managerFloorList[idx].floor_name);//나중에 floor_id로 보내야할 가능성
       } else {
         alert("there are no seats to delete!");
       }
     },
-    decreaseTab() {
-      console.log(this.length);
-
+    decreaseTab(floor_name) {
       this.length--;
       this.floorNum = this.length - 1;
+
+      eventBus.$emit("deleteSeatListKey", floor_name); 
+
       if (this.length == 0) {
         this.setFloor(null);
       } else {
         this.setFloor(this.allFloorList[this.floorNum].floor_name);
       }
-
-      console.log(this.length);
+      console.log(this.length + "length");
       //pop
     },
     changeFloorName() {

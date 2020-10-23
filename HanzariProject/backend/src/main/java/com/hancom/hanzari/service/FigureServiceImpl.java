@@ -37,7 +37,7 @@ public class FigureServiceImpl implements FigureService {
 
 	@Override
 	public Figure save(Figure figure) {
-		// TODO Auto-generated method stub
-		return null;
+		figureRepository.save(figure);
+		return figure;
 	}
 }
