@@ -1,12 +1,13 @@
 package com.hancom.hanzari.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +24,9 @@ public class Figure {
 	@Column(name = "figure_id", nullable = false)
 	private String figureId; // seat_id와 동일
 
-	@ManyToOne(cascade = CascadeType.ALL) // 관계의 주인
+	@ManyToOne // 관계의 주인
 	@JoinColumn(name = "shape_id", nullable = false)
+	@JsonBackReference
 	private Shape shape; // 그려질 모양에 대한 정보 (ex. 네모, 세모, 원 등)
 
 	@Column(name = "width", nullable = false)
@@ -39,7 +41,7 @@ public class Figure {
 	public Figure() {
 	};
 	
-	void setShape(Shape shape) {
+	public void setShape(Shape shape) {
 		this.shape = shape;
 	}
 }

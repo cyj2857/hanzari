@@ -17,7 +17,7 @@
         v-bind:copyEmployee="employees"
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-on:saveByAxios="saveData"
-        v-on:deleteByAxios="deleteData"
+        v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
       ></AttachCanvas>
       <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
@@ -41,7 +41,7 @@ import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
 import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
 const portNum = 6080;
 const host = "172.30.1.50";
-
+const building = "HANCOM01";
 export default {
   name: "Admin",
   components: {
@@ -181,6 +181,11 @@ export default {
             newSeat.height = response.data[i].height;
             newSeat.degree = response.data[i].degree;
             newSeat.shape_id = response.data[i].shape_id;
+            newSeat.create = response.data[i].create;
+            newSeat.delete = response.data[i].delete;
+            newSeat.modify = response.data[i].modify;
+
+            loadSeatList.push(newSeat);
           }
         });
       return oneFloorSeatList;
@@ -209,13 +214,16 @@ export default {
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
             newFloor.floor_order = response.data[i].floor_order;
+            newFloor.create = false;
+            newFloor.modify = false;
+            newFloor.delete = false;
 
             allFloorList.push(newFloor);
           }
         });
       return allFloorList;
     },
-    saveData(data, tableName) {
+    saveData(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
@@ -236,9 +244,9 @@ export default {
           console.log(res.saveData);
         });
     },
-    deleteData(data, tableName) {
-      let deleteData = data;
+    deleteFloorByKey(tableName, key) {
       let deleteTableName = tableName;
+      let deleteKey = key;
       axios
         .delete(
           "http://" +
@@ -248,7 +256,7 @@ export default {
             "/api/" +
             deleteTableName +
             "/" +
-            deleteData
+            deleteKey
         )
         .then(function (response) {
           // handle success
@@ -258,12 +266,6 @@ export default {
           // handle error
           console.log(error);
         });
-
-      // if (tableName == "seats") {
-      //   this.getSeats();
-      // } else if (tableName == "floors") {
-      //   this.getFloors();
-      // }
     },
   },
 };

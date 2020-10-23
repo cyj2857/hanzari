@@ -17,6 +17,9 @@
 
 		<!-- Echo the SQL queries to stdout -->
 		<property name="show_sql">true</property>
+		
+		<!-- 가독성 좋게 SQL문 출력 -->
+		<property name="hibernate.format_sql">true</property>
 
 		<!-- Drop and re-create the database schema on startup -->
 		<property name="hibernate.hbm2ddl.auto">create</property>

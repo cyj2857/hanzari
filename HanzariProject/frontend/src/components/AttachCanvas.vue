@@ -30,7 +30,6 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-btn @click="test" color="primary" dark>test</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -81,6 +80,9 @@ export default {
       employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
       allFloorList: [],
+      // 자리들 저장될 때 사용되는데 managerFloorList를 사용하지 않은 이유는 층이 가시적으로 없어지게 되면
+      // managerFloorList에는 남아있는데 가시적으로 없어진 층의 자리들을 저장하는 것은 옳지않다고 판단
+      managerFloorList: [],
     };
   },
   created() {
@@ -103,9 +105,13 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setVacantSeat(item);
     });
-    eventBus.$on("allFloorList", (allItems) => {
-      this.allFloorList = allItems;
+    eventBus.$on("allFloorList", (allFloors) => {
+      this.allFloorList = allFloors;
       console.log(this.allFloorList);
+    });
+    eventBus.$on("managerFloorList", (managerFloors) => {
+      this.managerFloorList = managerFloors;
+      console.log(this.managerFloorList);
     });
 
     if (this.floorImageList == null) {
@@ -122,9 +128,6 @@ export default {
     this.initializing();
   },
   methods: {
-    test() {
-      console.log(this.allFloorList);
-    },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
       console.log(this.employeeDialogStatus);
@@ -408,6 +411,8 @@ export default {
       if (this.floorCanvas.getActiveObject().type == "group") {
         activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
 
+        activeObject.set('modify', true)
+
         activeObject.employee_name = null;
         activeObject.employee_department = null;
         activeObject.employee_number = null;
@@ -460,6 +465,7 @@ export default {
           .getObjects()
           .slice()
           .forEach((obj) => {
+            obj.set('delete',true);
             let groupToObject = obj.toObject(["seatId", "employee_id"]);
             this.deleteEachEmployeeSeatList(groupToObject);
             this.floorCanvas.remove(obj);
@@ -486,11 +492,13 @@ export default {
       if (confirm("Are you sure?")) {
         if (this.floorCanvas.getActiveObjects().length == 1) {
           activeObject = this.floorCanvas.getActiveObject(); //console.log("단일객체 선택");
+          activeObject.set('delete',true);
 
           let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
           this.deleteEachEmployeeSeatList(groupToObject);
         } else {
           activeObject = this.floorCanvas.getActiveObjects(); //console.log("복수객체 선택");
+          activeObject.set('delete',true);
 
           for (let i = 0; i < activeObject.length; i++) {
             let groupToObject = activeObject[i].toObject([
@@ -595,6 +603,9 @@ export default {
           left: VP.left,
           top: VP.top,
           angle: 0,
+          create: true, //생성
+          modify: false, //변경
+          delete: false, //삭제
         });
 
         group[i].on("mousedown", (e) => {
@@ -622,11 +633,9 @@ export default {
           this.getChangeSeatDialog();
         });
 
-        this.floorCanvas.on("object:scaling", onObjectScaled);
-        function onObjectScaled(e) {
+       this.floorCanvas.on("object:scaling", (e) => {
           let scaledObject = e.target;
           //console.log("Width =  " + scaledObject.getScaledWidth());
-          //console.log("X =  " + scaledObject.scaleX);
           //console.log("Height = " + scaledObject.getScaledHeight());
 
           let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
@@ -642,7 +651,17 @@ export default {
           ]);
           //console.log(groupx.width * groupx.scaleX + "저장할 width");
           //console.log(groupx.height * groupx.scaleY + "저장할 height");
-        }
+        }),
+
+        this.floorCanvas.on("object:modified", function (e) {
+         //크기, 이동, 회전 
+         let modifyObject = e.target; 
+         modifyObject.set('modify', true);
+        });
+        //this.floorCanvas.on("object:remove", function (e) {
+        //});
+        //this.floorCanvas.on("object:add", function (e) {
+        //});
 
         this.floorCanvas.add(group[i]);
 
@@ -692,6 +711,7 @@ export default {
             "employee_id",
             "floor_id",
           ]);
+          activeObject.set('modify', true);
           this.deleteEachEmployeeSeatList(groupToObject);
         }
       }
@@ -713,6 +733,7 @@ export default {
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
       activeObject._objects[1].text = item.name;
+      activeObject.set('modify', true);
       this.floorCanvas.renderAll();
 
       eachEmployeeSeatList.push(activeObject);
@@ -724,17 +745,48 @@ export default {
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {
-      //일단 현재 층에 대한 정보만 저장하는 방식으로 코드를 구현 //추후에 상위 Map을 저장 시킬 예정임.
+      if (this.managerFloorList) {
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          if (!this.managerFloorList[i].create) {
+            // 원본
+            if (this.managerFloorList[i].delete) {
+              // 001 011 delete
+              let deleteFloorKey = this.managerFloorList[i].floor_id;
+              this.$emit("deleteFloorByAxiosWithKey", "floors", deleteFloorKey);
+            } else if (this.managerFloorList[i].modify) {
+              //010 그 id에 대하여 post
+              let floorData = {};
+              floorData.floor_id = this.managerFloorList[i].floor_id; 
+              floorData.floor_name = this.managerFloorList[i].floor_name;
+              floorData.building_id = this.managerFloorList[i].building_id;
+              floorData.floor_order = this.managerFloorList[i].floor_order;
 
-      if (this.allFloorList) {
-        for (let j = 0; j < this.allFloorList.length; j++) {
-          let floorData = {};
-          floorData.floor_id = this.allFloorList[j].floor_id;
-          floorData.floor_name = this.allFloorList[j].floor_name;
-          floorData.building_id = this.allFloorList[j].building_id;
-          floorData.floor_order = this.allFloorList[j].floor_order;
+              this.$emit(
+                "saveByAxios",
+                "floors",
+                floorData
+              );
+            }
+          } else {
+            // front에서 생성
+            if (this.managerFloorList[i].delete) {
+              //101 111 nothing
+              return;
+            } else {
+              //100 110 그 id에 대하여 post
+              let floorData = {};
+              floorData.floor_id = this.managerFloorList[i].floor_id;
+              floorData.floor_name = this.managerFloorList[i].floor_name;
+              floorData.building_id = this.managerFloorList[i].building_id;
+              floorData.floor_order = this.managerFloorList[i].floor_order;
 
-          this.$emit("saveByAxios", floorData, "floors");
+              this.$emit(
+                "saveByAxios",
+                "floors",
+                floorData
+              );
+            }
+          }
         }
       }
 
@@ -764,7 +816,26 @@ export default {
                 "height",
                 "scaleX",
                 "scaleY",
+                "create",
+                "modify",
+                "delete",
               ]);
+
+              console.log(groupToObject)
+               //axios api 호출
+              if (groupToObject.create == false) {
+                if (groupToObject.delete == true) {
+                  //axios.delete
+                } else if (groupToObject.modify == true) {
+                  //axios.post
+                }
+              } else {//groupToObject.create == true
+                if (groupToObject.true == false) {
+                  break;
+                } else {
+                  //axios.post
+                }
+              }
 
               let seatData = {};
               seatData.seat_id = groupToObject.seatId;
@@ -779,7 +850,12 @@ export default {
               seatData.height = groupToObject.height * groupToObject.scaleY;
               seatData.degree = groupToObject.angle;
               seatData.shape_id = "1";
+              //원본DB의 create/modify/delete를 false로 설정해야함(초기화)
+              seatData.create = false;
+              seatData.modify = false;
+              seatData.delete = false;
 
+              console.log(seatData)
               this.$emit("saveByAxios", seatData, "seats");
             }
           }

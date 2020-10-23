@@ -55,16 +55,16 @@ public class TestController {
 		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 
 		List<Shape> shapes = new ArrayList<Shape>();
-		shapes.add(new Shape("1", "네모"));
-		shapes.add(new Shape("2", "세모"));
-		shapes.add(new Shape("3", "원"));
-		shapes.add(new Shape("4", "타원"));
+		shapes.add(new Shape("1", "네모", null));
+		shapes.add(new Shape("2", "세모", null));
+		shapes.add(new Shape("3", "원", null));
+		shapes.add(new Shape("4", "타원", null));
 
 		List<Building> buildings = new ArrayList<Building>();
-		buildings.add(new Building("HANCOM01", "한글과컴퓨터본사"));
-		buildings.add(new Building("HANCOM02", "한글과컴퓨터사옥1"));
-		buildings.add(new Building("HANCOM03", "한글과컴퓨터사옥2"));
-		buildings.add(new Building("HANSUNG01", "한성대학교"));
+		buildings.add(new Building("HANCOM01", "한글과컴퓨터본사", null));
+		buildings.add(new Building("HANCOM02", "한글과컴퓨터사옥1", null));
+		buildings.add(new Building("HANCOM03", "한글과컴퓨터사옥2", null));
+		buildings.add(new Building("HANSUNG01", "한성대학교", null));
 
 		List<EmployeeAdditionalInfo> additionalInfo = new ArrayList<EmployeeAdditionalInfo>();
 		additionalInfo.add(EmployeeAdditionalInfo.builder().employeeId("10052204").employeeName("김인사").status("재직")
