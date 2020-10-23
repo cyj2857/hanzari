@@ -173,13 +173,17 @@ export default {
           this.managerFloorList[idx].delete = true;
         }
         //items에서 그 index 삭제
+
+        this.decreaseTab(this.managerFloorList[idx].floor_name);//나중에 floor_id로 보내야할 가능성
       } else {
         alert("there are no seats to delete!");
       }
     },
-    decreaseTab() {
+    decreaseTab(floor_name) {
       this.length--;
       this.floorNum = this.length - 1;
+
+      eventBus.$emit("deleteSeatListKey", floor_name); 
 
       if (this.length == 0) {
         this.setFloor(null);
