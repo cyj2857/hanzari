@@ -70,6 +70,7 @@ export default {
       allSeatMap: null, //all seat map
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
       eachEmployeeSeatMap: null, //each Employee's seats map
+      deleteSeatListKey: null, //삭제되는 층의 floor_name (층 삭제될때 FloorTabs.vue에서 넘어옴)
       employeeDialogStatus: false,
       changeSeatDialogStatus: false,
       inputChangeSeatFloor: null,
@@ -112,6 +113,15 @@ export default {
     eventBus.$on("managerFloorList", (managerFloors) => {
       this.managerFloorList = managerFloors;
       console.log(this.managerFloorList);
+    });
+    eventBus.$on("deleteSeatListKey", (floor_name) => {
+      this.deleteSeatListKey = floor_name;
+      console.log(this.deleteSeatListKey + "deleteSeatListKey");
+
+      let eachFloorSeatList = this.deleteEachFloorSeatList(
+        this.deleteSeatListKey
+      );
+      //나중에 managerSeatList에서도 삭제해야함!!!!!!!!!!!!!
     });
 
     if (this.floorImageList == null) {
@@ -741,10 +751,6 @@ export default {
               // 001 011 delete
               let deleteFloorKey = this.managerFloorList[i].floor_id;
               this.$emit("deleteFloorByAxiosWithKey", "floors", deleteFloorKey);
-              let eachFloorSeatList = this.deleteEachFloorSeatList(
-                this.managerFloorList[i].floor_name
-              );
-              //나중에 managerSeatList에서도 삭제해야함!!!!!!!!!!!!!
             } else if (this.managerFloorList[i].modify) {
               //010 그 id에 대하여 post
               let floorData = {};
@@ -759,10 +765,6 @@ export default {
             // front에서 생성
             if (this.managerFloorList[i].delete) {
               //101 111 nothing
-              let eachFloorSeatList = this.deleteEachFloorSeatList(
-                this.managerFloorList[i].floor_name
-              );
-              //나중에 managerSeatList에서도 삭제해야함!!!!!!!!!!!!!
               return;
             } else {
               //100 110 그 id에 대하여 post
@@ -916,7 +918,7 @@ export default {
         employee_department: employee.department,
         employee_number: employee.number,
         employee_id: seat.employee_id,
-        floor_id: seat.floor, //One이라고 가정
+        floor_id: seat.floor,
         left: seat.x,
         top: seat.y,
         angle: seat.degree,
@@ -944,7 +946,7 @@ export default {
           this.getEmployeeDialog();
         }
       });
-      
+
       group.on("mousedblclick", (e) => {
         this.getChangeSeatDialog();
       });
