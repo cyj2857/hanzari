@@ -30,6 +30,7 @@ import io.minio.messages.Item;
 @RequestMapping("api/images")
 public class TestImageController {
 
+	//MinioClient 클래스 사용하기
     @Autowired
     private MinioService minioService;
 
