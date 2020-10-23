@@ -74,8 +74,7 @@ export default {
     });
   },
   beforeUpdate() {
-    // 실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의
-    // 새로운 상태를 가져와야하는 경우 사용
+    /*실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의 새로운 상태를 가져와야하는 경우 사용*/
     if (this.initData && this.length != 0) {
       this.setFloor(this.allFloorList[this.floorNum].floor_name);
       return;
