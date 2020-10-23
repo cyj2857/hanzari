@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -43,8 +44,11 @@ public class Floor {
 
 	@Column(name = "floor_order", nullable = false)
 	private int floorOrder;
+	
+	@Column(name = "floor_image_url", nullable = true)
+	private int floorImageUrl;
 
-	@OneToMany(mappedBy = "floor", orphanRemoval = true)
+	@OneToMany(mappedBy = "floor", fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Seat> seats;
 
