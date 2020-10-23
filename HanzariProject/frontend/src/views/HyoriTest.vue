@@ -4,7 +4,6 @@
       <div class="search" id="search">
         <AllFloorsDataTable
           v-bind:copyEmployee="employees"
-          v-bind:currentFloorSeatsList="currentFloorSeats"
         ></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
@@ -16,6 +15,7 @@
       <AttachCanvas
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
+        v-bind:currentFloorSeatsList="currentFloorSeats"
         v-on:saveByAxios="saveData"
         v-on:deleteByAxios="deleteData"
       ></AttachCanvas>
@@ -57,15 +57,22 @@ export default {
       floors: [],
       seats: [],
       currentFloorSeats: [],
+      currentFloor: null,
     };
   },
   created() {
     this.employees = this.getEmployees();
     this.floors = this.getFloors();
-    this.seats = this.getAllSeats(); //Map
-    this.currentFloorSeats = this.getCurrentFloorSeats(); //currentFloor's seatList
+    //this.seats = this.getAllSeats(); //Map
+    eventBus.$on("changeFloor", (floor) => {
+      this.currentFloor = floor;
+      console.log(this.currentFloor + "여기가 HyoriTest로 넘어온 현재층");
+    });
 
-    console.log(this.floors.length + "층의 개수입니다.");//0
+    this.currentFloorSeats = this.getCurrentFloorSeats(this.currentFloor); //currentFloor's seatList
+
+    console.log(this.getFloorLength() + "층의 개수입니다."); //0
+    console.log(this.getEmployeeLength() + "사원의 개수입니다."); //0
   },
   mounted() {
     //changeFloor될때 넘어오는 floor_id를 넣어야함.
@@ -73,16 +80,24 @@ export default {
     //   this.floors[this.floors.length - 1].floor_id +
     //     "디비로부터 가지고온 층들의 맨 마지막 층의 아이디입니다."
     // );
-    //console.log(this.floors.length+"층의 개수입니다."); //0 
+    //console.log(this.floors.length+"층의 개수입니다."); //0
     // this.currentFloorSeats = this.getCurrentFloorSeats(
     //   this.floors[this.floors.length - 1].floor_id
     // )
     //console.log(this.currentFloorSeats.length+"디비로부터 가지고온 현재층의 자리리스트 길이입니다.");
   },
-  beforeUpdate(){
-    console.log(this.floors.length+"층의 개수입니다."); //0 
+  beforeUpdate() {
+    console.log(this.getFloorLength() + "층의 개수입니다."); //2
+    //this.currentFloor = this.floors[this.getFloorLength() - 1];
+    //console.log(this.currentFloor.floor_name+"맨 마지막 층의 아이디입니다.");
   },
   methods: {
+    getFloorLength() {
+      return this.floors.length;
+    },
+    getEmployeeLength() {
+      return this.employees.length;
+    },
     getEmployees() {
       let initEmployeeList = new Array();
       axios
@@ -102,36 +117,42 @@ export default {
         });
       return initEmployeeList;
     },
-    getCurrentFloorSeats(floor_id) {
+    //floor_id 현재는 name으로 인자가 넘어옴
+    getCurrentFloorSeats(floor) {
       let currentFloorSeatList = new Array();
       axios
         .get(
-          "http://" +
-            host +
-            ":" +
-            portNum +
-            "/api/floors/" +
-            floor_id +
-            "/seats"
+          // "http://" +
+          //   host +
+          //   ":" +
+          //   portNum +
+          //   "/api/floors/" +
+          //   floor_id +
+          //   "/seats"
+          "http://" + host + ":" + portNum + "/api/seats"
         )
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
-            let newSeat = {};
-            newSeat.seat_id = response.data[i].seat_id;
-            newSeat.floor = response.data[i].floor;
-            newSeat.x = response.data[i].x;
-            newSeat.y = response.data[i].y;
-            newSeat.is_group = response.data[i].is_group;
-            newSeat.building_id = response.data[i].building_id;
-            newSeat.employee_id = response.data[i].employee_id;
-            newSeat.width = response.data[i].width;
-            newSeat.height = response.data[i].height;
-            newSeat.degree = response.data[i].degree;
-            newSeat.shape_id = response.data[i].shape_id;
+            //console.log(reseponse.data[i].floor);
+            //if (response.data[i].floor == floor) {
+              let newSeat = {};
+              newSeat.seat_id = response.data[i].seat_id;
+              newSeat.floor = response.data[i].floor;
+              newSeat.x = response.data[i].x;
+              newSeat.y = response.data[i].y;
+              newSeat.is_group = response.data[i].is_group;
+              newSeat.building_id = response.data[i].building_id;
+              newSeat.employee_id = response.data[i].employee_id;
+              newSeat.width = response.data[i].width;
+              newSeat.height = response.data[i].height;
+              newSeat.degree = response.data[i].degree;
+              newSeat.shape_id = response.data[i].shape_id;
 
-            currentFloorSeatList.push(newSeat);
+              currentFloorSeatList.push(newSeat);
+            //}
           }
         });
+      //console.log("넘어온 현재층에 대한 자리리스트 개수입니다. -> "+currentFloorSeatList.length);
       return currentFloorSeatList;
     },
     getOneFloorSeats(floor_id) {
@@ -162,13 +183,17 @@ export default {
             newSeat.shape_id = response.data[i].shape_id;
           }
         });
-        return oneFloorSeatList;
+      return oneFloorSeatList;
     },
-    getAllSeats() { //all seats // 현재 층 제외한 all seats로 다시 구현해야함.
+    getAllSeats() {
+      //all seats // 현재 층 제외한 all seats로 다시 구현해야함.
       let allDBSeatMap = new Map();
       console.log(this.floors.length + "층의 개수입니다. 함수안에서요"); //0
       for (let i = 0; i < this.floors.length; i++) {
-        allDBSeatMap.set(this.floors[i].floor_name,this.getOneFloorSeats(this.floors[i].floor_id));
+        allDBSeatMap.set(
+          this.floors[i].floor_name,
+          this.getOneFloorSeats(this.floors[i].floor_id)
+        );
       }
       //console.log(this.floors.length+"층의 개수입니다. 함수안에서요")
       return allDBSeatMap;
