@@ -57,20 +57,21 @@ export default {
 
     eventBus.$on("confirm", () => {
       this.confirmDialog();
-    }),
-      eventBus.$on("floorInfo", (floor) => {
-        this.inputFloor = floor;
-      }),
-      eventBus.$on("showSeatFloor", (floor) => {
-        this.seatFloor = floor;
-        console.log(this.seatFloor + "가 넘어온 자리 층입니다");
-        for (let i = 0; i < this.allFloorList.length; i++) {
-          if (this.seatFloor == this.allFloorList[i].floor_name) {
-            this.floorNum = i;
-            this.setFloor(this.allFloorList[this.floorNum].floor_name);
-          }
+    });
+    eventBus.$on("floorInfo", (floor) => {
+      this.inputFloor = floor;
+    });
+    eventBus.$on("showSeatFloor", (floor) => {
+      this.seatFloor = floor;
+      console.log(this.seatFloor + "가 넘어온 자리 층입니다");
+
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        if (this.seatFloor == this.allFloorList[i].floor_name) {
+          this.floorNum = i;
+          this.setFloor(this.allFloorList[this.floorNum].floor_name);
         }
-      });
+      }
+    });
   },
   beforeUpdate() {
     // 실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의
