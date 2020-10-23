@@ -4,9 +4,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +29,8 @@ public class Shape {
 	@Column(name = "shape_name", nullable = false)
 	private String shapeName; // 그려질 모양의 이름 (ex. 네모, 세모, 원, 타원, ...)
 	
-	@OneToMany
+	@OneToMany(mappedBy = "shape", fetch = FetchType.LAZY)
+	@JsonManagedReference
 	private List<Figure> figures;
 
 	public Shape() {

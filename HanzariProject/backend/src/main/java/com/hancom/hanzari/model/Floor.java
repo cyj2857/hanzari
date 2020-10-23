@@ -2,15 +2,14 @@ package com.hancom.hanzari.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -58,6 +57,13 @@ public class Floor {
 			seats.forEach(e -> e.setFloor(null));
 		}
 	}
+	
+//	@PreUpdate
+//	public void preUpdate() {
+//		if (seats != null) {
+//			setBuilding(null);
+//		}
+//	}
 
 	public Floor() {
 	}

@@ -105,6 +105,9 @@ export default {
             newSeat.height = response.data[i].height;
             newSeat.degree = response.data[i].degree;
             newSeat.shape_id = response.data[i].shape_id;
+            newSeat.create = response.data[i].create;
+            newSeat.delete = response.data[i].delete;
+            newSeat.modify = response.data[i].modify;
 
             loadSeatList.push(newSeat);
           }
