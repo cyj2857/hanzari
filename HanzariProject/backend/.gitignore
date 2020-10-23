@@ -42,4 +42,4 @@ hyori
 META-INF/
 
 ### hibernate configuration ###
-/hibernate.cfg.xml
+hibernate.cfg.xml

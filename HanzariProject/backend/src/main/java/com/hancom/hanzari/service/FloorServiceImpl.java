@@ -40,7 +40,7 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
-	public List<Floor> findByBuiding(Building building) {
+	public List<Floor> findByBuilding(Building building) {
 		List<Floor> floor = floorRepository.findByBuilding(building);
 		if (floor != null)
 			return floor;
@@ -62,11 +62,6 @@ public class FloorServiceImpl implements FloorService {
 	@Override
 	public void deleteByBuilding(Building building) {
 		floorRepository.deleteByBuilding(building);
-	}
-
-	@Override
-	public void truncate() {
-		floorRepository.truncate();
 	}
 
 	@Override
