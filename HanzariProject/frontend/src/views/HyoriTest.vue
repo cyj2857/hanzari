@@ -18,10 +18,7 @@
         v-on:saveByAxios="saveData"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
       ></AttachCanvas>
-      <FloorTabs
-        v-bind:copyFloors="floors"
-        v-bind:copyManageFloors="floors"
-      ></FloorTabs>
+      <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -43,7 +40,7 @@ import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
 import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
 const portNum = 6080;
 const host = "172.30.1.50";
-
+const building = "HANCOM01";
 export default {
   name: "Admin",
   components: {
@@ -125,9 +122,9 @@ export default {
             newFloor.floor_name = response.data[i].floor_name;
             newFloor.building_id = response.data[i].building_id;
             newFloor.floor_order = response.data[i].floor_order;
-            newFloor.create = null;
-            newFloor.modify = null;
-            newFloor.delete = null;
+            newFloor.create = false;
+            newFloor.modify = false;
+            newFloor.delete = false;
 
             loadFloorList.push(newFloor);
           }
