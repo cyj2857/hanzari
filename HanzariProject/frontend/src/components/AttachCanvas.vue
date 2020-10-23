@@ -80,8 +80,8 @@ export default {
       employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
       allFloorList: [],
-      // 자리들 저장될 때 사용되는데 managerFloorList를 사용하지 않은 이유는 층이 가시적으로 없어지게 되면
-      // managerFloorList에는 남아있는데 가시적으로 없어진 층의 자리들을 저장하는 것은 옳지않다고 판단
+      // 자리들 저장할때 managerFloorList를 사용하지 않은 이유는 층이 가시적으로 없어지게 되면
+      // managerFloorList에는 남아있고 D필드만 true가 되는데, 가시적으로 없어진 층의 자리들을 저장하는 것은 옳지않다고 판단
       managerFloorList: [],
     };
   },
@@ -229,9 +229,6 @@ export default {
     },
     multipleVacant(number) {
       this.addVacantBtn(number);
-      // for (let i=1; i<=number; i++){
-      //this.addVacantBtn();
-      // }
     },
     changeFloor(floor) {
       //도형 랜더링 전에 화면의 도형들을  초기화
@@ -411,7 +408,7 @@ export default {
       if (this.floorCanvas.getActiveObject().type == "group") {
         activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
 
-        activeObject.set('modify', true)
+        activeObject.set("modify", true);
 
         activeObject.employee_name = null;
         activeObject.employee_department = null;
@@ -465,7 +462,7 @@ export default {
           .getObjects()
           .slice()
           .forEach((obj) => {
-            obj.set('delete',true);
+            obj.set("delete", true);
             let groupToObject = obj.toObject(["seatId", "employee_id"]);
             this.deleteEachEmployeeSeatList(groupToObject);
             this.floorCanvas.remove(obj);
@@ -492,13 +489,13 @@ export default {
       if (confirm("Are you sure?")) {
         if (this.floorCanvas.getActiveObjects().length == 1) {
           activeObject = this.floorCanvas.getActiveObject(); //console.log("단일객체 선택");
-          activeObject.set('delete',true);
+          activeObject.set("delete", true);
 
           let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
           this.deleteEachEmployeeSeatList(groupToObject);
         } else {
           activeObject = this.floorCanvas.getActiveObjects(); //console.log("복수객체 선택");
-          activeObject.set('delete',true);
+          activeObject.set("delete", true);
 
           for (let i = 0; i < activeObject.length; i++) {
             let groupToObject = activeObject[i].toObject([
@@ -633,7 +630,7 @@ export default {
           this.getChangeSeatDialog();
         });
 
-       this.floorCanvas.on("object:scaling", (e) => {
+        this.floorCanvas.on("object:scaling", (e) => {
           let scaledObject = e.target;
           //console.log("Width =  " + scaledObject.getScaledWidth());
           //console.log("Height = " + scaledObject.getScaledHeight());
@@ -652,21 +649,14 @@ export default {
           //console.log(groupx.width * groupx.scaleX + "저장할 width");
           //console.log(groupx.height * groupx.scaleY + "저장할 height");
         }),
-
-        this.floorCanvas.on("object:modified", function (e) {
-         //크기, 이동, 회전 
-         let modifyObject = e.target; 
-         modifyObject.set('modify', true);
-        });
-        //this.floorCanvas.on("object:remove", function (e) {
-        //});
-        //this.floorCanvas.on("object:add", function (e) {
-        //});
+          this.floorCanvas.on("object:modified", function (e) {
+            //크기, 이동, 회전
+            let modifyObject = e.target;
+            modifyObject.set("modify", true);
+          });
 
         this.floorCanvas.add(group[i]);
-
         eachFloorSeatList.push(group[i]);
-
         this.floorCanvas.renderAll();
       } // end of for
 
@@ -711,7 +701,7 @@ export default {
             "employee_id",
             "floor_id",
           ]);
-          activeObject.set('modify', true);
+          activeObject.set("modify", true);
           this.deleteEachEmployeeSeatList(groupToObject);
         }
       }
@@ -733,15 +723,13 @@ export default {
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
       activeObject._objects[1].text = item.name;
-      activeObject.set('modify', true);
+      activeObject.set("modify", true);
       this.floorCanvas.renderAll();
 
       eachEmployeeSeatList.push(activeObject);
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    /*!!!!!!!!!!!!!!!axios 관련 코드 app.vue에 다 옮길 예정!!!!!!!!!!!!!!!
-    seat VM , employee VM 만 보고 view(component) 다루기위함 */
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {
@@ -753,24 +741,28 @@ export default {
               // 001 011 delete
               let deleteFloorKey = this.managerFloorList[i].floor_id;
               this.$emit("deleteFloorByAxiosWithKey", "floors", deleteFloorKey);
+              let eachFloorSeatList = this.deleteEachFloorSeatList(
+                this.managerFloorList[i].floor_name
+              );
+              //나중에 managerSeatList에서도 삭제해야함!!!!!!!!!!!!!
             } else if (this.managerFloorList[i].modify) {
               //010 그 id에 대하여 post
               let floorData = {};
-              floorData.floor_id = this.managerFloorList[i].floor_id; 
+              floorData.floor_id = this.managerFloorList[i].floor_id;
               floorData.floor_name = this.managerFloorList[i].floor_name;
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              this.$emit(
-                "saveByAxios",
-                "floors",
-                floorData
-              );
+              this.$emit("saveByAxios", "floors", floorData);
             }
           } else {
             // front에서 생성
             if (this.managerFloorList[i].delete) {
               //101 111 nothing
+              let eachFloorSeatList = this.deleteEachFloorSeatList(
+                this.managerFloorList[i].floor_name
+              );
+              //나중에 managerSeatList에서도 삭제해야함!!!!!!!!!!!!!
               return;
             } else {
               //100 110 그 id에 대하여 post
@@ -780,11 +772,7 @@ export default {
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              this.$emit(
-                "saveByAxios",
-                "floors",
-                floorData
-              );
+              this.$emit("saveByAxios", "floors", floorData);
             }
           }
         }
@@ -821,15 +809,16 @@ export default {
                 "delete",
               ]);
 
-              console.log(groupToObject)
-               //axios api 호출
+              console.log(groupToObject);
+              //axios api 호출
               if (groupToObject.create == false) {
                 if (groupToObject.delete == true) {
                   //axios.delete
                 } else if (groupToObject.modify == true) {
                   //axios.post
                 }
-              } else {//groupToObject.create == true
+              } else {
+                //groupToObject.create == true
                 if (groupToObject.true == false) {
                   break;
                 } else {
@@ -850,12 +839,8 @@ export default {
               seatData.height = groupToObject.height * groupToObject.scaleY;
               seatData.degree = groupToObject.angle;
               seatData.shape_id = "1";
-              //원본DB의 create/modify/delete를 false로 설정해야함(초기화)
-              seatData.create = false;
-              seatData.modify = false;
-              seatData.delete = false;
 
-              console.log(seatData)
+              console.log(seatData);
               this.$emit("saveByAxios", seatData, "seats");
             }
           }
@@ -935,7 +920,11 @@ export default {
         left: seat.x,
         top: seat.y,
         angle: seat.degree,
+        create: seat.create,
+        modify: seat.modify,
+        delete: seat.delete,
       });
+
       group.on("mousedown", (e) => {
         let group = e.target;
         if (e.button === 2) {
@@ -955,6 +944,7 @@ export default {
           this.getEmployeeDialog();
         }
       });
+      
       group.on("mousedblclick", (e) => {
         this.getChangeSeatDialog();
       });

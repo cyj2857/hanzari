@@ -135,20 +135,23 @@ export default {
           for (var i = 0; i < response.data.length; i++) {
             //console.log(reseponse.data[i].floor);
             //if (response.data[i].floor == floor) {
-              let newSeat = {};
-              newSeat.seat_id = response.data[i].seat_id;
-              newSeat.floor = response.data[i].floor;
-              newSeat.x = response.data[i].x;
-              newSeat.y = response.data[i].y;
-              newSeat.is_group = response.data[i].is_group;
-              newSeat.building_id = response.data[i].building_id;
-              newSeat.employee_id = response.data[i].employee_id;
-              newSeat.width = response.data[i].width;
-              newSeat.height = response.data[i].height;
-              newSeat.degree = response.data[i].degree;
-              newSeat.shape_id = response.data[i].shape_id;
+            let newSeat = {};
+            newSeat.seat_id = response.data[i].seat_id;
+            newSeat.floor = response.data[i].floor;
+            newSeat.x = response.data[i].x;
+            newSeat.y = response.data[i].y;
+            newSeat.is_group = response.data[i].is_group;
+            newSeat.building_id = response.data[i].building_id;
+            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.width = response.data[i].width;
+            newSeat.height = response.data[i].height;
+            newSeat.degree = response.data[i].degree;
+            newSeat.shape_id = response.data[i].shape_id;
+            newSeat.create = false
+            newSeat.delete = false
+            newSeat.modify = false
 
-              currentFloorSeatList.push(newSeat);
+            currentFloorSeatList.push(newSeat);
             //}
           }
         });
@@ -181,9 +184,9 @@ export default {
             newSeat.height = response.data[i].height;
             newSeat.degree = response.data[i].degree;
             newSeat.shape_id = response.data[i].shape_id;
-            newSeat.create = response.data[i].create;
-            newSeat.delete = response.data[i].delete;
-            newSeat.modify = response.data[i].modify;
+            newSeat.create = false
+            newSeat.delete = false
+            newSeat.modify = false
 
             loadSeatList.push(newSeat);
           }
