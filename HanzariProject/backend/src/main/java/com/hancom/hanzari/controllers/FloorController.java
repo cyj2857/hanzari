@@ -67,7 +67,7 @@ public class FloorController {
 		
 		Floor floor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name())
 				.building(building).floorOrder(floorDto.getFloor_order()).build();
-		floor.getSeats().clear();
+		//floor.getSeats().clear();
 		return new ResponseEntity<Floor>(floorService.save(floor), HttpStatus.OK);
 	}
 
