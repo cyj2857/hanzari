@@ -16,6 +16,8 @@
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
+        v-bind:images="images"
+        v-on:saveByImages="saveImage"
         v-on:saveByAxios="saveData"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
         v-on:deleteSeatByAxiosWithKey="deleteSeatByKey"
@@ -57,6 +59,7 @@ export default {
       employees: [],
       floors: [],
       seats: [],
+      images: [],
       currentFloorSeats: [],
       currentFloor: null,
     };
@@ -64,28 +67,19 @@ export default {
   created() {
     this.employees = this.getEmployees();
     this.floors = this.getFloors();
+    this.images = this.getImages();
     //this.seats = this.getAllSeats(); //Map
     eventBus.$on("changeFloor", (floor) => {
       this.currentFloor = floor;
-      console.log(this.currentFloor + "여기가 HyoriTest로 넘어온 현재층");
+      console.log(
+        this.currentFloor + "?��기�?? HyoriTest�? ?��?��?�� ?��?���?"
+      );
     });
 
     this.currentFloorSeats = this.getCurrentFloorSeats(this.currentFloor); //currentFloor's seatList
 
-    console.log(this.getFloorLength() + "층의 개수입니다."); //0
-    console.log(this.getEmployeeLength() + "사원의 개수입니다."); //0
-  },
-  mounted() {
-    //changeFloor될때 넘어오는 floor_id를 넣어야함.
-    // console.log(
-    //   this.floors[this.floors.length - 1].floor_id +
-    //     "디비로부터 가지고온 층들의 맨 마지막 층의 아이디입니다."
-    // );
-    //console.log(this.floors.length+"층의 개수입니다."); //0
-    // this.currentFloorSeats = this.getCurrentFloorSeats(
-    //   this.floors[this.floors.length - 1].floor_id
-    // )
-    //console.log(this.currentFloorSeats.length+"디비로부터 가지고온 현재층의 자리리스트 길이입니다.");
+    console.log(this.getFloorLength() + "층의 개수?��?��?��."); //0
+    console.log(this.getEmployeeLength() + "?��?��?�� 개수?��?��?��."); //0
   },
   methods: {
     getFloorLength() {
@@ -113,7 +107,7 @@ export default {
         });
       return initEmployeeList;
     },
-    //floor_id 현재는 name으로 인자가 넘어옴
+    //floor_id ?��?��?�� name?���? ?��?���? ?��?��?��
     getCurrentFloorSeats(floor) {
       let currentFloorSeatList = new Array();
       axios
@@ -151,7 +145,7 @@ export default {
             //}
           }
         });
-      //console.log("넘어온 현재층에 대한 자리리스트 개수입니다. -> "+currentFloorSeatList.length);
+      //console.log("?��?��?�� ?��?��층에 ????�� ?��리리?��?�� 개수?��?��?��. -> "+currentFloorSeatList.length);
       return currentFloorSeatList;
     },
     getOneFloorSeats(floor_id) {
@@ -190,22 +184,24 @@ export default {
       return oneFloorSeatList;
     },
     getAllSeats() {
-      //all seats // 현재 층 제외한 all seats로 다시 구현해야함.
+      //all seats // ?��?�� �? ?��?��?�� all seats�? ?��?�� 구현?��?��?��.
       let allDBSeatMap = new Map();
-      console.log(this.floors.length + "층의 개수입니다. 함수안에서요"); //0
+      console.log(
+        this.floors.length + "층의 개수?��?��?��. ?��?��?��?��?��?��"
+      ); //0
       for (let i = 0; i < this.floors.length; i++) {
         allDBSeatMap.set(
           this.floors[i].floor_name,
           this.getOneFloorSeats(this.floors[i].floor_id)
         );
       }
-      //console.log(this.floors.length+"층의 개수입니다. 함수안에서요")
+      //console.log(this.floors.length+"층의 개수?��?��?��. ?��?��?��?��?��?��")
       return allDBSeatMap;
     },
     getFloors() {
       let allFloorList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/api/floors")
+        .get("http://" + host + ":" + portNum + "/api/buildings/HANCOM01/floors")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newFloor = {};
@@ -221,6 +217,27 @@ export default {
           }
         });
       return allFloorList;
+    },
+    getImages() {
+      axios
+        //.get("http://" + host + ":" + portNum + "api/building/{~}/floor/{~}/imageurl")
+        .get(
+          "http://172.30.1.56:9000/hanzari/%ED%95%9C%EA%B8%80%EA%B3%BC%EC%BB%B4%ED%93%A8%ED%84%B0-1%EC%B8%B5.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201023%2F%2Fs3%2Faws4_request&X-Amz-Date=20201023T021304Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=3762c647cfd02789e889243ef2d333aa0d18abd1894aca75b7edaf3d2848e306"
+        )
+        .then((response) => {
+          let initImageList = null;
+          const imgurl = response.config.url;
+
+          initImageList = imgurl;
+          this.images = initImageList;
+
+          console.log(this.images);
+          //console.log(initImageList);
+          //console.log(initImageList.length); //1
+          //console.log(initImageList[0]);
+
+          return this.images;
+        });
     },
     saveData(tableName, data) {
       let saveData = data;
@@ -241,6 +258,22 @@ export default {
         )
         .then((res) => {
           console.log(res.saveData);
+        });
+    },
+    saveImage(tableName, data) {
+      let saveData = data;
+      let saveTableName = tableName;
+      axios
+        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(function () {
+          console.log("axios SUCCESS!!");
+        })
+        .catch(function () {
+          console.log("axios FAILURE!!");
         });
     },
     deleteFloorByKey(tableName, key) {

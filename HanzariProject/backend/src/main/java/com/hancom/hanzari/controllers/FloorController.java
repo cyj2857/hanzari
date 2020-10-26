@@ -28,7 +28,7 @@ import com.hancom.hanzari.service.FloorService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("api/floors")
+@RequestMapping("api/buildings/{building_id}/floors")
 public class FloorController {
 
 	@Autowired
@@ -37,22 +37,15 @@ public class FloorController {
 	@Autowired
 	private BuildingService buildingService;
 
+	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<FloorDto>> getAllFloors() {
-		List<Floor> floor = floorService.findAll();
-		List<FloorDto> result = new ArrayList<FloorDto>();
-		floor.forEach(e -> result.add(e.toDto()));
-		return new ResponseEntity<List<FloorDto>>(result, HttpStatus.OK);
-	}
-
-	@GetMapping(value = "/{building_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<FloorDto>> getAllFloorsInBuilding(@PathVariable("building_id") String building_id)
+	public ResponseEntity<List<FloorDto>> getAllFloorsInBuilding(@PathVariable("building_id") String buildingId)
 			throws Exception {
-		Building building = buildingService.findById(building_id);
+		Building building = buildingService.findById(buildingId);
 		if (building == null) {
-			throw new ResourceNotFoundException("Building", "building_id", building_id);
+			throw new ResourceNotFoundException("Building", "building_id", buildingId);
 		}
-		List<Floor> floor = floorService.findByBuiding(building);
+		List<Floor> floor = floorService.findByBuilding(building);
 		List<FloorDto> result = new ArrayList<FloorDto>();
 		floor.forEach(e -> result.add(e.toDto()));
 		return new ResponseEntity<List<FloorDto>>(result, HttpStatus.OK);
@@ -60,45 +53,47 @@ public class FloorController {
 
 	@Transactional
 	@PostMapping
-	public ResponseEntity<Floor> save(@RequestBody FloorDto floorDto) throws Exception {
+	public ResponseEntity<Floor> save(@PathVariable("building_id") String buildingId, @RequestBody FloorDto floorDto) throws Exception {
 		for (Field field : floorDto.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(floorDto);
 			System.out.println(field.getName() + " : " + value + " // type : " + value.getClass());
 		}
 
-		Building building = buildingService.findById(floorDto.getBuilding_id());
-		Floor floor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name()).building(building)
-				.floorOrder(floorDto.getFloor_order()).build();
+		Building building = buildingService.findById(buildingId);
+		if (building == null) {
+			throw new ResourceNotFoundException("Building", "building_id", buildingId);
+		}
+		
+		Floor floor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name())
+				.building(building).floorOrder(floorDto.getFloor_order()).build();
+		floor.getSeats().clear();
 		return new ResponseEntity<Floor>(floorService.save(floor), HttpStatus.OK);
 	}
 
-	
 	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteFloorById(@PathVariable("floor_id") String floor_id) {
 		System.out.println("==================================================================");
 		System.out.println("seatId: " + floor_id);
 		System.out.println("==================================================================");
-		
+
 		floorService.deleteById(floor_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 	/*
-	@DeleteMapping(value = "/by-building/{building_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public void deleteByBuildingId(@PathVariable("building_id") String building_id) throws Exception {
-		Building building = buildingService.findById(building_id);
-		if (building == null) {
-			throw new ResourceNotFoundException("Building", "building_id", building_id);
-		}
-		floorService.deleteByBuilding(building);
-	}
-
-	// 전체삭제
-	@DeleteMapping(value = "/truncate", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Void> truncate() {
-		floorService.truncate();
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-	}
-	*/
+	 * @DeleteMapping(value = "/by-building/{building_id}", produces = {
+	 * MediaType.APPLICATION_JSON_VALUE }) public void
+	 * deleteByBuildingId(@PathVariable("building_id") String building_id) throws
+	 * Exception { Building building = buildingService.findById(building_id); if
+	 * (building == null) { throw new ResourceNotFoundException("Building",
+	 * "building_id", building_id); } floorService.deleteByBuilding(building); }
+	 * 
+	 * // 전체삭제
+	 * 
+	 * @DeleteMapping(value = "/truncate", produces = {
+	 * MediaType.APPLICATION_JSON_VALUE }) public ResponseEntity<Void> truncate() {
+	 * floorService.truncate(); return new
+	 * ResponseEntity<Void>(HttpStatus.NO_CONTENT); }
+	 */
 
 }

@@ -140,7 +140,7 @@ export default {
       //console.log(this.inputFloor + "from add floor dialog");
 
       let newFloor = {};
-      newFloor.floor_id = this.getFloorUUID();
+      newFloor.floor_id = this.createFloorUUID();
       newFloor.floor_name = this.inputFloor;
       newFloor.building_id = "HANCOM01";
       newFloor.floor_order = this.allFloorList.length;
@@ -205,7 +205,7 @@ export default {
       this.managerFloorList[idx].floor_name = "변경된 floor name";
       this.managerFloorList[idx].modify = true;
     },
-    getFloorUUID() {
+    createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
         c
       ) {
