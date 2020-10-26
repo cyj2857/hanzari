@@ -13,8 +13,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import com.hancom.hanzari.controllers.TestController;
-
 @ComponentScan(basePackageClasses = HanzariProjectApplication.class)
 @EnableJpaRepositories(basePackages = { "com.hancom.hanzari.repository" })
 @SpringBootApplication
