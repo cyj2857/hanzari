@@ -301,7 +301,6 @@ export default {
     },
     loadImage(file) {
       let imgurl = this.images;
-
       if (imgurl != null) {
         let reader = new FileReader();
         reader.onload = (e) => {
@@ -826,7 +825,7 @@ export default {
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              this.$emit("saveByData", "floors", floorData);
+              this.$emit("saveByAxios", "floors", floorData);
             }
           } else {
             // front에서 생성
@@ -841,7 +840,7 @@ export default {
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              this.$emit("saveByData", "floors", floorData);
+              this.$emit("saveByAxios", "floors", floorData);
             }
           }
         }
@@ -912,7 +911,7 @@ export default {
               seatData.shape_id = "1";
 
               console.log(seatData);
-              this.$emit("saveByData", "seats", seatData);
+              this.$emit("saveByAxios", "seats", seatData);
             }
           }
         }
