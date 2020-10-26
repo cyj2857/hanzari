@@ -118,9 +118,13 @@ export default {
       console.log(this.managerFloorList);
     });
     eventBus.$on("deleteSeatListKey", (floor_name) => {
-      this.getEachFloorSeatList(floor_name).length = 0;
-      //나중에 managerFloorSeatList에서 D 필드 true해야함!!!!!!!!!!!!!
-      this.deleteManagerEachFloorSeatList(floor_name);
+
+      this.allSeatMap.delete(floor_name);
+      //층 삭제시 allSeatMap에 그 층을 key로 하는 요소들 삭제
+
+      /*managerAllSeatMap 에서 삭제되어도 되는 이유 : managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것. 
+      그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함*/
+      this.managerAllSeatMap.delete(floor_name);
     });
     if (this.allImageList == null) {
       this.allImageList = new Map();
@@ -269,6 +273,8 @@ export default {
         });
 
       let myOnefloorSeatList = this.getEachFloorSeatList(floor);
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(floor);
+      // managerEachFloorSeatList init 해주기 위함
 
       if (this.allImageList.get(floor) != null) {
         this.loadImage(this.allImageList.get(floor));
@@ -426,6 +432,10 @@ export default {
     },
     //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
+        return;
+      }
       //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
       if (!this.allSeatMap.get(floor)) {
         let newSeatsList = new Array();
@@ -438,6 +448,10 @@ export default {
       }
     },
     getManagerEachFloorSeatList: function (floor) {
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
+        return;
+      }
       if (!this.managerAllSeatMap.get(floor)) {
         let newSeatsList = new Array();
         this.managerAllSeatMap.set(floor, newSeatsList);
@@ -505,7 +519,8 @@ export default {
     // 해당 층의 도형 리스트의 Delete field 전체 true 만들기
     deleteManagerEachFloorSeatList: function (floor) {
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(floor);
-      for (i = 0; i < managerEachFloorSeatList; i++) {
+      console.log(managerEachFloorSeatList);
+      for (i = 0; i < managerEachFloorSeatList.length; i++) {
         managerEachFloorSeatList[i].delete = true;
       }
     },

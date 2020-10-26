@@ -72,15 +72,12 @@ export default {
     //this.seats = this.getAllSeats(); //Map
     eventBus.$on("changeFloor", (floor) => {
       this.currentFloor = floor;
-      console.log(
-        this.currentFloor + "?��기�?? HyoriTest�? ?��?��?�� ?��?���?"
-      );
     });
 
     this.currentFloorSeats = this.getCurrentFloorSeats(this.currentFloor); //currentFloor's seatList
 
-    console.log(this.getFloorLength() + "층의 개수?��?��?��."); //0
-    console.log(this.getEmployeeLength() + "?��?��?�� 개수?��?��?��."); //0
+    console.log(this.getFloorLength() + "층의 개수"); //0
+    console.log(this.getEmployeeLength() + "사원 개수"); //0
   },
   methods: {
     getFloorLength() {
@@ -146,7 +143,6 @@ export default {
             //}
           }
         });
-      //console.log("?��?��?�� ?��?��층에 ????�� ?��리리?��?�� 개수?��?��?��. -> "+currentFloorSeatList.length);
       return currentFloorSeatList;
     },
     getOneFloorSeats(floor_id) {
