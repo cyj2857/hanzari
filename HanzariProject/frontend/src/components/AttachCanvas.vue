@@ -299,24 +299,35 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
-    getImage(file) {
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-    },
-    loadImage() {
+    loadImage(file) {
       let imgurl = this.images;
-
-      fabric.Image.fromURL(imgurl, (img) => {
-        //e.target.result
-        img.set({
-          scaleX: this.floorCanvas.width / img.width,
-          scaleY: this.floorCanvas.height / img.height,
+      if (imgurl != null) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          fabric.Image.fromURL(e.target.result, (img) => {
+            img.set({
+              scaleX: this.floorCanvas.width / img.width,
+              scaleY: this.floorCanvas.height / img.height,
+            });
+            this.floorCanvas.setBackgroundImage(
+              img,
+              this.floorCanvas.renderAll.bind(this.floorCanvas)
+            );
+          });
+        };
+        reader.readAsDataURL(file);
+      } else {
+        fabric.Image.fromURL(imgurl, (img) => {
+          img.set({
+            scaleX: this.floorCanvas.width / img.width,
+            scaleY: this.floorCanvas.height / img.height,
+          });
+          this.floorCanvas.setBackgroundImage(
+            img,
+            this.floorCanvas.renderAll.bind(this.floorCanvas)
+          );
         });
-        this.floorCanvas.setBackgroundImage(
-          img,
-          this.floorCanvas.renderAll.bind(this.floorCanvas)
-        );
-      });
+      }
     },
     saveImage(file) {
       this.allImageList.set(this.currentSelectedFloor, file);
@@ -331,8 +342,7 @@ export default {
       this.$emit("saveByImages", "images", imgData);
     },
     createImage(file) {
-      this.getImage(file);
-      this.loadImage();
+      this.loadImage(file);
       this.saveImage(file);
     },
     onFileChange(e) {
