@@ -11,7 +11,7 @@
       v-show="false"
       ref="inputUpload"
       type="file"
-      @change="onFileChange"
+      @change="changeImgFile"
     />
     <v-btn color="success" @click="$refs.inputUpload.click()"
       >File Upload to Background</v-btn
@@ -301,7 +301,9 @@ export default {
     },
     loadImage(file) {
       let imgurl = this.images;
-      if (imgurl != null) {
+      console.log(imgurl)
+
+      if (imgurl == null) {
         let reader = new FileReader();
         reader.onload = (e) => {
           fabric.Image.fromURL(e.target.result, (img) => {
@@ -333,11 +335,12 @@ export default {
       this.allImageList.set(this.currentSelectedFloor, file);
 
       let imgData = new FormData();
+
       let img = this.allImageList.get(this.currentSelectedFloor);
       let floor = this.currentSelectedFloor;
 
       imgData.append("imageData", img);
-      imgData.append("floor", floor);
+      imgData.append("currentFloor", floor);
 
       this.$emit("saveImages", "images", imgData);
     },
@@ -345,7 +348,7 @@ export default {
       this.loadImage(file);
       this.saveImage(file);
     },
-    onFileChange(e) {
+    changeImgFile(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       this.createImage(files[0]);
