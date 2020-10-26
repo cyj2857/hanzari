@@ -18,6 +18,7 @@
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-on:saveByAxios="saveData"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
+        v-on:deleteSeatByAxiosWithKey="deleteSeatByKey"
       ></AttachCanvas>
       <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
@@ -86,11 +87,6 @@ export default {
     // )
     //console.log(this.currentFloorSeats.length+"디비로부터 가지고온 현재층의 자리리스트 길이입니다.");
   },
-  beforeUpdate() {
-    console.log(this.getFloorLength() + "층의 개수입니다."); //2
-    //this.currentFloor = this.floors[this.getFloorLength() - 1];
-    //console.log(this.currentFloor.floor_name+"맨 마지막 층의 아이디입니다.");
-  },
   methods: {
     getFloorLength() {
       return this.floors.length;
@@ -147,9 +143,9 @@ export default {
             newSeat.height = response.data[i].height;
             newSeat.degree = response.data[i].degree;
             newSeat.shape_id = response.data[i].shape_id;
-            newSeat.create = false
-            newSeat.delete = false
-            newSeat.modify = false
+            newSeat.create = false;
+            newSeat.delete = false;
+            newSeat.modify = false;
 
             currentFloorSeatList.push(newSeat);
             //}
@@ -184,9 +180,9 @@ export default {
             newSeat.height = response.data[i].height;
             newSeat.degree = response.data[i].degree;
             newSeat.shape_id = response.data[i].shape_id;
-            newSeat.create = false
-            newSeat.delete = false
-            newSeat.modify = false
+            newSeat.create = false;
+            newSeat.delete = false;
+            newSeat.modify = false;
 
             loadSeatList.push(newSeat);
           }
@@ -248,6 +244,31 @@ export default {
         });
     },
     deleteFloorByKey(tableName, key) {
+      //추후에 api 구조 변경될 것을 생각하여 key를 받아서 삭제하는 것을 같은 함수로 묶지않음.
+      let deleteTableName = tableName;
+      let deleteKey = key;
+      axios
+        .delete(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/" +
+            deleteTableName +
+            "/" +
+            deleteKey
+        )
+        .then(function (response) {
+          // handle success
+          console.log(response);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        });
+    },
+    deleteSeatByKey(tableName, key) {
+      //추후에 api 구조 변경될 것을 생각하여 key를 받아서 삭제하는 것을 같은 함수로 묶지않음.
       let deleteTableName = tableName;
       let deleteKey = key;
       axios
