@@ -842,8 +842,13 @@ export default {
               seatData.degree = groupToObject.angle;
               seatData.shape_id = "1";
 
+<<<<<<< HEAD
+              console.log(seatData)
+              this.$emit("saveByAxios", "seats", seatData);
+=======
               console.log(seatData);
               this.$emit("saveByAxios", seatData, "seats");
+>>>>>>> 6e3596c6128596f4a17c4128f2d7a391e7bc41d2
             }
           }
         }

@@ -209,7 +209,7 @@ export default {
     getFloors() {
       let allFloorList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/api/floors")
+        .get("http://" + host + ":" + portNum + "/api/buildings/HANCOM01/floors")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newFloor = {};
