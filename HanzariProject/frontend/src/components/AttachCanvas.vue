@@ -800,6 +800,7 @@ export default {
     //아직 구현중에 있습니다.
     clickSaveBtn() {
       if (this.managerFloorList) {
+        //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
             // 원본
@@ -834,9 +835,8 @@ export default {
             }
           }
         }
-      }
 
-      if (this.managerFloorList) {
+        //자리 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
             this.managerFloorList[i].floor_name
@@ -873,11 +873,7 @@ export default {
                 if (groupToObject.delete) {
                   // 001 011 delete
                   let deleteSeatKey = groupToObject.seatId;
-                  this.$emit(
-                    "deleteSeatWithKey",
-                    "seats",
-                    deleteSeatKey
-                  );
+                  this.$emit("deleteSeatWithKey", "seats", deleteSeatKey);
                 } else if (groupToObject.modify) {
                   //010 그 id에 대하여 post
                   let seatData = {};
