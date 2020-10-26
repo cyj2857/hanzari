@@ -81,9 +81,10 @@ public class SeatController {
 		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
 
-		Building building = buildingService.findById(seatDto.getBuilding_id());
+		//Building building = buildingService.findById(seatDto.getBuilding_id());
 		Employee employee = null;
-		Floor floor = floorService.findByFloorNameAndBuilding(seatDto.getFloor(), building);
+		//Floor floor = floorService.findByFloorNameAndBuilding(seatDto.getFloor(), building);
+		Floor floor = floorService.findById(seatDto.getFloor());
 		//System.out.println("FLOOR:: " + floor.getFloorId() + " / " + floor.getFloorName());
 		if (seatDto.getEmployee_id() != null) {
 			employee = employeeService.findById(seatDto.getEmployee_id());

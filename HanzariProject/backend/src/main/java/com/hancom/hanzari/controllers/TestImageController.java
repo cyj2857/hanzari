@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.jlefebure.spring.boot.minio.MinioException;
 import com.jlefebure.spring.boot.minio.MinioService;
 
+import io.minio.MinioClient;
 import io.minio.messages.Item;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -30,39 +31,25 @@ import io.minio.messages.Item;
 @RequestMapping("api/images")
 public class TestImageController {
 
-	//MinioClient 클래스 사용하기
-    @Autowired
-    private MinioService minioService;
+	// MinioClient 클래스 사용하기
+	@Autowired
+	private MinioClient minioClient;
 
-    @GetMapping
-    public List<Item> testMinio() throws MinioException {
-        return minioService.list();
-    }
 
-    @GetMapping("/{object}")
-    //한글과컴퓨터-8층.png.png
-    public void getObject(@PathVariable("object") String object, HttpServletResponse response) throws MinioException, IOException {
-        InputStream inputStream = minioService.get(Path.of(object));
-        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+	@GetMapping("/{object}")
+	// 한글과컴퓨터-8층.png.png
+	public void getObject(@PathVariable("object") String object, HttpServletResponse response)
+			throws MinioException, IOException {
+//		InputStream inputStream = minioClient.get(Path.of(object));
+//		InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+//
+//		// Set the content type and attachment header.
+//		response.addHeader("Content-disposition", "attachment;filename=" + object);
+//		response.setContentType(URLConnection.guessContentTypeFromName(object));
+//
+//		// Copy the stream to the response's output stream.
+//		IOUtils.copy(inputStream, response.getOutputStream());
+//		response.flushBuffer();
+	}
 
-        // Set the content type and attachment header.
-        response.addHeader("Content-disposition", "attachment;filename=" + object);
-        response.setContentType(URLConnection.guessContentTypeFromName(object));
-
-        // Copy the stream to the response's output stream.
-        IOUtils.copy(inputStream, response.getOutputStream());
-        response.flushBuffer();
-    }
-
-    @PostMapping
-    public void addAttachement(@RequestParam("imageData") MultipartFile file) {
-        Path path = Path.of(file.getOriginalFilename());
-        try {
-            minioService.upload(path, file.getInputStream(), file.getContentType());
-        } catch (MinioException e) {
-            throw new IllegalStateException("The file cannot be upload on the internal storage. Please retry later", e);
-        } catch (IOException e) {
-            throw new IllegalStateException("The file cannot be read", e);
-        }
-    }
 }
