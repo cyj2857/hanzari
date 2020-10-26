@@ -16,7 +16,7 @@
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
-        v-bind:images="images"
+        v-bind:copyImages="images"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
         v-on:saveSeats="saveSeats"
@@ -43,8 +43,8 @@ import AttachCanvas from "@/components/AttachCanvas.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
 import EachFloorDataTable from "@/components/EachFloorDataTable.vue";
 import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vue";
-const portNum = 6080;
-const host = "172.30.1.50";
+const portNum = 8081;
+const host = "172.30.1.53"; //yj
 const building = "HANCOM01";
 export default {
   name: "Admin",
@@ -62,19 +62,25 @@ export default {
       seats: [],
       images: [],
       currentFloorSeats: [],
-      currentFloor: null,
+      currentFloorName: null,
+      currentFloorId: null,
     };
   },
   created() {
     this.employees = this.getEmployees();
     this.floors = this.getFloors();
     this.images = this.getImages();
-    //this.seats = this.getAllSeats(); //Map
     eventBus.$on("changeFloor", (floor) => {
-      this.currentFloor = floor;
+      if (floor == null) {
+        this.currentFloorName = null;
+        this.currentFloorId = null;
+      } else {
+        this.currentFloorName = floor.floor_name;
+        this.currentFloorId = floor.floor_id;
+      }
     });
 
-    this.currentFloorSeats = this.getCurrentFloorSeats(this.currentFloor); //currentFloor's seatList
+    this.currentFloorSeats = this.getCurrentFloorSeats(this.currentFloorId); //currentFloor's seatList
 
     console.log(this.getFloorLength() + "층의 개수"); //0
     console.log(this.getEmployeeLength() + "사원 개수"); //0
@@ -106,7 +112,7 @@ export default {
       return initEmployeeList;
     },
     //floor_id ?��?��?�� name?���? ?��?���? ?��?��?��
-    getCurrentFloorSeats(floor) {
+    getCurrentFloorSeats(floor_id) {
       let currentFloorSeatList = new Array();
       axios
         .get(
@@ -122,7 +128,7 @@ export default {
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             //console.log(reseponse.data[i].floor);
-            //if (response.data[i].floor == floor) {
+            //if (response.data[i].floor == floor_id) {
             let newSeat = {};
             newSeat.seat_id = response.data[i].seat_id;
             newSeat.floor = response.data[i].floor;
@@ -228,7 +234,7 @@ export default {
           const imgurl = response.config.url;
           this.images = imgurl;
 
-         /* for (var i = 0; i < response.data.length; i++) {
+          /* for (var i = 0; i < response.data.length; i++) {
             let newImage = {};
             newImage.url = response[i].config.url;
             
@@ -328,7 +334,7 @@ export default {
           console.log(error);
         });
     },
-    deleteSeatWtihKey(tableName, key) {
+    deleteSeatWithKey(tableName, key) {
       //추후에 api 구조 변경될 것을 생각하여 key를 받아서 삭제하는 것을 같은 함수로 묶지않음.
       let deleteTableName = tableName;
       let deleteKey = key;

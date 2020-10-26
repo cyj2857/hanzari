@@ -10,11 +10,11 @@
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
         <v-tab
-          v-for="tab of this.allFloorList"
-          :key="tab.floor_name"
-          @change="setFloor(tab.floor_name)"
+          v-for="floor of this.allFloorList"
+          :key="floor.floor_id"
+          @change="setFloor(floor)"
         >
-          {{ tab.floor_name }}</v-tab
+          {{ floor.floor_name }}</v-tab
         >
       </v-tabs>
     </v-card>
@@ -37,7 +37,7 @@ export default {
     return {
       floorNum: null, //v-tabs v-model
       dialogStatus: false,
-      inputFloor: null,
+      inputFloorName: null,
       seatFloor: null,
       allFloorList: this.copyFloors, // 여기에서 sort 안먹음
       managerFloorList: [], // DB에 save 할 리스트
@@ -49,26 +49,22 @@ export default {
   created() {
     if (this.copyFloors.length == 0) {
       /* 층 없는 상태에서 자리 생성 막기위해 넘겨줌
-       이 경우 길이가 늘어나지 않으므로 watch에서 불리지 않음
-       그래서 created에서 불러주기*/
+      길이가 늘어나지 않으므로 watch에서 불리지 않아서 created에서 불러주기*/
       let allFloors = this.allFloorList;
       eventBus.$emit("allFloorList", allFloors);
     }
-
-    eventBus.$on("confirm", () => {
+    eventBus.$on("AddFloor", (floor_name) => {
+      this.inputFloorName = floor_name;
       this.confirmDialog();
     });
-    eventBus.$on("floorInfo", (floor) => {
-      this.inputFloor = floor;
-    });
-    eventBus.$on("showSeatFloor", (floor) => {
-      this.seatFloor = floor;
-      console.log(this.seatFloor + "가 넘어온 자리 층입니다");
+    eventBus.$on("showSeatFloor", (floor_id) => {
+      this.seatFloorId = floor_id;
+      console.log(this.seatFloorId + "가 넘어온 자리 층입니다");
 
       for (let i = 0; i < this.allFloorList.length; i++) {
-        if (this.seatFloor == this.allFloorList[i].floor_name) {
+        if (this.seatFloorId == this.allFloorList[i].floor_id) {
           this.floorNum = i;
-          this.setFloor(this.allFloorList[this.floorNum].floor_name);
+          this.setFloor(this.allFloorList[this.floorNum]);
         }
       }
     });
@@ -76,7 +72,7 @@ export default {
   beforeUpdate() {
     /*실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의 새로운 상태를 가져와야하는 경우 사용*/
     if (this.initData && this.length != 0) {
-      this.setFloor(this.allFloorList[this.floorNum].floor_name);
+      this.setFloor(this.allFloorList[this.floorNum]);
       return;
     } else {
       // 초기
@@ -97,7 +93,11 @@ export default {
       층을 삭제하는 경우에도 managerFloors 에는 남아있으므로 삭제된 층의 자리들도 저장하는 경우가 있을수 있기 때문에
       둘다 eventBus로 보내줘야함*/
       if (!this.firstLoadWatch) {
+        //처음 load
         this.floorNum = length - 1; // floor의 index가 되는 floorNum
+        if (length == 0) {
+          this.setFloor(null);
+        }
 
         let allFloors = this.allFloorList;
         eventBus.$emit("allFloorList", allFloors);
@@ -117,31 +117,32 @@ export default {
         let managerFloors = this.managerFloorList;
         eventBus.$emit("managerFloorList", managerFloors);
       }
+
+      if (this.length == 0) {
+        this.setFloor(null);
+      } else {
+        this.setFloor(this.allFloorList[this.floorNum]);
+      }
     },
   },
   methods: {
-    setFloor(n) {
-      eventBus.$emit("changeFloor", n);
+    setFloor(floor) {
+      // floor 객체 자체를 보내줌
+      eventBus.$emit("changeFloor", floor);
     },
     getDialog() {
       eventBus.$emit("initFloor", null);
       this.dialogStatus = true;
-      //console.log(this.dialogStatus);
     },
     closeDialog() {
-      //console.log("<<<close dialog>>>");
       this.dialogStatus = false;
-      //console.log(this.dialogStatus);
     },
     confirmDialog() {
-      //console.log("<<<confirm dialog>>>");
       this.dialogStatus = false;
-      //console.log(this.dialogStatus);
-      //console.log(this.inputFloor + "from add floor dialog");
 
       let newFloor = {};
       newFloor.floor_id = this.createFloorUUID();
-      newFloor.floor_name = this.inputFloor;
+      newFloor.floor_name = this.inputFloorName;
       newFloor.building_id = "HANCOM01";
       newFloor.floor_order = this.allFloorList.length;
       newFloor.create = true;
@@ -151,47 +152,43 @@ export default {
       this.allFloorList.push(newFloor);
       this.managerFloorList.push(newFloor);
 
-      this.increaseTab();
-      console.log(this.length + "length");
-    },
-    increaseTab() {
       this.length++;
       this.floorNum = this.length + 1;
-      if (!this.dialogStatus && this.inputFloor) {
-        this.setFloor(this.inputFloor);
+
+      if (!this.dialogStatus && this.inputFloorName) {
+        this.setFloor(newFloor);
       }
     },
     removeFloor() {
       if (this.length > 0) {
         //items에서 id가 현재 floor인 애 index 가져오기
-        let currentFloorId = this.allFloorList[this.floorNum].floor_name;
+        let currentFloorId = this.allFloorList[this.floorNum].floor_id;
         const idx = this.allFloorList.findIndex(function (item) {
-          return item.floor_name == currentFloorId;
+          return item.floor_id == currentFloorId;
         });
         if (idx > -1) {
+          // 삭제 가능
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
+          //items에서 그 index 삭제
         }
-        //items에서 그 index 삭제
+        this.length--;
+        this.floorNum = this.length - 1;
 
-        this.decreaseTab(this.managerFloorList[idx].floor_name);//나중에 floor_id로 보내야할 가능성
+        eventBus.$emit(
+          "deleteSeatListKey",
+          this.managerFloorList[idx].floor_id
+        );
+
+        if (this.length == 0) {
+          this.setFloor(null);
+        } else {
+          this.setFloor(this.allFloorList[this.floorNum]);
+        }
+        console.log(this.length + "length");
       } else {
         alert("there are no seats to delete!");
       }
-    },
-    decreaseTab(floor_name) {
-      this.length--;
-      this.floorNum = this.length - 1;
-
-      eventBus.$emit("deleteSeatListKey", floor_name); 
-
-      if (this.length == 0) {
-        this.setFloor(null);
-      } else {
-        this.setFloor(this.allFloorList[this.floorNum].floor_name);
-      }
-      console.log(this.length + "length");
-      //pop
     },
     changeFloorName() {
       // 여기에서 floor의 modify true 해줄 예정

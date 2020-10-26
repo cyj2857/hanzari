@@ -6,7 +6,12 @@
         {{ this.currentFloorSeatsLength }}좌석
       </v-spacer>
     </v-card-title>
-    <v-data-table :headers="headers" :items="employees" class="elevation-1" height="775px">
+    <v-data-table
+      :headers="headers"
+      :items="employees"
+      class="elevation-1"
+      height="775px"
+    >
       <template v-slot:[`item.department`]="{ item }">
         <v-chip :color="getColor(item.department)" dark>{{
           item.department
@@ -36,10 +41,18 @@ export default {
   },
   created() {
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
-      this.renderEachFloorSeatList(eachFloorSeatList);
+      if (eachFloorSeatList == undefined) {
+        return;
+      } else {
+        this.renderEachFloorSeatList(eachFloorSeatList);
+      }
     });
     eventBus.$on("changeFloor", (floor) => {
-      this.currentFloor = floor;
+      if (floor == null) {
+        this.currentFloor = null;
+      } else {
+        this.currentFloor = floor.floor_name;
+      }
     });
   },
   methods: {
@@ -75,7 +88,7 @@ export default {
           });
 
           this.currentFloorSeatsLength = this.employees.length;
-          
+
           console.log(employee.number);
         }
       } else {
