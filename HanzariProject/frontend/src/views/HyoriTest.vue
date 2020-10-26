@@ -15,7 +15,9 @@
       <AttachCanvas
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
+        v-bind:images="images"
         v-bind:currentFloorSeatsList="currentFloorSeats"
+        v-on:saveByImages="saveImage"
         v-on:saveByAxios="saveData"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
       ></AttachCanvas>
@@ -56,6 +58,7 @@ export default {
       employees: [],
       floors: [],
       seats: [],
+      images: [],
       currentFloorSeats: [],
       currentFloor: null,
     };
@@ -63,33 +66,36 @@ export default {
   created() {
     this.employees = this.getEmployees();
     this.floors = this.getFloors();
+    this.images = this.getImages();
     //this.seats = this.getAllSeats(); //Map
     eventBus.$on("changeFloor", (floor) => {
       this.currentFloor = floor;
-      console.log(this.currentFloor + "ì—¬ê¸°ê°€ HyoriTestë¡œ ë„˜ì–´ì˜¨ í˜„ì¬ì¸µ");
+      console.log(
+        this.currentFloor + "?—¬ê¸°ê?? HyoriTestë¡? ?„˜?–´?˜¨ ?˜„?¬ì¸?"
+      );
     });
 
     this.currentFloorSeats = this.getCurrentFloorSeats(this.currentFloor); //currentFloor's seatList
 
-    console.log(this.getFloorLength() + "ì¸µì˜ ê°œìˆ˜ì…ë‹ˆë‹¤."); //0
-    console.log(this.getEmployeeLength() + "ì‚¬ì›ì˜ ê°œìˆ˜ì…ë‹ˆë‹¤."); //0
+    console.log(this.getFloorLength() + "ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤."); //0
+    console.log(this.getEmployeeLength() + "?‚¬?›?˜ ê°œìˆ˜?…?‹ˆ?‹¤."); //0
   },
   mounted() {
-    //changeFloorë ë•Œ ë„˜ì–´ì˜¤ëŠ” floor_idë¥¼ ë„£ì–´ì•¼í•¨.
+    //changeFloor? ?•Œ ?„˜?–´?˜¤?Š” floor_idë¥? ?„£?–´?•¼?•¨.
     // console.log(
     //   this.floors[this.floors.length - 1].floor_id +
-    //     "ë””ë¹„ë¡œë¶€í„° ê°€ì§€ê³ ì˜¨ ì¸µë“¤ì˜ ë§¨ ë§ˆì§€ë§‰ ì¸µì˜ ì•„ì´ë””ì…ë‹ˆë‹¤."
+    //     "?””ë¹„ë¡œë¶??„° ê°?ì§?ê³ ì˜¨ ì¸µë“¤?˜ ë§? ë§ˆì??ë§? ì¸µì˜ ?•„?´?””?…?‹ˆ?‹¤."
     // );
-    //console.log(this.floors.length+"ì¸µì˜ ê°œìˆ˜ì…ë‹ˆë‹¤."); //0
+    //console.log(this.floors.length+"ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤."); //0
     // this.currentFloorSeats = this.getCurrentFloorSeats(
     //   this.floors[this.floors.length - 1].floor_id
     // )
-    //console.log(this.currentFloorSeats.length+"ë””ë¹„ë¡œë¶€í„° ê°€ì§€ê³ ì˜¨ í˜„ì¬ì¸µì˜ ìë¦¬ë¦¬ìŠ¤íŠ¸ ê¸¸ì´ì…ë‹ˆë‹¤.");
+    //console.log(this.currentFloorSeats.length+"?””ë¹„ë¡œë¶??„° ê°?ì§?ê³ ì˜¨ ?˜„?¬ì¸µì˜ ?ë¦¬ë¦¬?Š¤?Š¸ ê¸¸ì´?…?‹ˆ?‹¤.");
   },
   beforeUpdate() {
-    console.log(this.getFloorLength() + "ì¸µì˜ ê°œìˆ˜ì…ë‹ˆë‹¤."); //2
+    console.log(this.getFloorLength() + "ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤."); //2
     //this.currentFloor = this.floors[this.getFloorLength() - 1];
-    //console.log(this.currentFloor.floor_name+"ë§¨ ë§ˆì§€ë§‰ ì¸µì˜ ì•„ì´ë””ì…ë‹ˆë‹¤.");
+    //console.log(this.currentFloor.floor_name+"ë§? ë§ˆì??ë§? ì¸µì˜ ?•„?´?””?…?‹ˆ?‹¤.");
   },
   methods: {
     getFloorLength() {
@@ -117,7 +123,7 @@ export default {
         });
       return initEmployeeList;
     },
-    //floor_id í˜„ì¬ëŠ” nameìœ¼ë¡œ ì¸ìê°€ ë„˜ì–´ì˜´
+    //floor_id ?˜„?¬?Š” name?œ¼ë¡? ?¸?ê°? ?„˜?–´?˜´
     getCurrentFloorSeats(floor) {
       let currentFloorSeatList = new Array();
       axios
@@ -147,15 +153,15 @@ export default {
             newSeat.height = response.data[i].height;
             newSeat.degree = response.data[i].degree;
             newSeat.shape_id = response.data[i].shape_id;
-            newSeat.create = false
-            newSeat.delete = false
-            newSeat.modify = false
+            newSeat.create = false;
+            newSeat.delete = false;
+            newSeat.modify = false;
 
             currentFloorSeatList.push(newSeat);
             //}
           }
         });
-      //console.log("ë„˜ì–´ì˜¨ í˜„ì¬ì¸µì— ëŒ€í•œ ìë¦¬ë¦¬ìŠ¤íŠ¸ ê°œìˆ˜ì…ë‹ˆë‹¤. -> "+currentFloorSeatList.length);
+      //console.log("?„˜?–´?˜¨ ?˜„?¬ì¸µì— ????•œ ?ë¦¬ë¦¬?Š¤?Š¸ ê°œìˆ˜?…?‹ˆ?‹¤. -> "+currentFloorSeatList.length);
       return currentFloorSeatList;
     },
     getOneFloorSeats(floor_id) {
@@ -184,9 +190,9 @@ export default {
             newSeat.height = response.data[i].height;
             newSeat.degree = response.data[i].degree;
             newSeat.shape_id = response.data[i].shape_id;
-            newSeat.create = false
-            newSeat.delete = false
-            newSeat.modify = false
+            newSeat.create = false;
+            newSeat.delete = false;
+            newSeat.modify = false;
 
             loadSeatList.push(newSeat);
           }
@@ -194,16 +200,18 @@ export default {
       return oneFloorSeatList;
     },
     getAllSeats() {
-      //all seats // í˜„ì¬ ì¸µ ì œì™¸í•œ all seatsë¡œ ë‹¤ì‹œ êµ¬í˜„í•´ì•¼í•¨.
+      //all seats // ?˜„?¬ ì¸? ? œ?™¸?•œ all seatsë¡? ?‹¤?‹œ êµ¬í˜„?•´?•¼?•¨.
       let allDBSeatMap = new Map();
-      console.log(this.floors.length + "ì¸µì˜ ê°œìˆ˜ì…ë‹ˆë‹¤. í•¨ìˆ˜ì•ˆì—ì„œìš”"); //0
+      console.log(
+        this.floors.length + "ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤. ?•¨?ˆ˜?•ˆ?—?„œ?š”"
+      ); //0
       for (let i = 0; i < this.floors.length; i++) {
         allDBSeatMap.set(
           this.floors[i].floor_name,
           this.getOneFloorSeats(this.floors[i].floor_id)
         );
       }
-      //console.log(this.floors.length+"ì¸µì˜ ê°œìˆ˜ì…ë‹ˆë‹¤. í•¨ìˆ˜ì•ˆì—ì„œìš”")
+      //console.log(this.floors.length+"ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤. ?•¨?ˆ˜?•ˆ?—?„œ?š”")
       return allDBSeatMap;
     },
     getFloors() {
@@ -226,6 +234,27 @@ export default {
         });
       return allFloorList;
     },
+    getImages() {
+      axios
+        //.get("http://" + host + ":" + portNum + "api/building/{~}/floor/{~}/imageurl")
+        .get(
+          "http://172.30.1.56:9000/hanzari/%ED%95%9C%EA%B8%80%EA%B3%BC%EC%BB%B4%ED%93%A8%ED%84%B0-1%EC%B8%B5.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201023%2F%2Fs3%2Faws4_request&X-Amz-Date=20201023T021304Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=3762c647cfd02789e889243ef2d333aa0d18abd1894aca75b7edaf3d2848e306"
+        )
+        .then((response) => {
+          const initImageList = new Array();
+          const imgurl = response.config.url;
+
+          initImageList.push(imgurl);
+          this.images = initImageList[0];
+
+          console.log(this.images);
+          //console.log(initImageList);
+          //console.log(initImageList.length); //1
+          //console.log(initImageList[0]);
+
+          return this.images;
+        });
+    },
     saveData(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;
@@ -245,6 +274,28 @@ export default {
         )
         .then((res) => {
           console.log(res.saveData);
+        });
+    },
+    saveImage(tableName, data) {
+      let saveData = data;
+      let saveTableName = tableName;
+      console.log("saveData is");
+      console.log(saveData);
+      console.log("------------");
+      console.log("saveTableName is");
+      console.log(saveTableName);
+
+      axios
+        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(function () {
+          console.log("axios SUCCESS!!");
+        })
+        .catch(function () {
+          console.log("axios FAILURE!!");
         });
     },
     deleteFloorByKey(tableName, key) {
