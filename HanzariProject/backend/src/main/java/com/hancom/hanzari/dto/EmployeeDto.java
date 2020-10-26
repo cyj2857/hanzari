@@ -1,6 +1,5 @@
 package com.hancom.hanzari.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -34,7 +33,7 @@ public class EmployeeDto {
 	@NotBlank
 	private String extension_number;
 
-	private List<String> seatList = new ArrayList<>();
+	private List<String> seatList;
 
 	public EmployeeDto() {
 	}
