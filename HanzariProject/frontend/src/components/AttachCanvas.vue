@@ -292,7 +292,7 @@ export default {
       let reader = new FileReader();
       reader.readAsDataURL(file);
     },
-    loadImage(file) {
+    loadImage() {
       let imgurl = this.images;
 
       fabric.Image.fromURL(imgurl, (img) => {
@@ -310,18 +310,19 @@ export default {
     saveImage(file) {
       this.allImageList.set(this.currentSelectedFloor, file);
 
-      var imgData = new FormData();
-      var img = this.allImageList.get(this.currentSelectedFloor);
+      let imgData = new FormData();
+      let img = this.allImageList.get(this.currentSelectedFloor);
+      let floor = this.currentSelectedFloor
 
       imgData.append("imageData", img);
-      imgData.append("currentFloor", this.currentSelectedFloor);
+      imgData.append("floor", floor);
 
       this.$emit("saveByImages", "images", imgData);
      
     },
     createImage(file) {
       this.getImage(file);
-      this.loadImage(file);
+      this.loadImage();
       this.saveImage(file);
     },
     onFileChange(e) {
@@ -859,13 +860,8 @@ export default {
               seatData.degree = groupToObject.angle;
               seatData.shape_id = "1";
 
-<<<<<<< HEAD
               console.log(seatData)
               this.$emit("saveByAxios", "seats", seatData);
-=======
-              console.log(seatData);
-              this.$emit("saveByAxios", seatData, "seats");
->>>>>>> 6e3596c6128596f4a17c4128f2d7a391e7bc41d2
             }
           }
         }
