@@ -30,6 +30,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
+    <v-btn @click="test">TEST</v-btn>
     <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
@@ -142,6 +143,17 @@ export default {
     this.initializing();
   },
   methods: {
+    test() {
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+      console.log(eachFloorSeatList);
+      console.log(managerEachFloorSeatList);
+    },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
       console.log(this.employeeDialogStatus);
@@ -399,7 +411,7 @@ export default {
         return this.allSeatMap.get(floor);
       }
     },
-    getManagerEachFloorSeatList: function () {
+    getManagerEachFloorSeatList: function (floor) {
       if (!this.managerAllSeatMap.get(floor)) {
         let newSeatsList = new Array();
         this.managerAllSeatMap.set(floor, newSeatsList);
