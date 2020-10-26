@@ -148,6 +148,12 @@ export default {
       );
       console.log(eachFloorSeatList);
       console.log(managerEachFloorSeatList);
+
+      console.log(this.allSeatMap.size);
+      console.log(this.managerAllSeatMap.size);
+
+      console.log(this.allSeatMap);
+      console.log(this.managerAllSeatMap);
     },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
@@ -421,6 +427,10 @@ export default {
     },
     //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
+        return;
+      }
       //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
       if (!this.allSeatMap.get(floor)) {
         let newSeatsList = new Array();
@@ -433,6 +443,10 @@ export default {
       }
     },
     getManagerEachFloorSeatList: function (floor) {
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
+        return;
+      }
       if (!this.managerAllSeatMap.get(floor)) {
         let newSeatsList = new Array();
         this.managerAllSeatMap.set(floor, newSeatsList);
