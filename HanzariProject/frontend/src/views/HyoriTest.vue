@@ -13,13 +13,14 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
+        v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
         v-bind:images="images"
-        v-bind:currentFloorSeatsList="currentFloorSeats"
         v-on:saveByImages="saveImage"
         v-on:saveByAxios="saveData"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
+        v-on:deleteSeatByAxiosWithKey="deleteSeatByKey"
       ></AttachCanvas>
       <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
@@ -71,31 +72,14 @@ export default {
     eventBus.$on("changeFloor", (floor) => {
       this.currentFloor = floor;
       console.log(
-        this.currentFloor + "?—¬ê¸°ê?? HyoriTestë¡? ?„˜?–´?˜¨ ?˜„?¬ì¸?"
+        this.currentFloor + "?ï¿½ï¿½ê¸°ï¿½?? HyoriTestï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ï¿½?"
       );
     });
 
     this.currentFloorSeats = this.getCurrentFloorSeats(this.currentFloor); //currentFloor's seatList
 
-    console.log(this.getFloorLength() + "ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤."); //0
-    console.log(this.getEmployeeLength() + "?‚¬?›?˜ ê°œìˆ˜?…?‹ˆ?‹¤."); //0
-  },
-  mounted() {
-    //changeFloor? ?•Œ ?„˜?–´?˜¤?Š” floor_idë¥? ?„£?–´?•¼?•¨.
-    // console.log(
-    //   this.floors[this.floors.length - 1].floor_id +
-    //     "?””ë¹„ë¡œë¶??„° ê°?ì§?ê³ ì˜¨ ì¸µë“¤?˜ ë§? ë§ˆì??ë§? ì¸µì˜ ?•„?´?””?…?‹ˆ?‹¤."
-    // );
-    //console.log(this.floors.length+"ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤."); //0
-    // this.currentFloorSeats = this.getCurrentFloorSeats(
-    //   this.floors[this.floors.length - 1].floor_id
-    // )
-    //console.log(this.currentFloorSeats.length+"?””ë¹„ë¡œë¶??„° ê°?ì§?ê³ ì˜¨ ?˜„?¬ì¸µì˜ ?ë¦¬ë¦¬?Š¤?Š¸ ê¸¸ì´?…?‹ˆ?‹¤.");
-  },
-  beforeUpdate() {
-    console.log(this.getFloorLength() + "ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤."); //2
-    //this.currentFloor = this.floors[this.getFloorLength() - 1];
-    //console.log(this.currentFloor.floor_name+"ë§? ë§ˆì??ë§? ì¸µì˜ ?•„?´?””?…?‹ˆ?‹¤.");
+    console.log(this.getFloorLength() + "ì¸µì˜ ê°œìˆ˜?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½."); //0
+    console.log(this.getEmployeeLength() + "?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê°œìˆ˜?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½."); //0
   },
   methods: {
     getFloorLength() {
@@ -123,7 +107,7 @@ export default {
         });
       return initEmployeeList;
     },
-    //floor_id ?˜„?¬?Š” name?œ¼ë¡? ?¸?ê°? ?„˜?–´?˜´
+    //floor_id ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ name?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½
     getCurrentFloorSeats(floor) {
       let currentFloorSeatList = new Array();
       axios
@@ -161,7 +145,7 @@ export default {
             //}
           }
         });
-      //console.log("?„˜?–´?˜¨ ?˜„?¬ì¸µì— ????•œ ?ë¦¬ë¦¬?Š¤?Š¸ ê°œìˆ˜?…?‹ˆ?‹¤. -> "+currentFloorSeatList.length);
+      //console.log("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ì¸µì— ????ï¿½ï¿½ ?ï¿½ï¿½ë¦¬ë¦¬?ï¿½ï¿½?ï¿½ï¿½ ê°œìˆ˜?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½. -> "+currentFloorSeatList.length);
       return currentFloorSeatList;
     },
     getOneFloorSeats(floor_id) {
@@ -200,10 +184,10 @@ export default {
       return oneFloorSeatList;
     },
     getAllSeats() {
-      //all seats // ?˜„?¬ ì¸? ? œ?™¸?•œ all seatsë¡? ?‹¤?‹œ êµ¬í˜„?•´?•¼?•¨.
+      //all seats // ?ï¿½ï¿½?ï¿½ï¿½ ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ all seatsï¿½? ?ï¿½ï¿½?ï¿½ï¿½ êµ¬í˜„?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½.
       let allDBSeatMap = new Map();
       console.log(
-        this.floors.length + "ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤. ?•¨?ˆ˜?•ˆ?—?„œ?š”"
+        this.floors.length + "ì¸µì˜ ê°œìˆ˜?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½. ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½"
       ); //0
       for (let i = 0; i < this.floors.length; i++) {
         allDBSeatMap.set(
@@ -211,7 +195,7 @@ export default {
           this.getOneFloorSeats(this.floors[i].floor_id)
         );
       }
-      //console.log(this.floors.length+"ì¸µì˜ ê°œìˆ˜?…?‹ˆ?‹¤. ?•¨?ˆ˜?•ˆ?—?„œ?š”")
+      //console.log(this.floors.length+"ì¸µì˜ ê°œìˆ˜?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½. ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½")
       return allDBSeatMap;
     },
     getFloors() {
@@ -293,6 +277,31 @@ export default {
         });
     },
     deleteFloorByKey(tableName, key) {
+      //ì¶”í›„ì— api êµ¬ì¡° ë³€ê²½ë  ê²ƒì„ ìƒê°í•˜ì—¬ keyë¥¼ ë°›ì•„ì„œ ì‚­ì œí•˜ëŠ” ê²ƒì„ ê°™ì€ í•¨ìˆ˜ë¡œ ë¬¶ì§€ì•ŠìŒ.
+      let deleteTableName = tableName;
+      let deleteKey = key;
+      axios
+        .delete(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/" +
+            deleteTableName +
+            "/" +
+            deleteKey
+        )
+        .then(function (response) {
+          // handle success
+          console.log(response);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        });
+    },
+    deleteSeatByKey(tableName, key) {
+      //ì¶”í›„ì— api êµ¬ì¡° ë³€ê²½ë  ê²ƒì„ ìƒê°í•˜ì—¬ keyë¥¼ ë°›ì•„ì„œ ì‚­ì œí•˜ëŠ” ê²ƒì„ ê°™ì€ í•¨ìˆ˜ë¡œ ë¬¶ì§€ì•ŠìŒ.
       let deleteTableName = tableName;
       let deleteKey = key;
       axios
