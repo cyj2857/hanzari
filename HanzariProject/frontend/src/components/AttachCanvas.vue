@@ -339,7 +339,7 @@ export default {
       imgData.append("imageData", img);
       imgData.append("floor", floor);
 
-      this.$emit("saveByImages", "images", imgData);
+      this.$emit("saveImages", "images", imgData);
     },
     createImage(file) {
       this.loadImage(file);
@@ -810,13 +810,14 @@ export default {
     //아직 구현중에 있습니다.
     clickSaveBtn() {
       if (this.managerFloorList) {
+        //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
             // 원본
             if (this.managerFloorList[i].delete) {
               // 001 011 delete
               let deleteFloorKey = this.managerFloorList[i].floor_id;
-              this.$emit("deleteFloorByAxiosWithKey", "floors", deleteFloorKey);
+              this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
             } else if (this.managerFloorList[i].modify) {
               //010 그 id에 대하여 post
               let floorData = {};
@@ -825,7 +826,7 @@ export default {
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              this.$emit("saveByAxios", "floors", floorData);
+              this.$emit("saveFloors", "floors", floorData);
             }
           } else {
             // front에서 생성
@@ -840,30 +841,26 @@ export default {
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              this.$emit("saveByAxios", "floors", floorData);
+              this.$emit("saveFloors", "floors", floorData);
             }
           }
         }
-      }
 
-      // 자리들 저장할때 managerFloorList를 사용하지 않은 이유는 층이 가시적으로 없어지게 되면
-      // managerFloorList에는 남아있고 D필드만 true가 되는데, 가시적으로 없어진 층의 자리들을 저장하는 것은 옳지않다고 판단
-      if (this.allFloorList) {
-        for (let j = 0; j < this.allFloorList.length; j++) {
-          let eachFloorSeatList = this.getEachFloorSeatList(
-            this.allFloorList[j].floor_name
+        //자리 저장
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+            this.managerFloorList[i].floor_name
           );
 
-          //사본 eachFloorSeatList
-          if (eachFloorSeatList.length > 0) {
+          if (managerEachFloorSeatList.length > 0) {
             console.log(
-              eachFloorSeatList.length +
-                this.allFloorList[j].floor_name +
+              managerEachFloorSeatList.length +
+                this.managerFloorList[i].floor_name +
                 "층의 자리 개수입니다."
             );
 
-            for (let i = 0; i < eachFloorSeatList.length; i++) {
-              let groupToObject = eachFloorSeatList[i].toObject([
+            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+              let groupToObject = managerEachFloorSeatList[j].toObject([
                 "seatId",
                 "floor_id",
                 "left",
@@ -881,37 +878,56 @@ export default {
 
               console.log(groupToObject);
               //axios api 호출
-              if (groupToObject.create == false) {
-                if (groupToObject.delete == true) {
-                  //axios.delete
-                } else if (groupToObject.modify == true) {
-                  //axios.post
+              if (!groupToObject.create) {
+                // 원본
+                if (groupToObject.delete) {
+                  // 001 011 delete
+                  let deleteSeatKey = groupToObject.seatId;
+                  this.$emit("deleteSeatWithKey", "seats", deleteSeatKey);
+                } else if (groupToObject.modify) {
+                  //010 그 id에 대하여 post
+                  let seatData = {};
+                  seatData.seat_id = groupToObject.seatId;
+                  seatData.floor = groupToObject.floor_id;
+                  seatData.x = groupToObject.left;
+                  seatData.y = groupToObject.top;
+                  seatData.is_group = false;
+                  seatData.group_id = null;
+                  seatData.building_id = "HANCOM01";
+                  seatData.employee_id = groupToObject.employee_id;
+                  seatData.width = groupToObject.width * groupToObject.scaleX;
+                  seatData.height = groupToObject.height * groupToObject.scaleY;
+                  seatData.degree = groupToObject.angle;
+                  seatData.shape_id = "1";
+
+                  console.log(seatData);
+                  this.$emit("saveSeats", "seats", seatData);
                 }
               } else {
-                //groupToObject.create == true
-                if (groupToObject.true == false) {
-                  break;
+                // front에서 생성
+                if (groupToObject.true) {
+                  //101 111 nothing
+                  return;
                 } else {
-                  //axios.post
+                  //100 110 그 id에 대하여 post
+                  let seatData = {};
+                  seatData.seat_id = groupToObject.seatId;
+                  seatData.floor = groupToObject.floor_id;
+                  seatData.x = groupToObject.left;
+                  seatData.y = groupToObject.top;
+                  seatData.is_group = false;
+                  seatData.group_id = null;
+                  seatData.building_id = "HANCOM01";
+                  seatData.employee_id = groupToObject.employee_id;
+                  seatData.width = groupToObject.width * groupToObject.scaleX;
+                  seatData.height = groupToObject.height * groupToObject.scaleY;
+                  seatData.degree = groupToObject.angle;
+                  seatData.shape_id = "1";
+
+                  console.log(seatData);
+                  this.$emit("saveSeats", "seats", seatData);
                 }
               }
-
-              let seatData = {};
-              seatData.seat_id = groupToObject.seatId;
-              seatData.floor = groupToObject.floor_id;
-              seatData.x = groupToObject.left;
-              seatData.y = groupToObject.top;
-              seatData.is_group = false;
-              seatData.group_id = null;
-              seatData.building_id = "HANCOM01";
-              seatData.employee_id = groupToObject.employee_id;
-              seatData.width = groupToObject.width * groupToObject.scaleX;
-              seatData.height = groupToObject.height * groupToObject.scaleY;
-              seatData.degree = groupToObject.angle;
-              seatData.shape_id = "1";
-
-              console.log(seatData);
-              this.$emit("saveByAxios", "seats", seatData);
             }
           }
         }
