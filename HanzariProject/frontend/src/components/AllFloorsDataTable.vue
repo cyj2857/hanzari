@@ -17,12 +17,10 @@
       height="265px"
     >
       <template v-slot:item="row">
-        <!--<tr @click="createRect(row.item)">!-->
         <tr>
           <td>{{ row.item.name }}</td>
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
-          <!--<td><v-btn id="createSeatButton" @click="createSeatButtonClicked(row.item)">Create</v-btn></td> !-->
           <td>
             <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)"
               >Show</v-btn
@@ -58,8 +56,8 @@ export default {
         },
         { text: "Department", value: "department" },
         { text: "Number", value: "number" },
-        { text: "", value: "createSeatButton" },
         { text: "", value: "showSeatButton" },
+        { text: "", value: "mapSeatButton" },
       ],
       employees: this.copyEmployee,
       userAuthority: "Viewer",

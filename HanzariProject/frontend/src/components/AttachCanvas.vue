@@ -56,7 +56,7 @@ import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 
 export default {
-  props: ["seat", "copyEmployee", "currentFloorSeatsList", "images"],
+  props: ["seat", "copyEmployee", "currentFloorSeatsList", "copyImages"],
   components: {
     EmployeeDialog,
     AllFloorsDataTable,
@@ -66,10 +66,11 @@ export default {
     return {
       floorCanvas: null,
       seatId: null,
-      currentSelectedFloor: null,
+      currentSelectedFloorName: null,
+      currentSelectedFloorId: null,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
 
-      images: this.images,
+      images: this.copyImages,
       allImageList: null,
 
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
@@ -86,9 +87,6 @@ export default {
 
       employeeDialogStatus: false, // 사원 정보 다이얼로그
       changeSeatDialogStatus: false, // 자리 변경 다이얼로그
-      inputChangeSeatFloor: null, // 자리 변경시 입력 층
-      inputChangeSeatX: null, // 자리 변경시 입력 X 좌표
-      inputChangeSeatY: null, // 자리 변경시 입력 Y 좌표
     };
   },
   created() {
@@ -99,15 +97,23 @@ export default {
       this.showSeat(seat);
     });
     eventBus.$on("changeFloor", (floor) => {
-      this.currentSelectedFloor = floor;
-      this.changeFloor(this.currentSelectedFloor);
-      console.log(this.currentSelectedFloor + "여기가 현재층");
+      if (floor) {
+        // null 이 아닐때
+        this.currentSelectedFloorId = floor.floor_id;
+        this.currentSelectedFloorName = floor.floor_name;
+      } else {
+        this.currentSelectedFloorId = null;
+        this.currentSelectedFloorName = null;
+      }
+      this.changeFloor();
+
+      console.log(this.currentSelectedFloorName + "여기가 현재층");
     });
     eventBus.$on("allEmployeeList", (allEmployeeList) => {
       this.allEmployeeList = allEmployeeList;
     });
     eventBus.$on("MappingSeat", (item) => {
-      this.setVacantSeat(item);
+      this.setMappingSeat(item);
     });
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
@@ -117,14 +123,14 @@ export default {
       this.managerFloorList = managerFloors;
       console.log(this.managerFloorList);
     });
-    eventBus.$on("deleteSeatListKey", (floor_name) => {
-
-      this.allSeatMap.delete(floor_name);
+    eventBus.$on("deleteSeatListKey", (floor_id) => {
+      console.log(floor_id);
+      this.allSeatMap.delete(floor_id);
       //층 삭제시 allSeatMap에 그 층을 key로 하는 요소들 삭제
 
       /*managerAllSeatMap 에서 삭제되어도 되는 이유 : managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것. 
       그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함*/
-      this.managerAllSeatMap.delete(floor_name);
+      this.managerAllSeatMap.delete(floor_id);
     });
     if (this.allImageList == null) {
       this.allImageList = new Map();
@@ -145,10 +151,10 @@ export default {
   methods: {
     test() {
       let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
       console.log(eachFloorSeatList);
       console.log(managerEachFloorSeatList);
@@ -182,37 +188,47 @@ export default {
         return;
       }
       let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
       let managerEachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
 
       let activeObject = this.floorCanvas.getActiveObject();
-      activeObject.floor_id = inputInfo[0];
-      activeObject.left = parseInt(inputInfo[1]);
-      activeObject.top = parseInt(inputInfo[2]);
-      activeObject.modify = true;
 
-      for (let i = 0; i < eachFloorSeatList.length; i++) {
-        if (eachFloorSeatList[i].seatId == activeObject.seatId) {
-          eachFloorSeatList.splice(i, 1); //!!!!!!!!!!!!!!!!!!!!!!
-          managerEachFloorSeatList[i].delete = true;
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        // 이후에 combobox로 만들던가 해서 불필요한 로직 줄일것.
+        if (inputInfo[0] == this.allFloorList[i].floor_name) {
+          activeObject.floor_id = this.allFloorList[i].floor_id;
+          activeObject.left = parseInt(inputInfo[1]);
+          activeObject.top = parseInt(inputInfo[2]);
+          activeObject.modify = true;
+
+          let changeFloorSeatList = this.getEachFloorSeatList(
+            this.allFloorList[i].floor_id //input floor's floor_id
+          );
+          let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
+            this.allFloorList[i].floor_id
+          );
+          changeFloorSeatList.push(activeObject);
+          changeManagerFloorSeatList.push(activeObject);
+
+          //이동 후에 원래 list에서 삭제
+          for (let j = 0; j < eachFloorSeatList.length; j++) {
+            if (eachFloorSeatList[j].seatId == activeObject.seatId) {
+              eachFloorSeatList.splice(j, 1);
+              managerEachFloorSeatList[j].delete = true;
+            }
+          }
+
+          eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
+          eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
+          
+          this.floorCanvas.renderAll();
+        } else {
+          return;
         }
       }
-
-      let changeFloorSeatList = this.getEachFloorSeatList(
-        inputInfo[0] //input floor
-      );
-      let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
-        inputInfo[0]
-      );
-      changeFloorSeatList.push(activeObject);
-      changeManagerFloorSeatList.push(activeObject);
-
-      eventBus.$emit("showSeatFloor", inputInfo[0]);
-      eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
-      this.floorCanvas.renderAll();
     },
     //canvas, map 생성
     initializing() {
@@ -263,7 +279,7 @@ export default {
     multipleVacant(number) {
       this.addVacantBtn(number);
     },
-    changeFloor(floor) {
+    changeFloor() {
       //도형 랜더링 전에 화면의 도형들을  초기화
       this.floorCanvas
         .getObjects()
@@ -272,12 +288,16 @@ export default {
           this.floorCanvas.remove(obj);
         });
 
-      let myOnefloorSeatList = this.getEachFloorSeatList(floor);
-      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(floor);
+      let myOnefloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
       // managerEachFloorSeatList init 해주기 위함
 
-      if (this.allImageList.get(floor) != null) {
-        this.loadImage(this.allImageList.get(floor));
+      if (this.allImageList.get(this.currentSelectedFloorId) != null) {
+        this.loadImage(this.allImageList.get(this.currentSelectedFloorId));
 
         //현재 층에 그린 도형들이 있다면
         if (myOnefloorSeatList) {
@@ -289,7 +309,7 @@ export default {
 
           eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
         }
-      } else if (this.allImageList.get(floor) == null) {
+      } else if (this.allImageList.get(this.currentSelectedFloorId) == null) {
         //현재 층의 이미지가 저장되어있지 않다면
         //화면에 그려져있던 이미지와 도형 초기화
         this.floorCanvas
@@ -340,12 +360,12 @@ export default {
       }
     },
     saveImage(file) {
-      this.allImageList.set(this.currentSelectedFloor, file);
+      this.allImageList.set(this.currentSelectedFloorId, file);
 
       let imgData = new FormData();
 
-      let img = this.allImageList.get(this.currentSelectedFloor);
-      let floor = this.currentSelectedFloor;
+      let img = this.allImageList.get(this.currentSelectedFloorId);
+      let floor = this.currentSelectedFloorId;
 
       imgData.append("imageData", img);
       imgData.append("currentFloor", floor);
@@ -375,17 +395,17 @@ export default {
       else return Colors.Gray;
     },
     showSeat(seat) {
-      console.log(seat.seat_id + "가 해당 자리의 아이디입니다."); // One-0
+      console.log(seat.seat_id + "가 해당 자리의 아이디입니다.");
       let seatFloor = null;
 
       //seat의 층과 현재층이 같지 않다면
-      if (this.currentSelectedFloor != seat.floor_id) {
+      if (this.currentSelectedFloorId != seat.floor_id) {
         //탭 전환 코드
         seatFloor = seat.floor_id;
       }
       //seat의 층과 현재층이 같다면
       else {
-        seatFloor = this.currentSelectedFloor;
+        seatFloor = this.currentSelectedFloorId;
       }
 
       let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
@@ -476,7 +496,7 @@ export default {
     clickChangeToVacant() {
       let activeObject = null;
       let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
 
       if (!this.floorCanvas.getActiveObject()) {
@@ -520,7 +540,7 @@ export default {
     deleteManagerEachFloorSeatList: function (floor) {
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(floor);
       console.log(managerEachFloorSeatList);
-      for (i = 0; i < managerEachFloorSeatList.length; i++) {
+      for (let i = 0; i < managerEachFloorSeatList.length; i++) {
         managerEachFloorSeatList[i].delete = true;
       }
     },
@@ -551,11 +571,13 @@ export default {
           });
 
         let eachFloorSeatList = this.deleteEachFloorSeatList(
-          this.currentSelectedFloor
+          this.currentSelectedFloorId
         );
-        this.deleteManagerEachFloorSeatList(this.currentSelectedFloor);
-
-        eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+        this.deleteManagerEachFloorSeatList(this.currentSelectedFloorId);
+        eventBus.$emit(
+          "eachFloorSeatList",
+          this.getEachFloorSeatList(this.currentSelectedFloorId)
+        );
         eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       }
     },
@@ -563,7 +585,7 @@ export default {
       //좌석 지우면 list에 있는거 없애기
       let activeObject = null;
       let eachFloorSeatList = this.deleteEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
 
       let shapearray = new Array();
@@ -609,11 +631,11 @@ export default {
           });
           this.floorCanvas.remove(activeObject);
           eachFloorSeatList.length = 0;
-          this.allSeatMap.set(this.currentSelectedFloor, shapearray);
+          this.allSeatMap.set(this.currentSelectedFloorId, shapearray);
 
           eventBus.$emit(
             "eachFloorSeatList",
-            this.getEachFloorSeatList(this.currentSelectedFloor)
+            this.getEachFloorSeatList(this.currentSelectedFloorId)
           );
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
         }
@@ -640,20 +662,20 @@ export default {
 
       //각 층에 해당하는 도형 리스트 리턴하기
 
-      if (!this.allImageList.get(this.currentSelectedFloor)) {
+      if (!this.allImageList.get(this.currentSelectedFloorId)) {
         alert("도면 이미지가 없습니다");
-        console.log(this.getEachFloorSeatList(this.currentSelectedFloor));
+        console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
         return;
       }
 
       let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
 
-      console.log("currnet floor is " + this.currentSelectedFloor);
+      console.log("currnet floor is " + this.currentSelectedFloorId);
       console.log("currnet floor is " + this.managerEachFloorSeatList);
 
       //n 자리 공석 만들기
@@ -677,8 +699,8 @@ export default {
         });
 
         group[i] = new fabric.Group([rectangle, textObject], {
-          floor_id: this.currentSelectedFloor,
-          seatId: this.seatid, // currentSelectedFloor-seatId
+          floor_id: this.currentSelectedFloorId,
+          seatId: this.seatid,
           employee_name: null,
           employee_department: null,
           employee_number: null,
@@ -754,25 +776,24 @@ export default {
         "전체층의 관리 자리 맵 size = " + this.managerAllSeatMap.size
       );
       console.log(
-        this.currentSelectedFloor +
+        this.currentSelectedFloorId +
           "의 자리 리스트 length = " +
           eachFloorSeatList.length
       );
       console.log(
-        this.currentSelectedFloor +
+        this.currentSelectedFloorId +
           "의 자리 리스트 length = " +
           managerEachFloorSeatList.length
       );
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
-
-    setVacantSeat(item) {
+    setMappingSeat(item) {
       // 공석 또는 사원이 매핑된 좌석에 사원 매핑
       let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloor
+        this.currentSelectedFloorId
       );
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
 
@@ -1060,7 +1081,8 @@ export default {
     clickLoadBtn() {
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
         if (
-          this.currentFloorSeatListFromDb[i].floor == this.currentSelectedFloor
+          this.currentFloorSeatListFromDb[i].floor ==
+          this.currentSelectedFloorId
         ) {
           console.log(
             "현재층의 자리 개수는 ------> " +

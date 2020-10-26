@@ -34,7 +34,6 @@
         </template>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="test">test</v-btn>
           <v-btn @click="confirm">Confirm</v-btn>
           <v-btn @click="$emit('close')">Close</v-btn>
         </v-card-actions>
@@ -71,7 +70,6 @@ export default {
     },
   },
   methods: {
-    test() {},
     confirm() {
       if (
         this.inputFloor == null ||
