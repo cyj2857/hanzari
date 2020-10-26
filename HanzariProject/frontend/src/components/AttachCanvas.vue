@@ -67,16 +67,21 @@ export default {
       floorImageList: null,
       seatId: null,
       currentSelectedFloor: null,
+      items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
+
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
       seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
-      allSeatMap: null, // -> all seat map
+      allSeatMap: null, // -> all seat map (가시적 map)
+      managerAllSeatMap: null, // -> DB 관리 자리 map
+
       employees: this.copyEmployee,
       allEmployeeList: [],
       eachEmployeeSeatMap: null, //each Employee's seats map
+
       deleteSeatListKey: null, //삭제되는 층의 floor_name (층 삭제될때 FloorTabs.vue에서 넘어옴)
-      items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
       allFloorList: [], // 가시적 층 리스트
       managerFloorList: [], // DB 관리 층 리스트
+
       employeeDialogStatus: false, // 사원 정보 다이얼로그
       changeSeatDialogStatus: false, // 자리 변경 다이얼로그
       inputChangeSeatFloor: null, // 자리 변경시 입력 층
@@ -125,6 +130,9 @@ export default {
     }
     if (this.allSeatMap == null) {
       this.allSeatMap = new Map();
+    }
+    if (this.managerAllSeatMap == null) {
+      this.managerAllSeatMap = new Map();
     }
     if (this.eachEmployeeSeatMap == null) {
       this.eachEmployeeSeatMap = new Map();
@@ -391,6 +399,17 @@ export default {
         return this.allSeatMap.get(floor);
       }
     },
+    getManagerEachFloorSeatList: function () {
+      if (!this.managerAllSeatMap.get(floor)) {
+        let newSeatsList = new Array();
+        this.managerAllSeatMap.set(floor, newSeatsList);
+        //console.log(this.allSeatMap.size + "allSeatMap 처음의 자리 맵 사이즈입니다");
+        return this.managerAllSeatMap.get(floor);
+      } else {
+        //console.log(this.allSeatMap.size + "allSeatMap 현재 자리 맵 사이즈입니다" );
+        return this.managerAllSeatMap.get(floor);
+      }
+    },
     //각 사원의 도형 리스트 반환하기
     getEachEmployeeSeatList: function (employee_id) {
       if (!this.eachEmployeeSeatMap.get(employee_id)) {
@@ -482,7 +501,6 @@ export default {
         eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       }
     },
-
     deleteBtn() {
       //좌석 지우면 list에 있는거 없애기
       let activeObject = null;
@@ -530,7 +548,6 @@ export default {
             }
           });
           this.floorCanvas.remove(activeObject);
-          //modify map(allSeatMap)
           eachFloorSeatList.length = 0;
           this.allSeatMap.set(this.currentSelectedFloor, shapearray);
 
@@ -542,7 +559,6 @@ export default {
         }
       }
     },
-
     addVacantBtn(number) {
       let VacantPositon = [
         { left: 50, top: 100 },
@@ -965,6 +981,9 @@ export default {
           let eachFloorSeatList = this.getEachFloorSeatList(
             this.currentFloorSeatListFromDb[i].floor
           );
+          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+            this.currentFloorSeatListFromDb[i].floor
+          );
           let eachEmployeeSeatList = this.getEachEmployeeSeatList(
             this.currentFloorSeatListFromDb[i].employee_id
           );
@@ -975,6 +994,7 @@ export default {
 
           this.floorCanvas.add(group);
           eachFloorSeatList.push(group);
+          managerEachFloorSeatList.push(group);
           eachEmployeeSeatList.push(group);
 
           eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
@@ -996,11 +1016,15 @@ export default {
       for (let i = 0; i < this.seats.size; i++) {
         for (let j = 0; j < this.seats[i].length; j++) {
           let eachFloorSeatList = this.getEachFloorSeatList(this.seat[i].floor);
+          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+            this.seat[i].floor
+          );
           let eachEmployeeSeatList = this.getEachEmployeeSeatList(
             this.seats[i].employee_id
           );
           let group = this.makeGroupInfo(this.seats[j]);
           eachFloorSeatList.push(group);
+          managerEachFloorSeatList.push(group);
           eachEmployeeSeatList.push(group);
           eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
