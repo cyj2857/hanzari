@@ -218,25 +218,30 @@ export default {
       return allFloorList;
     },
     getImages() {
+      //let allImageList = new Array();
       axios
-        //.get("http://" + host + ":" + portNum + "api/building/{~}/floor/{~}/imageurl")
+        //.get("http://" + host + ":" + portNum + "/api/" + "building/HANCOM01/floor/{floorid}/imgurl")
         .get(
           "http://172.30.1.56:9000/hanzari/%ED%95%9C%EA%B8%80%EA%B3%BC%EC%BB%B4%ED%93%A8%ED%84%B0-1%EC%B8%B5.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201023%2F%2Fs3%2Faws4_request&X-Amz-Date=20201023T021304Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=3762c647cfd02789e889243ef2d333aa0d18abd1894aca75b7edaf3d2848e306"
         )
         .then((response) => {
-          let initImageList = null;
           const imgurl = response.config.url;
+          this.images = imgurl;
 
-          initImageList = imgurl;
-          this.images = initImageList;
+         /* for (var i = 0; i < response.data.length; i++) {
+            let newImage = {};
+            newImage.url = response[i].config.url;
+            
+            allImageList.push(newImage);
+          }*/
 
-          console.log(this.images);
+          //console.log(this.images);
           //console.log(initImageList);
           //console.log(initImageList.length); //1
-          //console.log(initImageList[0]);
-
-          return this.images;
         });
+
+      //return allImageList;
+      return this.images;
     },
     saveImages(tableName, data) {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.

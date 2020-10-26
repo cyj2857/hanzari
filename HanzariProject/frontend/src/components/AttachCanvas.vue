@@ -11,7 +11,7 @@
       v-show="false"
       ref="inputUpload"
       type="file"
-      @change="onFileChange"
+      @change="changeImgFile"
     />
     <v-btn color="success" @click="$refs.inputUpload.click()"
       >File Upload to Background</v-btn
@@ -144,11 +144,15 @@ export default {
   },
   methods: {
     test() {
-      console.log(this.allSeatMap.size);
-      console.log(this.managerAllSeatMap.size);
-
-      console.log(this.allSeatMap);
-      console.log(this.managerAllSeatMap);
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloor
+      );
+      console.log(eachFloorSeatList);
+      console.log(managerEachFloorSeatList);
+      console.log(this.allImageList);
     },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
@@ -302,24 +306,25 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
+    getImage(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        fabric.Image.fromURL(e.target.result, (img) => {
+          img.set({
+            scaleX: this.floorCanvas.width / img.width,
+            scaleY: this.floorCanvas.height / img.height,
+          });
+          this.floorCanvas.setBackgroundImage(
+            img,
+            this.floorCanvas.renderAll.bind(this.floorCanvas)
+          );
+        });
+      };
+      reader.readAsDataURL(file);
+    },
     loadImage(file) {
       let imgurl = this.images;
-      if (imgurl != null) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          fabric.Image.fromURL(e.target.result, (img) => {
-            img.set({
-              scaleX: this.floorCanvas.width / img.width,
-              scaleY: this.floorCanvas.height / img.height,
-            });
-            this.floorCanvas.setBackgroundImage(
-              img,
-              this.floorCanvas.renderAll.bind(this.floorCanvas)
-            );
-          });
-        };
-        reader.readAsDataURL(file);
-      } else {
+      if (imgurl == null) {
         fabric.Image.fromURL(imgurl, (img) => {
           img.set({
             scaleX: this.floorCanvas.width / img.width,
@@ -330,17 +335,20 @@ export default {
             this.floorCanvas.renderAll.bind(this.floorCanvas)
           );
         });
+      } else {
+        this.getImage(file);
       }
     },
     saveImage(file) {
       this.allImageList.set(this.currentSelectedFloor, file);
 
       let imgData = new FormData();
+
       let img = this.allImageList.get(this.currentSelectedFloor);
       let floor = this.currentSelectedFloor;
 
       imgData.append("imageData", img);
-      imgData.append("floor", floor);
+      imgData.append("currentFloor", floor);
 
       this.$emit("saveImages", "images", imgData);
     },
@@ -348,7 +356,7 @@ export default {
       this.loadImage(file);
       this.saveImage(file);
     },
-    onFileChange(e) {
+    changeImgFile(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       this.createImage(files[0]);
