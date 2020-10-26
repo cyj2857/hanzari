@@ -67,23 +67,21 @@ export default {
       floorImageList: null,
       seatId: null,
       currentSelectedFloor: null,
-      allSeatMap: null, //all seat map
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
+      seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
+      allSeatMap: null, // -> all seat map
+      employees: this.copyEmployee,
+      allEmployeeList: [],
       eachEmployeeSeatMap: null, //each Employee's seats map
       deleteSeatListKey: null, //삭제되는 층의 floor_name (층 삭제될때 FloorTabs.vue에서 넘어옴)
-      employeeDialogStatus: false,
-      changeSeatDialogStatus: false,
-      inputChangeSeatFloor: null,
-      inputChangeSeatX: null,
-      inputChangeSeatY: null,
-      allEmployeeList: [],
-      seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
-      employees: this.copyEmployee,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
-      allFloorList: [],
-      // 자리들 저장할때 managerFloorList를 사용하지 않은 이유는 층이 가시적으로 없어지게 되면
-      // managerFloorList에는 남아있고 D필드만 true가 되는데, 가시적으로 없어진 층의 자리들을 저장하는 것은 옳지않다고 판단
-      managerFloorList: [],
+      allFloorList: [], // 가시적 층 리스트
+      managerFloorList: [], // DB 관리 층 리스트
+      employeeDialogStatus: false, // 사원 정보 다이얼로그
+      changeSeatDialogStatus: false, // 자리 변경 다이얼로그
+      inputChangeSeatFloor: null, // 자리 변경시 입력 층
+      inputChangeSeatX: null, // 자리 변경시 입력 X 좌표
+      inputChangeSeatY: null, // 자리 변경시 입력 Y 좌표
     };
   },
   created() {
@@ -97,8 +95,6 @@ export default {
       this.currentSelectedFloor = floor;
       this.changeFloor(this.currentSelectedFloor);
       console.log(this.currentSelectedFloor + "여기가 현재층");
-
-      this.clickLoadBtn();
     });
     eventBus.$on("allEmployeeList", (allEmployeeList) => {
       this.allEmployeeList = allEmployeeList;
@@ -780,6 +776,8 @@ export default {
         }
       }
 
+      // 자리들 저장할때 managerFloorList를 사용하지 않은 이유는 층이 가시적으로 없어지게 되면
+      // managerFloorList에는 남아있고 D필드만 true가 되는데, 가시적으로 없어진 층의 자리들을 저장하는 것은 옳지않다고 판단
       if (this.allFloorList) {
         for (let j = 0; j < this.allFloorList.length; j++) {
           let eachFloorSeatList = this.getEachFloorSeatList(
@@ -952,50 +950,6 @@ export default {
       });
 
       return group;
-    },
-    loadCurrentFloorSeats() {
-      /*이후에 내부에 있는 중복 로직은 함수로 뺄 예정 (rectangle, textObject, grouping 과정 및 group의 interaction ) */
-      // 현재 층 list 다루기
-      for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
-        // !!!!!!!!!!공석 고려 하기!!!!!!!
-        if (
-          this.currentFloorSeatListFromDb[i].floor == this.currentSelectedFloor
-        ) {
-          console.log(
-            "현재층의 자리 개수는 ------> " +
-              this.currentFloorSeatListFromDb.length
-          ); //4
-
-          let eachFloorSeatList = this.getEachFloorSeatList(
-            this.currentFloorSeatListFromDb[i].floor
-          );
-          let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-            this.currentFloorSeatListFromDb[i].employee_id
-          );
-
-          console.log(this.currentFloorSeatListFromDb); ////
-
-          let group = this.makeGroupInfo(this.currentFloorSeatListFromDb[i]);
-
-          this.floorCanvas.add(group);
-          eachFloorSeatList.push(group);
-          eachEmployeeSeatList.push(group);
-
-          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-          eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-          console.log(
-            this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
-          );
-          console.log(
-            this.currentFloorSeatListFromDb[i].employee_id +
-              "의 자리 리스트 개수는 " +
-              this.getEachEmployeeSeatList(
-                this.currentFloorSeatListFromDb[i].employee_id
-              ).length +
-              "입니다."
-          );
-        }
-      }
     },
     clickLoadBtn() {
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {

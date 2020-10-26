@@ -13,9 +13,9 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
+        v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
-        v-bind:currentFloorSeatsList="currentFloorSeats"
         v-on:saveByAxios="saveData"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
         v-on:deleteSeatByAxiosWithKey="deleteSeatByKey"
