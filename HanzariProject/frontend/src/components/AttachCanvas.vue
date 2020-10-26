@@ -64,7 +64,6 @@ export default {
   data: function () {
     return {
       floorCanvas: null,
-      //floorImageList: null,
       allImageList: null,
       seatId: null,
       currentSelectedFloor: null,
@@ -125,10 +124,6 @@ export default {
       );
       //나중에 managerSeatList에서도 삭제해야함!!!!!!!!!!!!!
     });
-
-    /*if (this.floorImageList == null) {
-      this.floorImageList = new Map();
-    }*/
     if (this.allImageList == null) {
       this.allImageList = new Map();
     }
@@ -233,7 +228,7 @@ export default {
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
-    getSeatUUID() {
+    createSeatUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
         c
       ) {
@@ -600,7 +595,7 @@ export default {
 
       //n 자리 공석 만들기
       for (let i = 0; i <= this.vacantnumber - 1; i++) {
-        this.seatid = this.getSeatUUID();
+        this.seatid = this.createSeatUUID();
         let VP = VacantPositon[i];
         let group = [];
 
