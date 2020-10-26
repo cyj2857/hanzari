@@ -17,11 +17,11 @@
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
         v-bind:images="images"
-        v-on:saveImagesByAxios="saveImages"
-        v-on:saveFloorsByAxios="saveFloors"
-        v-on:saveSeatsByAxios="saveSeats"
-        v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
-        v-on:deleteSeatByAxiosWithKey="deleteSeatByKey"
+        v-on:saveImages="saveImages"
+        v-on:saveFloors="saveFloors"
+        v-on:saveSeats="saveSeats"
+        v-on:deleteFloorWithKey="deleteFloorWtihKey"
+        v-on:deleteSeatWithKey="deleteSeatWithKey"
       ></AttachCanvas>
       <FloorTabs v-bind:copyFloors="floors"></FloorTabs>
     </div>
@@ -303,7 +303,7 @@ export default {
           console.log(res.saveData);
         });
     },
-    deleteFloorByKey(tableName, key) {
+    deleteFloorWtihKey(tableName, key) {
       //추후에 api 구조 변경될 것을 생각하여 key를 받아서 삭제하는 것을 같은 함수로 묶지않음.
       let deleteTableName = tableName;
       let deleteKey = key;
@@ -327,7 +327,7 @@ export default {
           console.log(error);
         });
     },
-    deleteSeatByKey(tableName, key) {
+    deleteSeatWtihKey(tableName, key) {
       //추후에 api 구조 변경될 것을 생각하여 key를 받아서 삭제하는 것을 같은 함수로 묶지않음.
       let deleteTableName = tableName;
       let deleteKey = key;
