@@ -241,11 +241,11 @@ export default {
           "http://172.30.1.56:9000/hanzari/%ED%95%9C%EA%B8%80%EA%B3%BC%EC%BB%B4%ED%93%A8%ED%84%B0-1%EC%B8%B5.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201023%2F%2Fs3%2Faws4_request&X-Amz-Date=20201023T021304Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=3762c647cfd02789e889243ef2d333aa0d18abd1894aca75b7edaf3d2848e306"
         )
         .then((response) => {
-          const initImageList = new Array();
+          let initImageList = null;
           const imgurl = response.config.url;
 
-          initImageList.push(imgurl);
-          this.images = initImageList[0];
+          initImageList = imgurl;
+          this.images = initImageList;
 
           console.log(this.images);
           //console.log(initImageList);
@@ -279,12 +279,6 @@ export default {
     saveImage(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;
-      console.log("saveData is");
-      console.log(saveData);
-      console.log("------------");
-      console.log("saveTableName is");
-      console.log(saveTableName);
-
       axios
         .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
           headers: {
