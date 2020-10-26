@@ -148,6 +148,7 @@ export default {
       );
       console.log(eachFloorSeatList);
       console.log(managerEachFloorSeatList);
+      console.log(this.allImageList);
     },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
@@ -299,26 +300,25 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
+    getImage(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        fabric.Image.fromURL(e.target.result, (img) => {
+          img.set({
+            scaleX: this.floorCanvas.width / img.width,
+            scaleY: this.floorCanvas.height / img.height,
+          });
+          this.floorCanvas.setBackgroundImage(
+            img,
+            this.floorCanvas.renderAll.bind(this.floorCanvas)
+          );
+        });
+      };
+      reader.readAsDataURL(file);
+    },
     loadImage(file) {
       let imgurl = this.images;
-      console.log(imgurl)
-
       if (imgurl == null) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          fabric.Image.fromURL(e.target.result, (img) => {
-            img.set({
-              scaleX: this.floorCanvas.width / img.width,
-              scaleY: this.floorCanvas.height / img.height,
-            });
-            this.floorCanvas.setBackgroundImage(
-              img,
-              this.floorCanvas.renderAll.bind(this.floorCanvas)
-            );
-          });
-        };
-        reader.readAsDataURL(file);
-      } else {
         fabric.Image.fromURL(imgurl, (img) => {
           img.set({
             scaleX: this.floorCanvas.width / img.width,
@@ -329,6 +329,8 @@ export default {
             this.floorCanvas.renderAll.bind(this.floorCanvas)
           );
         });
+      } else {
+        this.getImage(file);
       }
     },
     saveImage(file) {
