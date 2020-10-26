@@ -17,8 +17,9 @@
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
         v-bind:images="images"
-        v-on:saveByImages="saveImage"
-        v-on:saveByAxios="saveData"
+        v-on:saveImagesByAxios="saveImages"
+        v-on:saveFloorsByAxios="saveFloors"
+        v-on:saveSeatsByAxios="saveSeats"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
         v-on:deleteSeatByAxiosWithKey="deleteSeatByKey"
       ></AttachCanvas>
@@ -201,7 +202,9 @@ export default {
     getFloors() {
       let allFloorList = new Array();
       axios
-        .get("http://" + host + ":" + portNum + "/api/buildings/HANCOM01/floors")
+        .get(
+          "http://" + host + ":" + portNum + "/api/buildings/HANCOM01/floors"
+        )
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
             let newFloor = {};
@@ -239,7 +242,25 @@ export default {
           return this.images;
         });
     },
-    saveData(tableName, data) {
+    saveImages(tableName, data) {
+      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
+      let saveData = data;
+      let saveTableName = tableName;
+      axios
+        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(function () {
+          console.log("axios SUCCESS!!");
+        })
+        .catch(function () {
+          console.log("axios FAILURE!!");
+        });
+    },
+    saveFloors(tableName, data) {
+      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
@@ -260,20 +281,26 @@ export default {
           console.log(res.saveData);
         });
     },
-    saveImage(tableName, data) {
+    saveSeats(tableName, data) {
+      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
+      console.log("saveData is");
+      console.log(saveData);
+      console.log("------------");
+      console.log("saveTableName is");
+      console.log(saveTableName);
+
       axios
-        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(function () {
-          console.log("axios SUCCESS!!");
-        })
-        .catch(function () {
-          console.log("axios FAILURE!!");
+        .post(
+          "http://" + host + ":" + portNum + "/api/" + saveTableName,
+          JSON.stringify(saveData),
+          {
+            headers: { "Content-Type": `application/json` },
+          }
+        )
+        .then((res) => {
+          console.log(res.saveData);
         });
     },
     deleteFloorByKey(tableName, key) {

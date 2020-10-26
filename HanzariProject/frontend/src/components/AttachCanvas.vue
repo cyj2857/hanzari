@@ -328,7 +328,7 @@ export default {
       imgData.append("imageData", img);
       imgData.append("floor", floor);
 
-      this.$emit("saveByImages", "images", imgData);
+      this.$emit("saveImagesByAxios", "images", imgData);
     },
     createImage(file) {
       this.getImage(file);
@@ -815,7 +815,7 @@ export default {
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              this.$emit("saveByAxios", "floors", floorData);
+              this.$emit("saveFloorsByAxios", "floors", floorData);
             }
           } else {
             // front에서 생성
@@ -830,7 +830,7 @@ export default {
               floorData.building_id = this.managerFloorList[i].building_id;
               floorData.floor_order = this.managerFloorList[i].floor_order;
 
-              this.$emit("saveByAxios", "floors", floorData);
+              this.$emit("saveFloorsByAxios", "floors", floorData);
             }
           }
         }
@@ -901,7 +901,7 @@ export default {
               seatData.shape_id = "1";
 
               console.log(seatData);
-              this.$emit("saveByAxios", "seats", seatData);
+              this.$emit("saveSeatsByAxios", "seats", seatData);
             }
           }
         }
