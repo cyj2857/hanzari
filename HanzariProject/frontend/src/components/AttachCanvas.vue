@@ -283,41 +283,50 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
-    getImage(file) {
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-    },
-    loadImage() {
+    loadImage(file) {
       let imgurl = this.images;
-
-      fabric.Image.fromURL(imgurl, (img) => {
-        //e.target.result
-        img.set({
-          scaleX: this.floorCanvas.width / img.width,
-          scaleY: this.floorCanvas.height / img.height,
+      if (imgurl != null) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          fabric.Image.fromURL(e.target.result, (img) => {
+            img.set({
+              scaleX: this.floorCanvas.width / img.width,
+              scaleY: this.floorCanvas.height / img.height,
+            });
+            this.floorCanvas.setBackgroundImage(
+              img,
+              this.floorCanvas.renderAll.bind(this.floorCanvas)
+            );
+          });
+        };
+        reader.readAsDataURL(file);
+      } else {
+        fabric.Image.fromURL(imgurl, (img) => {
+          img.set({
+            scaleX: this.floorCanvas.width / img.width,
+            scaleY: this.floorCanvas.height / img.height,
+          });
+          this.floorCanvas.setBackgroundImage(
+            img,
+            this.floorCanvas.renderAll.bind(this.floorCanvas)
+          );
         });
-        this.floorCanvas.setBackgroundImage(
-          img,
-          this.floorCanvas.renderAll.bind(this.floorCanvas)
-        );
-      });
+      }
     },
     saveImage(file) {
       this.allImageList.set(this.currentSelectedFloor, file);
 
       let imgData = new FormData();
       let img = this.allImageList.get(this.currentSelectedFloor);
-      let floor = this.currentSelectedFloor
+      let floor = this.currentSelectedFloor;
 
       imgData.append("imageData", img);
       imgData.append("floor", floor);
 
       this.$emit("saveByImages", "images", imgData);
-     
     },
     createImage(file) {
-      this.getImage(file);
-      this.loadImage();
+      this.loadImage(file);
       this.saveImage(file);
     },
     onFileChange(e) {
@@ -855,7 +864,7 @@ export default {
               seatData.degree = groupToObject.angle;
               seatData.shape_id = "1";
 
-              console.log(seatData)
+              console.log(seatData);
               this.$emit("saveByAxios", "seats", seatData);
             }
           }
