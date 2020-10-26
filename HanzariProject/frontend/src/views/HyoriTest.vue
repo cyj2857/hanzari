@@ -18,7 +18,7 @@
         v-bind:copyEmployee="employees"
         v-bind:images="images"
         v-on:saveByImages="saveImage"
-        v-on:saveByAxios="saveData"
+        v-on:saveByData="saveData"
         v-on:deleteFloorByAxiosWithKey="deleteFloorByKey"
         v-on:deleteSeatByAxiosWithKey="deleteSeatByKey"
       ></AttachCanvas>
