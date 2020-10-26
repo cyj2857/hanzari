@@ -56,7 +56,8 @@ public class SeatController {
 	// seat_id로 한 자리 조회
 	@GetMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<SeatDto> getSeat(@PathVariable("seat_id") String seat_id) throws Exception {
-		return new ResponseEntity<SeatDto>(seatService.findById(seat_id).toDto(), HttpStatus.OK);
+		Seat seat  = seatService.findById(seat_id);
+		return new ResponseEntity<SeatDto>(seat.toDto(), HttpStatus.OK);
 	}
 
 	// employee_id로 자리 조회

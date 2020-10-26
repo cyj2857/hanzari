@@ -74,8 +74,7 @@ export default {
     });
   },
   beforeUpdate() {
-    // 실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의 
-    // 새로운 상태를 가져와야하는 경우 사용
+    /*실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의 새로운 상태를 가져와야하는 경우 사용*/
     if (this.initData && this.length != 0) {
       this.setFloor(this.allFloorList[this.floorNum].floor_name);
       return;
@@ -127,18 +126,18 @@ export default {
     getDialog() {
       eventBus.$emit("initFloor", null);
       this.dialogStatus = true;
-      console.log(this.dialogStatus);
+      //console.log(this.dialogStatus);
     },
     closeDialog() {
-      console.log("<<<close dialog>>>");
+      //console.log("<<<close dialog>>>");
       this.dialogStatus = false;
-      console.log(this.dialogStatus);
+      //console.log(this.dialogStatus);
     },
     confirmDialog() {
-      console.log("<<<confirm dialog>>>");
+      //console.log("<<<confirm dialog>>>");
       this.dialogStatus = false;
-      console.log(this.dialogStatus);
-      console.log(this.inputFloor + "from add floor dialog");
+      //console.log(this.dialogStatus);
+      //console.log(this.inputFloor + "from add floor dialog");
 
       let newFloor = {};
       newFloor.floor_id = this.getFloorUUID();
@@ -153,7 +152,7 @@ export default {
       this.managerFloorList.push(newFloor);
 
       this.increaseTab();
-      console.log(this.length);
+      console.log(this.length + "length");
     },
     increaseTab() {
       this.length++;
@@ -174,23 +173,24 @@ export default {
           this.managerFloorList[idx].delete = true;
         }
         //items에서 그 index 삭제
-        this.decreaseTab();
+
+        this.decreaseTab(this.managerFloorList[idx].floor_name);//나중에 floor_id로 보내야할 가능성
       } else {
         alert("there are no seats to delete!");
       }
     },
-    decreaseTab() {
-      console.log(this.length);
-
+    decreaseTab(floor_name) {
       this.length--;
       this.floorNum = this.length - 1;
+
+      eventBus.$emit("deleteSeatListKey", floor_name); 
+
       if (this.length == 0) {
         this.setFloor(null);
       } else {
         this.setFloor(this.allFloorList[this.floorNum].floor_name);
       }
-
-      console.log(this.length);
+      console.log(this.length + "length");
       //pop
     },
     changeFloorName() {

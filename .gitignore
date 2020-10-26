@@ -93,4 +93,7 @@ dist/
 npm-debug.log
 yarn-error.log
 
+### hibernate configuration ###
+hibernate.cfg.xml
+
 # End of https://www.toptal.com/developers/gitignore/api/eclipse,vue,vuejs
