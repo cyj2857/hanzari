@@ -56,7 +56,7 @@ import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 
 export default {
-  props: ["seat", "copyEmployee", "currentFloorSeatsList", "copyImages"],
+  props: ["seat", "currentFloorSeatsList", "copyEmployee", "copyImages"],
   components: {
     EmployeeDialog,
     AllFloorsDataTable,
@@ -101,13 +101,13 @@ export default {
         // null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
+
+        this.changeFloor();
+        console.log(this.currentSelectedFloorName + "여기가 현재층");
       } else {
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
       }
-      this.changeFloor();
-
-      console.log(this.currentSelectedFloorName + "여기가 현재층");
     });
     eventBus.$on("allEmployeeList", (allEmployeeList) => {
       this.allEmployeeList = allEmployeeList;
@@ -366,6 +366,8 @@ export default {
     saveImage(file) {
       this.allImageList.set(this.currentSelectedFloorId, file);
 
+      console.log(this.allImageList.get(this.currentSelectedFloorId, file));
+
       let imgData = new FormData();
 
       let img = this.allImageList.get(this.currentSelectedFloorId);
@@ -377,7 +379,7 @@ export default {
 
       //for (var value of imgData.keys()) {
       //  console.log(value);
-     //}
+      //}
       this.$emit("saveImages", "images", imgData);
     },
     createImage(file) {
