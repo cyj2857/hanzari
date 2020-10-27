@@ -200,6 +200,7 @@ export default {
         // 이후에 combobox로 만들던가 해서 불필요한 로직 줄일것.
         if (inputInfo[0] == this.allFloorList[i].floor_name) {
           activeObject.floor_id = this.allFloorList[i].floor_id;
+          activeObject.floor_name = this.allFloorList[i].floor_name;
           activeObject.left = parseInt(inputInfo[1]);
           activeObject.top = parseInt(inputInfo[2]);
           activeObject.modify = true;
@@ -217,7 +218,11 @@ export default {
           for (let j = 0; j < eachFloorSeatList.length; j++) {
             if (eachFloorSeatList[j].seatId == activeObject.seatId) {
               eachFloorSeatList.splice(j, 1);
-              managerEachFloorSeatList[j].delete = true;
+            }
+          }
+          for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+            if (managerEachFloorSeatList[j].seatId == activeObject.seatId) {
+              managerEachFloorSeatList[j].set("delete", true);
             }
           }
 
@@ -225,8 +230,6 @@ export default {
           eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
 
           this.floorCanvas.renderAll();
-        } else {
-          return;
         }
       }
     },
@@ -703,8 +706,8 @@ export default {
         });
 
         group[i] = new fabric.Group([rectangle, textObject], {
-          floor_id: this.currentSelectedFloorId,
           seatId: this.seatid,
+          floor_id: this.currentSelectedFloorId,
           employee_name: null,
           employee_department: null,
           employee_number: null,
@@ -723,12 +726,11 @@ export default {
             let groupToObject = group.toObject([
               "employee_id",
               "employee_name",
-              "floor_id",
               "employee_department",
             ]);
             eventBus.$emit("employee_id", groupToObject.employee_id);
             eventBus.$emit("employee_name", groupToObject.employee_name);
-            eventBus.$emit("floor_id", groupToObject.floor_id);
+            eventBus.$emit("floor_name", this.currentSelectedFloorName);
             eventBus.$emit(
               "employee_department",
               groupToObject.employee_department
@@ -894,13 +896,13 @@ export default {
         //자리 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-            this.managerFloorList[i].floor_name
+            this.managerFloorList[i].floor_id
           );
 
           if (managerEachFloorSeatList.length > 0) {
             console.log(
               managerEachFloorSeatList.length +
-                this.managerFloorList[i].floor_name +
+                this.managerFloorList[i].floor_id +
                 "층의 자리 개수입니다."
             );
 
@@ -1062,12 +1064,11 @@ export default {
           let groupToObject = group.toObject([
             "employee_id",
             "employee_name",
-            "floor_id",
             "employee_department",
           ]);
           eventBus.$emit("employee_id", groupToObject.employee_id);
           eventBus.$emit("employee_name", groupToObject.employee_name);
-          eventBus.$emit("floor_id", groupToObject.floor_id);
+          eventBus.$emit("floor_name", this.currentSelectedFloorName);
           eventBus.$emit(
             "employee_department",
             groupToObject.employee_department
@@ -1103,7 +1104,7 @@ export default {
             this.currentFloorSeatListFromDb[i].employee_id
           );
 
-          console.log(this.currentFloorSeatListFromDb); ////
+          console.log(this.currentFloorSeatListFromDb);
 
           let group = this.makeGroupInfo(this.currentFloorSeatListFromDb[i]);
 
