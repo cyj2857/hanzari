@@ -704,7 +704,6 @@ export default {
         group[i] = new fabric.Group([rectangle, textObject], {
           seatId: this.seatid,
           floor_id: this.currentSelectedFloorId,
-          floor_name: this.currentSelectedFloorName,
           employee_name: null,
           employee_department: null,
           employee_number: null,
@@ -723,12 +722,11 @@ export default {
             let groupToObject = group.toObject([
               "employee_id",
               "employee_name",
-              "floor_name",
               "employee_department",
             ]);
             eventBus.$emit("employee_id", groupToObject.employee_id);
             eventBus.$emit("employee_name", groupToObject.employee_name);
-            eventBus.$emit("floor_name", groupToObject.floor_name);
+            eventBus.$emit("floor_name", this.currentSelectedFloorName);
             eventBus.$emit(
               "employee_department",
               groupToObject.employee_department
@@ -894,13 +892,13 @@ export default {
         //자리 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-            this.managerFloorList[i].floor_name
+            this.managerFloorList[i].floor_id
           );
 
           if (managerEachFloorSeatList.length > 0) {
             console.log(
               managerEachFloorSeatList.length +
-                this.managerFloorList[i].floor_name +
+                this.managerFloorList[i].floor_id +
                 "층의 자리 개수입니다."
             );
 
@@ -1062,12 +1060,11 @@ export default {
           let groupToObject = group.toObject([
             "employee_id",
             "employee_name",
-            "floor_name",
             "employee_department",
           ]);
           eventBus.$emit("employee_id", groupToObject.employee_id);
           eventBus.$emit("employee_name", groupToObject.employee_name);
-          eventBus.$emit("floor_name", groupToObject.floor_name);
+          eventBus.$emit("floor_name", this.currentSelectedFloorName);
           eventBus.$emit(
             "employee_department",
             groupToObject.employee_department
