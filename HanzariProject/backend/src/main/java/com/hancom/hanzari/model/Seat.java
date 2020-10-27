@@ -3,6 +3,7 @@ package com.hancom.hanzari.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,7 +31,7 @@ public class Seat {
 	@Column(name = "seat_id", nullable = false)
 	private String seatId;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "floor_id", nullable = false) // 관계의 주인
 	@JsonBackReference
 	private Floor floor;
@@ -47,7 +48,7 @@ public class Seat {
 	@Column(name = "group_id", nullable = true)
 	private String groupId;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "employee_id") // 관계의 주인
 	@JsonBackReference
 	private Employee employee;
