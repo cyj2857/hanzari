@@ -1,5 +1,5 @@
 # Start with a base image containing Java runtime
-FROM java:11
+FROM openjdk:11
 
 # Add Author info
 LABEL maintainer="ahndding@gmail.com"
