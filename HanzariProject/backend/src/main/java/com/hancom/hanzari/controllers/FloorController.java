@@ -1,6 +1,5 @@
 package com.hancom.hanzari.controllers;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,6 @@ public class FloorController {
 
 	@Autowired
 	private FloorService floorService;
-
 	@Autowired
 	private BuildingService buildingService;
 
@@ -53,7 +51,7 @@ public class FloorController {
 
 	@Transactional
 	@GetMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<FloorDto> getFloorInBuilding(@PathVariable("building_id") String buildingId,
+	public ResponseEntity<FloorDto> getFloor(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId) throws Exception {
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
@@ -62,15 +60,16 @@ public class FloorController {
 		return new ResponseEntity<FloorDto>(floorService.findById(floorId).toDto(), HttpStatus.OK);
 	}
 
-	// @Transactional
+	@Transactional
 	@PostMapping
 	public ResponseEntity<Floor> save(@PathVariable("building_id") String buildingId, @RequestBody FloorDto floorDto)
 			throws Exception {
-		for (Field field : floorDto.getClass().getDeclaredFields()) {
-			field.setAccessible(true);
-			Object value = field.get(floorDto);
-			System.out.println(field.getName() + " : " + value + " // type : " + value.getClass());
-		}
+		/*
+		 * for (Field field : floorDto.getClass().getDeclaredFields()) {
+		 * field.setAccessible(true); Object value = field.get(floorDto);
+		 * System.out.println(field.getName() + " : " + value + " // type : " +
+		 * value.getClass()); }
+		 */
 
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
@@ -78,7 +77,7 @@ public class FloorController {
 		}
 		Floor newFloor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name())
 				.building(building).floorOrder(floorDto.getFloor_order()).build();
-	
+
 		return new ResponseEntity<Floor>(floorService.save(newFloor), HttpStatus.OK);
 	}
 

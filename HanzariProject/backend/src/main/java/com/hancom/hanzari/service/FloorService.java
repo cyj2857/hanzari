@@ -12,10 +12,10 @@ public interface FloorService {
 
 	public Floor findByFloorNameAndBuilding(String floorName, Building building) throws Exception;
 
-	public List<Floor> findByBuilding(Building building);
+	public List<Floor> findByBuilding(Building building) throws Exception;
 
 	public void deleteById(String floorId); // D
-	
+
 	public void deleteByFloorNameAndBuilding(String floorName, Building building);
 
 	public void deleteByBuilding(Building building);
