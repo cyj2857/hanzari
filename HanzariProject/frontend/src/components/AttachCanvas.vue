@@ -54,6 +54,7 @@ import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
+import axios from "axios";
 
 export default {
   props: ["seat", "copyEmployee", "currentFloorSeatsList", "images"],
@@ -118,7 +119,6 @@ export default {
       console.log(this.managerFloorList);
     });
     eventBus.$on("deleteSeatListKey", (floor_name) => {
-
       this.allSeatMap.delete(floor_name);
       //층 삭제시 allSeatMap에 그 층을 key로 하는 요소들 삭제
 
@@ -347,9 +347,30 @@ export default {
       let img = this.allImageList.get(this.currentSelectedFloor);
       let floor = this.currentSelectedFloor;
 
-      imgData.append("imageData", img);
+      imgData.append("iamgeFile", img);
       imgData.append("currentFloor", floor);
+      console.log(imgData);
 
+      for (var value of imgData.keys()) {
+        console.log(value);
+      }
+
+      // axios
+      //   .post("http://172.30.1.56:8081" + "/api/" + "images", imgData, {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   })
+      //   .then(function () {
+      //     console.log("axios SUCCESS!!");
+      //   })
+      //   .catch(function () {
+      //     console.log("axios FAILURE!!");
+
+      //     for (var value of imgData.keys()) {
+      //       console.log(value);
+      //     }
+      //   });
       this.$emit("saveImages", "images", imgData);
     },
     createImage(file) {

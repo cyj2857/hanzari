@@ -13,9 +13,9 @@ repositories {
 }
 
 dependencies {
-	compile 'org.apache.tomcat.embed:tomcat-embed-jasper' 
+	compile 'org.apache.tomcat.embed:tomcat-embed-jaspeejr' 
 	compile 'javax.servlet:jstl:1.2'
-	//compile 'io.minio:minio:7.1.4'
+	compile 'io.minio:minio:7.1.4'
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compile("org.springframework.boot:spring-boot-starter-jdbc")
 
@@ -43,7 +43,7 @@ dependencies {
 	implementation 'io.springfox:springfox-swagger-ui:2.6.1'
 	
 	//MinIO 추가
-	implementation 'com.jlefebure:spring-boot-starter-minio:1.1'
+	//implementation 'com.jlefebure:spring-boot-starter-minio:1.4'
 }
 
 test {

@@ -247,6 +247,13 @@ export default {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
+      //console.log(saveData)
+      //console.log(saveData.key)
+
+      for (let value of saveData.keys()) {
+        console.log(value);
+      }
+
       axios
         .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
           headers: {
@@ -259,6 +266,8 @@ export default {
         .catch(function () {
           console.log("axios FAILURE!!");
         });
+
+
     },
     saveFloors(tableName, data) {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
