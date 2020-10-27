@@ -223,7 +223,7 @@ export default {
 
           eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
           eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
-          
+
           this.floorCanvas.renderAll();
         } else {
           return;
@@ -360,16 +360,20 @@ export default {
       }
     },
     saveImage(file) {
-      this.allImageList.set(this.currentSelectedFloorId, file);
+      this.allImageList.set(this.currentSelectedFloor, file);
 
       let imgData = new FormData();
 
-      let img = this.allImageList.get(this.currentSelectedFloorId);
-      let floor = this.currentSelectedFloorId;
+      let img = this.allImageList.get(this.currentSelectedFloor);
+      let floorid = this.currentSelectedFloorId;
 
-      imgData.append("imageData", img);
-      imgData.append("currentFloor", floor);
+      imgData.append("iamgeFile", img);
+      imgData.append("currentFloor", floorid);
+      console.log(imgData);
 
+      //for (var value of imgData.keys()) {
+      //  console.log(value);
+     //}
       this.$emit("saveImages", "images", imgData);
     },
     createImage(file) {
