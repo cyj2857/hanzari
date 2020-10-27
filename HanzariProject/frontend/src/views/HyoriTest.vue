@@ -228,7 +228,7 @@ export default {
       axios
         //.get("http://" + host + ":" + portNum + "/api/" + "building/HANCOM01/floor/{floorid}/imgurl")
         .get(
-          "http://172.30.1.56:9000/hanzari/%ED%95%9C%EA%B8%80%EA%B3%BC%EC%BB%B4%ED%93%A8%ED%84%B0-1%EC%B8%B5.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201023%2F%2Fs3%2Faws4_request&X-Amz-Date=20201023T021304Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=3762c647cfd02789e889243ef2d333aa0d18abd1894aca75b7edaf3d2848e306"
+          "http://172.30.1.56:9000/hanzari/ccccc.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201027%2F%2Fs3%2Faws4_request&X-Amz-Date=20201027T013034Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=da42aa6017cee6adadf1c66774bf1111b2288549125240a53ca3ddecd9beabe1"
         )
         .then((response) => {
           const imgurl = response.config.url;
@@ -245,6 +245,7 @@ export default {
           //console.log(initImageList);
           //console.log(initImageList.length); //1
         });
+      //console.log(this.images)
 
       //return allImageList;
       return this.images;
@@ -253,8 +254,6 @@ export default {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
-      //console.log(saveData)
-      //console.log(saveData.key)
 
       // for (let value of saveData.keys()) {
       //   console.log(value);
@@ -266,12 +265,12 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then(function () {
-          console.log("axios SUCCESS!!");
+        .then(function (response) {
+          console.log(response)
         })
-        .catch(function () {
-          console.log("axios FAILURE!!");
-        });
+        .catch(function (error) {
+          console.log(error);
+        })
     },
     saveFloors(tableName, data) {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
