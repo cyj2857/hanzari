@@ -199,10 +199,17 @@ export default {
       for (let i = 0; i < this.allFloorList.length; i++) {
         // 이후에 combobox로 만들던가 해서 불필요한 로직 줄일것.
         if (inputInfo[0] == this.allFloorList[i].floor_name) {
+          // console.log(this.allFloorList[i].floor_id)
+          // console.log(this.allFloorList[i].floor_name)
+          // console.log(inputInfo[0])
+
           activeObject.floor_id = this.allFloorList[i].floor_id;
+          activeObject.floor_name = this.allFloorList[i].floor_name;
           activeObject.left = parseInt(inputInfo[1]);
           activeObject.top = parseInt(inputInfo[2]);
           activeObject.modify = true;
+
+          //console.log(activeObject)
 
           let changeFloorSeatList = this.getEachFloorSeatList(
             this.allFloorList[i].floor_id //input floor's floor_id
@@ -217,16 +224,18 @@ export default {
           for (let j = 0; j < eachFloorSeatList.length; j++) {
             if (eachFloorSeatList[j].seatId == activeObject.seatId) {
               eachFloorSeatList.splice(j, 1);
-              managerEachFloorSeatList[j].delete = true;
+            }
+          }
+          for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+            if (managerEachFloorSeatList[j].seatId == activeObject.seatId) {
+              managerEachFloorSeatList[j].set("delete", true);
             }
           }
 
           eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
           eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
-          
+
           this.floorCanvas.renderAll();
-        } else {
-          return;
         }
       }
     },
@@ -1100,7 +1109,7 @@ export default {
             this.currentFloorSeatListFromDb[i].employee_id
           );
 
-          console.log(this.currentFloorSeatListFromDb); 
+          console.log(this.currentFloorSeatListFromDb);
 
           let group = this.makeGroupInfo(this.currentFloorSeatListFromDb[i]);
 
