@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hancom.hanzari.dto.SeatDto;
-import com.hancom.hanzari.model.Building;
 import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.Figure;
 import com.hancom.hanzari.model.Floor;
 import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.model.Shape;
-import com.hancom.hanzari.service.BuildingService;
 import com.hancom.hanzari.service.EmployeeService;
 import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
@@ -40,8 +38,6 @@ public class SeatController {
 	private EmployeeService employeeService;
 	@Autowired
 	private ShapeService shapeService;
-	@Autowired
-	private BuildingService buildingService;
 	@Autowired
 	private FloorService floorService;
 
@@ -81,9 +77,10 @@ public class SeatController {
 		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
 
-		Building building = buildingService.findById(seatDto.getBuilding_id());
+		//Building building = buildingService.findById(seatDto.getBuilding_id());
 		Employee employee = null;
-		Floor floor = floorService.findByFloorNameAndBuilding(seatDto.getFloor(), building);
+		//Floor floor = floorService.findByFloorNameAndBuilding(seatDto.getFloor(), building);
+		Floor floor = floorService.findById(seatDto.getFloor());
 		//System.out.println("FLOOR:: " + floor.getFloorId() + " / " + floor.getFloorName());
 		if (seatDto.getEmployee_id() != null) {
 			employee = employeeService.findById(seatDto.getEmployee_id());
