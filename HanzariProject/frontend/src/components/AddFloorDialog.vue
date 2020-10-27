@@ -5,7 +5,7 @@
         <v-card-title>
           <span class="headline">Add Floor</span>
         </v-card-title>
-        <v-text-field label="Floor" v-model="floor" required></v-text-field>
+        <v-text-field label="Floor" v-model="inputFloorName" required></v-text-field>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="confirm">Confirm</v-btn>
@@ -26,12 +26,12 @@ export default {
   },
   data() {
     return {
-      floor: null,
+      inputFloorName: null,
     };
   },
   created() {
     eventBus.$on("initFloor", (initFloor) => {
-      this.floor = initFloor;
+      this.inputFloorName = initFloor;
     });
   },
   computed: {
@@ -41,10 +41,8 @@ export default {
   },
   methods: {
     confirm() {
-      if (this.floor == null) return;
-
-      eventBus.$emit("floorInfo", this.floor);
-      eventBus.$emit("confirm");
+      if (this.inputFloorName == null) return;
+      eventBus.$emit("AddFloor", this.inputFloorName);
     },
   },
 };

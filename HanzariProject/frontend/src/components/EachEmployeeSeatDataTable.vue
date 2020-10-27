@@ -41,7 +41,6 @@ export default {
           value: "name",
         },
         { text: "Department", value: "department" },
-        //{ text: "SeatID", value: "seat_id" },
         { text: "Floor", value: "floor_id" },
         { text: "", value: "showSeatButton" },
       ],

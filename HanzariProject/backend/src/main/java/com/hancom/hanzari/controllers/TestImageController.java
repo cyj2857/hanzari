@@ -40,7 +40,7 @@ public class TestImageController {
 		// 이미지 파일이 잘 저장되었는지 아닌지를 boolean 값으로 알려주기 위한 필드
 		boolean result = false;
 		InputStream imagePutInputStream = file.getInputStream();
-		System.out.println("getOriginalFilename : "+ file.getOriginalFilename());
+		//System.out.println("getOriginalFilename : "+ file.getOriginalFilename());
 		//Path path = Path.of(file.getOriginalFilename());
 		try {
 			//object 속성이 MinIO 버킷에 저장되는 파일 이름이된다.
