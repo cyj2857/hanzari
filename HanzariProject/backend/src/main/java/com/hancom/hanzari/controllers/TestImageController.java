@@ -50,7 +50,7 @@ public class TestImageController {
 				    .bucket(bucketName)
 				    .object("hanzariFloor")//file.getOriginalFilename())
 				    .stream(imagePutInputStream, imagePutInputStream.available(), -1)
-				    .contentType("multipart/form-data")
+				    .contentType(file.getContentType())
 				    .build());
 			result = true;
 		} catch (Exception e) {
