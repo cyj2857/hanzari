@@ -83,17 +83,16 @@ export default {
         // load 해올 층이 있으면
         this.currentFloorName = floor.floor_name;
         this.currentFloorId = floor.floor_id;
-
-        //console.log("this.currentFloorId");
-        //console.log(this.currentFloorId);
-        this.currentFloorSeats = this.getCurrentFloorSeats(this.currentFloorId);
       }
     });
-
-
-    // currentFloor's seatList
   },
   methods: {
+    systemReset() { // sync await 로 변경해야함
+      var self = this;
+      setTimeout(function () {
+        self.currentFloorSeats = self.getCurrentFloorSeats(self.currentFloorId);
+      }, 1000);
+    },
     getEmployees() {
       let initEmployeeList = new Array();
       axios
@@ -140,11 +139,14 @@ export default {
             allFloorList.push(newFloor);
           }
         });
+
+      this.systemReset();
       return allFloorList;
     },
     //현재 층의 자리만 가져옴 (created)
     getCurrentFloorSeats(floor_id) {
-      console.log("불림")
+      console.log("불림");
+      console.log(floor_id);
       let currentFloorSeatList = new Array();
       axios
         .get(
