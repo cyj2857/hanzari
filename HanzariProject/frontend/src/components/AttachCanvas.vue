@@ -158,7 +158,8 @@ export default {
       );
       console.log(eachFloorSeatList);
       console.log(managerEachFloorSeatList);
-      console.log(this.allImageList);
+      console.log(this.allSeatMap);
+      console.log(this.managerAllSeatMap);
     },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;

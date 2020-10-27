@@ -167,6 +167,8 @@ export default {
           return item.floor_id == currentFloorId;
         });
         if (idx > -1) {
+          eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
+          
           // 삭제 가능
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
@@ -174,11 +176,6 @@ export default {
         }
         this.length--;
         this.floorNum = this.length - 1;
-
-        eventBus.$emit(
-          "deleteSeatListKey",
-          this.managerFloorList[idx].floor_id
-        );
 
         if (this.length == 0) {
           this.setFloor(null);
