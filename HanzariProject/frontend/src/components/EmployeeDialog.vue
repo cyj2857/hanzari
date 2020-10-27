@@ -9,7 +9,7 @@
           <v-card-text>
             Name :{{ this.employee_name }}
             Id : {{ this.employee_id }} 
-            Floor : {{ this.floor_id }} 
+            Floor : {{ this.floor_name }} 
           </v-card-text>
         </template>
         <template v-else>
@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       employee_id: "",
-      floor_id: "",
+      floor_name: "",
       employee_name: ""
     };
   },
@@ -50,8 +50,8 @@ export default {
     eventBus.$on("employee_id", (employee_id) => {
       this.employee_id = employee_id;
     });
-    eventBus.$on("floor_id", (floor_id) => {
-      this.floor_id = floor_id;
+    eventBus.$on("floor_name", (floor_name) => {
+      this.floor_name = floor_name;
     });
     eventBus.$on("employee_name", (employee_name) => {
       this.employee_name = employee_name;

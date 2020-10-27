@@ -699,8 +699,9 @@ export default {
         });
 
         group[i] = new fabric.Group([rectangle, textObject], {
-          floor_id: this.currentSelectedFloorId,
           seatId: this.seatid,
+          floor_id: this.currentSelectedFloorId,
+          floor_name: this.currentSelectedFloorName,
           employee_name: null,
           employee_department: null,
           employee_number: null,
@@ -719,12 +720,12 @@ export default {
             let groupToObject = group.toObject([
               "employee_id",
               "employee_name",
-              "floor_id",
+              "floor_name",
               "employee_department",
             ]);
             eventBus.$emit("employee_id", groupToObject.employee_id);
             eventBus.$emit("employee_name", groupToObject.employee_name);
-            eventBus.$emit("floor_id", groupToObject.floor_id);
+            eventBus.$emit("floor_name", groupToObject.floor_name);
             eventBus.$emit(
               "employee_department",
               groupToObject.employee_department
@@ -1058,12 +1059,12 @@ export default {
           let groupToObject = group.toObject([
             "employee_id",
             "employee_name",
-            "floor_id",
+            "floor_name",
             "employee_department",
           ]);
           eventBus.$emit("employee_id", groupToObject.employee_id);
           eventBus.$emit("employee_name", groupToObject.employee_name);
-          eventBus.$emit("floor_id", groupToObject.floor_id);
+          eventBus.$emit("floor_name", groupToObject.floor_name);
           eventBus.$emit(
             "employee_department",
             groupToObject.employee_department
@@ -1099,7 +1100,7 @@ export default {
             this.currentFloorSeatListFromDb[i].employee_id
           );
 
-          console.log(this.currentFloorSeatListFromDb); ////
+          console.log(this.currentFloorSeatListFromDb); 
 
           let group = this.makeGroupInfo(this.currentFloorSeatListFromDb[i]);
 
