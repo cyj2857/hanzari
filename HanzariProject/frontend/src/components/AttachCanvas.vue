@@ -368,11 +368,15 @@ export default {
       let imgData = new FormData();
 
       let img = this.allImageList.get(this.currentSelectedFloorId);
-      let floor = this.currentSelectedFloorId;
+      let floorid = this.currentSelectedFloorId;
 
-      imgData.append("imageData", img);
-      imgData.append("currentFloor", floor);
+      imgData.append("iamgeFile", img);
+      imgData.append("currentFloor", floorid);
+      console.log(imgData);
 
+      //for (var value of imgData.keys()) {
+      //  console.log(value);
+     //}
       this.$emit("saveImages", "images", imgData);
     },
     createImage(file) {
@@ -443,10 +447,10 @@ export default {
           myGroup.item(0).animate("fill", "red", {
             onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
             duration: 2000,
-            onComplete: orgincolor,
+            onComplete: getorgincolor,
           });
           let color = this.getColor(asObject.employee_department);
-          function orgincolor() {
+          function getorgincolor() {
             myGroup.item(0).set("fill", color);
           }
         }
