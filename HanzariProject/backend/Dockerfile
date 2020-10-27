@@ -18,5 +18,3 @@ ADD ${JAR_FILE} to-do-springboot.jar
 
 # Run the jar file
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/to-do-springboot.jar"]
-
-출처: https://imasoftwareengineer.tistory.com/40 [삐멜 소프트웨어 엔지니어]
