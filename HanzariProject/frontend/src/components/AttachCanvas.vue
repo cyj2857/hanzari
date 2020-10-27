@@ -54,6 +54,7 @@ import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
+import axios from "axios";
 
 export default {
   props: ["seat", "currentFloorSeatsList", "copyEmployee", "copyImages"],
