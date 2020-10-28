@@ -3,8 +3,8 @@
     <div class="d1" id="d1">
       <div class="search" id="search">
         <AllFloorsDataTable
-          v-if="employees.length"
-          v-bind:copyEmployee="employees"
+          v-if="employees"
+          :copyEmployee="employees"
         ></AllFloorsDataTable>
         <EachEmployeeSeatDataTable></EachEmployeeSeatDataTable>
       </div>
@@ -17,7 +17,7 @@
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:seat="seats"
         v-bind:copyEmployee="employees"
-        v-if="images.length"
+        v-if="images"
         v-bind:copyImages="images"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
@@ -25,7 +25,7 @@
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       ></AttachCanvas>
-      <FloorTabs v-if="floors.length" v-bind:copyFloors="floors"></FloorTabs>
+      <FloorTabs v-if="floors" v-bind:copyFloors="floors"></FloorTabs>
     </div>
 
     <div class="d3" id="hr"></div>
@@ -60,11 +60,11 @@ export default {
   },
   data() {
     return {
-      employees: [],
-      floors: [],
-      images: [],
-      currentFloorSeats: [],
-      seats: [],
+      employees: null,
+      floors: null,
+      images: null,
+      currentFloorSeats: null,
+      seats: null,
 
       currentFloorName: null,
       currentFloorId: null,
@@ -86,10 +86,10 @@ export default {
         // load 해올 층이 있으면
         this.currentFloorName = floor.floor_name;
         this.currentFloorId = floor.floor_id;
+        console.log(this.currentFloorId);
       }
     });
-  },
-  mounted() {
+
     console.log(this.currentFloorId);
   },
   methods: {
@@ -143,13 +143,22 @@ export default {
       } catch (error) {
         console.log(error);
       }
+      console.log(allFloorList);
+      allFloorList.sort(function (a, b) {
+        return a.floor_order < b.floor_order
+          ? -1
+          : a.floor_order > b.floor_order
+          ? 1
+          : 0;
+      });
+      console.log(allFloorList);
       return allFloorList;
     },
     async getImages() {
       let allImageList = new Array();
       try {
         let response = await axios.get(
-          "http://172.30.1.56:9000/hanzari/hanzariFloor?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201028%2F%2Fs3%2Faws4_request&X-Amz-Date=20201028T041651Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=11bae981b8684cfe3e8f18597fa59671980027b20fbed4197460a54806dde773"
+          "http://172.30.1.56:8081/api/images/hanzariFloor"
         );
         let newImage = {};
         newImage.url = response.config.url;

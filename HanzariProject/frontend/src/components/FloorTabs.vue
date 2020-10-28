@@ -68,24 +68,9 @@ export default {
         }
       }
     });
-  },
-  beforeUpdate() {
-    /*실제로 렌더링되기 전에 컴포넌트에서 반응 데이터의 새로운 상태를 가져와야하는 경우 사용*/
-    if (this.initData && this.length != 0) {
-      this.setFloor(this.allFloorList[this.floorNum]);
-      return;
-    } else {
-      // 초기
-      this.allFloorList = this.copyFloors.sort(function (a, b) {
-        return a.floor_order < b.floor_order
-          ? -1
-          : a.floor_order > b.floor_order
-          ? 1
-          : 0;
-      });
-      this.length = this.copyFloors.length;
-      this.initData = true;
-    }
+    this.allFloorList = this.copyFloors;
+    this.length = this.copyFloors.length;
+    this.setFloor(this.allFloorList[this.floorNum]);
   },
   watch: {
     length(length) {
@@ -168,7 +153,7 @@ export default {
         });
         if (idx > -1) {
           eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
-          
+
           // 삭제 가능
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
