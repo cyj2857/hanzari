@@ -7,6 +7,10 @@ import java.net.URLConnection;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-//import com.hancom.hanzari.service.FloorPlanService;
+import com.hancom.hanzari.model.FloorPlan;
+import com.hancom.hanzari.service.FloorPlanService;
 
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
@@ -29,30 +34,31 @@ import io.minio.PutObjectArgs;
 @RequestMapping("api/images")
 public class FloorPlanController {
 	
-	//Bean은 한개만 등록
-	//private FloorPlanService floorPlanService;
+	@Autowired
+	private FloorPlanService floorPlanService;
 	
 	@Autowired
 	private MinioClient minioClient;
+	
+	@Autowired
+	private static SessionFactory sessionFactory;
 	
 	// 버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	String bucketName = "hanzari";
 	
 	//API가 완성되면 다시 수정하기
-	@PostMapping(value="/{building_id}/{floor_id}")
-	public boolean putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId) {
-		boolean result = false;
-		String floorPlan = buildingId + "-" + floorId;
-		return result;
-	}
-	
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
-	@PostMapping
-	public boolean putImageFile(@RequestParam("iamgeFile") MultipartFile file) throws IOException {
-		// 이미지 파일이 잘 저장되었는지 아닌지를 boolean 값으로 알려주기 위한 필드
+	@PostMapping(value="buildings/{building_id}/floors/{floor_id}")
+	public boolean putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		boolean result = false;
+		String floorPlanId = buildingId + "-" + floorId;
+		FloorPlan putfloorPlan = FloorPlan.builder().buildingId(buildingId)
+				.floorId(floorId).floorPlanId(floorPlanId).build();
 		InputStream imagePutInputStream = file.getInputStream();
+		
+		floorPlanService.save(putfloorPlan);
+		
 		//System.out.println("getOriginalFilename : "+ file.getOriginalFilename());
 		//Path path = Path.of(file.getOriginalFilename());
 		try {
@@ -61,7 +67,7 @@ public class FloorPlanController {
 			minioClient.putObject(
 				    PutObjectArgs.builder()
 				    .bucket(bucketName)
-				    .object("hanzariFloor")//file.getOriginalFilename())
+				    .object(floorPlanId)//file.getOriginalFilename())
 				    .stream(imagePutInputStream, imagePutInputStream.available(), -1)
 				    .contentType(file.getContentType())
 				    .build());
@@ -77,21 +83,31 @@ public class FloorPlanController {
 	//이미지 파일 MinIO 서버에서 다운로드
 	//MinIO에 저장된 각 파일의 object명으로 찾아야한다.
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
-	@GetMapping("/{object}")
-	public boolean getImageFile(@PathVariable("object") String object, HttpServletResponse response) throws IOException {
+	@GetMapping(value="buildings/{building_id}/floors/{floor_id}")
+	public boolean getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		// 이미지 파일이 잘 전송되었는지 boolean 값으로 알려주기 위한 필드
 		boolean result = false;
 		InputStream imageGetInputStream = null;
-		System.out.println("object : "+ object);
+		String floorPlanId = null;
+		
+		//System.out.println("object : "+ object);
+		FloorPlan getFloorPlan;
+		try {
+			getFloorPlan = floorPlanService.findByBuildingIdAndFloorId(buildingId, floorId);
+			floorPlanId = getFloorPlan.getFloorPlanId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		try {
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
 					 .bucket(bucketName)
-					 .object(object)
+					 .object(floorPlanId)
 					 .build());
 			//InputStreamResource inputStreamResource = new InputStreamResource(imageGetInputStream);
-			response.addHeader("Content-disposition", object);
-			response.setContentType(URLConnection.guessContentTypeFromName(object));
+			response.addHeader("Content-disposition", floorPlanId);
+			response.setContentType(URLConnection.guessContentTypeFromName(floorPlanId));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
 			result = true;

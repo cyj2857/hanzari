@@ -35,7 +35,7 @@
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="clickLoadBtn">Load Canvas</v-btn>
+    <v-btn @click="loadCurrentFloorSeats">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <EmployeeDialog
@@ -75,7 +75,7 @@ export default {
       allImageList: null,
 
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
-      seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
+      //seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
       allSeatMap: null, // -> all seat map (가시적 map)
       managerAllSeatMap: null, // -> DB 관리 자리 map
 
@@ -250,6 +250,7 @@ export default {
           }
           let evt = opt.e;
           if (evt.ctrlKey === true) {
+            //zoom in and out
             let evt = opt.e;
             let deltaY = evt.deltaY;
             let zoom = this.floorCanvas.getZoom();
@@ -331,43 +332,28 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
-    getImage(file) {
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        fabric.Image.fromURL(e.target.result, (img) => {
-          img.set({
-            scaleX: this.floorCanvas.width / img.width,
-            scaleY: this.floorCanvas.height / img.height,
-          });
-          this.floorCanvas.setBackgroundImage(
-            img,
-            this.floorCanvas.renderAll.bind(this.floorCanvas)
-          );
-        });
-      };
-      reader.readAsDataURL(file);
-    },
-    loadImage(file) {
-      let imgurl = this.images;
-      if (imgurl == null) {
-        fabric.Image.fromURL(imgurl, (img) => {
-          img.set({
-            scaleX: this.floorCanvas.width / img.width,
-            scaleY: this.floorCanvas.height / img.height,
-          });
-          this.floorCanvas.setBackgroundImage(
-            img,
-            this.floorCanvas.renderAll.bind(this.floorCanvas)
-          );
-        });
-      } else {
-        this.getImage(file);
+    loadImage() {
+      let imgurl = null;
+      //let imgurl = await this.images;
+
+      for (let i = 0; i < this.images.length; i++) {
+        imgurl = this.images[i].url;
       }
+      console.log(imgurl);
+
+      fabric.Image.fromURL(imgurl, (img) => {
+        img.set({
+          scaleX: this.floorCanvas.width / img.width,
+          scaleY: this.floorCanvas.height / img.height,
+        });
+        this.floorCanvas.setBackgroundImage(
+          img,
+          this.floorCanvas.renderAll.bind(this.floorCanvas)
+        );
+      });
     },
     saveImage(file) {
       this.allImageList.set(this.currentSelectedFloorId, file);
-
-      console.log(this.allImageList.get(this.currentSelectedFloorId, file));
 
       let imgData = new FormData();
 
@@ -375,16 +361,15 @@ export default {
       let floorid = this.currentSelectedFloorId;
 
       imgData.append("iamgeFile", img);
-      imgData.append("currentFloor", floorid);
       console.log(imgData);
 
       //for (var value of imgData.keys()) {
       //  console.log(value);
       //}
       this.$emit("saveImages", "images", imgData);
+      this.loadImage();
     },
     createImage(file) {
-      this.loadImage(file);
       this.saveImage(file);
     },
     changeImgFile(e) {
@@ -1093,7 +1078,49 @@ export default {
 
       return group;
     },
-    clickLoadBtn() {
+    async loadCurrentFloorSeats() { // 현재층 자리 로드
+      let currentFloorSeatListFromDb = await this.currentFloorSeatListFromDb;
+      console.log(currentFloorSeatListFromDb);
+      console.log(currentFloorSeatListFromDb.length);
+      for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
+        console.log(
+          "현재층의 자리 개수는 ------> " +
+            this.currentFloorSeatListFromDb.length
+        ); //4
+
+        let eachFloorSeatList = this.getEachFloorSeatList(
+          this.currentFloorSeatListFromDb[i].floor
+        );
+        let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+          this.currentFloorSeatListFromDb[i].floor
+        );
+        let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+          this.currentFloorSeatListFromDb[i].employee_id
+        );
+
+        let group = this.makeGroupInfo(this.currentFloorSeatListFromDb[i]);
+
+        this.floorCanvas.add(group);
+        eachFloorSeatList.push(group);
+        managerEachFloorSeatList.push(group);
+        eachEmployeeSeatList.push(group);
+
+        eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+        console.log(
+          this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
+        );
+        console.log(
+          this.currentFloorSeatListFromDb[i].employee_id +
+            "의 자리 리스트 개수는 " +
+            this.getEachEmployeeSeatList(
+              this.currentFloorSeatListFromDb[i].employee_id
+            ).length +
+            "입니다."
+        );
+      }
+    },
+    /*clickLoadBtn() {
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
         if (
           this.currentFloorSeatListFromDb[i].floor ==
@@ -1165,7 +1192,7 @@ export default {
           );
         }
       }
-    },
+    },*/
   },
 };
 </script>
