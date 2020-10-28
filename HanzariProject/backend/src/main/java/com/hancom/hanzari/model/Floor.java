@@ -1,5 +1,6 @@
 package com.hancom.hanzari.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -27,7 +31,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Table(name = "floors")
-@Builder
+//@Builder
 public class Floor {
 
 	@Id
@@ -48,10 +52,11 @@ public class Floor {
 	@Column(name = "floor_image_url", nullable = true)
 	private int floorImageUrl;
 
-	@OneToMany(mappedBy = "floor", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE }, orphanRemoval = true)
+	//@OneToMany(mappedBy = "floor", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+	@OneToMany(mappedBy = "floor", cascade = CascadeType.ALL, orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonManagedReference
-	private List<Seat> seats;
+	private List<Seat> seats = new ArrayList<Seat>();
 
 	@PreRemove
 	public void preRemove() {
@@ -82,22 +87,24 @@ public class Floor {
 
 	public void setSeats(List<Seat> seats) {
 		System.out.println("#####\n#####\nFloor.setSeats() called\n #####\n#####\n");
-		
-		if (this.seats == null) {
-			this.seats = seats;
-		} else {
-			this.seats.retainAll(seats);
-			this.seats.addAll(seats);
-		}
-
+//		if(seats == null) {
+//	        this.seats.clear();
+//	    }
 //		if (this.seats == null) {
 //			this.seats = seats;
-//		} else if (this.seats != seats) {
+//		} else {
 //			this.seats.retainAll(seats);
-//			if (seats != null) {
-//				this.seats.addAll(seats);
-//			}
+//			this.seats.addAll(seats);
 //		}
+
+		if (this.seats == null) {
+			this.seats = seats;
+		} else if (this.seats != seats) {
+			this.seats.retainAll(seats);
+			if (seats != null) {
+				this.seats.addAll(seats);
+			}
+		}
 	}
 
 	public void addSeat(Seat seat) {

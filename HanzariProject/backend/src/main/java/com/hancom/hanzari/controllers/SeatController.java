@@ -160,4 +160,12 @@ public class SeatController {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 
 	}
+	
+	@RequestMapping("/get-all-seats")
+	public ResponseEntity<List<SeatDto>> getAllSeats() throws Exception {
+		List<Seat> seat = seatService.findAll();
+		List<SeatDto> result = new ArrayList<>();
+		seat.forEach(e -> result.add(e.toDto()));
+		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
+	} 
 }
