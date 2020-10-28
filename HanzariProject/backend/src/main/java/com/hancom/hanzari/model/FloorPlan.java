@@ -29,8 +29,6 @@ public class FloorPlan {
 	private String floorPlanId;
 	
 	public FloorPlan() {
-		
+
 	}
-	
-	
 }
