@@ -1,10 +1,9 @@
 package com.hancom.hanzari.service;
 
-import org.springframework.stereotype.Service;
+import com.hancom.hanzari.model.FloorPlan;
 
-@Service
 public interface FloorPlanService {
-	public String save(String buildingId);
+	public FloorPlan save(FloorPlan floorPlan);
 	
-	public String findById(String buildingId);
+	public FloorPlan findByBuildingIdAndFloorId(String buildingId, String floorId) throws Exception;
 }

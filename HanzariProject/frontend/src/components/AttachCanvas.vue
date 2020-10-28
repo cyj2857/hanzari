@@ -98,14 +98,17 @@ export default {
       this.showSeat(seat);
     });
     eventBus.$on("changeFloor", (floor) => {
+      console.log("changeFloor in AttachCanvas")
       if (floor) {
         // null 이 아닐때
+      console.log("changeFloor in AttachCanvas2")
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
 
         this.changeFloor();
         console.log(this.currentSelectedFloorName + "여기가 현재층");
       } else {
+      console.log("changeFloor in AttachCanvas3")
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
       }
@@ -333,13 +336,7 @@ export default {
       }
     },
     loadImage() {
-      let imgurl = null;
-      //let imgurl = await this.images;
-
-      for (let i = 0; i < this.images.length; i++) {
-        imgurl = this.images[i].url;
-      }
-      console.log(imgurl);
+      let imgurl = this.images;
 
       fabric.Image.fromURL(imgurl, (img) => {
         img.set({
@@ -360,16 +357,18 @@ export default {
       let img = this.allImageList.get(this.currentSelectedFloorId);
       let floorid = this.currentSelectedFloorId;
 
-      imgData.append("iamgeFile", img);
-      console.log(imgData);
+      imgData.append("imageFile", img);
 
-      //for (var value of imgData.keys()) {
-      //  console.log(value);
-      //}
-      this.$emit("saveImages", "images", imgData);
-      this.loadImage();
+      for (var value of imgData.values()) {
+        console.log(value);
+      }
+      console.log(this.allImageList);
+
+      this.$emit("saveImages", "images", imgData, floorid);
+      
     },
     createImage(file) {
+      this.loadImage();
       this.saveImage(file);
     },
     changeImgFile(e) {
@@ -1078,15 +1077,14 @@ export default {
 
       return group;
     },
-    async loadCurrentFloorSeats() { // 현재층 자리 로드
+    async loadCurrentFloorSeats() {
+      // 현재층 자리 로드
       let currentFloorSeatListFromDb = await this.currentFloorSeatListFromDb;
-      console.log(currentFloorSeatListFromDb);
-      console.log(currentFloorSeatListFromDb.length);
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
         console.log(
           "현재층의 자리 개수는 ------> " +
             this.currentFloorSeatListFromDb.length
-        ); //4
+        );
 
         let eachFloorSeatList = this.getEachFloorSeatList(
           this.currentFloorSeatListFromDb[i].floor
@@ -1119,6 +1117,8 @@ export default {
             "입니다."
         );
       }
+
+      this.$emit("loadOtherFloorSeats", "seats");
     },
     /*clickLoadBtn() {
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
