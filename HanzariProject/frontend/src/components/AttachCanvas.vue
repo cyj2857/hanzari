@@ -934,7 +934,13 @@ export default {
                 if (groupToObject.delete) {
                   // 001 011 delete
                   let deleteSeatKey = groupToObject.seatId;
-                  this.$emit("deleteSeatWithKey", "seats", deleteSeatKey);
+                  let deleteSeatFloor = groupToObject.floorid;
+                  this.$emit(
+                    "deleteSeatWithKey",
+                    "seats",
+                    deleteSeatKey,
+                    deleteSeatFloor
+                  );
                 } else if (groupToObject.modify) {
                   //010 그 id에 대하여 post
                   let seatData = {};
@@ -952,7 +958,7 @@ export default {
                   seatData.shape_id = "1";
 
                   console.log(seatData);
-                  this.$emit("saveSeats", "seats", seatData);
+                  this.$emit("saveSeats", "seats", seatData, seatData.floor);
                 }
               } else {
                 // front에서 생성
@@ -976,7 +982,7 @@ export default {
                   seatData.shape_id = "1";
 
                   console.log(seatData);
-                  this.$emit("saveSeats", "seats", seatData);
+                  this.$emit("saveSeats", "seats", seatData, seatData.floor);
                 }
               }
             }

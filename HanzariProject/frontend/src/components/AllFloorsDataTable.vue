@@ -12,7 +12,7 @@
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="employees"
+      :items="this.employees"
       :search="search"
       height="265px"
     >
