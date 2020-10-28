@@ -98,14 +98,17 @@ export default {
       this.showSeat(seat);
     });
     eventBus.$on("changeFloor", (floor) => {
+      console.log("changeFloor in AttachCanvas")
       if (floor) {
         // null 이 아닐때
+      console.log("changeFloor in AttachCanvas2")
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
 
         this.changeFloor();
         console.log(this.currentSelectedFloorName + "여기가 현재층");
       } else {
+      console.log("changeFloor in AttachCanvas3")
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
       }
@@ -1074,15 +1077,14 @@ export default {
 
       return group;
     },
-    async loadCurrentFloorSeats() { // 현재층 자리 로드
+    async loadCurrentFloorSeats() {
+      // 현재층 자리 로드
       let currentFloorSeatListFromDb = await this.currentFloorSeatListFromDb;
-      console.log(currentFloorSeatListFromDb);
-      console.log(currentFloorSeatListFromDb.length);
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
         console.log(
           "현재층의 자리 개수는 ------> " +
             this.currentFloorSeatListFromDb.length
-        ); //4
+        );
 
         let eachFloorSeatList = this.getEachFloorSeatList(
           this.currentFloorSeatListFromDb[i].floor
@@ -1115,6 +1117,8 @@ export default {
             "입니다."
         );
       }
+
+      this.$emit("loadOtherFloorSeats", "seats");
     },
     /*clickLoadBtn() {
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {

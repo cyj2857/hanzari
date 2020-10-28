@@ -18,6 +18,7 @@
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:copyEmployee="employees"
         v-bind:copyImages="images"
+        v-on:loadOtherFloorSeats="getOtherFloorSeats"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
         v-on:saveSeats="saveSeats"
@@ -64,7 +65,7 @@ export default {
       images: null,
       currentFloorSeats: null,
 
-      currentFloorName: null,
+      floorIdList: [],
       currentFloorId: null,
     };
   },
@@ -133,9 +134,10 @@ export default {
             : 0;
         });
 
-        this.currentFloorName =
-          allFloorList[allFloorList.length - 1].floor_name;
-        this.currentFloorId = allFloorList[allFloorList.length - 1].floor_id;
+        for (let i = 0; i < allFloorList.length; i++) {
+          this.floorIdList.push(allFloorList[i].floor_id);
+        }
+        this.currentFloorId = this.floorIdList.slice(-1)[0];
       } catch (error) {
         console.log(error);
       }
@@ -196,11 +198,49 @@ export default {
       } catch (e) {
         console.log(e);
       }
-
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      console.log(currentFloorSeatList);
-
       return currentFloorSeatList;
+    },
+    //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
+    async getOtherFloorSeats(tableName) {
+      let otherFloorSeatList = new Array();
+      try {
+        let response = null;
+        for (let i = 0; i < this.floorIdList - 1; i++) {
+          response = await axios.get(
+            "http://" +
+              host +
+              ":" +
+              portNum +
+              "/api/buildings/" +
+              building_id +
+              "/floors/" +
+              this.floorIdList[i] +
+              "/seats"
+          );
+          for (var i = 0; i < response.data.length; i++) {
+            let newSeat = {};
+            newSeat.seat_id = response.data[i].seat_id;
+            newSeat.floor = response.data[i].floor; // floor_id
+            newSeat.x = response.data[i].x;
+            newSeat.y = response.data[i].y;
+            newSeat.is_group = response.data[i].is_group;
+            newSeat.building_id = response.data[i].building_id;
+            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.width = response.data[i].width;
+            newSeat.height = response.data[i].height;
+            newSeat.degree = response.data[i].degree;
+            newSeat.shape_id = response.data[i].shape_id;
+            newSeat.create = false;
+            newSeat.delete = false;
+            newSeat.modify = false;
+
+            otherFloorSeatList.push(newSeat);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      return otherFloorSeatList;
     },
     saveFloors(tableName, data) {
       let saveData = data;
