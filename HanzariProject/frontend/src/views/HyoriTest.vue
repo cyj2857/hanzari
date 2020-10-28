@@ -287,7 +287,7 @@ export default {
           console.log(error);
         });
     },
-    saveSeats(tableName, data) {
+    saveSeats(tableName, data, floor_id) {
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
@@ -341,7 +341,7 @@ export default {
           console.log(error);
         });
     },
-    deleteSeatWithKey(tableName, key) {
+    deleteSeatWithKey(tableName, key, floor_id) {
       let deleteTableName = tableName;
       let deleteKey = key;
       axios
@@ -350,7 +350,7 @@ export default {
             host +
             ":" +
             portNum +
-            "/api/buildings/floors" +
+            "/api/buildings/floors/" +
             floor_id +
             deleteTableName +
             "/" +
