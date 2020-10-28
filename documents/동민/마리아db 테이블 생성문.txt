@@ -91,3 +91,14 @@ INSERT shapes VALUES ('1', '네모');
 INSERT shapes VALUES('2', '세모');
 INSERT shapes VALUES('3', '원');
 INSERT shapes VALUES('4', '타원');
+
+
+----------------------------------------------------------------
+
+create table floor_plan(
+building_id varchar(255) NOT NULL PRIMARY KEY,
+floor_id varchar(255) NOT NULL,
+floor_plan varchar(255) NOT NULL
+);
+
+show columns from floor_plan
