@@ -78,19 +78,6 @@ export default {
     // 이미지 load
     this.images = await this.getImages();
     // 자리 load
-    eventBus.$on("changeFloor", (floor) => {
-      if (floor == null) {
-        this.currentFloorName = null;
-        this.currentFloorId = null;
-      } else {
-        // load 해올 층이 있으면
-        this.currentFloorName = floor.floor_name;
-        this.currentFloorId = floor.floor_id;
-        console.log(this.currentFloorId);
-      }
-    });
-
-    console.log(this.currentFloorId);
   },
   methods: {
     async getEmployees() {
