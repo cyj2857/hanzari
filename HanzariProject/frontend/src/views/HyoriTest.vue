@@ -204,8 +204,46 @@ export default {
       return currentFloorSeatList;
     },
     //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
-    getOtherFloorSeats(tableName) {
-      let currentFloorSeatList = new Array();
+    async getOtherFloorSeats(tableName) {
+      let otherFloorSeatList = new Array();
+      try {
+        let response = null;
+        for (let i = 0; i < this.floorIdList - 1; i++) {
+          response = await axios.get(
+            "http://" +
+              host +
+              ":" +
+              portNum +
+              "/api/buildings/" +
+              building_id +
+              "/floors/" +
+              this.floorIdList[i] +
+              "/seats"
+          );
+          for (var i = 0; i < response.data.length; i++) {
+            let newSeat = {};
+            newSeat.seat_id = response.data[i].seat_id;
+            newSeat.floor = response.data[i].floor; // floor_id
+            newSeat.x = response.data[i].x;
+            newSeat.y = response.data[i].y;
+            newSeat.is_group = response.data[i].is_group;
+            newSeat.building_id = response.data[i].building_id;
+            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.width = response.data[i].width;
+            newSeat.height = response.data[i].height;
+            newSeat.degree = response.data[i].degree;
+            newSeat.shape_id = response.data[i].shape_id;
+            newSeat.create = false;
+            newSeat.delete = false;
+            newSeat.modify = false;
+
+            otherFloorSeatList.push(newSeat);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      return otherFloorSeatList;
     },
     saveImages(tableName, data) {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
