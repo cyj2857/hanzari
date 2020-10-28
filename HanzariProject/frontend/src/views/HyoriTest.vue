@@ -214,7 +214,7 @@ export default {
       //   console.log(value);
       // }
 
-      axios
+      /*axios
         .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -225,7 +225,7 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        });*/
     },
     saveFloors(tableName, data) {
       let saveData = data;
