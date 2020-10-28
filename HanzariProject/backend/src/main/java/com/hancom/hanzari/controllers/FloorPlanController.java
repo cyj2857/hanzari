@@ -1,7 +1,6 @@
 package com.hancom.hanzari.controllers;
 
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.net.URLConnection;
 
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+//import com.hancom.hanzari.service.FloorPlanService;
+
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -27,14 +27,25 @@ import io.minio.PutObjectArgs;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/images")
-public class TestImageController {
-  
+public class FloorPlanController {
+	
+	//Bean은 한개만 등록
+	//private FloorPlanService floorPlanService;
+	
 	@Autowired
 	private MinioClient minioClient;
 	
 	// 버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	String bucketName = "hanzari";
-
+	
+	//API가 완성되면 다시 수정하기
+	@PostMapping(value="/{building_id}/{floor_id}")
+	public boolean putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId) {
+		boolean result = false;
+		String floorPlan = buildingId + "-" + floorId;
+		return result;
+	}
+	
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
 	@PostMapping
