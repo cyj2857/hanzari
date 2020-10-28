@@ -60,7 +60,7 @@ public class SeatController {
 		if (floor == null) {
 			throw new ResourceNotFoundException("Floor", "floor_id", floorId);
 		}
-		List<Seat> seat = seatService.findAll();
+		List<Seat> seat = seatService.findByFloor(floor);
 		List<SeatDto> result = new ArrayList<>();
 		seat.forEach(e -> result.add(e.toDto()));
 		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
