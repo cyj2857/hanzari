@@ -89,12 +89,10 @@ export default {
         for (var i = 0; i < response.data.length; i++) {
           var newEmployee = {};
           newEmployee.name = response.data[i].employee_name;
-          //console.log(newEmployee.name + "???? employee ?? name");
           newEmployee.department = response.data[i].department_name;
           newEmployee.number = response.data[i].extension_number;
           newEmployee.employee_id = response.data[i].employee_id;
           newEmployee.seatIdList = response.data[i].seatList;
-          //console.log(newEmployee.seatIdList);
           initEmployeeList.push(newEmployee);
         }
       } catch (error) {
@@ -127,18 +125,23 @@ export default {
 
           allFloorList.push(newFloor);
         }
+
+        allFloorList.sort(function (a, b) {
+          return a.floor_order < b.floor_order
+            ? -1
+            : a.floor_order > b.floor_order
+            ? 1
+            : 0;
+        });
+
+        this.currentFloorName =
+          allFloorList[allFloorList.length - 1].floor_name;
+        this.currentFloorId = allFloorList[allFloorList.length - 1].floor_id;
+        
       } catch (error) {
         console.log(error);
       }
-      console.log(allFloorList);
-      allFloorList.sort(function (a, b) {
-        return a.floor_order < b.floor_order
-          ? -1
-          : a.floor_order > b.floor_order
-          ? 1
-          : 0;
-      });
-      console.log(allFloorList);
+
       return allFloorList;
     },
     async getImages() {
