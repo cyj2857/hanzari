@@ -152,7 +152,7 @@ export default {
           "http://172.30.1.56:8081/api/images/buildings/" +
             building_id +
             "/floors/" +
-            "8653dba8-e94f-4da6-a704-b7f25b6116df"
+            this.currentFloorId
         );
         imageurl = response.config.url;
       } catch (e) {
