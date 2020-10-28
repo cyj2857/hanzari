@@ -87,7 +87,8 @@ export default {
     });
   },
   methods: {
-    systemReset() { // sync await 로 변경해야함
+    systemReset() {
+      // sync await 로 변경해야함
       var self = this;
       setTimeout(function () {
         self.currentFloorSeats = self.getCurrentFloorSeats(self.currentFloorId);
@@ -96,7 +97,6 @@ export default {
     getEmployees() {
       let initEmployeeList = new Array();
       axios
-        /*"http://" + host + ":" + portNum + "/api/building/" + building_id + "/employee"*/
         .get("http://" + host + ":" + portNum + "/api/employee")
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
@@ -143,6 +143,33 @@ export default {
       this.systemReset();
       return allFloorList;
     },
+    getImages() {
+      //let allImageList = new Array();
+      axios
+        //.get("http://" + host + ":" + portNum + "/api/" + "building/" + building_id + "/floor/{floorid}/imgurl")
+        .get(
+          "http://172.30.1.56:9000/hanzari/ccccc.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201027%2F%2Fs3%2Faws4_request&X-Amz-Date=20201027T013034Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=da42aa6017cee6adadf1c66774bf1111b2288549125240a53ca3ddecd9beabe1"
+        )
+        .then((response) => {
+          const imgurl = response.config.url;
+          this.images = imgurl;
+
+          /* for (var i = 0; i < response.data.length; i++) {
+            let newImage = {};
+            newImage.url = response[i].config.url;
+            
+            allImageList.push(newImage);
+          }*/
+
+          //console.log(this.images);
+          //console.log(initImageList);
+          //console.log(initImageList.length); //1
+        });
+      //console.log(this.images)
+
+      //return allImageList;
+      return this.images;
+    },
     //현재 층의 자리만 가져옴 (created)
     getCurrentFloorSeats(floor_id) {
       console.log("불림");
@@ -150,8 +177,15 @@ export default {
       let currentFloorSeatList = new Array();
       axios
         .get(
-          /*"http://" + host + ":" + portNum + "/api/building/" + building_id + "/floors/" + floor_id + "/seats"*/
-          "http://" + host + ":" + portNum + "/api/seats"
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/seats"
         )
         .then(function (response) {
           for (var i = 0; i < response.data.length; i++) {
@@ -188,62 +222,11 @@ export default {
       }
       return allDBSeatMap;
     },
-    getImages() {
-      //let allImageList = new Array();
-      axios
-        //.get("http://" + host + ":" + portNum + "/api/" + "building/" + building_id + "/floor/{floorid}/imgurl")
-        .get(
-          "http://172.30.1.56:9000/hanzari/ccccc.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201027%2F%2Fs3%2Faws4_request&X-Amz-Date=20201027T013034Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=da42aa6017cee6adadf1c66774bf1111b2288549125240a53ca3ddecd9beabe1"
-        )
-        .then((response) => {
-          const imgurl = response.config.url;
-          this.images = imgurl;
-
-          /* for (var i = 0; i < response.data.length; i++) {
-            let newImage = {};
-            newImage.url = response[i].config.url;
-            
-            allImageList.push(newImage);
-          }*/
-
-          //console.log(this.images);
-          //console.log(initImageList);
-          //console.log(initImageList.length); //1
-        });
-      //console.log(this.images)
-
-      //return allImageList;
-      return this.images;
-    },
-    saveImages(tableName, data) {
-      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
-      let saveData = data;
-      let saveTableName = tableName;
-
-      // for (let value of saveData.keys()) {
-      //   console.log(value);
-      // }
-
-      axios
-        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
     saveFloors(tableName, data) {
-      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
       console.log(saveData);
-      console.log("------------");
       console.log("saveTableName is");
       console.log(saveTableName);
 
@@ -266,8 +249,23 @@ export default {
           console.log(res.saveData);
         });
     },
+    saveImages(tableName, data) {
+      let saveData = data;
+      let saveTableName = tableName;
+      axios
+        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     saveSeats(tableName, data) {
-      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
@@ -275,10 +273,18 @@ export default {
       console.log("------------");
       console.log("saveTableName is");
       console.log(saveTableName);
-
       axios
         .post(
-          "http://" + host + ":" + portNum + "/api/" + saveTableName,
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/" +
+            saveTableName,
           JSON.stringify(saveData),
           {
             headers: { "Content-Type": `application/json` },
@@ -289,7 +295,6 @@ export default {
         });
     },
     deleteFloorWtihKey(tableName, key) {
-      //추후에 api 구조 변경될 것을 생각하여 key를 받아서 삭제하는 것을 같은 함수로 묶지않음.
       let deleteTableName = tableName;
       let deleteKey = key;
       axios
@@ -315,7 +320,6 @@ export default {
         });
     },
     deleteSeatWithKey(tableName, key) {
-      //추후에 api 구조 변경될 것을 생각하여 key를 받아서 삭제하는 것을 같은 함수로 묶지않음.
       let deleteTableName = tableName;
       let deleteKey = key;
       axios
@@ -324,7 +328,8 @@ export default {
             host +
             ":" +
             portNum +
-            "/api/" +
+            "/api/buildings/floors" +
+            floor_id +
             deleteTableName +
             "/" +
             deleteKey
