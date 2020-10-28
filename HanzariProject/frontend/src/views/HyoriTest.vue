@@ -14,10 +14,9 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
+        v-if="images && currentFloorSeats"
         v-bind:currentFloorSeatsList="currentFloorSeats"
-        v-bind:seat="seats"
         v-bind:copyEmployee="employees"
-        v-if="images"
         v-bind:copyImages="images"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
@@ -64,7 +63,6 @@ export default {
       floors: null,
       images: null,
       currentFloorSeats: null,
-      seats: null,
 
       currentFloorName: null,
       currentFloorId: null,
@@ -78,6 +76,7 @@ export default {
     // 이미지 load
     this.images = await this.getImages();
     // 자리 load
+    this.currentFloorSeats = await this.getCurrentFloorSeats();
   },
   methods: {
     async getEmployees() {
@@ -137,18 +136,18 @@ export default {
         this.currentFloorName =
           allFloorList[allFloorList.length - 1].floor_name;
         this.currentFloorId = allFloorList[allFloorList.length - 1].floor_id;
-        
       } catch (error) {
         console.log(error);
       }
 
       return allFloorList;
     },
+    //추후 현재 층의 이미지만 가져오게 구현해야 함.
     async getImages() {
       let allImageList = new Array();
       try {
         let response = await axios.get(
-          "http://172.30.1.56:8081/api/images/hanzariFloor"
+          "http://172.30.1.56:9000/hanzari/hanzariFloor?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201028%2F%2Fs3%2Faws4_request&X-Amz-Date=20201028T041651Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=11bae981b8684cfe3e8f18597fa59671980027b20fbed4197460a54806dde773"
         );
         let newImage = {};
         newImage.url = response.config.url;
@@ -162,13 +161,12 @@ export default {
       //return this.images;
       return allImageList;
     },
-    //현재 층의 자리만 가져옴 (created)
-    getCurrentFloorSeats(floor_id) {
-      console.log("불림");
-      console.log(floor_id);
+    //우선 현재 층의 자리만 가져옴
+    async getCurrentFloorSeats() {
+      //console.log(this.currentFloorId); // ok
       let currentFloorSeatList = new Array();
-      axios
-        .get(
+      try {
+        let response = await axios.get(
           "http://" +
             host +
             ":" +
@@ -176,43 +174,36 @@ export default {
             "/api/buildings/" +
             building_id +
             "/floors/" +
-            floor_id +
+            this.currentFloorId +
             "/seats"
-        )
-        .then(function (response) {
-          for (var i = 0; i < response.data.length; i++) {
-            if (response.data[i].floor == floor_id) {
-              let newSeat = {};
-              newSeat.seat_id = response.data[i].seat_id;
-              newSeat.floor = response.data[i].floor; // floor_id
-              newSeat.x = response.data[i].x;
-              newSeat.y = response.data[i].y;
-              newSeat.is_group = response.data[i].is_group;
-              newSeat.building_id = response.data[i].building_id;
-              newSeat.employee_id = response.data[i].employee_id;
-              newSeat.width = response.data[i].width;
-              newSeat.height = response.data[i].height;
-              newSeat.degree = response.data[i].degree;
-              newSeat.shape_id = response.data[i].shape_id;
-              newSeat.create = false;
-              newSeat.delete = false;
-              newSeat.modify = false;
-
-              currentFloorSeatList.push(newSeat);
-            }
-          }
-        });
-      return currentFloorSeatList;
-    },
-    getAllSeats() {
-      let allDBSeatMap = new Map();
-      for (let i = 0; i < this.floors.length; i++) {
-        allDBSeatMap.set(
-          this.floors[i].floor_id,
-          this.getOneFloorSeats(this.floors[i].floor_id)
         );
+        for (var i = 0; i < response.data.length; i++) {
+          let newSeat = {};
+          newSeat.seat_id = response.data[i].seat_id;
+          newSeat.floor = response.data[i].floor; // floor_id
+          newSeat.x = response.data[i].x;
+          newSeat.y = response.data[i].y;
+          newSeat.is_group = response.data[i].is_group;
+          newSeat.building_id = response.data[i].building_id;
+          newSeat.employee_id = response.data[i].employee_id;
+          newSeat.width = response.data[i].width;
+          newSeat.height = response.data[i].height;
+          newSeat.degree = response.data[i].degree;
+          newSeat.shape_id = response.data[i].shape_id;
+          newSeat.create = false;
+          newSeat.delete = false;
+          newSeat.modify = false;
+
+          currentFloorSeatList.push(newSeat);
+        }
+      } catch (e) {
+        console.log(e);
       }
-      return allDBSeatMap;
+
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      console.log(currentFloorSeatList);
+
+      return currentFloorSeatList;
     },
     saveImages(tableName, data) {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
