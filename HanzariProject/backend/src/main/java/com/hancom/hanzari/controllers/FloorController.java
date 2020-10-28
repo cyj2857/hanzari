@@ -77,8 +77,14 @@ public class FloorController {
 		}
 		Floor newFloor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name())
 				.building(building).floorOrder(floorDto.getFloor_order()).build();
-
-		return new ResponseEntity<Floor>(floorService.save(newFloor), HttpStatus.OK);
+		floorService.save(newFloor);
+		if(newFloor.getSeats() == null) {
+			System.out.println("#####\n#####\nseats null#####\n#####\n");
+		}
+		else {
+			System.out.println("#####\n#####\nseats not null#####\n#####\n");
+		}
+		return new ResponseEntity<Floor>(newFloor, HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })

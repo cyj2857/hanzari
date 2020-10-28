@@ -65,32 +65,41 @@ public class Floor {
 		}
 	}
 
-	@PrePersist
-	private void prePersist() {
-		if (seats != null) {
-			seats.forEach(e -> e.setFloor(this));
-		}
-	}
-	
-	@PreUpdate
-	public void preUpdate() {
-		/*if (seats != null) {
-			this.seats.clear();
-			this.seats.addAll(seats);
-		}*/
-		if (building != null) {
-			setBuilding(null);
-		}
-		if (seats != null) {
-			seats.forEach(e -> e.setFloor(null));
-		}
-	}
+//	@PrePersist
+//	private void prePersist() {
+//		System.out.println("#####\n#####\nprePersist#####\n#####\n");
+//	}
+
+//	@PreUpdate
+//	public void preUpdate() {
+//		System.out.println("#####\n#####\npreUpdate#####\n#####\n");
+//		if (building != null) {
+//			setBuilding(null);
+//		}
+//		if (seats != null) {
+//			seats.forEach(e -> e.setFloor(null));
+//			this.seats.clear();
+//		}
+//	}
 
 	public void setSeats(List<Seat> seats) {
-		if (this.seats != null) {
-			this.seats.clear();
+		System.out.println("#####\n#####\nFloor.setSeats() called\n #####\n#####\n");
+		
+		if (this.seats == null) {
+			this.seats = seats;
+		} else {
+			this.seats.retainAll(seats);
+			this.seats.addAll(seats);
 		}
-		this.seats.addAll(seats);
+
+//		if (this.seats == null) {
+//			this.seats = seats;
+//		} else if (this.seats != seats) {
+//			this.seats.retainAll(seats);
+//			if (seats != null) {
+//				this.seats.addAll(seats);
+//			}
+//		}
 	}
 
 	public void addSeat(Seat seat) {
