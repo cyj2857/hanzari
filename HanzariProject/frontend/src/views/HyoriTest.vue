@@ -18,6 +18,7 @@
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:copyEmployee="employees"
         v-bind:copyImages="images"
+        v-on:loadOtherFloorSeats="getOtherFloorSeats"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
         v-on:saveSeats="saveSeats"
@@ -64,7 +65,7 @@ export default {
       images: null,
       currentFloorSeats: null,
 
-      currentFloorName: null,
+      floorIdList: [],
       currentFloorId: null,
     };
   },
@@ -133,9 +134,10 @@ export default {
             : 0;
         });
 
-        this.currentFloorName =
-          allFloorList[allFloorList.length - 1].floor_name;
-        this.currentFloorId = allFloorList[allFloorList.length - 1].floor_id;
+        for (let i = 0; i < allFloorList.length; i++) {
+          this.floorIdList.push(allFloorList[i].floor_id);
+        }
+        this.currentFloorId = this.floorIdList.slice(-1)[0];
       } catch (error) {
         console.log(error);
       }
@@ -199,11 +201,11 @@ export default {
       } catch (e) {
         console.log(e);
       }
-
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      console.log(currentFloorSeatList);
-
       return currentFloorSeatList;
+    },
+    //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
+    getOtherFloorSeats(tableName) {
+      let currentFloorSeatList = new Array();
     },
     saveImages(tableName, data) {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
