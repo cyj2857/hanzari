@@ -331,43 +331,32 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
-    getImage(file) {
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        fabric.Image.fromURL(e.target.result, (img) => {
-          img.set({
-            scaleX: this.floorCanvas.width / img.width,
-            scaleY: this.floorCanvas.height / img.height,
-          });
-          this.floorCanvas.setBackgroundImage(
-            img,
-            this.floorCanvas.renderAll.bind(this.floorCanvas)
-          );
-        });
-      };
-      reader.readAsDataURL(file);
-    },
-    loadImage(file) {
-      let imgurl = this.images;
-      if (imgurl == null) {
-        fabric.Image.fromURL(imgurl, (img) => {
-          img.set({
-            scaleX: this.floorCanvas.width / img.width,
-            scaleY: this.floorCanvas.height / img.height,
-          });
-          this.floorCanvas.setBackgroundImage(
-            img,
-            this.floorCanvas.renderAll.bind(this.floorCanvas)
-          );
-        });
-      } else {
-        this.getImage(file);
-      }
-    },
-    saveImage(file) {
-      this.allImageList.set(this.currentSelectedFloorId, file);
+    async loadImage() {
+      let aa = null;
+      let imgurl = await this.images;
+      console.log(imgurl);
 
-      console.log(this.allImageList.get(this.currentSelectedFloorId, file));
+      for (let i = 0; i < this.images.length; i++) {
+        aa = this.images[i].url;  
+      }
+      console.log(aa);
+
+      fabric.Image.fromURL( aa, (img) => {
+          img.set({
+            scaleX: this.floorCanvas.width / img.width,
+            scaleY: this.floorCanvas.height / img.height,
+          });
+          this.floorCanvas.setBackgroundImage(
+            img,
+            this.floorCanvas.renderAll.bind(this.floorCanvas)
+          );
+        }
+      );
+    },
+
+
+saveImage(file) {
+      this.allImageList.set(this.currentSelectedFloorId, file);
 
       let imgData = new FormData();
 
@@ -375,16 +364,16 @@ export default {
       let floorid = this.currentSelectedFloorId;
 
       imgData.append("iamgeFile", img);
-      imgData.append("currentFloor", floorid);
+      imgData.append("floorId", floorid);
       console.log(imgData);
 
       //for (var value of imgData.keys()) {
       //  console.log(value);
       //}
       this.$emit("saveImages", "images", imgData);
+      this.loadImage();
     },
     createImage(file) {
-      this.loadImage(file);
       this.saveImage(file);
     },
     changeImgFile(e) {
