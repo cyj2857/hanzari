@@ -333,13 +333,7 @@ export default {
       }
     },
     loadImage() {
-      let imgurl = null;
-      //let imgurl = await this.images;
-
-      for (let i = 0; i < this.images.length; i++) {
-        imgurl = this.images[i].url;
-      }
-      console.log(imgurl);
+      let imgurl = this.images;
 
       fabric.Image.fromURL(imgurl, (img) => {
         img.set({
@@ -360,16 +354,18 @@ export default {
       let img = this.allImageList.get(this.currentSelectedFloorId);
       let floorid = this.currentSelectedFloorId;
 
-      imgData.append("iamgeFile", img);
-      console.log(imgData);
+      imgData.append("imageFile", img);
 
-      //for (var value of imgData.keys()) {
-      //  console.log(value);
-      //}
-      this.$emit("saveImages", "images", imgData);
-      this.loadImage();
+      for (var value of imgData.values()) {
+        console.log(value);
+      }
+      console.log(this.allImageList);
+
+      this.$emit("saveImages", "images", imgData, floorid);
+      
     },
     createImage(file) {
+      this.loadImage();
       this.saveImage(file);
     },
     changeImgFile(e) {
