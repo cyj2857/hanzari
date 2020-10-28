@@ -222,6 +222,28 @@ export default {
       }
       return allDBSeatMap;
     },
+    saveImages(tableName, data) {
+      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
+      let saveData = data;
+      let saveTableName = tableName;
+
+      // for (let value of saveData.keys()) {
+      //   console.log(value);
+      // }
+
+      axios
+        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     saveFloors(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;

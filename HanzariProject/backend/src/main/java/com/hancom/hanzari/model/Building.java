@@ -2,6 +2,7 @@ package com.hancom.hanzari.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,7 +34,8 @@ public class Building {
 	@Column(name = "building_name", nullable = false)
 	private String buildingName;
 
-	@OneToMany(mappedBy = "building", fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(mappedBy = "building", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
+			CascadeType.MERGE }, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Floor> floors;
 

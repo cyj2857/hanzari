@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hancom.hanzari.exception.ResourceNotFoundException;
+import com.hancom.hanzari.model.Employee;
+import com.hancom.hanzari.model.Floor;
 import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.repository.SeatRepository;
 
@@ -30,14 +32,21 @@ public class SeatServiceImpl implements SeatService {
 	}
 
 	@Override
-	public List<Seat> findByEmpId(String employee_id) {
-		List<Seat> seats = new ArrayList<Seat>();
-		seatRepository.findAll().forEach(e -> {
-			if (e.getEmployee().getEmployeeId().toString().equals(employee_id)) {
-				seats.add(e);
-			}
-		});
-		return seats;
+	public List<Seat> findByEmployee(Employee employee) throws Exception {
+		List<Seat> seats = seatRepository.findByEmployee(employee);
+		if (seats != null)
+			return seats;
+		else
+			throw new ResourceNotFoundException("Employee", "employee", employee);
+	}
+
+	@Override
+	public List<Seat> findByFloor(Floor floor) throws Exception {
+		List<Seat> seats = seatRepository.findByFloor(floor);
+		if (seats != null)
+			return seats;
+		else
+			throw new ResourceNotFoundException("Floor", "floor", floor);
 	}
 
 	@Override
