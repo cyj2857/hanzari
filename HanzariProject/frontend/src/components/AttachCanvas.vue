@@ -250,6 +250,7 @@ export default {
           }
           let evt = opt.e;
           if (evt.ctrlKey === true) {
+            //zoom in and out
             let evt = opt.e;
             let deltaY = evt.deltaY;
             let zoom = this.floorCanvas.getZoom();
@@ -331,31 +332,28 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
-    async loadImage() {
-      let aa = null;
-      let imgurl = await this.images;
-      console.log(imgurl);
+    loadImage() {
+      let imgurl = null;
+      //let imgurl = await this.images;
 
       for (let i = 0; i < this.images.length; i++) {
-        aa = this.images[i].url;  
+        imgurl = this.images[i].url;
       }
-      console.log(aa);
+      console.log(imgurl);
 
-      fabric.Image.fromURL( aa, (img) => {
-          img.set({
-            scaleX: this.floorCanvas.width / img.width,
-            scaleY: this.floorCanvas.height / img.height,
-          });
-          this.floorCanvas.setBackgroundImage(
-            img,
-            this.floorCanvas.renderAll.bind(this.floorCanvas)
-          );
-        }
-      );
+      fabric.Image.fromURL(imgurl, (img) => {
+        img.set({
+          scaleX: this.floorCanvas.width / img.width,
+          scaleY: this.floorCanvas.height / img.height,
+        });
+        this.floorCanvas.setBackgroundImage(
+          img,
+          this.floorCanvas.renderAll.bind(this.floorCanvas)
+        );
+      });
     },
 
-
-saveImage(file) {
+    saveImage(file) {
       this.allImageList.set(this.currentSelectedFloorId, file);
 
       let imgData = new FormData();
@@ -364,7 +362,6 @@ saveImage(file) {
       let floorid = this.currentSelectedFloorId;
 
       imgData.append("iamgeFile", img);
-      imgData.append("floorId", floorid);
       console.log(imgData);
 
       //for (var value of imgData.keys()) {
