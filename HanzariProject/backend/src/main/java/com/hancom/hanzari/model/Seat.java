@@ -79,9 +79,8 @@ public class Seat {
 
 	public SeatDto toDto() {
 		String employeeId = (employee == null) ? null : String.valueOf(employee.getEmployeeId());
-		return SeatDto.builder().seat_id(seatId).floor(floor.getFloorId()).x(x).y(y).is_group(isGroup)
-				.group_id(groupId).building_id(floor.getBuilding().getBuildingId()).employee_id(employeeId)
-				.width(figure.getWidth()).height(figure.getHeight()).degree(figure.getDegree())
-				.shape_id(figure.getShape().getShapeId()).build();
+		return SeatDto.builder().seat_id(seatId).floor(floor.getFloorId()).x(x).y(y).is_group(isGroup).group_id(groupId)
+				.building_id(floor.getBuilding().getBuildingId()).employee_id(employeeId).width(figure.getWidth())
+				.height(figure.getHeight()).degree(figure.getDegree()).shape_id(figure.getShape().getShapeId()).build();
 	}
 }
