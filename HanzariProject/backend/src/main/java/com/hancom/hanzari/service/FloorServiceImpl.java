@@ -66,7 +66,6 @@ public class FloorServiceImpl implements FloorService {
 
 	@Override
 	public Floor save(Floor floor) {
-		floorRepository.save(floor);
-		return floor;
+		return floorRepository.save(floor);
 	}
 }
