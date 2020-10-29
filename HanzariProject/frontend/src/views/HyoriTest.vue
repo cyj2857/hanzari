@@ -14,7 +14,9 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
+        v-if="currentFloorSeats"
         v-bind:copyEmployee="employees"
+        v-bind:copyFloors="floors"
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:currentFloorImageList="currentFloorImage"
         v-on:loadOtherFloorSeats="getOtherFloorSeats"
@@ -75,9 +77,9 @@ export default {
     this.employees = await this.getEmployees();
     // 층 load
     this.floors = await this.getFloors();
-    // 이미지 load
-    this.currentFloorImage = await this.getCurrentFloorImage();
-    // 자리 load
+    // 현재 층 이미지 load
+    //this.currentFloorImage = await this.getCurrentFloorImage();
+    // 현재 층 자리 load
     this.currentFloorSeats = await this.getCurrentFloorSeats();
   },
   methods: {
