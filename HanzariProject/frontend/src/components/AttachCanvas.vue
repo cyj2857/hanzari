@@ -7,14 +7,9 @@
       height="800px"
       style="text-align: center"
     ></canvas>
-    <input
-      v-show="false"
-      ref="inputUpload"
-      type="file"
-      @change="changeImgFile"
-    />
-    <v-btn color="success" @click="$refs.inputUpload.click()"
-      >File Upload to Background</v-btn
+    <input v-show="false" ref="Upload" type="file" @change="changeImageFile" />
+    <v-btn color="success" @click="$refs.Upload.click()"
+      >Upload Background img file</v-btn
     >
     <v-menu>
       <template v-slot:activator="{ on, attrs }"
@@ -78,7 +73,8 @@ export default {
       currentSelectedFloorId: null,
 
       currentFloorImageListFromDb: this.currentFloorImageList,
-      allImageMap: null, // 이미지(도면)이 삭제되는 경우를 제외함. 이미지 리스트 하나로 관리함
+
+      allImageList: null, // 이미지(도면)이 삭제되는 경우를 제외함. 이미지 리스트 하나로 관리함
 
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
       //seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
@@ -137,8 +133,9 @@ export default {
       그 층에 해당하는 자리들도 삭제함*/
       this.managerAllSeatMap.delete(floor_id);
     });
-    if (this.allImageMap == null) {
-      this.allImageMap = new Map();
+
+    if (this.allImageList == null) {
+      this.allImageList = new Array();
     }
     if (this.allSeatMap == null) {
       this.allSeatMap = new Map();
@@ -310,8 +307,8 @@ export default {
       );
       // managerEachFloorSeatList init 해주기 위함
 
-      if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
-        this.loadImage(this.allImageMap.get(this.currentSelectedFloorId));
+      if (this.allImageList.get(this.currentSelectedFloorId) != null) {
+        this.loadImage(this.allImageList.get(this.currentSelectedFloorId));
 
         //현재 층에 그린 도형들이 있다면
         if (myOnefloorSeatList) {
@@ -323,7 +320,7 @@ export default {
 
           eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
         }
-      } else if (this.allImageMap.get(this.currentSelectedFloorId) == null) {
+      } else if (this.allImageList.get(this.currentSelectedFloorId) == null) {
         //현재 층의 이미지가 저장되어있지 않다면
         //화면에 그려져있던 이미지와 도형 초기화
         this.floorCanvas
@@ -354,31 +351,36 @@ export default {
         );
       });
     },
-    saveImage(file) {
-      this.allImageMap.set(this.currentSelectedFloorId, file);
+    saveImageFile(file) {
+      let newImage = {};
+      newImage.file = file;
+      newImage.floorid = this.currentSelectedFloorId;
+      //newImage.create = true;
+      newImage.modify = true;
 
-      let imgData = new FormData();
-
-      let img = this.allImageMap.get(this.currentSelectedFloorId);
-      let floorid = this.currentSelectedFloorId;
-
-      imgData.append("imageFile", img);
-
-      for (var value of imgData.values()) {
-        console.log(value);
-      }
-      console.log(this.allImageMap);
-
-      this.$emit("saveImages", "images", imgData, floorid);
+      this.allImageList.push(newImage);
     },
-    createImage(file) {
-      this.loadImage();
-      this.saveImage(file);
+    loadImageFile(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        fabric.Image.fromURL(e.target.result, (img) => {
+          img.set({
+            scaleX: this.floorCanvas.width / img.width,
+            scaleY: this.floorCanvas.height / img.height,
+          });
+          this.floorCanvas.setBackgroundImage(
+            img,
+            this.floorCanvas.renderAll.bind(this.floorCanvas)
+          );
+        });
+      };
+      reader.readAsDataURL(file);
     },
-    changeImgFile(e) {
+    changeImageFile(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
-      this.createImage(files[0]);
+      this.saveImageFile(files[0]);
+      this.loadImageFile(files[0]);
     },
     getColor(department) {
       const Colors = {
@@ -429,8 +431,8 @@ export default {
 
           //각 층의 저장된 도형 리스트 화면에 뿌려주기
           //현재 층의 이미지가 저장되어있다면
-          if (this.allImageMap.get(seatFloor) != null) {
-            this.loadImage(this.allImageMap.get(seatFloor));
+          if (this.allImageList.get(seatFloor) != null) {
+            this.loadImage(this.allImageList.get(seatFloor));
 
             for (let i = 0; i < eachFloorSeatList.length; i++) {
               this.floorCanvas.add(eachFloorSeatList[i]);
@@ -661,7 +663,7 @@ export default {
 
       //각 층에 해당하는 도형 리스트 리턴하기
 
-      if (!this.allImageMap.get(this.currentSelectedFloorId)) {
+      if (!this.allImageList.get(this.currentSelectedFloorId)) {
         alert("도면 이미지가 없습니다");
         console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
         return;
@@ -848,7 +850,19 @@ export default {
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {
-      if (this.managerFloorList) {
+      //이미지 저장
+      for (let i = 0; i < this.allImageList.length; i++) {
+        if (this.allImageList[i].modify == true) {
+          let imgData = new FormData();
+          let file = this.allImageList[i].file;
+          let floorid = this.allImageList[i].floorid;
+          imgData.append("imageFile", file);
+
+          this.$emit("saveImages", "images", imgData, floorid);
+        }
+      }
+
+      /*if (this.managerFloorList) {
         //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
@@ -882,6 +896,18 @@ export default {
 
               this.$emit("saveFloors", "floors", floorData);
             }
+          }
+        }
+
+        //이미지 저장
+        for (let i = 0; i < this.allImageList.length; i++) {
+          if (this.allImageList[i].modify == true) {
+            let imgData = new FormData();
+            let file = this.allImageList[i].file;
+            let floorid = this.allImageList[i].floorid;
+            imgData.append("imageFile", file);
+
+            this.$emit("saveImages", "images", imgData, floorid);
           }
         }
 
@@ -976,7 +1002,7 @@ export default {
             }
           }
         }
-      }
+      }*/
     },
     getEmployeeObject(employee_id) {
       // seat table의 employee_id를 받으면 그에 맞는 정보 알아오기 위함
@@ -1080,7 +1106,26 @@ export default {
 
       return group;
     },
+    loadImageFileCanvas(imgurl) {
+      fabric.Image.fromURL(imgurl, (img) => {
+        img.set({
+          scaleX: this.floorCanvas.width / img.width,
+          scaleY: this.floorCanvas.height / img.height,
+        });
+        this.floorCanvas.setBackgroundImage(
+          img,
+          this.floorCanvas.renderAll.bind(this.floorCanvas)
+        );
+      });
+    },
     loadCurrentFloorSeats() {
+      //현재 층 이미지 로드
+      for (let i = 0; i < this.currentFloorImageListFromDb.length; i++) {
+        let imgurl = this.currentFloorImageListFromDb[i].url;
+  
+        this.loadImageFileCanvas(imgurl);
+      }
+
       // 현재층 자리 로드
       let currentFloorSeatListFromDb = this.currentFloorSeatListFromDb;
       if (currentFloorSeatListFromDb) {
