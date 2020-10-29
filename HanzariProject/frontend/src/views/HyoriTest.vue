@@ -14,7 +14,7 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
-        v-if="currentFloorSeats"
+        v-if="currentFloorSeats && currentFloorImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
         v-bind:currentFloorSeatsList="currentFloorSeats"
@@ -78,7 +78,7 @@ export default {
     // 층 load
     this.floors = await this.getFloors();
     // 현재 층 이미지 load
-    //this.currentFloorImage = await this.getCurrentFloorImage();
+    this.currentFloorImage = await this.getCurrentFloorImage();
     // 현재 층 자리 load
     this.currentFloorSeats = await this.getCurrentFloorSeats();
   },
@@ -147,9 +147,10 @@ export default {
 
       return allFloorList;
     },
+
     //현재 층 이미지 가져오기
     async getCurrentFloorImage() {
-      let currentFloorImageList = new Array();
+      let currentFloorImage = new Array();
       try {
         let response = await axios.get(
           "http://172.30.1.56:8081/api/buildings/" +
@@ -163,18 +164,19 @@ export default {
         newImage.url = response.config.url;
         //newImage.floor = response.data.floor; // floor_id
         //newImage.building_id = response.data.building_id;
-        newImage.create = false;
-        newImage.modify = false;
+        //newImage.create = false;
+        //newImage.modify = false;
 
-        currentFloorImageList.push(newImage);
+        currentFloorImage.push(newImage);
       } catch (e) {
         console.log(e);
       }
-      return currentFloorImageList;
+      console.log(currentFloorImage);
+      return currentFloorImage;
     },
     //나머지 층 이미지 가져오기
     async getOtherFloorImage(tableName) {
-      let otherFloorImageList = new Array();
+      let otherFloorImage = new Array();
       try {
         let response = null;
         for (let i = 0; i < this.floorIdList - 1; i++) {
@@ -187,19 +189,24 @@ export default {
           );
           for (var i = 0; i < response.data.length; i++) {
             let newImage = {};
-            newImage.url = response[i].config.url;
+            newImage.url = response.config.url;
+            //let newImage = {};
+            //newImage.url = response[i].config.url;
             //newImage.floor = response[i].data.floor; // floor_id
             //newImage.building_id = response[i].data.building_id;
-            newImage.create = false;
-            newImage.delete = false;
+            //newImage.create = false;
+            //newImage.modify = false;
+            //let imgurl =  response.config.url
 
-            otherFloorImageList.push(newImage);
+            otherFloorImage.push(imgurl);
           }
         }
       } catch (e) {
         console.error(e);
       }
-      return otherFloorImageList;
+
+      console.log(otherFloorImage);
+      return otherFloorImage;
     },
 
     //우선 현재 층의 자리만 가져옴
@@ -240,6 +247,7 @@ export default {
       } catch (e) {
         console.log(e);
       }
+      console.log(currentFloorSeatList);
       return currentFloorSeatList;
     },
     //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
