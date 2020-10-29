@@ -7,10 +7,6 @@ import java.net.URLConnection;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,14 +61,15 @@ public class FloorPlanController {
 				    PutObjectArgs.builder()
 				    .bucket(bucketName)
 				    .object(floorPlanId)//file.getOriginalFilename())
-				    .stream(imagePutInputStream, imagePutInputStream.available(), -1)
-				    .contentType(file.getContentType())
+				    .stream(imagePutInputStream, file.getSize() , -1) //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
+				    .contentType(file.getContentType()) //TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보내면 내용과 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 문제가 생길 수 있다.
 				    .build());
 			result = true;
 		} catch (Exception e) {
 			System.out.println("Error occurred: " + e);
 		}
-		//imagePutinputStream 닫아주기
+		//imagePutInputStream 닫아주기
+		//TODO finally에 넣어주는 것이 좋다. 하지만 닫아 주는 경우에도 exception이 발생할 수 있기에 이러한 경우들을 위한 exception 클래스를 만들어서 사용하는 것이 좋다.
 		imagePutInputStream.close();
 		return result;
 	}
@@ -108,9 +105,13 @@ public class FloorPlanController {
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
 			result = true;
+			
 		} catch(Exception e) {
 			System.out.println("Error occurred: " + e);
 		}
+		//TODO 동일하게 finally에 넣어주는 것이 좋다. 하지만 닫아 주는 경우에도 exception이 발생할 수 있기에 이러한 경우들을 위한 exception 클래스를 만들어서 사용하는 것이 좋다.
+		imageGetInputStream.close();
+		//imageGetInputStream 닫아주기
 		return result;
 	}
 }
