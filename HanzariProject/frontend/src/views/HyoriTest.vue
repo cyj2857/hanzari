@@ -14,10 +14,10 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
-        v-if="images && currentFloorSeats"
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:copyEmployee="employees"
-        v-bind:copyImages="images"
+        v-bind:currentFloorImageList="currentFloorImage"
+        v-on:loadOtherFloorImage="getOtherFloorImage"
         v-on:loadOtherFloorSeats="getOtherFloorSeats"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
@@ -75,7 +75,7 @@ export default {
     // 층 load
     this.floors = await this.getFloors();
     // 이미지 load
-    this.images = await this.getImages();
+    this.currentFloorImage = await this.getCurrentFloorImage();
     // 자리 load
     this.currentFloorSeats = await this.getCurrentFloorSeats();
   },
@@ -144,22 +144,63 @@ export default {
 
       return allFloorList;
     },
-    //추후 현재 층의 이미지만 가져오게 구현해야 함.
-    async getImages() {
-      let imageurl = null;
+    //모든 층의 이미지 가져오기
+
+    //현재 층의 이미지 가져오기
+    async getCurrentFloorImage() {
+      let currentFloorImageList = new Array();
       try {
         let response = await axios.get(
-          "http://172.30.1.56:8081/api/images/buildings/" +
+          "http://172.30.1.56:8081/api/buildings/" +
             building_id +
             "/floors/" +
-            this.currentFloorId
+            this.currentFloorId +
+            "/images"
         );
-        imageurl = response.config.url;
+
+        let newImage = {};
+        newImage.url = response.config.url;
+        //newImage.floor = response.data.floor; // floor_id
+        //newImage.building_id = response.data.building_id;
+        newImage.create = false;
+        newImage.modify = false;
+
+        currentFloorImageList.push(newImage);
       } catch (e) {
         console.log(e);
       }
-      return imageurl;
+      return currentFloorImageList;
     },
+    //나머지 층의 이미지 가져오기
+    async getOtherFloorImage(tableName) {
+      let otherFloorImageList = new Array();
+      try {
+        let response = null;
+        for (let i = 0; i < this.floorIdList - 1; i++) {
+          response = await axios.get(
+            "http://172.30.1.56:8081/api/buildings/" +
+              building_id +
+              "/floors/" +
+              this.currentFloorId +
+              "/images"
+          );
+          for (var i = 0; i < response.data.length; i++) {
+            let newImage = {};
+            newImage.url = response[i].config.url;
+            //newImage.floor = response[i].data.floor; // floor_id
+            //newImage.building_id = response[i].data.building_id;
+            newImage.create = false;
+            newImage.delete = false;
+
+            otherFloorImageList.push(newImage);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      return otherFloorImageList;
+    },
+
     //우선 현재 층의 자리만 가져옴
     async getCurrentFloorSeats() {
       //console.log(this.currentFloorId); // ok
@@ -269,18 +310,26 @@ export default {
           console.log(res.saveData);
         });
     },
-   saveImages(tableName, data, floor_id) {
+    saveImages(tableName, data, floor_id) {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
-      axios.post
-        ("http://172.30.1.56:8081/api/"+saveTableName +"/buildings/" + building_id + 
-             "/floors/" + floor_id +
-            "/" , saveData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+      axios
+        .post(
+          "http://172.30.1.56:8081/api/" +
+            saveTableName +
+            "/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/",
+          saveData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then(function (response) {
           console.log(response);
         })
