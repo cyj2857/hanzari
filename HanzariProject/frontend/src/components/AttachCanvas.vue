@@ -22,7 +22,7 @@
       >
       <v-list>
         <v-list-item
-          @click="multipleVacant(item.number)"
+          @click="addmultipleVacantBtn(item.number)"
           v-for="(item, index) in items"
           :key="index"
         >
@@ -54,15 +54,14 @@ import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
-import axios from "axios";
 
 export default {
   props: [
+    "copyEmployee",
+    "copyFloors",
+    "currentFloorImageList",
     "seat",
     "currentFloorSeatsList",
-    "copyEmployee",
-    "copyImages",
-    "copyFloors",
   ],
   components: {
     EmployeeDialog,
@@ -73,12 +72,13 @@ export default {
     return {
       floorCanvas: null,
       seatId: null,
-      currentSelectedFloorName: null,
-      currentSelectedFloorId: null,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
 
-      images: this.copyImages,
-      allImageList: null,
+      currentSelectedFloorName: null,
+      currentSelectedFloorId: null,
+
+      currentFloorImageListFromDb: this.currentFloorImageList,
+      allImageMap: null, // 이미지(도면)이 삭제되는 경우를 제외함. 이미지 리스트 하나로 관리함
 
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
       //seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
@@ -102,12 +102,10 @@ export default {
         // null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
-
         this.changeFloor();
         console.log("changeFloor in AttachCanvas2");
         console.log(this.currentSelectedFloorName + " 여기가 현재층");
       } else {
-        console.log("changeFloor in AttachCanvas3");
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
       }
@@ -121,16 +119,15 @@ export default {
     });
 
     eventBus.$on("MappingSeat", (item) => {
-      console.log(item);
       this.setMappingSeat(item);
     });
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      console.log(allFloors);
+      //console.log(allFloors);
     });
     eventBus.$on("managerFloorList", (managerFloors) => {
       this.managerFloorList = managerFloors;
-      console.log(managerFloors);
+      //console.log(managerFloors);
     });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
       this.allSeatMap.delete(floor_id);
@@ -140,8 +137,8 @@ export default {
       그 층에 해당하는 자리들도 삭제함*/
       this.managerAllSeatMap.delete(floor_id);
     });
-    if (this.allImageList == null) {
-      this.allImageList = new Map();
+    if (this.allImageMap == null) {
+      this.allImageMap = new Map();
     }
     if (this.allSeatMap == null) {
       this.allSeatMap = new Map();
@@ -293,7 +290,7 @@ export default {
         return v.toString(16);
       });
     },
-    multipleVacant(number) {
+    addmultipleVacantBtn(number) {
       this.addVacantBtn(number);
     },
     changeFloor() {
@@ -313,8 +310,8 @@ export default {
       );
       // managerEachFloorSeatList init 해주기 위함
 
-      if (this.allImageList.get(this.currentSelectedFloorId) != null) {
-        this.loadImage(this.allImageList.get(this.currentSelectedFloorId));
+      if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
+        this.loadImage(this.allImageMap.get(this.currentSelectedFloorId));
 
         //현재 층에 그린 도형들이 있다면
         if (myOnefloorSeatList) {
@@ -326,7 +323,7 @@ export default {
 
           eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
         }
-      } else if (this.allImageList.get(this.currentSelectedFloorId) == null) {
+      } else if (this.allImageMap.get(this.currentSelectedFloorId) == null) {
         //현재 층의 이미지가 저장되어있지 않다면
         //화면에 그려져있던 이미지와 도형 초기화
         this.floorCanvas
@@ -344,7 +341,7 @@ export default {
       }
     },
     loadImage() {
-      let imgurl = this.images;
+      let imgurl = this.currentFloorImageListFromDb;
 
       fabric.Image.fromURL(imgurl, (img) => {
         img.set({
@@ -358,11 +355,11 @@ export default {
       });
     },
     saveImage(file) {
-      this.allImageList.set(this.currentSelectedFloorId, file);
+      this.allImageMap.set(this.currentSelectedFloorId, file);
 
       let imgData = new FormData();
 
-      let img = this.allImageList.get(this.currentSelectedFloorId);
+      let img = this.allImageMap.get(this.currentSelectedFloorId);
       let floorid = this.currentSelectedFloorId;
 
       imgData.append("imageFile", img);
@@ -370,7 +367,7 @@ export default {
       for (var value of imgData.values()) {
         console.log(value);
       }
-      console.log(this.allImageList);
+      console.log(this.allImageMap);
 
       this.$emit("saveImages", "images", imgData, floorid);
     },
@@ -432,8 +429,8 @@ export default {
 
           //각 층의 저장된 도형 리스트 화면에 뿌려주기
           //현재 층의 이미지가 저장되어있다면
-          if (this.allImageList.get(seatFloor) != null) {
-            this.loadImage(this.allImageList.get(seatFloor));
+          if (this.allImageMap.get(seatFloor) != null) {
+            this.loadImage(this.allImageMap.get(seatFloor));
 
             for (let i = 0; i < eachFloorSeatList.length; i++) {
               this.floorCanvas.add(eachFloorSeatList[i]);
@@ -664,7 +661,7 @@ export default {
 
       //각 층에 해당하는 도형 리스트 리턴하기
 
-      if (!this.allImageList.get(this.currentSelectedFloorId)) {
+      if (!this.allImageMap.get(this.currentSelectedFloorId)) {
         alert("도면 이미지가 없습니다");
         console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
         return;

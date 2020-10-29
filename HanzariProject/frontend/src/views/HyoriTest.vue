@@ -42,7 +42,6 @@
 
 <script>
 import axios from "axios";
-import { eventBus } from "../main.js";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 import AttachCanvas from "@/components/AttachCanvas.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
@@ -316,15 +315,19 @@ export default {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
+      console.log("saveData is");
+      console.log(saveData);
+      console.log("------------");
+      console.log("saveTableName is");
+      console.log(saveTableName);
       axios
         .post(
-          "http://172.30.1.56:8081/api/" +
-            saveTableName +
-            "/buildings/" +
+          "http://172.30.1.56:8081/api/buildings/" +
             building_id +
             "/floors/" +
             floor_id +
-            "/",
+            "/" +
+            tableName,
           saveData,
           {
             headers: {
