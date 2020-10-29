@@ -14,7 +14,6 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
-        v-if="images && currentFloorSeats"
         v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:copyEmployee="employees"
         v-bind:copyImages="images"
@@ -66,6 +65,7 @@ export default {
       currentFloorSeats: null,
 
       floorIdList: [],
+      currentFloor: null,
       currentFloorId: null,
     };
   },
@@ -139,8 +139,6 @@ export default {
         }
         this.currentFloorId = this.floorIdList.slice(-1)[0];
 
-        console.log(allFloorList.slice(-1)[0]);
-        eventBus.$emit("changeFloor", allFloorList.slice(-1)[0]);
       } catch (error) {
         console.log(error);
       }
@@ -272,18 +270,26 @@ export default {
           console.log(res.saveData);
         });
     },
-   saveImages(tableName, data, floor_id) {
+    saveImages(tableName, data, floor_id) {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
-      axios.post
-        ("http://172.30.1.56:8081/api/"+saveTableName +"/buildings/" + building_id + 
-             "/floors/" + floor_id +
-            "/" , saveData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+      axios
+        .post(
+          "http://172.30.1.56:8081/api/" +
+            saveTableName +
+            "/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/",
+          saveData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then(function (response) {
           console.log(response);
         })
