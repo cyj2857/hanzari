@@ -113,7 +113,9 @@ export default {
   methods: {
     setFloor(floor) {
       // floor 객체 자체를 보내줌
+      console.log("aaaaaaaaaaaaaaaaa")
       eventBus.$emit("changeFloor", floor);
+      console.log("bbbbbbbbbbbbbbbbb")
     },
     getDialog() {
       eventBus.$emit("initFloor", null);
