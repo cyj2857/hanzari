@@ -85,10 +85,6 @@ public class FloorController {
 
 	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteFloorById(@PathVariable("floor_id") String floor_id) {
-		System.out.println("==================================================================");
-		System.out.println("seatId: " + floor_id);
-		System.out.println("==================================================================");
-
 		floorService.deleteById(floor_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}

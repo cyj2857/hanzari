@@ -12,6 +12,9 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hancom.hanzari.dto.BuildingDto;
 
@@ -37,8 +40,8 @@ public class Building {
 	@Column(name = "building_name", nullable = false)
 	private String buildingName;
 
-	@OneToMany(mappedBy = "building", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE }, orphanRemoval = true)
+	@OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = false)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonManagedReference
 	private List<Floor> floors;
 
@@ -47,6 +50,21 @@ public class Building {
 		if (floors != null) {
 			floors.forEach(e -> e.setBuilding(null));
 		}
+	}
+
+	public void setFloors(List<Floor> floors) {
+		this.floors.clear();
+		if (floors != null) {
+			this.floors.addAll(floors);
+		}
+	}
+
+	public void addFloor(Floor floor) {
+		floors.add(floor); 
+	}
+
+	public void removeFloor(Floor floor) {
+		floors.remove(floor);
 	}
 
 	public Building() {
