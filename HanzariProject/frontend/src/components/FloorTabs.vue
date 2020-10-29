@@ -89,9 +89,6 @@ export default {
         this.floorNum = length - 1; // floor의 index가 되는 floorNum
         this.firstLoadWatch = true;
 
-        console.log("1111111111111111");
-        console.log(this.allFloorList);
-        console.log(this.managerFloorList);
       } else {
         //DB 로드 끝낸 후에 불리는 부분
         this.floorNum = length - 1; // floor의 index가 되는 floorNum
@@ -102,9 +99,6 @@ export default {
         let managerFloors = this.managerFloorList;
         eventBus.$emit("managerFloorList", managerFloors);
 
-        console.log("222222222222");
-        console.log(this.allFloorList);
-        console.log(this.managerFloorList);
       }
 
       if (this.length == 0) {
@@ -117,11 +111,7 @@ export default {
   methods: {
     setFloor(floor) {
       // floor 객체 자체를 보내줌
-      console.log("aaaaaaaaaaaaaaaaa");
-      console.log(floor);
-      console.log(this.length);
       eventBus.$emit("changeFloor", floor);
-      console.log("bbbbbbbbbbbbbbbbb");
     },
     getDialog() {
       eventBus.$emit("initFloor", null);

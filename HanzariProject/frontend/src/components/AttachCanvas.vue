@@ -98,17 +98,14 @@ export default {
       this.showSeat(seat);
     });
     eventBus.$on("changeFloor", (floor) => {
-      console.log("changeFloor in AttachCanvas");
       if (floor) {
         // null 이 아닐때
-        console.log("changeFloor in AttachCanvas2");
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
 
         this.changeFloor();
         console.log(this.currentSelectedFloorName + "여기가 현재층");
       } else {
-        console.log("changeFloor in AttachCanvas3");
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
       }
@@ -119,19 +116,16 @@ export default {
     });
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      console.log(this.allFloorList);
     });
     eventBus.$on("managerFloorList", (managerFloors) => {
       this.managerFloorList = managerFloors;
-      console.log(this.managerFloorList);
     });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
-      console.log(floor_id);
       this.allSeatMap.delete(floor_id);
-      //층 삭제시 allSeatMap에 그 층을 key로 하는 요소들 삭제
 
-      /*managerAllSeatMap 에서 삭제되어도 되는 이유 : managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것. 
-      그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함*/
+      /*managerAllSeatMap 에서 삭제되어도 되는 이유 : managerFloorList만큼 저장을 하기때문에 
+      그에 해당되지 않는 key는 저장이 되지 않을 것. 그리고 DB에서도 삭제되는 층이 있으면 자동으로 
+      그 층에 해당하는 자리들도 삭제함*/
       this.managerAllSeatMap.delete(floor_id);
     });
     if (this.allImageList == null) {
