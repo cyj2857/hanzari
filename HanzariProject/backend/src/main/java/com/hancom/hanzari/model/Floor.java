@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -35,9 +36,11 @@ import lombok.Setter;
 public class Floor {
 
 	@Id
+	@NotNull
 	@Column(name = "floor_id", nullable = false)
 	private String floorId;
 
+	@NotNull
 	@Column(name = "floor_name", nullable = false)
 	private String floorName;
 
@@ -46,6 +49,7 @@ public class Floor {
 	@JsonBackReference
 	private Building building;
 
+	@NotNull
 	@Column(name = "floor_order", nullable = false)
 	private int floorOrder;
 

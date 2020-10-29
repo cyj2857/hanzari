@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -23,9 +24,11 @@ import lombok.Getter;
 public class Shape {
 
 	@Id
+	@NotNull
 	@Column(name = "shape_id", nullable = false)
 	private String shapeId; // 그려질 모양의 id
 
+	@NotNull
 	@Column(name = "shape_name", nullable = false)
 	private String shapeName; // 그려질 모양의 이름 (ex. 네모, 세모, 원, 타원, ...)
 	

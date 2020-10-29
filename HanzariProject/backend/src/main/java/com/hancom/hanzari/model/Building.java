@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hancom.hanzari.dto.BuildingDto;
@@ -28,9 +29,11 @@ import lombok.Setter;
 public class Building {
 
 	@Id
+	@NotNull
 	@Column(name = "building_id", nullable = false)
 	private String buildingId;
 
+	@NotNull
 	@Column(name = "building_name", nullable = false)
 	private String buildingName;
 

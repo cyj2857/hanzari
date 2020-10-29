@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hancom.hanzari.dto.EmployeeDto;
@@ -28,9 +29,11 @@ import lombok.Getter;
 public class Employee {
 
 	@Id
+	@NotNull
 	@Column(name = "employee_id", nullable = false)
 	private String employeeId;
 
+	@NotNull
 	@Column(name = "authority", nullable = false)
 	private String authority;
 
