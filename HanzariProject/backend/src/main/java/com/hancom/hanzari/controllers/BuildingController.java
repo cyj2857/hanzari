@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,6 +46,7 @@ public class BuildingController {
 		return new ResponseEntity<BuildingDto>(buildingService.findById(buildingId).toDto(), HttpStatus.OK);
 	}
 
+	@Transactional
 	@PostMapping
 	public ResponseEntity<Building> save(@RequestBody BuildingDto buildingDto) throws Exception {
 		for (Field field : buildingDto.getClass().getDeclaredFields()) {
