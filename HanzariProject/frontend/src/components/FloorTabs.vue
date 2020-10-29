@@ -46,7 +46,6 @@ export default {
       firstLoadWatch: null,
     };
   },
-  beforeCreate() {},
   created() {
     this.managerFloorList = this.allFloorList.slice();
     this.length = this.copyFloors.length;
@@ -57,7 +56,6 @@ export default {
       let allFloors = this.allFloorList;
       eventBus.$emit("allFloorList", allFloors);
     }
-
     eventBus.$on("AddFloor", (floor_name) => {
       this.inputFloorName = floor_name;
       this.confirmDialog();
