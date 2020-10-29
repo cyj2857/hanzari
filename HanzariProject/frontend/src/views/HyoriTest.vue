@@ -14,11 +14,11 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
-        v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:copyEmployee="employees"
+        v-bind:currentFloorSeatsList="currentFloorSeats"
         v-bind:currentFloorImageList="currentFloorImage"
-        v-on:loadOtherFloorImage="getOtherFloorImage"
         v-on:loadOtherFloorSeats="getOtherFloorSeats"
+        v-on:loadOtherFloorImage="getOtherFloorImage"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
         v-on:saveSeats="saveSeats"
@@ -62,7 +62,8 @@ export default {
     return {
       employees: null,
       floors: null,
-      images: null,
+
+      currentFloorImage: null,
       currentFloorSeats: null,
 
       floorIdList: [],
@@ -139,20 +140,18 @@ export default {
           this.floorIdList.push(allFloorList[i].floor_id);
         }
         this.currentFloorId = this.floorIdList.slice(-1)[0];
-
       } catch (error) {
         console.log(error);
       }
 
       return allFloorList;
     },
-    //모든 층의 이미지 가져오기
-
-    //현재 층의 이미지 가져오기
+    //현재 층 이미지 가져오기
     async getCurrentFloorImage() {
       let currentFloorImageList = new Array();
       try {
-        let response = await axios.get(
+        let response = await axios
+        .get(
           "http://172.30.1.56:8081/api/buildings/" +
             building_id +
             "/floors/" +
@@ -168,18 +167,20 @@ export default {
         newImage.modify = false;
 
         currentFloorImageList.push(newImage);
+
       } catch (e) {
         console.log(e);
       }
       return currentFloorImageList;
     },
-    //나머지 층의 이미지 가져오기
+    //나머지 층 이미지 가져오기
     async getOtherFloorImage(tableName) {
       let otherFloorImageList = new Array();
       try {
         let response = null;
-        for (let i = 0; i < this.floorIdList - 1; i++) {
-          response = await axios.get(
+        for (let i = 0; i < this.floorIdList-1; i++) {
+          response = await axios
+          .get(
             "http://172.30.1.56:8081/api/buildings/" +
               building_id +
               "/floors/" +
@@ -316,8 +317,7 @@ export default {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
-      axios
-        .post(
+      axios.post(
           "http://172.30.1.56:8081/api/" +
             saveTableName +
             "/buildings/" +
