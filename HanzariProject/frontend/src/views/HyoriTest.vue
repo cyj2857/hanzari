@@ -40,7 +40,6 @@
 
 <script>
 import axios from "axios";
-import { eventBus } from "../main.js";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
 import AttachCanvas from "@/components/AttachCanvas.vue";
 import FloorTabs from "@/components/FloorTabs.vue";
@@ -150,8 +149,7 @@ export default {
     async getCurrentFloorImage() {
       let currentFloorImageList = new Array();
       try {
-        let response = await axios
-        .get(
+        let response = await axios.get(
           "http://172.30.1.56:8081/api/buildings/" +
             building_id +
             "/floors/" +
@@ -167,7 +165,6 @@ export default {
         newImage.modify = false;
 
         currentFloorImageList.push(newImage);
-
       } catch (e) {
         console.log(e);
       }
@@ -178,9 +175,8 @@ export default {
       let otherFloorImageList = new Array();
       try {
         let response = null;
-        for (let i = 0; i < this.floorIdList-1; i++) {
-          response = await axios
-          .get(
+        for (let i = 0; i < this.floorIdList - 1; i++) {
+          response = await axios.get(
             "http://172.30.1.56:8081/api/buildings/" +
               building_id +
               "/floors/" +
@@ -317,14 +313,19 @@ export default {
       //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
-      axios.post(
-          "http://172.30.1.56:8081/api/" +
-            saveTableName +
-            "/buildings/" +
+      console.log("saveData is");
+      console.log(saveData);
+      console.log("------------");
+      console.log("saveTableName is");
+      console.log(saveTableName);
+      axios
+        .post(
+          "http://172.30.1.56:8081/api/buildings/" +
             building_id +
             "/floors/" +
             floor_id +
-            "/",
+            "/" +
+            tableName,
           saveData,
           {
             headers: {
