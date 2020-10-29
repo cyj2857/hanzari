@@ -22,6 +22,7 @@ import com.hancom.hanzari.dto.FloorDto;
 import com.hancom.hanzari.exception.ResourceNotFoundException;
 import com.hancom.hanzari.model.Building;
 import com.hancom.hanzari.model.Floor;
+import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.service.BuildingService;
 import com.hancom.hanzari.service.FloorService;
 
@@ -75,10 +76,28 @@ public class FloorController {
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
 		}
-		Floor newFloor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name())
-				.building(building).floorOrder(floorDto.getFloor_order()).build();
-
-		return new ResponseEntity<Floor>(floorService.save(newFloor), HttpStatus.OK);
+		/*Floor newFloor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name())
+				.building(building).floorOrder(floorDto.getFloor_order()).build();*/
+		
+		
+		
+		Floor newFloor = new Floor();
+		newFloor.setFloorId(floorDto.getFloor_id());
+		newFloor.setFloorName(floorDto.getFloor_name());
+		newFloor.setFloorOrder(floorDto.getFloor_order());
+		newFloor.setBuilding(building);
+		//newFloor.setSeats(new ArrayList<Seat>());
+		
+		if(newFloor.getSeats() == null) {
+			System.out.println("#####\n#####\nseats null#####\n#####\n");
+		}
+		else {
+			System.out.println("#####\n#####\nseats not null#####\n#####\n");
+		}
+		
+		floorService.save(newFloor);
+		
+		return new ResponseEntity<Floor>(newFloor, HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })

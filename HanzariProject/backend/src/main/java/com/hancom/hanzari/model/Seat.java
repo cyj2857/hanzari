@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hancom.hanzari.dto.SeatDto;
@@ -28,20 +29,25 @@ import lombok.Setter;
 public class Seat {
 
 	@Id
+	@NotNull
 	@Column(name = "seat_id", nullable = false)
 	private String seatId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@NotNull
 	@JoinColumn(name = "floor_id", nullable = false) // 관계의 주인
 	@JsonBackReference
 	private Floor floor;
 
+	@NotNull
 	@Column(name = "x", nullable = false)
 	private double x;
 
+	@NotNull
 	@Column(name = "y", nullable = false)
 	private double y;
 
+	@NotNull
 	@Column(name = "is_group", nullable = false)
 	private Boolean isGroup;
 
@@ -54,6 +60,7 @@ public class Seat {
 	private Employee employee;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@NotNull
 	@JoinColumn(name = "figure_id", nullable = false)
 	private Figure figure;
 
