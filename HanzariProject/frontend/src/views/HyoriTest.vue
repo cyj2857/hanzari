@@ -149,22 +149,19 @@ export default {
     },
     //추후 현재 층의 이미지만 가져오게 구현해야 함.
     async getImages() {
-      let allImageList = new Array();
+      let imageurl = null;
       try {
         let response = await axios.get(
-          "http://172.30.1.56:9000/hanzari/hanzariFloor?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20201028%2F%2Fs3%2Faws4_request&X-Amz-Date=20201028T041651Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=11bae981b8684cfe3e8f18597fa59671980027b20fbed4197460a54806dde773"
+          "http://172.30.1.56:8081/api/images/buildings/" +
+            building_id +
+            "/floors/" +
+            this.currentFloorId
         );
-        let newImage = {};
-        newImage.url = response.config.url;
-        console.log(newImage.url);
-        allImageList.push(newImage);
+        imageurl = response.config.url;
       } catch (e) {
         console.log(e);
       }
-
-      console.log(allImageList);
-      //return this.images;
-      return allImageList;
+      return imageurl;
     },
     //우선 현재 층의 자리만 가져옴
     async getCurrentFloorSeats() {
@@ -248,28 +245,6 @@ export default {
       }
       return otherFloorSeatList;
     },
-    saveImages(tableName, data) {
-      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
-      let saveData = data;
-      let saveTableName = tableName;
-
-      // for (let value of saveData.values()) {
-      //   console.log(value);
-      // }
-
-      /*axios
-        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });*/
-    },
     saveFloors(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;
@@ -297,11 +272,14 @@ export default {
           console.log(res.saveData);
         });
     },
-    saveImages(tableName, data) {
+   saveImages(tableName, data, floor_id) {
+      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
-      axios
-        .post("http://172.30.1.56:8081" + "/api/" + saveTableName, saveData, {
+      axios.post
+        ("http://172.30.1.56:8081/api/"+saveTableName +"/buildings/" + building_id + 
+             "/floors/" + floor_id +
+            "/" , saveData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
