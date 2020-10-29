@@ -1126,7 +1126,7 @@ export default {
         }
       }
 
-      //this.$emit("loadOtherFloorSeats", "seats");
+      this.$emit("loadOtherFloorSeats", "seats");
     },
     /*clickLoadBtn() {
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
