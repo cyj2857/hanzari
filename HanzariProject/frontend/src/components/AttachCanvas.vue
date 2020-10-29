@@ -22,7 +22,7 @@
       >
       <v-list>
         <v-list-item
-          @click="multipleVacant(item.number)"
+          @click="addmultipleVacantBtn(item.number)"
           v-for="(item, index) in items"
           :key="index"
         >
@@ -54,10 +54,14 @@ import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
-import axios from "axios";
 
 export default {
-  props: ["copyEmployee","seat", "currentFloorSeatsList","currentFloorImageList"],
+  props: [
+    "copyEmployee",
+    "currentFloorImageList",
+    "seat",
+    "currentFloorSeatsList",
+  ],
   components: {
     EmployeeDialog,
     AllFloorsDataTable,
@@ -67,12 +71,13 @@ export default {
     return {
       floorCanvas: null,
       seatId: null,
-      currentSelectedFloorName: null,
-      currentSelectedFloorId: null,
       items: [{ number: 2 }, { number: 4 }, { number: 6 }, { number: 8 }],
 
+      currentSelectedFloorName: null,
+      currentSelectedFloorId: null,
+
       currentFloorImageListFromDb: this.currentFloorImageList,
-      allImageMap: null,// 이미지(도면)이 삭제되는 경우를 제외함. 이미지 리스트 하나로 관리함
+      allImageMap: null, // 이미지(도면)이 삭제되는 경우를 제외함. 이미지 리스트 하나로 관리함
 
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
       //seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
@@ -94,39 +99,29 @@ export default {
       this.confirmChangeSeatDialog(inputInfo);
     });
     eventBus.$on("showSeat", (seat) => {
-      console.log(seat);
       this.showSeat(seat);
     });
     eventBus.$on("changeFloor", (floor) => {
-      console.log("changeFloor in AttachCanvas");
       if (floor) {
         // null 이 아닐때
-        console.log("changeFloor in AttachCanvas2");
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
-
         this.changeFloor();
-        console.log(this.currentSelectedFloorName + "여기가 현재층");
       } else {
-        console.log("changeFloor in AttachCanvas3");
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
       }
     });
     eventBus.$on("MappingSeat", (item) => {
-      console.log(item);
       this.setMappingSeat(item);
     });
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      console.log(this.allFloorList);
     });
     eventBus.$on("managerFloorList", (managerFloors) => {
       this.managerFloorList = managerFloors;
-      console.log(this.managerFloorList);
     });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
-      console.log(floor_id);
       this.allSeatMap.delete(floor_id);
       //층 삭제시 allSeatMap에 그 층을 key로 하는 요소들 삭제
 
@@ -285,7 +280,7 @@ export default {
         return v.toString(16);
       });
     },
-    multipleVacant(number) {
+    addmultipleVacantBtn(number) {
       this.addVacantBtn(number);
     },
     changeFloor() {
