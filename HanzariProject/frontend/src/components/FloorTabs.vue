@@ -53,6 +53,15 @@ export default {
       let allFloors = this.allFloorList;
       eventBus.$emit("allFloorList", allFloors);
     }
+
+    this.managerFloorList = this.allFloorList.slice();
+    
+    let allFloors = this.allFloorList;
+    eventBus.$emit("allFloorList", allFloors);
+
+    let managerFloors = this.managerFloorList;
+    eventBus.$emit("managerFloorList", managerFloors);
+
     eventBus.$on("AddFloor", (floor_name) => {
       this.inputFloorName = floor_name;
       this.confirmDialog();
@@ -68,9 +77,7 @@ export default {
         }
       }
     });
-    this.allFloorList = this.copyFloors;
     this.length = this.copyFloors.length;
-    this.setFloor(this.allFloorList[this.floorNum]);
   },
   watch: {
     length(length) {
@@ -80,18 +87,11 @@ export default {
       if (!this.firstLoadWatch) {
         //처음 load
         this.floorNum = length - 1; // floor의 index가 되는 floorNum
-        if (length == 0) {
-          this.setFloor(null);
-        }
-
-        let allFloors = this.allFloorList;
-        eventBus.$emit("allFloorList", allFloors);
-
-        this.managerFloorList = allFloors.slice();
-        let managerFloors = this.managerFloorList;
-        eventBus.$emit("managerFloorList", managerFloors);
-
         this.firstLoadWatch = true;
+
+        console.log("1111111111111111");
+        console.log(this.allFloorList);
+        console.log(this.managerFloorList);
       } else {
         //DB 로드 끝낸 후에 불리는 부분
         this.floorNum = length - 1; // floor의 index가 되는 floorNum
@@ -101,6 +101,10 @@ export default {
 
         let managerFloors = this.managerFloorList;
         eventBus.$emit("managerFloorList", managerFloors);
+
+        console.log("222222222222");
+        console.log(this.allFloorList);
+        console.log(this.managerFloorList);
       }
 
       if (this.length == 0) {
@@ -113,9 +117,11 @@ export default {
   methods: {
     setFloor(floor) {
       // floor 객체 자체를 보내줌
-      console.log("aaaaaaaaaaaaaaaaa")
+      console.log("aaaaaaaaaaaaaaaaa");
+      console.log(floor);
+      console.log(this.length);
       eventBus.$emit("changeFloor", floor);
-      console.log("bbbbbbbbbbbbbbbbb")
+      console.log("bbbbbbbbbbbbbbbbb");
     },
     getDialog() {
       eventBus.$emit("initFloor", null);

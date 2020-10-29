@@ -80,7 +80,6 @@ export default {
       managerAllSeatMap: null, // -> DB 관리 자리 map
 
       employees: this.copyEmployee,
-      allEmployeeList: [],
       eachEmployeeSeatMap: null, //each Employee's seats map
 
       allFloorList: [], // 가시적 층 리스트
@@ -95,28 +94,27 @@ export default {
       this.confirmChangeSeatDialog(inputInfo);
     });
     eventBus.$on("showSeat", (seat) => {
+      console.log(seat);
       this.showSeat(seat);
     });
     eventBus.$on("changeFloor", (floor) => {
-      console.log("changeFloor in AttachCanvas")
+      console.log("changeFloor in AttachCanvas");
       if (floor) {
         // null 이 아닐때
-      console.log("changeFloor in AttachCanvas2")
+        console.log("changeFloor in AttachCanvas2");
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
 
         this.changeFloor();
         console.log(this.currentSelectedFloorName + "여기가 현재층");
       } else {
-      console.log("changeFloor in AttachCanvas3")
+        console.log("changeFloor in AttachCanvas3");
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
       }
     });
-    eventBus.$on("allEmployeeList", (allEmployeeList) => {
-      this.allEmployeeList = allEmployeeList;
-    });
     eventBus.$on("MappingSeat", (item) => {
+      console.log(item);
       this.setMappingSeat(item);
     });
     eventBus.$on("allFloorList", (allFloors) => {
@@ -162,6 +160,8 @@ export default {
       );
       console.log(eachFloorSeatList);
       console.log(managerEachFloorSeatList);
+      console.log(this.allFloorList);
+      console.log(this.managerFloorList);
       console.log(this.allSeatMap);
       console.log(this.managerAllSeatMap);
     },
@@ -365,7 +365,6 @@ export default {
       console.log(this.allImageList);
 
       this.$emit("saveImages", "images", imgData, floorid);
-      
     },
     createImage(file) {
       this.loadImage();
@@ -987,7 +986,6 @@ export default {
 
         employeeInfoList.push(employee);
       }
-      console.log(employeeInfoList); // employees
 
       if (employee_id == null) {
         // 공석
@@ -1085,6 +1083,7 @@ export default {
           "현재층의 자리 개수는 ------> " +
             this.currentFloorSeatListFromDb.length
         );
+        this.currentSelectedFloorId = this.currentFloorSeatListFromDb[i].floor;
 
         let eachFloorSeatList = this.getEachFloorSeatList(
           this.currentFloorSeatListFromDb[i].floor
