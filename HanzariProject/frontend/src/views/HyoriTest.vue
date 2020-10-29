@@ -66,6 +66,7 @@ export default {
 
       currentFloorImage: null,
       currentFloorSeats: null,
+      otherFloorsSeat: null,
 
       floorIdList: [],
       currentFloor: null,
@@ -252,11 +253,12 @@ export default {
     },
     //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
     async getOtherFloorSeats(tableName) {
-      let otherFloorSeatList = new Array();
+      console.log(tableName); // ok
+      let otherFloorSeatMap = new Map();
+      let responseList = new Array();
       try {
-        let response = null;
-        for (let i = 0; i < this.floorIdList - 1; i++) {
-          response = await axios.get(
+        for (let i = 0; i < this.floorIdList.length - 1; i++) {
+          let response = await axios.get(
             "http://" +
               host +
               ":" +
@@ -267,30 +269,39 @@ export default {
               this.floorIdList[i] +
               "/seats"
           );
-          for (var i = 0; i < response.data.length; i++) {
+
+          if (response.data.length == 0) {
+            otherFloorSeatMap.set(this.floorIdList[i], new Array());
+          }
+          for (let j = 0; j < response.data.length; j++) {
+            // 자리 있는 애의 수 만큼 돈다
             let newSeat = {};
-            newSeat.seat_id = response.data[i].seat_id;
-            newSeat.floor = response.data[i].floor; // floor_id
-            newSeat.x = response.data[i].x;
-            newSeat.y = response.data[i].y;
-            newSeat.is_group = response.data[i].is_group;
-            newSeat.building_id = response.data[i].building_id;
-            newSeat.employee_id = response.data[i].employee_id;
-            newSeat.width = response.data[i].width;
-            newSeat.height = response.data[i].height;
-            newSeat.degree = response.data[i].degree;
-            newSeat.shape_id = response.data[i].shape_id;
+            newSeat.seat_id = response.data[j].seat_id;
+            newSeat.floor = response.data[j].floor; // floor_id
+            newSeat.x = response.data[j].x;
+            newSeat.y = response.data[j].y;
+            newSeat.is_group = response.data[j].is_group;
+            newSeat.building_id = response.data[j].building_id;
+            newSeat.employee_id = response.data[j].employee_id;
+            newSeat.width = response.data[j].width;
+            newSeat.height = response.data[j].height;
+            newSeat.degree = response.data[j].degree;
+            newSeat.shape_id = response.data[j].shape_id;
             newSeat.create = false;
             newSeat.delete = false;
             newSeat.modify = false;
+            responseList.push(newSeat);
+          } // end of for
+          console.log(this.floorIdList[i]);
+          otherFloorSeatMap.set(this.floorIdList[i], responseList);
+        } // end of for
 
-            otherFloorSeatList.push(newSeat);
-          }
-        }
+        console.log(otherFloorSeatMap);
       } catch (e) {
         console.error(e);
       }
-      return otherFloorSeatList;
+      this.otherFloorsSeat = otherFloorSeatMap;
+      console.log(this.otherFloorsSeat);
     },
     saveFloors(tableName, data) {
       let saveData = data;
