@@ -46,21 +46,17 @@ export default {
       firstLoadWatch: null,
     };
   },
+  beforeCreate() {},
   created() {
-    if (this.copyFloors.length == 0) {
+    this.managerFloorList = this.allFloorList.slice();
+    this.length = this.copyFloors.length;
+
+    if (this.length == 0) {
       /* 층 없는 상태에서 자리 생성 막기위해 넘겨줌
       길이가 늘어나지 않으므로 watch에서 불리지 않아서 created에서 불러주기*/
       let allFloors = this.allFloorList;
       eventBus.$emit("allFloorList", allFloors);
     }
-
-    this.managerFloorList = this.allFloorList.slice();
-    
-    let allFloors = this.allFloorList;
-    eventBus.$emit("allFloorList", allFloors);
-
-    let managerFloors = this.managerFloorList;
-    eventBus.$emit("managerFloorList", managerFloors);
 
     eventBus.$on("AddFloor", (floor_name) => {
       this.inputFloorName = floor_name;
@@ -77,7 +73,6 @@ export default {
         }
       }
     });
-    this.length = this.copyFloors.length;
   },
   watch: {
     length(length) {
@@ -88,17 +83,9 @@ export default {
         //처음 load
         this.floorNum = length - 1; // floor의 index가 되는 floorNum
         this.firstLoadWatch = true;
-
       } else {
         //DB 로드 끝낸 후에 불리는 부분
         this.floorNum = length - 1; // floor의 index가 되는 floorNum
-
-        let allFloors = this.allFloorList;
-        eventBus.$emit("allFloorList", allFloors);
-
-        let managerFloors = this.managerFloorList;
-        eventBus.$emit("managerFloorList", managerFloors);
-
       }
 
       if (this.length == 0) {
@@ -111,7 +98,18 @@ export default {
   methods: {
     setFloor(floor) {
       // floor 객체 자체를 보내줌
+      console.log(floor);
       eventBus.$emit("changeFloor", floor);
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+      console.log(allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
+      console.log(managerFloors);
+
+      console.log("setFloor done");
     },
     getDialog() {
       eventBus.$emit("initFloor", null);
@@ -134,13 +132,10 @@ export default {
 
       this.allFloorList.push(newFloor);
       this.managerFloorList.push(newFloor);
-
       this.length++;
       this.floorNum = this.length + 1;
-
-      if (!this.dialogStatus && this.inputFloorName) {
-        this.setFloor(newFloor);
-      }
+      
+      console.log(this.length + " length");
     },
     removeFloor() {
       if (this.length > 0) {
@@ -160,12 +155,7 @@ export default {
         this.length--;
         this.floorNum = this.length - 1;
 
-        if (this.length == 0) {
-          this.setFloor(null);
-        } else {
-          this.setFloor(this.allFloorList[this.floorNum]);
-        }
-        console.log(this.length + "length");
+        console.log(this.length + " length");
       } else {
         alert("there are no seats to delete!");
       }
