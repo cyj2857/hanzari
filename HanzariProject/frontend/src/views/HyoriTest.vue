@@ -138,6 +138,9 @@ export default {
           this.floorIdList.push(allFloorList[i].floor_id);
         }
         this.currentFloorId = this.floorIdList.slice(-1)[0];
+
+        console.log(allFloorList.slice(-1)[0]);
+        eventBus.$emit("changeFloor", allFloorList.slice(-1)[0]);
       } catch (error) {
         console.log(error);
       }
