@@ -31,7 +31,7 @@ import io.minio.PutObjectArgs;
 // CORS 오류 해결하기 위한 어노테이션
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("api/images")
+@RequestMapping("api/buildings/{building_id}/floors/{floor_id}/images")
 public class FloorPlanController {
 	
 	@Autowired
@@ -40,16 +40,13 @@ public class FloorPlanController {
 	@Autowired
 	private MinioClient minioClient;
 	
-	@Autowired
-	private static SessionFactory sessionFactory;
-	
 	// 버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	String bucketName = "hanzari";
 	
 	//API가 완성되면 다시 수정하기
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
-	@PostMapping(value="buildings/{building_id}/floors/{floor_id}")
+	@PostMapping
 	public boolean putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		boolean result = false;
 		String floorPlanId = buildingId + "-" + floorId;
@@ -83,7 +80,7 @@ public class FloorPlanController {
 	//이미지 파일 MinIO 서버에서 다운로드
 	//MinIO에 저장된 각 파일의 object명으로 찾아야한다.
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
-	@GetMapping(value="buildings/{building_id}/floors/{floor_id}")
+	@GetMapping
 	public boolean getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		// 이미지 파일이 잘 전송되었는지 boolean 값으로 알려주기 위한 필드
 		boolean result = false;
