@@ -25,7 +25,8 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 
 
-@CrossOrigin(origins = "*", maxAge = 3600) // CORS 오류 해결하기 위한 어노테이션
+//CORS 오류 해결하기 위한 어노테이션
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/images")
 public class FloorPlanController {
@@ -36,7 +37,7 @@ public class FloorPlanController {
 	@Autowired
 	private MinioClient minioClient;
 	
-	// 버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
+	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	String bucketName = "hanzari";
 	
 	//이미지 파일 MinIO 서버에 업로드
@@ -52,29 +53,35 @@ public class FloorPlanController {
 		floorPlanService.save(putfloorPlan);
 		
 		try {
-			//object 속성이 MinIO 버킷에 저장되는 파일 이름이된다.
-			//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.	
 			minioClient.putObject(
 				    PutObjectArgs.builder()
 				    .bucket(bucketName)
-				    .object(floorPlanId) //file.getOriginalFilename())
-				    .stream(imagePutInputStream, file.getSize() , -1) //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
+					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
+				    .object(floorPlanId)
+					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.	
+				    //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
+				    .stream(imagePutInputStream, file.getSize() , -1) 
 				    /*TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보낼 경우 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 명시적 contentType과 실제 데이터의 contentType이 달라 문제가 생길 수 있다.
-				    */
+				    따라서 해당 문제를 해결하기 위해서는 엄격히 업로드되는 contentType을 제한하거나(해당 인자를 "image/png"로 제한하는 등) 실제 데이터를 열어보아 어떤 contentType인지 알아내는 방법들을 사용해야한다.*/
 				    .contentType(file.getContentType())
 				    .build());
 		} catch (Exception e) {
 			System.out.println("Error occurred: " + e);
+		} finally {
+			//finally안에는 try안에서 리턴문에 의해 메소드가 종료될 경우 그 전에 해야할 작업들을 적어줄 수 있다.
+			//해당 finally문 안에는 후에 try문 안에 return문을 작성할 경우를 대비해 imagePutInputStream을 닫아주어야한다.
+			//하지만 닫아 주는 경우에도 exception이 발생할 가능성이 있다. 그렇게 되면 finally안에 또 try~catch문을 사용해야하는데 이럴 경우 코드가 너무 길어진다.
+			/*TODO 따라서 이러한 경우 IOUtils.closequietly()와 같은 메소드를 사용하여 열어둔 stream을 닫아주고 Null일 경우에도 알아서 처리해주는 라이브러리를 사용해도 좋다.  
+			 그러나 이름이 같은 클래스에 대해 해당 라이브러리의 import 경로와 개발 중인 프로젝트의 import 경로가 다른 경우가 있을 수 있고 이런 경우 오류가 날 가능성도 있다.
+			 따라서 이렇게 동일한 작업을 처리해주는 메소드가 필요한 경우 직접 작성을 하고 프로젝트 내에서 필요한 클래스에서 import하는 방법으로 진행하는 것이 좋다.*/
+			imagePutInputStream.close();
 		}
-		//imagePutInputStream 닫아주기
-		//TODO finally에 넣어주는 것이 좋다. 하지만 닫아 주는 경우에도 exception이 발생할 수 있기에 이러한 경우들을 위한 exception 클래스를 만들어서 사용하는 것이 좋다.
-		imagePutInputStream.close();
 	}
 
 	//이미지 파일 MinIO 서버에서 다운로드
 	//MinIO에 저장된 각 파일의 object명으로 찾아야한다.
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
-	//TODO putImageFile 메소드 상단에 적은 내용 참조
+	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
 	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		InputStream imageGetInputStream = null;
@@ -100,9 +107,9 @@ public class FloorPlanController {
 			response.flushBuffer();			
 		} catch(Exception e) {
 			System.out.println("Error occurred: " + e);
+		} finally {
+			//TODO putImageFile 메소드 안의 finally문에 작성한 내용 참조
+			imageGetInputStream.close();
 		}
-		//TODO 동일하게 finally에 넣어주는 것이 좋다. 하지만 닫아 주는 경우에도 exception이 발생할 수 있기에 이러한 경우들을 위한 exception 클래스를 만들어서 사용하는 것이 좋다.
-		//imageGetInputStream 닫아주기
-		imageGetInputStream.close();
 	}
 }
