@@ -51,8 +51,6 @@ public class FloorPlanController {
 		
 		floorPlanService.save(putfloorPlan);
 		
-		//System.out.println("getOriginalFilename : "+ file.getOriginalFilename());
-		//Path path = Path.of(file.getOriginalFilename());
 		try {
 			//object 속성이 MinIO 버킷에 저장되는 파일 이름이된다.
 			//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.	
@@ -79,9 +77,8 @@ public class FloorPlanController {
 	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		InputStream imageGetInputStream = null;
 		String floorPlanId = null;
-		
-		//System.out.println("object : "+ object);
 		FloorPlan getFloorPlan;
+		
 		try {
 			getFloorPlan = floorPlanService.findByBuildingIdAndFloorId(buildingId, floorId);
 			floorPlanId = getFloorPlan.getFloorPlanId();
