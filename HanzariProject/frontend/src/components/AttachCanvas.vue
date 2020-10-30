@@ -7,14 +7,9 @@
       height="800px"
       style="text-align: center"
     ></canvas>
-    <input
-      v-show="false"
-      ref="inputUpload"
-      type="file"
-      @change="changeImgFile"
-    />
-    <v-btn color="success" @click="$refs.inputUpload.click()"
-      >File Upload to Background</v-btn
+    <input v-show="false" ref="Upload" type="file" @change="changeImageFile" />
+    <v-btn color="success" @click="$refs.Upload.click()"
+      >Upload Background img file</v-btn
     >
     <v-menu>
       <template v-slot:activator="{ on, attrs }"
@@ -35,7 +30,7 @@
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="loadCurrentFloorSeats">Load Canvas</v-btn>
+    <v-btn @click="clickLoadCurrentFloor">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <EmployeeDialog
@@ -59,9 +54,10 @@ export default {
   props: [
     "copyEmployee",
     "copyFloors",
-    "currentFloorImageList",
+    "currentFloorImage",
     "seat",
     "currentFloorSeatsList",
+    "otherFloorsImageList",
   ],
   components: {
     EmployeeDialog,
@@ -77,8 +73,10 @@ export default {
       currentSelectedFloorName: null,
       currentSelectedFloorId: null,
 
-      currentFloorImageListFromDb: this.currentFloorImageList,
-      allImageMap: null, // 이미지(도면)이 삭제되는 경우를 제외함. 이미지 리스트 하나로 관리함
+      currentFloorImageFromDb: this.currentFloorImage,
+      otherFloorImageFromDb: this.otherFloorsImageList,
+      //이미지 맵 하나로 관리(삭제 고려X)
+      allImageMap: null, //모든 이미지 저장과 로드(floorid,file or url)
 
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
       //seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
@@ -96,6 +94,9 @@ export default {
     };
   },
   created() {
+    console.log(this.currentFloorImageFromDb);
+    console.log(this.currentFloorSeatListFromDb);
+
     eventBus.$on("changeFloor", (floor) => {
       console.log("changeFloor in AttachCanvas1");
       if (floor) {
@@ -152,7 +153,7 @@ export default {
   },
   mounted() {
     this.initializing();
-    this.loadCurrentFloorSeats();
+    this.clickLoadCurrentFloor();
   },
   methods: {
     test() {
@@ -311,8 +312,16 @@ export default {
       // managerEachFloorSeatList init 해주기 위함
 
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
-        this.loadImage(this.allImageMap.get(this.currentSelectedFloorId));
-
+        let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+        if (typeof typeCheck === "string") {
+          //url
+          this.loadImageFileCanvas(
+            this.allImageMap.get(this.currentSelectedFloorId)
+          );
+        } else {
+          //file
+          this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+        }
         //현재 층에 그린 도형들이 있다면
         if (myOnefloorSeatList) {
           for (let i = 0; i < myOnefloorSeatList.length; i++) {
@@ -340,9 +349,26 @@ export default {
         eventBus.$emit("eachFloorSeatList", myOnefloorSeatList);
       }
     },
-    loadImage() {
-      let imgurl = this.currentFloorImageListFromDb;
-
+    saveImageFile(file) {
+      this.allImageMap.set(this.currentSelectedFloorId, file);
+    },
+    loadImageFile(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        fabric.Image.fromURL(e.target.result, (img) => {
+          img.set({
+            scaleX: this.floorCanvas.width / img.width,
+            scaleY: this.floorCanvas.height / img.height,
+          });
+          this.floorCanvas.setBackgroundImage(
+            img,
+            this.floorCanvas.renderAll.bind(this.floorCanvas)
+          );
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+    loadImageFileCanvas(imgurl) {
       fabric.Image.fromURL(imgurl, (img) => {
         img.set({
           scaleX: this.floorCanvas.width / img.width,
@@ -354,31 +380,11 @@ export default {
         );
       });
     },
-    saveImage(file) {
-      this.allImageMap.set(this.currentSelectedFloorId, file);
-
-      let imgData = new FormData();
-
-      let img = this.allImageMap.get(this.currentSelectedFloorId);
-      let floorid = this.currentSelectedFloorId;
-
-      imgData.append("imageFile", img);
-
-      for (var value of imgData.values()) {
-        console.log(value);
-      }
-      console.log(this.allImageMap);
-
-      this.$emit("saveImages", "images", imgData, floorid);
-    },
-    createImage(file) {
-      this.loadImage();
-      this.saveImage(file);
-    },
-    changeImgFile(e) {
+    changeImageFile(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
-      this.createImage(files[0]);
+      this.saveImageFile(files[0]);
+      this.loadImageFile(files[0]);
     },
     getColor(department) {
       const Colors = {
@@ -430,7 +436,16 @@ export default {
           //각 층의 저장된 도형 리스트 화면에 뿌려주기
           //현재 층의 이미지가 저장되어있다면
           if (this.allImageMap.get(seatFloor) != null) {
-            this.loadImage(this.allImageMap.get(seatFloor));
+            let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+            if (typeof typeCheck === "string") { //url
+              this.loadImageFileCanvas(
+                this.allImageMap.get(this.currentSelectedFloorId)
+              );
+            } else {//file
+              this.loadImageFile(
+                this.allImageMap.get(this.currentSelectedFloorId)
+              );
+            }
 
             for (let i = 0; i < eachFloorSeatList.length; i++) {
               this.floorCanvas.add(eachFloorSeatList[i]);
@@ -684,8 +699,8 @@ export default {
         let group = [];
 
         let rectangle = new fabric.Rect({
-          width: 50,
-          height: 50,
+          width: 100,
+          height: 100,
           fill: this.getColor(null),
           opacity: 1,
         });
@@ -885,6 +900,17 @@ export default {
           }
         }
 
+        //이미지 저장
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          let imgData = new FormData();
+          let floorid = this.managerFloorList[i].floor_id;
+          let file = this.allImageMap.get(floorid);
+          if (file != null) {
+            imgData.append("imageFile", file);
+            this.$emit("saveImages", "images", imgData, floorid);
+          }
+        }
+
         //자리 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
@@ -1035,7 +1061,7 @@ export default {
         textObject = new fabric.IText(employee.name, {
           left: 0,
           top: rectangle.height / 3,
-          fontSize: 13,
+          fontSize: 13*rectangle.scaleX,
           fill: "black",
         });
       }
@@ -1080,7 +1106,15 @@ export default {
 
       return group;
     },
-    loadCurrentFloorSeats() {
+    clickLoadCurrentFloor() {
+      //현재 층 이미지 로드
+      for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
+        let imgurl = this.currentFloorImageFromDb[i].url;
+        let floorid = this.currentFloorImageFromDb[i].floorid;
+        this.allImageMap.set(floorid, imgurl);
+
+        this.loadImageFileCanvas(imgurl);
+      }
       // 현재층 자리 로드
       let currentFloorSeatListFromDb = this.currentFloorSeatListFromDb;
       if (currentFloorSeatListFromDb) {
@@ -1125,8 +1159,16 @@ export default {
           );
         }
       }
-
-      //this.$emit("loadOtherFloorSeats", "seats");
+      this.$emit("loadOtherFloorSeats","seats");
+      this.clickLoadOtherFloors();
+    },
+    clickLoadOtherFloors() {
+      //다른 층 이미지 로드
+      for (let i = 0; i < this.otherFloorImageFromDb.length; i++) {
+        let imgurl = this.otherFloorImageFromDb[i].url;
+        let floorid = this.otherFloorImageFromDb[i].floorid;
+        this.allImageMap.set(floorid, imgurl);
+      }
     },
     /*clickLoadBtn() {
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
