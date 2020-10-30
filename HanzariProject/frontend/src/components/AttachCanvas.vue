@@ -699,8 +699,8 @@ export default {
         let group = [];
 
         let rectangle = new fabric.Rect({
-          width: 100,
-          height: 100,
+          width: 50,
+          height: 50,
           fill: this.getColor(null),
           opacity: 1,
         });
