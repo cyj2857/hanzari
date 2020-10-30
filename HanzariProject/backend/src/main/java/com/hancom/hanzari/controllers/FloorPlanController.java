@@ -39,12 +39,11 @@ public class FloorPlanController {
 	// 버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	String bucketName = "hanzari";
 	
-	//API가 완성되면 다시 수정하기
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
+	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
-	public boolean putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
-		boolean result = false;
+	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		String floorPlanId = buildingId + "-" + floorId;
 		FloorPlan putfloorPlan = FloorPlan.builder().buildingId(buildingId)
 				.floorId(floorId).floorPlanId(floorPlanId).build();
@@ -64,23 +63,20 @@ public class FloorPlanController {
 				    .stream(imagePutInputStream, file.getSize() , -1) //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
 				    .contentType(file.getContentType()) //TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보내면 내용과 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 문제가 생길 수 있다.
 				    .build());
-			result = true;
 		} catch (Exception e) {
 			System.out.println("Error occurred: " + e);
 		}
 		//imagePutInputStream 닫아주기
 		//TODO finally에 넣어주는 것이 좋다. 하지만 닫아 주는 경우에도 exception이 발생할 수 있기에 이러한 경우들을 위한 exception 클래스를 만들어서 사용하는 것이 좋다.
 		imagePutInputStream.close();
-		return result;
 	}
 
 	//이미지 파일 MinIO 서버에서 다운로드
 	//MinIO에 저장된 각 파일의 object명으로 찾아야한다.
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
+	//TODO putImageFile 메소드 상단에 적은 내용 참조
 	@GetMapping
-	public boolean getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
-		// 이미지 파일이 잘 전송되었는지 boolean 값으로 알려주기 위한 필드
-		boolean result = false;
+	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		InputStream imageGetInputStream = null;
 		String floorPlanId = null;
 		
@@ -103,15 +99,12 @@ public class FloorPlanController {
 			response.addHeader("Content-disposition", floorPlanId);
 			response.setContentType(URLConnection.guessContentTypeFromName(floorPlanId));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
-			response.flushBuffer();
-			result = true;
-			
+			response.flushBuffer();			
 		} catch(Exception e) {
 			System.out.println("Error occurred: " + e);
 		}
 		//TODO 동일하게 finally에 넣어주는 것이 좋다. 하지만 닫아 주는 경우에도 exception이 발생할 수 있기에 이러한 경우들을 위한 exception 클래스를 만들어서 사용하는 것이 좋다.
-		imageGetInputStream.close();
 		//imageGetInputStream 닫아주기
-		return result;
+		imageGetInputStream.close();
 	}
 }
