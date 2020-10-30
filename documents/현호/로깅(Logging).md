@@ -50,7 +50,7 @@ log4j, logback, commons-logging과 같은 로깅 프레임워크를 위한 추�
 
 Apache에 따르면 멀티 스레드 환경에서의 비동기 로거(Async Logger)의 경우 **log4j 1.x 및 logback보다 몇 배나 되는 처리량**을 보인다고 한다. 그리고 **람다 표현식**과 **사용자 정의 로그 레벨**도 지원해준다! 
 
-**log4j2쓰자!**
+**slf4j + log4j2쓰자!**
 
 ### Appender
 
