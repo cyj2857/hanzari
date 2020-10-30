@@ -57,6 +57,7 @@ export default {
     "currentFloorImage",
     "seat",
     "currentFloorSeatsList",
+    "otherFloorsImageList",
   ],
   components: {
     EmployeeDialog,
@@ -73,8 +74,9 @@ export default {
       currentSelectedFloorId: null,
 
       currentFloorImageFromDb: this.currentFloorImage,
-
-      allImageMap: null, //이미지는 맵 하나로 관리(삭제 고려X)
+      otherFloorImageFromDb: this.otherFloorsImageList,
+      //이미지 맵 하나로 관리(삭제 고려X)
+      allImageMap: null, //모든 이미지 저장과 로드(floorid,file or url)
 
       currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
       //seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
@@ -136,7 +138,6 @@ export default {
       그 층에 해당하는 자리들도 삭제함*/
       this.managerAllSeatMap.delete(floor_id);
     });
-
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
     }
@@ -311,8 +312,16 @@ export default {
       // managerEachFloorSeatList init 해주기 위함
 
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
-        //this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
-
+        let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+        if (typeof typeCheck === "string") {
+          //url
+          this.loadImageFileCanvas(
+            this.allImageMap.get(this.currentSelectedFloorId)
+          );
+        } else {
+          //file
+          this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+        }
         //현재 층에 그린 도형들이 있다면
         if (myOnefloorSeatList) {
           for (let i = 0; i < myOnefloorSeatList.length; i++) {
@@ -358,6 +367,18 @@ export default {
         });
       };
       reader.readAsDataURL(file);
+    },
+    loadImageFileCanvas(imgurl) {
+      fabric.Image.fromURL(imgurl, (img) => {
+        img.set({
+          scaleX: this.floorCanvas.width / img.width,
+          scaleY: this.floorCanvas.height / img.height,
+        });
+        this.floorCanvas.setBackgroundImage(
+          img,
+          this.floorCanvas.renderAll.bind(this.floorCanvas)
+        );
+      });
     },
     changeImageFile(e) {
       let files = e.target.files || e.dataTransfer.files;
@@ -415,8 +436,16 @@ export default {
           //각 층의 저장된 도형 리스트 화면에 뿌려주기
           //현재 층의 이미지가 저장되어있다면
           if (this.allImageMap.get(seatFloor) != null) {
-            
-            //this.loadImageFile(this.allImageMap.get(seatFloor));
+            let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+            if (typeof typeCheck === "string") { //url
+              this.loadImageFileCanvas(
+                this.allImageMap.get(this.currentSelectedFloorId)
+              );
+            } else {//file
+              this.loadImageFile(
+                this.allImageMap.get(this.currentSelectedFloorId)
+              );
+            }
 
             for (let i = 0; i < eachFloorSeatList.length; i++) {
               this.floorCanvas.add(eachFloorSeatList[i]);
@@ -876,8 +905,10 @@ export default {
           let imgData = new FormData();
           let floorid = this.managerFloorList[i].floor_id;
           let file = this.allImageMap.get(floorid);
-          imgData.append("imageFile", file);
-          this.$emit("saveImages", "images", imgData, floorid);
+          if (file != null) {
+            imgData.append("imageFile", file);
+            this.$emit("saveImages", "images", imgData, floorid);
+          }
         }
 
         //자리 저장
@@ -1075,25 +1106,13 @@ export default {
 
       return group;
     },
-    loadImageFileCanvas(imgurl) {
-      fabric.Image.fromURL(imgurl, (img) => {
-        img.set({
-          scaleX: this.floorCanvas.width / img.width,
-          scaleY: this.floorCanvas.height / img.height,
-        });
-        this.floorCanvas.setBackgroundImage(
-          img,
-          this.floorCanvas.renderAll.bind(this.floorCanvas)
-        );
-      });
-    },
     clickLoadCurrentFloor() {
       //현재 층 이미지 로드
-      console.log(this.currentFloorImageFromDb);
       for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
         let imgurl = this.currentFloorImageFromDb[i].url;
         let floorid = this.currentFloorImageFromDb[i].floorid;
-        console.log(floorid)
+        this.allImageMap.set(floorid, imgurl);
+
         this.loadImageFileCanvas(imgurl);
       }
       // 현재층 자리 로드
@@ -1140,9 +1159,16 @@ export default {
           );
         }
       }
-
-      this.$emit("loadOtherFloorSeats");
-      this.$emit("loadOtherFloorsImage");
+      this.$emit("loadOtherFloorSeats","seats");
+      this.clickLoadOtherFloors();
+    },
+    clickLoadOtherFloors() {
+      //다른 층 이미지 로드
+      for (let i = 0; i < this.otherFloorImageFromDb.length; i++) {
+        let imgurl = this.otherFloorImageFromDb[i].url;
+        let floorid = this.otherFloorImageFromDb[i].floorid;
+        this.allImageMap.set(floorid, imgurl);
+      }
     },
     /*clickLoadBtn() {
       for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {

@@ -14,13 +14,13 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
-        v-if="currentFloorSeats && currentFloorImage"
+        v-if="currentFloorSeats && currentFloorImage && otherFloorsImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
         v-bind:currentFloorSeatsList="currentFloorSeats"
-        v-bind:currentFloorImage="currentFloorImage"
         v-on:loadOtherFloorSeats="loadOtherFloorSeats"
-        v-on:loadOtherFloorsImage="loadOtherFloorsImage"
+        v-bind:currentFloorImage="currentFloorImage"
+        v-bind:otherFloorsImageList="otherFloorsImage"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
         v-on:saveSeats="saveSeats"
@@ -84,6 +84,8 @@ export default {
     this.currentFloorImage = await this.getCurrentFloorImage();
     // 현재 층 자리 load
     this.currentFloorSeats = await this.getCurrentFloorSeats();
+    // 나머지 층 이미지 load
+    this.otherFloorsImage = await this.loadOtherFloorsImage();
   },
   methods: {
     async getEmployees() {
@@ -188,7 +190,9 @@ export default {
           );
           let newImage = {};
           newImage.url = response.config.url;
-          newImage.floorid =  this.floorIdList[i]
+          console.log(newImage.url)
+          
+          newImage.floorid = this.floorIdList[i];
           responseList = newImage;
           otherFloorImageList.push(responseList);
           //let imgurl =  response.config.url;
@@ -200,6 +204,7 @@ export default {
       }
 
       this.otherFloorsImage = otherFloorImageList;
+      return this.otherFloorsImage;
     },
     //우선 현재 층의 자리만 가져옴
     async getCurrentFloorSeats() {
@@ -282,7 +287,6 @@ export default {
             newSeat.modify = false;
             responseList.push(newSeat);
           } // end of for
-          console.log(this.floorIdList[i]);
           otherFloorSeatMap.set(this.floorIdList[i], responseList);
         } // end of for
 
