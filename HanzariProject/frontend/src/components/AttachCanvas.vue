@@ -1030,7 +1030,7 @@ export default {
         textObject = new fabric.IText(employee.name, {
           left: 0,
           top: rectangle.height / 3,
-          fontSize: 13,
+          fontSize: 13*rectangle.scaleX,
           fill: "black",
         });
       }
