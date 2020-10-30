@@ -14,13 +14,13 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
-        v-if="currentFloorSeats"
+        v-if="currentFloorSeats && currentFloorImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
         v-bind:currentFloorSeatsList="currentFloorSeats"
-        v-bind:currentFloorImageList="currentFloorImage"
-        v-on:loadOtherFloorSeats="getOtherFloorSeats"
-        v-on:loadOtherFloorImage="getOtherFloorImage"
+        v-bind:currentFloorImage="currentFloorImage"
+        v-on:loadOtherFloorSeats="loadOtherFloorSeats"
+        v-on:loadOtherFloorsImage="loadOtherFloorsImage"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
         v-on:saveSeats="saveSeats"
@@ -65,7 +65,10 @@ export default {
       floors: null,
 
       currentFloorImage: null,
+      otherFloorsImage: null,
+
       currentFloorSeats: null,
+      otherFloorsSeat: null,
 
       floorIdList: [],
       currentFloor: null,
@@ -78,7 +81,7 @@ export default {
     // 층 load
     this.floors = await this.getFloors();
     // 현재 층 이미지 load
-    //this.currentFloorImage = await this.getCurrentFloorImage();
+    this.currentFloorImage = await this.getCurrentFloorImage();
     // 현재 층 자리 load
     this.currentFloorSeats = await this.getCurrentFloorSeats();
   },
@@ -147,9 +150,10 @@ export default {
 
       return allFloorList;
     },
+
     //현재 층 이미지 가져오기
     async getCurrentFloorImage() {
-      let currentFloorImageList = new Array();
+      let currentFloorImage = new Array();
       try {
         let response = await axios.get(
           "http://172.30.1.56:8081/api/buildings/" +
@@ -161,47 +165,42 @@ export default {
 
         let newImage = {};
         newImage.url = response.config.url;
-        //newImage.floor = response.data.floor; // floor_id
-        //newImage.building_id = response.data.building_id;
-        newImage.create = false;
-        newImage.modify = false;
-
-        currentFloorImageList.push(newImage);
+        newImage.floorid = this.currentFloorId;
+        currentFloorImage.push(newImage);
       } catch (e) {
         console.log(e);
       }
-      return currentFloorImageList;
+      console.log(currentFloorImage);
+      return currentFloorImage;
     },
     //나머지 층 이미지 가져오기
-    async getOtherFloorImage(tableName) {
+    async loadOtherFloorsImage(tableName) {
       let otherFloorImageList = new Array();
+      let responseList = null;
       try {
-        let response = null;
-        for (let i = 0; i < this.floorIdList - 1; i++) {
-          response = await axios.get(
+        for (let i = 0; i < this.floorIdList.length - 1; i++) {
+          let response = await axios.get(
             "http://172.30.1.56:8081/api/buildings/" +
               building_id +
               "/floors/" +
-              this.currentFloorId +
+              this.floorIdList[i] +
               "/images"
           );
-          for (var i = 0; i < response.data.length; i++) {
-            let newImage = {};
-            newImage.url = response[i].config.url;
-            //newImage.floor = response[i].data.floor; // floor_id
-            //newImage.building_id = response[i].data.building_id;
-            newImage.create = false;
-            newImage.delete = false;
-
-            otherFloorImageList.push(newImage);
-          }
+          let newImage = {};
+          newImage.url = response.config.url;
+          newImage.floorid =  this.floorIdList[i]
+          responseList = newImage;
+          otherFloorImageList.push(responseList);
+          //let imgurl =  response.config.url;
+          //responseList.push(imgurl);
         }
+        console.log(otherFloorImageList);
       } catch (e) {
         console.error(e);
       }
-      return otherFloorImageList;
-    },
 
+      this.otherFloorsImage = otherFloorImageList;
+    },
     //우선 현재 층의 자리만 가져옴
     async getCurrentFloorSeats() {
       //console.log(this.currentFloorId); // ok
@@ -240,15 +239,16 @@ export default {
       } catch (e) {
         console.log(e);
       }
+      console.log(currentFloorSeatList);
       return currentFloorSeatList;
     },
     //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
-    async getOtherFloorSeats(tableName) {
-      let otherFloorSeatList = new Array();
+    async loadOtherFloorSeats(tableName) {
+      let otherFloorSeatMap = new Map();
+      let responseList = new Array();
       try {
-        let response = null;
-        for (let i = 0; i < this.floorIdList - 1; i++) {
-          response = await axios.get(
+        for (let i = 0; i < this.floorIdList.length - 1; i++) {
+          let response = await axios.get(
             "http://" +
               host +
               ":" +
@@ -259,30 +259,39 @@ export default {
               this.floorIdList[i] +
               "/seats"
           );
-          for (var i = 0; i < response.data.length; i++) {
+
+          if (response.data.length == 0) {
+            otherFloorSeatMap.set(this.floorIdList[i], new Array());
+          }
+          for (let j = 0; j < response.data.length; j++) {
+            // 자리 있는 애의 수 만큼 돈다
             let newSeat = {};
-            newSeat.seat_id = response.data[i].seat_id;
-            newSeat.floor = response.data[i].floor; // floor_id
-            newSeat.x = response.data[i].x;
-            newSeat.y = response.data[i].y;
-            newSeat.is_group = response.data[i].is_group;
-            newSeat.building_id = response.data[i].building_id;
-            newSeat.employee_id = response.data[i].employee_id;
-            newSeat.width = response.data[i].width;
-            newSeat.height = response.data[i].height;
-            newSeat.degree = response.data[i].degree;
-            newSeat.shape_id = response.data[i].shape_id;
+            newSeat.seat_id = response.data[j].seat_id;
+            newSeat.floor = response.data[j].floor; // floor_id
+            newSeat.x = response.data[j].x;
+            newSeat.y = response.data[j].y;
+            newSeat.is_group = response.data[j].is_group;
+            newSeat.building_id = response.data[j].building_id;
+            newSeat.employee_id = response.data[j].employee_id;
+            newSeat.width = response.data[j].width;
+            newSeat.height = response.data[j].height;
+            newSeat.degree = response.data[j].degree;
+            newSeat.shape_id = response.data[j].shape_id;
             newSeat.create = false;
             newSeat.delete = false;
             newSeat.modify = false;
+            responseList.push(newSeat);
+          } // end of for
+          console.log(this.floorIdList[i]);
+          otherFloorSeatMap.set(this.floorIdList[i], responseList);
+        } // end of for
 
-            otherFloorSeatList.push(newSeat);
-          }
-        }
+        console.log(otherFloorSeatMap);
       } catch (e) {
         console.error(e);
       }
-      return otherFloorSeatList;
+      this.otherFloorsSeat = otherFloorSeatMap;
+      console.log(this.otherFloorsSeat);
     },
     saveFloors(tableName, data) {
       let saveData = data;
@@ -291,7 +300,6 @@ export default {
       console.log(saveData);
       console.log("saveTableName is");
       console.log(saveTableName);
-
       axios
         .post(
           "http://" +
@@ -320,6 +328,11 @@ export default {
       console.log("------------");
       console.log("saveTableName is");
       console.log(saveTableName);
+
+      for (var value of saveData.values()) {
+        console.log(value);
+      }
+
       axios
         .post(
           "http://172.30.1.56:8081/api/buildings/" +

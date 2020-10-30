@@ -96,18 +96,18 @@ export default {
   methods: {
     setFloor(floor) {
       // floor 객체 자체를 보내줌
-      console.log(floor);
+      //console.log(floor);
       eventBus.$emit("changeFloor", floor);
 
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
-      console.log(allFloors);
+      //console.log(allFloors);
 
       let managerFloors = this.managerFloorList.slice();
       eventBus.$emit("managerFloorList", managerFloors);
-      console.log(managerFloors);
+      //console.log(managerFloors);
 
-      console.log("setFloor done");
+      //console.log("setFloor done");
     },
     getDialog() {
       eventBus.$emit("initFloor", null);
