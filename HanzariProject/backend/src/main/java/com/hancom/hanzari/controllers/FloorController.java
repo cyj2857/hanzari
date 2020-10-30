@@ -22,7 +22,6 @@ import com.hancom.hanzari.dto.FloorDto;
 import com.hancom.hanzari.exception.ResourceNotFoundException;
 import com.hancom.hanzari.model.Building;
 import com.hancom.hanzari.model.Floor;
-import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.service.BuildingService;
 import com.hancom.hanzari.service.FloorService;
 
