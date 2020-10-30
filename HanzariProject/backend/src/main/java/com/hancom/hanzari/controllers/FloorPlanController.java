@@ -24,8 +24,8 @@ import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 
-// CORS 오류 해결하기 위한 어노테이션
-@CrossOrigin(origins = "*", maxAge = 3600)
+
+@CrossOrigin(origins = "*", maxAge = 3600) // CORS 오류 해결하기 위한 어노테이션
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/images")
 public class FloorPlanController {
@@ -57,9 +57,11 @@ public class FloorPlanController {
 			minioClient.putObject(
 				    PutObjectArgs.builder()
 				    .bucket(bucketName)
-				    .object(floorPlanId)//file.getOriginalFilename())
+				    .object(floorPlanId) //file.getOriginalFilename())
 				    .stream(imagePutInputStream, file.getSize() , -1) //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
-				    .contentType(file.getContentType()) //TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보내면 내용과 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 문제가 생길 수 있다.
+				    /*TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보낼 경우 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 명시적 contentType과 실제 데이터의 contentType이 달라 문제가 생길 수 있다.
+				    */
+				    .contentType(file.getContentType())
 				    .build());
 		} catch (Exception e) {
 			System.out.println("Error occurred: " + e);
@@ -92,7 +94,6 @@ public class FloorPlanController {
 					 .bucket(bucketName)
 					 .object(floorPlanId)
 					 .build());
-			//InputStreamResource inputStreamResource = new InputStreamResource(imageGetInputStream);
 			response.addHeader("Content-disposition", floorPlanId);
 			response.setContentType(URLConnection.guessContentTypeFromName(floorPlanId));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
