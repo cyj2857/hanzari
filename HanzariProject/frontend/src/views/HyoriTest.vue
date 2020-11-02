@@ -14,13 +14,18 @@
 
     <div class="d2" id="d2">
       <AttachCanvas
-        v-if="currentFloorSeats && currentFloorImage && otherFloorsImage"
+        v-if="
+          currentFloorSeats &&
+          currentFloorImage &&
+          otherFloorsImage &&
+          otherFloorsSeat
+        "
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
-        v-bind:currentFloorSeatsList="currentFloorSeats"
-        v-on:loadOtherFloorSeats="loadOtherFloorSeats"
         v-bind:currentFloorImage="currentFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
+        v-bind:currentFloorSeatsList="currentFloorSeats"
+        v-bind:otherFloorsSeatsList="otherFloorsSeat"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
         v-on:saveSeats="saveSeats"
@@ -86,6 +91,8 @@ export default {
     this.currentFloorSeats = await this.getCurrentFloorSeats();
     // 나머지 층 이미지 load
     this.otherFloorsImage = await this.loadOtherFloorsImage();
+    // 나머지 층 자리 load
+    this.otherFloorsSeat = await this.loadOtherFloorSeats();
   },
   methods: {
     async getEmployees() {
@@ -176,7 +183,7 @@ export default {
       return currentFloorImage;
     },
     //나머지 층 이미지 가져오기
-    async loadOtherFloorsImage(tableName) {
+    async loadOtherFloorsImage() {
       let otherFloorImageList = new Array();
       let responseList = null;
       try {
@@ -190,8 +197,8 @@ export default {
           );
           let newImage = {};
           newImage.url = response.config.url;
-          console.log(newImage.url)
-          
+          console.log(newImage.url);
+
           newImage.floorid = this.floorIdList[i];
           responseList = newImage;
           otherFloorImageList.push(responseList);
@@ -248,11 +255,11 @@ export default {
       return currentFloorSeatList;
     },
     //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
-    async loadOtherFloorSeats(tableName) {
+    async loadOtherFloorSeats() {
       let otherFloorSeatMap = new Map();
-      let responseList = new Array();
       try {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
+          // 층만큼 돈다
           let response = await axios.get(
             "http://" +
               host +
@@ -265,37 +272,44 @@ export default {
               "/seats"
           );
 
+          let responseList = new Array();
+
+          // 그 층에 자리가 없다면
           if (response.data.length == 0) {
             otherFloorSeatMap.set(this.floorIdList[i], new Array());
-          }
-          for (let j = 0; j < response.data.length; j++) {
-            // 자리 있는 애의 수 만큼 돈다
-            let newSeat = {};
-            newSeat.seat_id = response.data[j].seat_id;
-            newSeat.floor = response.data[j].floor; // floor_id
-            newSeat.x = response.data[j].x;
-            newSeat.y = response.data[j].y;
-            newSeat.is_group = response.data[j].is_group;
-            newSeat.building_id = response.data[j].building_id;
-            newSeat.employee_id = response.data[j].employee_id;
-            newSeat.width = response.data[j].width;
-            newSeat.height = response.data[j].height;
-            newSeat.degree = response.data[j].degree;
-            newSeat.shape_id = response.data[j].shape_id;
-            newSeat.create = false;
-            newSeat.delete = false;
-            newSeat.modify = false;
-            responseList.push(newSeat);
-          } // end of for
-          otherFloorSeatMap.set(this.floorIdList[i], responseList);
-        } // end of for
+          } else {
+            for (let j = 0; j < response.data.length; j++) {
+              // 자리 수 만큼 돈다
+              let newSeat = {};
+              newSeat.seat_id = response.data[j].seat_id;
+              newSeat.floor = response.data[j].floor; // floor_id
+              newSeat.x = response.data[j].x;
+              newSeat.y = response.data[j].y;
+              newSeat.is_group = response.data[j].is_group;
+              newSeat.building_id = response.data[j].building_id;
+              newSeat.employee_id = response.data[j].employee_id;
+              newSeat.width = response.data[j].width;
+              newSeat.height = response.data[j].height;
+              newSeat.degree = response.data[j].degree;
+              newSeat.shape_id = response.data[j].shape_id;
+              newSeat.create = false;
+              newSeat.delete = false;
+              newSeat.modify = false;
 
+              responseList.push(newSeat);
+
+              if (this.floorIdList[i] == response.data[j].floor) {
+                otherFloorSeatMap.set(this.floorIdList[i], responseList);
+              }
+            } // end of for
+          }
+        } // end of for
         console.log(otherFloorSeatMap);
       } catch (e) {
         console.error(e);
       }
       this.otherFloorsSeat = otherFloorSeatMap;
-      console.log(this.otherFloorsSeat);
+      return this.otherFloorsSeat;
     },
     saveFloors(tableName, data) {
       let saveData = data;
