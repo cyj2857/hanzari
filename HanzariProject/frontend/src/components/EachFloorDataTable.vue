@@ -18,11 +18,28 @@
         }}</v-chip>
       </template>
     </v-data-table>
-  </v-card>
+
+    <template>
+      <v-container class="grey lighten-5">
+        <v-row no-gutters>
+          <v-col
+            v-for="item in defaultDepartment"
+            :key="item.dept"
+            cols="12"
+            sm="4"
+          >
+            <v-card class="pa-2" outlined tile :color="getColor(item.dept)">
+              {{ item.dept }}
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </template></v-card
+  >
 </template>
 
 <script>
-//@change="renderEachFloorSeatList(eachFloorSeatList)"
+//@change="renderEachFloorSeatList(eachFloorSeatList)   "
 import { eventBus } from "../main.js";
 import EachEmployeeSeatDataTableVue from "./EachEmployeeSeatDataTable.vue";
 export default {
@@ -32,6 +49,11 @@ export default {
         { text: "Name", align: "start", sortable: true, value: "name" },
         { text: "Department", value: "department" },
         { text: "Number", value: "number" },
+      ],
+      defaultDepartment: [
+        { dept: "부서1" },
+        { dept: "부서2" },
+        { dept: "부서3" },
       ],
       employees: [],
       currentFloorSeatsLength: 0,
