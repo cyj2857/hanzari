@@ -544,8 +544,8 @@ export default {
           .item(0)
           .set("fill", this.getColor(activeObject.employee_department));
         this.floorCanvas.remove(activeObject.item(1)); // delete textObject
-
-        activeObject._objects[1].text = "";
+        activeObject.item(1).set("text", "");
+        //activeObject._objects[1].text = "";
         this.floorCanvas.renderAll();
       }
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
@@ -854,7 +854,7 @@ export default {
       activeObject
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
-      activeObject._objects[1].text = item.name;
+      activeObject.item(1).set("text", item.name);
       activeObject.set("modify", true);
       this.floorCanvas.renderAll();
 
