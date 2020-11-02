@@ -28,7 +28,13 @@
             cols="12"
             sm="4"
           >
-            <v-card class="pa-2" outlined tile :color="getColor(item.dept)">
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+              :color="getColor(item.dept)"
+              @click="console.log('click')"
+            >
               {{ item.dept }}
             </v-card>
           </v-col>

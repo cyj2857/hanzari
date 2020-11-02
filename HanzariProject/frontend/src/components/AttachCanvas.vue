@@ -167,6 +167,7 @@ export default {
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
         this.currentSelectedFloorId
       );
+      console.log(this.currentSelectedFloorId);
       console.log(eachFloorSeatList);
       console.log(managerEachFloorSeatList);
       console.log(this.allFloorList);
@@ -1122,50 +1123,57 @@ export default {
         this.allImageMap.set(floorid, imgurl);
 
         this.loadImageUrl(imgurl);
-      }
-      // 현재층 자리 로드
-      if (this.currentFloorSeatListFromDb) {
-        for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
-          console.log(
-            "현재층의 자리 개수는 ------> " +
-              this.currentFloorSeatListFromDb.length
-          );
-          this.currentSelectedFloorId = this.currentFloorSeatListFromDb[
-            i
-          ].floor;
 
-          let eachFloorSeatList = this.getEachFloorSeatList(
-            this.currentFloorSeatListFromDb[i].floor
-          );
-          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-            this.currentFloorSeatListFromDb[i].floor
-          );
-          let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-            this.currentFloorSeatListFromDb[i].employee_id
-          );
+        console.log(floorid);
 
-          let group = this.makeGroupInfo(this.currentFloorSeatListFromDb[i]);
+        // 현재층 자리 로드
+        if (this.currentFloorSeatListFromDb.length) {
+          for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
+            console.log(
+              "현재층의 자리 개수는 ------> " +
+                this.currentFloorSeatListFromDb.length
+            );
+            this.currentSelectedFloorId = this.currentFloorSeatListFromDb[
+              i
+            ].floor;
 
-          this.floorCanvas.add(group);
-          eachFloorSeatList.push(group);
-          managerEachFloorSeatList.push(group);
-          eachEmployeeSeatList.push(group);
+            let eachFloorSeatList = this.getEachFloorSeatList(
+              this.currentFloorSeatListFromDb[i].floor
+            );
+            let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+              this.currentFloorSeatListFromDb[i].floor
+            );
+            let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+              this.currentFloorSeatListFromDb[i].employee_id
+            );
 
-          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-          eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-          console.log(
-            this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
-          );
-          console.log(
-            this.currentFloorSeatListFromDb[i].employee_id +
-              "의 자리 리스트 개수는 " +
-              this.getEachEmployeeSeatList(
-                this.currentFloorSeatListFromDb[i].employee_id
-              ).length +
-              "입니다."
-          );
+            let group = this.makeGroupInfo(this.currentFloorSeatListFromDb[i]);
+
+            this.floorCanvas.add(group);
+            eachFloorSeatList.push(group);
+            managerEachFloorSeatList.push(group);
+            eachEmployeeSeatList.push(group);
+
+            eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+            console.log(
+              this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
+            );
+            console.log(
+              this.currentFloorSeatListFromDb[i].employee_id +
+                "의 자리 리스트 개수는 " +
+                this.getEachEmployeeSeatList(
+                  this.currentFloorSeatListFromDb[i].employee_id
+                ).length +
+                "입니다."
+            );
+          }
+        } else {
+          console.log(floorid);
+          this.currentSelectedFloorId = floorid;
         }
       }
+
       this.clickLoadOtherFloors();
     },
     clickLoadOtherFloors() {
