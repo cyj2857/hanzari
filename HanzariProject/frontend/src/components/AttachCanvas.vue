@@ -315,7 +315,7 @@ export default {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
         if (typeof typeCheck === "string") {
           //url
-          this.loadImageFileCanvas(
+          this.loadImageUrl(
             this.allImageMap.get(this.currentSelectedFloorId)
           );
         } else {
@@ -368,7 +368,7 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    loadImageFileCanvas(imgurl) {
+    loadImageUrl(imgurl) {
       fabric.Image.fromURL(imgurl, (img) => {
         img.set({
           scaleX: this.floorCanvas.width / img.width,
@@ -438,7 +438,7 @@ export default {
           if (this.allImageMap.get(seatFloor) != null) {
             let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
             if (typeof typeCheck === "string") { //url
-              this.loadImageFileCanvas(
+              this.loadImageUrl(
                 this.allImageMap.get(this.currentSelectedFloorId)
               );
             } else {//file
@@ -454,10 +454,10 @@ export default {
           myGroup.item(0).animate("fill", "red", {
             onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
             duration: 2000,
-            onComplete: getorgincolor,
+            onComplete: getOrginColor,
           });
           let color = this.getColor(asObject.employee_department);
-          function getorgincolor() {
+          function getOrginColor() {
             myGroup.item(0).set("fill", color);
           }
         }
@@ -1114,7 +1114,7 @@ export default {
         let floorid = this.currentFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
 
-        this.loadImageFileCanvas(imgurl);
+        this.loadImageUrl(imgurl);
       }
       // 현재층 자리 로드
       let currentFloorSeatListFromDb = this.currentFloorSeatListFromDb;
