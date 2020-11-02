@@ -29,6 +29,8 @@ import io.minio.PutObjectArgs;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/images")
+//TODO 현재 전송된 이미지 이름을 건물과 층 id를 조합하여 유니크하게 주고 있지만(따라서 같은 층에 도면을 다시 올릴 경우 덮어쓰기가 된다.) 만약 스냅샷 형태로 매달 자리배치도를 관리하게 된다면 매달 이미지 관리를 따로해주어야 한다. 따라서 이미지 이름에 날짜에 대한 정보도 추가해야한다.
+//TODO GetMapping에서 데이터베이스에 floor_plan에 대한 레코드가 없다면(층 정보로 생성된 레코드가 없다면) get 요청이 실패했다는 정보 넘겨주기
 public class FloorPlanController {
 	
 	@Autowired
