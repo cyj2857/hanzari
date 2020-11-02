@@ -1106,6 +1106,7 @@ export default {
 
       return group;
     },
+    //test
     clickLoadCurrentFloor() {
       //현재 층 이미지 로드
       for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
