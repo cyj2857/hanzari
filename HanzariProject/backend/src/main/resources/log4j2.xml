@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
+	<logDiretory></logDiretory>
 	<properties>
 		<property name="appName">hanzariApp</property>
+		<property name="charset">UTF-8</property>
 		<property name="pattern">%d{HH:mm:ss.SSS} ${appName} %-5level %logger{36} - %m%n</property>
 	</properties>
 
@@ -9,15 +11,31 @@
 		<!--Engine에 대한 Appender와 Webserver에 대한 Appender로 나눠야할듯
 			추가로 일반적인 Logger들은 RollingRandomAccessFile Appender로 생성하기. -->
 		<RollingRandomAccessFile name="EngineLogger"
-			fileName="enginelog/enginelog.log"
-			filePattern="enginelog/app/app-%d{yyyy-MM-dd_HH}_%i.log"
+			fileName="log/enginelog/enginelog.log"
+			filePattern="log/enginelog/$${date:yyyy-MM}/engine-%d{yyyy-MM-dd_HH}_%i.log"
 			immediateFlush="false" append="true" ignoreExceptions="false">
 			<PatternLayout>
 				<Pattern>${pattern}</Pattern>
 			</PatternLayout>
 
 			<Policies>
-				<TimeBasedTriggeringPolicy interval="6"
+				<TimeBasedTriggeringPolicy interval="20"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="4 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="500" />
+		</RollingRandomAccessFile>
+		
+		<RollingRandomAccessFile name="AppLogger"
+			fileName="log/applog.log"
+			filePattern="log/applog/app/app-%d{yyyy-MM-dd_HH}_%i.log"
+			immediateFlush="false" append="true" ignoreExceptions="false">
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="12"
 					modulate="true" />
 				<SizeBasedTriggeringPolicy size="4 MB" />
 			</Policies>
@@ -32,24 +50,28 @@
 			</PatternLayout>
 		</Console>
 
-		<Async name="ASYNC_LogApp" includeLocation="true">
-			<AppenderRef ref="LogApp" />
+		<Async name="ASYNC_EngineLogger" includeLocation="true">
+			<AppenderRef ref="EngineLogger" />
 		</Async>
 
-		<Async name="ASYNC_Exception" includeLocation="true">
-			<AppenderRef ref="Exception" />
+		<Async name="ASYNC_Console" includeLocation="true">
+			<AppenderRef ref="Console" />
 		</Async>
 
 	</Appenders>
 
 	<Loggers>
-		<Logger name="Application" level="info" additivity="false">
-			<AppenderRef ref="ASYNC_LogApp" />
+		<Logger name="EngineLogger" level="info" additivity="false">
+			<AppenderRef ref="ASYNC_EngineLogger" />
+		</Logger>
+		
+		<Logger name="ConsoleLogger" level="info" additivity="false">
+			<AppenderRef ref="ASYNC_Console" />
 		</Logger>
 
 		<!-- 모든 파일에대한 logger 설정 -->
 		<Root level="error">
-			<AppenderRef ref="ASYNC_Exception" />
+			<AppenderRef ref="ASYNC_Console" />
 		</Root>
 	</Loggers>
 </Configuration>
