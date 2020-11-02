@@ -277,6 +277,12 @@ export default {
           opt.e.preventDefault();
           opt.e.stopPropagation();
         });
+
+        this.floorCanvas.on("object:modified", function (e) {
+          //크기, 이동, 회전
+          let modifyObject = e.target;
+          modifyObject.set("modify", true);
+        });
       }
     },
     clickResetToRatio() {
@@ -315,9 +321,7 @@ export default {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
         if (typeof typeCheck === "string") {
           //url
-          this.loadImageUrl(
-            this.allImageMap.get(this.currentSelectedFloorId)
-          );
+          this.loadImageUrl(this.allImageMap.get(this.currentSelectedFloorId));
         } else {
           //file
           this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
@@ -437,11 +441,13 @@ export default {
           //현재 층의 이미지가 저장되어있다면
           if (this.allImageMap.get(seatFloor) != null) {
             let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
-            if (typeof typeCheck === "string") { //url
+            if (typeof typeCheck === "string") {
+              //url
               this.loadImageUrl(
                 this.allImageMap.get(this.currentSelectedFloorId)
               );
-            } else {//file
+            } else {
+              //file
               this.loadImageFile(
                 this.allImageMap.get(this.currentSelectedFloorId)
               );
@@ -615,13 +621,15 @@ export default {
         } else {
           // 복수객체
           activeObject = this.floorCanvas.getActiveObjects();
-          activeObject.set("delete", true);
+          //activeObject.set("delete", true);
 
           for (let i = 0; i < activeObject.length; i++) {
             let groupToObject = activeObject[i].toObject([
               "seatId",
               "employee_id",
+              "delete",
             ]);
+            activeObject[i].set("delete", true);
             this.deleteEachEmployeeSeatList(groupToObject);
           }
           activeObject = this.floorCanvas.getActiveObject().toGroup();
@@ -699,8 +707,8 @@ export default {
         let group = [];
 
         let rectangle = new fabric.Rect({
-          width: 100,
-          height: 100,
+          width: 50,
+          height: 50,
           fill: this.getColor(null),
           opacity: 1,
         });
@@ -767,12 +775,7 @@ export default {
           ]);
           //console.log(groupx.width * groupx.scaleX + "저장할 width");
           //console.log(groupx.height * groupx.scaleY + "저장할 height");
-        }),
-          this.floorCanvas.on("object:modified", function (e) {
-            //크기, 이동, 회전
-            let modifyObject = e.target;
-            modifyObject.set("modify", true);
-          });
+        });
 
         this.floorCanvas.add(group[i]);
 
@@ -1061,7 +1064,7 @@ export default {
         textObject = new fabric.IText(employee.name, {
           left: 0,
           top: rectangle.height / 3,
-          fontSize: 13*rectangle.scaleX,
+          fontSize: 13 * rectangle.scaleX,
           fill: "black",
         });
       }
@@ -1160,7 +1163,7 @@ export default {
           );
         }
       }
-      this.$emit("loadOtherFloorSeats","seats");
+      this.$emit("loadOtherFloorSeats", "seats");
       this.clickLoadOtherFloors();
     },
     clickLoadOtherFloors() {
