@@ -281,6 +281,12 @@ export default {
           opt.e.preventDefault();
           opt.e.stopPropagation();
         });
+
+        this.floorCanvas.on("object:modified", function (e) {
+          //크기, 이동, 회전
+          let modifyObject = e.target;
+          modifyObject.set("modify", true);
+        });
       }
     },
     clickResetToRatio() {
@@ -319,9 +325,7 @@ export default {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
         if (typeof typeCheck === "string") {
           //url
-          this.loadImageFileCanvas(
-            this.allImageMap.get(this.currentSelectedFloorId)
-          );
+          this.loadImageUrl(this.allImageMap.get(this.currentSelectedFloorId));
         } else {
           //file
           this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
@@ -372,7 +376,7 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    loadImageFileCanvas(imgurl) {
+    loadImageUrl(imgurl) {
       fabric.Image.fromURL(imgurl, (img) => {
         img.set({
           scaleX: this.floorCanvas.width / img.width,
@@ -443,7 +447,7 @@ export default {
             let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
             if (typeof typeCheck === "string") {
               //url
-              this.loadImageFileCanvas(
+              this.loadImageUrl(
                 this.allImageMap.get(this.currentSelectedFloorId)
               );
             } else {
@@ -460,10 +464,10 @@ export default {
           myGroup.item(0).animate("fill", "red", {
             onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
             duration: 2000,
-            onComplete: getorgincolor,
+            onComplete: getOrginColor,
           });
           let color = this.getColor(asObject.employee_department);
-          function getorgincolor() {
+          function getOrginColor() {
             myGroup.item(0).set("fill", color);
           }
         }
@@ -544,8 +548,8 @@ export default {
           .item(0)
           .set("fill", this.getColor(activeObject.employee_department));
         this.floorCanvas.remove(activeObject.item(1)); // delete textObject
-
-        activeObject._objects[1].text = "";
+        activeObject.item(1).set("text", "");
+        //activeObject._objects[1].text = "";
         this.floorCanvas.renderAll();
       }
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
@@ -621,13 +625,15 @@ export default {
         } else {
           // 복수객체
           activeObject = this.floorCanvas.getActiveObjects();
-          activeObject.set("delete", true);
+          //activeObject.set("delete", true);
 
           for (let i = 0; i < activeObject.length; i++) {
             let groupToObject = activeObject[i].toObject([
               "seatId",
               "employee_id",
+              "delete",
             ]);
+            activeObject[i].set("delete", true);
             this.deleteEachEmployeeSeatList(groupToObject);
           }
           activeObject = this.floorCanvas.getActiveObject().toGroup();
@@ -705,8 +711,8 @@ export default {
         let group = [];
 
         let rectangle = new fabric.Rect({
-          width: 100,
-          height: 100,
+          width: 50,
+          height: 50,
           fill: this.getColor(null),
           opacity: 1,
         });
@@ -773,12 +779,7 @@ export default {
           ]);
           //console.log(groupx.width * groupx.scaleX + "저장할 width");
           //console.log(groupx.height * groupx.scaleY + "저장할 height");
-        }),
-          this.floorCanvas.on("object:modified", function (e) {
-            //크기, 이동, 회전
-            let modifyObject = e.target;
-            modifyObject.set("modify", true);
-          });
+        });
 
         this.floorCanvas.add(group[i]);
 
@@ -857,7 +858,7 @@ export default {
       activeObject
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
-      activeObject._objects[1].text = item.name;
+      activeObject.item(1).set("text", item.name);
       activeObject.set("modify", true);
       this.floorCanvas.renderAll();
 
@@ -1120,7 +1121,7 @@ export default {
         let floorid = this.currentFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
 
-        this.loadImageFileCanvas(imgurl);
+        this.loadImageUrl(imgurl);
       }
       // 현재층 자리 로드
       if (this.currentFloorSeatListFromDb) {
