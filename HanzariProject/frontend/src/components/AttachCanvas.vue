@@ -277,6 +277,12 @@ export default {
           opt.e.preventDefault();
           opt.e.stopPropagation();
         });
+
+        this.floorCanvas.on("object:modified", function (e) {
+          //크기, 이동, 회전
+          let modifyObject = e.target;
+          modifyObject.set("modify", true);
+        });
       }
     },
     clickResetToRatio() {
@@ -623,7 +629,7 @@ export default {
               "employee_id",
               "delete",
             ]);
-            activeObject[i].set("delete" ,true);
+            activeObject[i].set("delete", true);
             this.deleteEachEmployeeSeatList(groupToObject);
           }
           activeObject = this.floorCanvas.getActiveObject().toGroup();
@@ -769,12 +775,7 @@ export default {
           ]);
           //console.log(groupx.width * groupx.scaleX + "저장할 width");
           //console.log(groupx.height * groupx.scaleY + "저장할 height");
-        }),
-          this.floorCanvas.on("object:modified", function (e) {
-            //크기, 이동, 회전
-            let modifyObject = e.target;
-            modifyObject.set("modify", true);
-          });
+        });
 
         this.floorCanvas.add(group[i]);
 
