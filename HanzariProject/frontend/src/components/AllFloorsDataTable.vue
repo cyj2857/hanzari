@@ -28,7 +28,7 @@
           </td>
           <td>
             <v-btn
-              id="MappingSeatButton"
+              id="MappingSeatButton"  draggable="true"
               @click="MappingSeatButtonClicked(row.item)"
               >Mapping</v-btn
             >
