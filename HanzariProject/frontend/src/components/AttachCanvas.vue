@@ -897,6 +897,8 @@ export default {
           ]);
           activeObject.set("modify", true);
           this.deleteEachEmployeeSeatList(groupToObject);
+        } else {
+          return;
         }
       }
       //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
