@@ -778,7 +778,6 @@ export default {
 
         group[i] = new fabric.Group([rectangle, textObject], {
           seatId: this.seatid,
-          seatName: null, // 이후에 추가될 정보
           floor_id: this.currentSelectedFloorId,
           employee_name: null,
           employee_department: null,
@@ -1148,6 +1147,7 @@ export default {
             for (let j = 0; j < managerEachFloorSeatList.length; j++) {
               let groupToObject = managerEachFloorSeatList[j].toObject([
                 "seatId",
+                "seatName",
                 "floor_id",
                 "left",
                 "top",
@@ -1180,6 +1180,7 @@ export default {
                   //010 그 id에 대하여 post
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
+                  seatData.seat_name = groupToObject.seatName;
                   seatData.floor = groupToObject.floor_id;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
@@ -1204,6 +1205,7 @@ export default {
                   //100 110 그 id에 대하여 post
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
+                  seatData.seat_name = groupToObject.seatName;
                   seatData.floor = groupToObject.floor_id;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
@@ -1270,7 +1272,6 @@ export default {
       });
 
       let textObject = null;
-
       if (seat.employee_id == null) {
         textObject = new fabric.IText("", {
           left: 0,
@@ -1289,7 +1290,6 @@ export default {
 
       let group = new fabric.Group([rectangle, textObject], {
         seatId: seat.seat_id,
-        seatName: seat.seat_name,
         employee_name: employee.name,
         employee_department: employee.department,
         employee_number: employee.number,
@@ -1302,6 +1302,18 @@ export default {
         modify: seat.modify,
         delete: seat.delete,
       });
+
+      if (seat.seat_name != null) {
+        // seat_name is not null
+        let seatNameObject = new fabric.IText(seat.seat_name, {
+          left: rectangle.left,
+          top: rectangle.top - 15,
+          fontSize: 15,
+          fill: "black",
+        });
+
+        group.add(seatNameObject);
+      }
 
       group.on("mousedown", (e) => {
         let group = e.target;
