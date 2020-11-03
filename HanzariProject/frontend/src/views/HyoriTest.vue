@@ -284,7 +284,7 @@ export default {
               // 자리 수 만큼 돈다
               let newSeat = {};
               newSeat.seat_id = response.data[j].seat_id;
-              newSeat.seat_name = reponse.data[i].seat_name;
+              newSeat.seat_name = response.data[i].seat_name;
               newSeat.floor = response.data[j].floor; // floor_id
               newSeat.x = response.data[j].x;
               newSeat.y = response.data[j].y;
