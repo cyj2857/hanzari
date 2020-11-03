@@ -4,12 +4,13 @@
 	<properties>
 		<property name="appName">hanzariApp</property>
 		<property name="charset">UTF-8</property>
-		<property name="pattern">%d{HH:mm:ss.SSS} ${appName} %-5level %logger{36} - %m%n</property>
+		<property name="pattern">%d{HH:mm:ss.SSS} ${appName} %-5level
+			%logger{36} - %m%n</property>
 	</properties>
 
 	<Appenders>
-		<!--Engine에 대한 Appender와 Webserver에 대한 Appender로 나눠야할듯
-			추가로 일반적인 Logger들은 RollingRandomAccessFile Appender로 생성하기. -->
+		<!--Engine에 대한 Appender와 Webserver에 대한 Appender로 나눠야할듯. 추가로 일반적인 Logger들은 
+			RollingRandomAccessFile Appender로 생성하기. -->
 		<RollingRandomAccessFile name="EngineLogger"
 			fileName="log/enginelog/enginelog.log"
 			filePattern="log/enginelog/$${date:yyyy-MM}/engine-%d{yyyy-MM-dd_HH}_%i.log"
@@ -25,9 +26,8 @@
 			</Policies>
 			<DefaultRolloverStrategy max="500" />
 		</RollingRandomAccessFile>
-		
-		<!--Console logger도 생성할지 회의 
-			ConsoleAppender에 대한 자료 찾아보기 -->
+
+		<!--Console logger도 생성할지 회의 ConsoleAppender에 대한 자료 찾아보기 -->
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout>
 				<Pattern>${pattern}</Pattern>
@@ -48,7 +48,7 @@
 		<Logger name="EngineLogger" level="info" additivity="false">
 			<AppenderRef ref="ASYNC_EngineLogger" />
 		</Logger>
-		
+
 		<Logger name="ConsoleLogger" level="info" additivity="false">
 			<AppenderRef ref="ASYNC_Console" />
 		</Logger>
