@@ -1030,69 +1030,8 @@ export default {
       this.floorCanvas.renderAll();
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-    },
-    setMappingSeat(item) {
-      // 공석 또는 사원이 매핑된 좌석에 사원 매핑
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
-      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
-      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
-
-      let activeObject = this.floorCanvas.getActiveObject(); //group 객체
-
-      //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
-      if (
-        activeObject.employee_id != null &&
-        activeObject.employee_id != item.employee_id
-      ) {
-        if (
-          confirm(
-            activeObject.employee_name +
-              "사원의 자리를 " +
-              item.name +
-              "자리로 변경하시겠습니까?"
-          )
-        ) {
-          let groupToObject = activeObject.toObject([
-            "seatId",
-            "employee_id",
-            "floor_id",
-          ]);
-          activeObject.set("modify", true);
-          this.deleteEachEmployeeSeatList(groupToObject);
-        }
-      }
-      //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
-      else if (
-        activeObject.employee_id != null &&
-        activeObject.employee_id == item.employee_id
-      ) {
-        alert("이 자리는 이미 " + item.name + "의 자리입니다.");
-        return;
-      }
-
-      //해당 자리가 공석이라면 바로 매핑 가능
-      activeObject.employee_name = item.name;
-      activeObject.employee_department = item.department;
-      activeObject.employee_number = item.number;
-      activeObject.employee_id = item.employee_id;
-      activeObject
-        .item(0)
-        .set("fill", this.getColor(activeObject.employee_department));
-      activeObject.item(1).set("text", item.name);
-      activeObject.set("modify", true);
-      this.floorCanvas.renderAll();
-
-      eachEmployeeSeatList.push(activeObject);
-
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },*/
 
-    //아직 구현중에 있습니다.
     clickSaveBtn() {
       if (this.managerFloorList) {
         //층 저장
@@ -1357,7 +1296,7 @@ export default {
 
       return group;
     },
-    //test
+
     clickLoadCurrentFloor() {
       //현재 층 이미지 로드
       for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
@@ -1366,8 +1305,6 @@ export default {
         this.allImageMap.set(floorid, imgurl);
 
         this.loadImageUrl(imgurl);
-
-        console.log(floorid);
 
         // 현재층 자리 로드
         if (this.currentFloorSeatListFromDb.length) {
