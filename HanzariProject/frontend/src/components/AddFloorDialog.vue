@@ -31,7 +31,7 @@ export default {
   },
   created() {
     eventBus.$on("initFloor", (initFloor) => {
-      this.inputFloorName = initFloor;
+      this.inputFloorName = null
     });
   },
   computed: {

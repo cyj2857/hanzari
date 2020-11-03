@@ -19,7 +19,7 @@
       </template>
     </v-data-table>
 
-    <template>
+    <!--template>
       <v-container class="grey lighten-5">
         <v-row no-gutters>
           <v-col
@@ -40,8 +40,8 @@
           </v-col>
         </v-row>
       </v-container>
-    </template></v-card
-  >
+    </template>-->
+  </v-card>
 </template>
 
 <script>

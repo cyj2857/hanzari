@@ -11,6 +11,8 @@
     <v-btn color="success" @click="$refs.Upload.click()"
       >Upload Background img file</v-btn
     >
+
+    <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-menu>
       <template v-slot:activator="{ on, attrs }"
         ><v-btn v-bind="attrs" v-on="on">Multiple</v-btn></template
@@ -25,14 +27,12 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-btn @click="test">TEST</v-btn>
-    <v-btn @click="addVacantBtn" color="primary" dark>Add Vacant</v-btn>
     <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
-    <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="clickLoadCurrentFloor">Load Canvas</v-btn>
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
+    <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <v-btn @click="test">test</v-btn>
     <EmployeeDialog
       :dialogStatus="this.employeeDialogStatus"
       @close="closeEmployeeDialog"
@@ -40,6 +40,10 @@
     <ChangeSeatDialog
       :dialogStatus="this.changeSeatDialogStatus"
       @close="closeChangeSeatDialog"
+    />
+    <InputSeatNameDialog
+      :dialogStatus="this.inputSeatNameDialogStatus"
+      @close="closeInputSeatNameDialog"
     />
   </div>
 </template>
@@ -49,6 +53,7 @@ import { eventBus } from "../main.js";
 import EmployeeDialog from "@/components/EmployeeDialog.vue";
 import ChangeSeatDialog from "@/components/ChangeSeatDialog.vue";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
+import InputSeatNameDialog from "@/components/InputSeatNameDialog.vue";
 
 export default {
   props: [
@@ -64,6 +69,7 @@ export default {
     EmployeeDialog,
     AllFloorsDataTable,
     ChangeSeatDialog,
+    InputSeatNameDialog,
   },
   data: function () {
     return {
@@ -93,14 +99,10 @@ export default {
 
       employeeDialogStatus: false, // 사원 정보 다이얼로그
       changeSeatDialogStatus: false, // 자리 변경 다이얼로그
+      inputSeatNameDialogStatus: false, // seatName 입력 다이얼로그 => 다이얼로그 이후에 모두 UI 변경 예정
     };
   },
   created() {
-    console.log(this.currentFloorImageFromDb);
-    console.log(this.currentFloorSeatListFromDb);
-
-    console.log("~~~~~~~~~~~~~~~~~~~");
-    console.log(this.otherFloorSeatListFromDb);
     eventBus.$on("changeFloor", (floor) => {
       console.log("changeFloor in AttachCanvas1");
       if (floor) {
@@ -117,6 +119,9 @@ export default {
     });
     eventBus.$on("confirmChangeSeatDialog", (inputInfo) => {
       this.confirmChangeSeatDialog(inputInfo);
+    });
+    eventBus.$on("confirmInputSeatNameDialog", (inputSeatName) => {
+      this.confirmInputSeatNameDialog(inputSeatName);
     });
     eventBus.$on("showSeat", (seat) => {
       console.log(seat);
@@ -161,20 +166,8 @@ export default {
   },
   methods: {
     test() {
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
-      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
       console.log(this.currentSelectedFloorId);
-      console.log(eachFloorSeatList);
-      console.log(managerEachFloorSeatList);
-      console.log(this.allFloorList);
-      console.log(this.managerFloorList);
-      console.log(this.allSeatMap);
-      console.log(this.managerAllSeatMap);
-      console.log(this.currentFloorSeatListFromDb);
+      console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
     },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
@@ -184,6 +177,42 @@ export default {
       console.log("<<<close dialog>>>");
       this.employeeDialogStatus = false;
       console.log(this.employeeDialogStatus);
+    },
+    getInputSeatNameDialog() {
+      eventBus.$emit("initInputSeatNameDialog", null);
+      this.inputSeatNameDialogStatus = true;
+      console.log(this.inputSeatNameDialogStatus);
+    },
+    closeInputSeatNameDialog() {
+      console.log("<<<close dialog>>>");
+      this.inputSeatNameDialogStatus = false;
+      console.log(this.inputSeatNameDialogStatus);
+    },
+    confirmInputSeatNameDialog(inputSeatName) {
+      console.log("<<<confirm dialog>>>");
+      this.inputSeatNameDialogStatus = false;
+      if (!this.floorCanvas.getActiveObject()) {
+        return;
+      }
+      let activeObject = this.floorCanvas.getActiveObject();
+      activeObject.set("modify", true);
+      activeObject.seatName = inputSeatName;
+
+      let seatNameObject = new fabric.IText(inputSeatName, {
+        left: activeObject.item(0).left,
+        top: activeObject.item(0).top - 15,
+        fontSize: 15,
+        fill: "black",
+      });
+      if (activeObject.item(2)) {
+        // seatNmae 변경시
+        activeObject.remove(activeObject.item(2));
+      }
+
+      activeObject.add(seatNameObject);
+      activeObject.addWithUpdate();
+
+      this.floorCanvas.renderAll();
     },
     getChangeSeatDialog() {
       eventBus.$emit("initChangeSeatDialog", null);
@@ -731,12 +760,13 @@ export default {
         let textObject = new fabric.IText("", {
           left: 0,
           top: rectangle.height / 3,
-          fontSize: 13,
+          fontSize: 15,
           fill: "black",
         });
 
         group[i] = new fabric.Group([rectangle, textObject], {
           seatId: this.seatid,
+          seatName: null, // 이후에 추가될 정보
           floor_id: this.currentSelectedFloorId,
           employee_name: null,
           employee_department: null,
@@ -770,7 +800,13 @@ export default {
         });
 
         group[i].on("mousedblclick", (e) => {
-          this.getChangeSeatDialog(); // 자리 이동 dialog
+          let evt = e.e;
+          if (evt.ctrlKey === true) {
+            console.log("ctrlKey");
+            this.getInputSeatNameDialog();
+          } else {
+            this.getChangeSeatDialog(); // 자리 이동 dialog
+          }
         });
 
         this.floorCanvas.on("object:scaling", (e) => {
@@ -1227,20 +1263,21 @@ export default {
         textObject = new fabric.IText("", {
           left: 0,
           top: rectangle.height / 3,
-          fontSize: 13,
+          fontSize: 15,
           fill: "black",
         });
       } else {
         textObject = new fabric.IText(employee.name, {
           left: 0,
           top: rectangle.height / 3,
-          fontSize: 13 * rectangle.scaleX,
+          fontSize: 15 * rectangle.scaleX,
           fill: "black",
         });
       }
 
       let group = new fabric.Group([rectangle, textObject], {
         seatId: seat.seat_id,
+        seatName: seat.seat_name,
         employee_name: employee.name,
         employee_department: employee.department,
         employee_number: employee.number,
@@ -1274,7 +1311,12 @@ export default {
       });
 
       group.on("mousedblclick", (e) => {
-        this.getChangeSeatDialog();
+        let evt = e.e;
+        if (evt.ctrlKey === true) {
+          console.log("ctrlKey");
+        } else {
+          this.getChangeSeatDialog(); // 자리 이동 dialog
+        }
       });
 
       return group;
