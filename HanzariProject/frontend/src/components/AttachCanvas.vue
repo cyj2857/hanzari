@@ -312,6 +312,16 @@ export default {
           opt.e.stopPropagation();
         });
 
+           /*this.floorCanvas.on("mouse:down", (event) => {
+          if (event.button === 3) {
+            var pointer = this.floorCanvas.getPointer(event.e);
+            var posX = pointer.x;
+            var posY = pointer.y;
+            console.log(posX + ", " + posY);
+            this.addVacantBtn2(posX,posY);
+          }
+        });*/
+
         this.floorCanvas.on("object:modified", function (e) {
           //크기, 이동, 회전
           let modifyObject = e.target;
@@ -904,6 +914,161 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
+    /*addVacantBtn2(posX,posY) {
+      //각 층에 해당하는 도형 리스트 리턴하기
+      let x = posX;
+      let y = posY;
+
+      if (!this.allImageMap.get(this.currentSelectedFloorId)) {
+        alert("도면 이미지가 없습니다");
+        return;
+      }
+
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+
+        this.seatid = this.createSeatUUID();
+
+        let rectangle = new fabric.Rect({
+          width: 50,
+          height: 50,
+          fill: this.getColor(null),
+          opacity: 1,
+        });
+
+        let textObject = new fabric.IText("", {
+          left: 0,
+          top: rectangle.height / 3,
+          fontSize: 13,
+          fill: "black",
+        });
+
+        let group = new fabric.Group([rectangle, textObject], {
+          seatId: this.seatid,
+          floor_id: this.currentSelectedFloorId,
+          employee_name: null,
+          employee_department: null,
+          employee_number: null,
+          employee_id: null,
+          left: x,
+          top: y,
+          angle: 0,
+          create: true, //생성
+          modify: false, //변경
+          delete: false, //삭제
+        });
+
+        group.on("mousedown", (e) => {
+          let group = e.target;
+          if (e.button === 2) {
+            let groupToObject = group.toObject([
+              "employee_id",
+              "employee_name",
+              "employee_department",
+            ]);
+            eventBus.$emit("employee_id", groupToObject.employee_id);
+            eventBus.$emit("employee_name", groupToObject.employee_name);
+            eventBus.$emit("floor_name", this.currentSelectedFloorName);
+            eventBus.$emit(
+              "employee_department",
+              groupToObject.employee_department
+            );
+            this.getEmployeeDialog();
+          }
+        });
+
+        group.on("mousedblclick", (e) => {
+          this.getChangeSeatDialog(); // 자리 이동 dialog
+        });
+
+        this.floorCanvas.on("object:scaling", (e) => {
+          let scaledObject = e.target;
+          let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
+          let height = scaledObject.getScaledHeight() / scaledObject.scaleY;
+
+          scaledObject.width = width;
+          scaledObject.height = height;
+
+          let groupx = scaledObject.toObject([
+            "width",
+            "height",
+            "scaleX",
+            "scaleY",
+          ]);
+
+        });
+
+      this.floorCanvas.add(group);
+      eachFloorSeatList.push(group);
+      managerEachFloorSeatList.push(group);
+      this.floorCanvas.renderAll();
+
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+    },
+    setMappingSeat(item) {
+      // 공석 또는 사원이 매핑된 좌석에 사원 매핑
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
+
+      let activeObject = this.floorCanvas.getActiveObject(); //group 객체
+
+      //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
+      if (
+        activeObject.employee_id != null &&
+        activeObject.employee_id != item.employee_id
+      ) {
+        if (
+          confirm(
+            activeObject.employee_name +
+              "사원의 자리를 " +
+              item.name +
+              "자리로 변경하시겠습니까?"
+          )
+        ) {
+          let groupToObject = activeObject.toObject([
+            "seatId",
+            "employee_id",
+            "floor_id",
+          ]);
+          activeObject.set("modify", true);
+          this.deleteEachEmployeeSeatList(groupToObject);
+        }
+      }
+      //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
+      else if (
+        activeObject.employee_id != null &&
+        activeObject.employee_id == item.employee_id
+      ) {
+        alert("이 자리는 이미 " + item.name + "의 자리입니다.");
+        return;
+      }
+
+      //해당 자리가 공석이라면 바로 매핑 가능
+      activeObject.employee_name = item.name;
+      activeObject.employee_department = item.department;
+      activeObject.employee_number = item.number;
+      activeObject.employee_id = item.employee_id;
+      activeObject
+        .item(0)
+        .set("fill", this.getColor(activeObject.employee_department));
+      activeObject.item(1).set("text", item.name);
+      activeObject.set("modify", true);
+      this.floorCanvas.renderAll();
+
+      eachEmployeeSeatList.push(activeObject);
+
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+    },*/
 
     //아직 구현중에 있습니다.
     clickSaveBtn() {

@@ -1,10 +1,13 @@
 package com.hancom.hanzari.controllers;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +35,8 @@ import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
 import com.hancom.hanzari.service.ShapeService;
 
+import lombok.extern.log4j.Log4j2;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/seats")
@@ -48,10 +53,13 @@ public class SeatController {
 	@Autowired
 	private ShapeService shapeService;
 
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
+
 	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> getAllSeatsInFloorInBuilding(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId) throws Exception {
+
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
@@ -71,6 +79,7 @@ public class SeatController {
 	@GetMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<SeatDto> getSeat(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @PathVariable("seat_id") String seat_id) throws Exception {
+
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
@@ -108,11 +117,7 @@ public class SeatController {
 	@PostMapping
 	public ResponseEntity<Seat> save(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @RequestBody SeatDto seatDto) throws Exception {
-		/*
-		 * for (Field field : seatDto.getClass().getDeclaredFields()) {
-		 * field.setAccessible(true); Object value = field.get(seatDto);
-		 * System.out.println(field.getName() + " : " + value); }
-		 */
+		LOGGER.info("SeatController.save called. (floor_id : {}, seat_id : {})" , floorId, seatDto.getSeat_id());
 
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
@@ -130,12 +135,6 @@ public class SeatController {
 			}
 		}
 
-		// Building building = buildingService.findById(seatDto.getBuilding_id());
-		// Floor floor = floorService.findByFloorNameAndBuilding(seatDto.getFloor(),
-		// building);
-		// System.out.println("FLOOR:: " + floor.getFloorId() + " / " +
-		// floor.getFloorName());
-
 		Shape shape = shapeService.findById(seatDto.getShape_id()); // ShapeRepository에서 seatDto의 shape_id를 통해 해당 Shape을
 		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
@@ -149,23 +148,18 @@ public class SeatController {
 
 	@DeleteMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteSeat(@PathVariable("seat_id") String seat_id) {
-		System.out.println("==================================================================");
-		System.out.println("seatId: " + seat_id);
-		System.out.println("==================================================================");
-
-		// figureService.deleteById(seat_id); // seat_id랑 동일한 값으로 figure_id가 지정된 1:1로
-		// 생성된 figure 레코드 선행 삭제
+		LOGGER.info("SeatController.DeleteSeat called. (seat_id : {})", seat_id);
 		seatService.deleteById(seat_id);
-
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 
 	}
-	
+
 	@RequestMapping("/get-all-seats")
 	public ResponseEntity<List<SeatDto>> getAllSeats() throws Exception {
+		LOGGER.info("SeatController.getAllSeats called.");
 		List<Seat> seat = seatService.findAll();
 		List<SeatDto> result = new ArrayList<>();
 		seat.forEach(e -> result.add(e.toDto()));
 		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
-	} 
+	}
 }

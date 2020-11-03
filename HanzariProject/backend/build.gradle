@@ -12,12 +12,22 @@ repositories {
 	mavenCentral()
 }
 
+// slf4j-log4j2 와 충돌방지
+configurations {
+    all {
+        exclude  group: "org.springframework.boot", module : "spring-boot-starter-logging"
+    }
+}
+
 dependencies {
 	compile 'javax.servlet:jstl:1.2'
 	compile 'io.minio:minio:7.1.4'
+	
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compile("org.springframework.boot:spring-boot-starter-jdbc")
 
+	// SLF4J-Log4j2
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 	
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
