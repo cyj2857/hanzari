@@ -139,7 +139,7 @@ public class SeatController {
 		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
 
-		Seat newSeat = Seat.builder().seatId(seatDto.getSeat_id()).floor(floor).x(seatDto.getX()).y(seatDto.getY())
+		Seat newSeat = Seat.builder().seatId(seatDto.getSeat_id()).seatName(seatDto.getSeat_name()).floor(floor).x(seatDto.getX()).y(seatDto.getY())
 				.isGroup(seatDto.getIs_group()).groupId(seatDto.getGroup_id()).employee(employee).figure(figure)
 				.build();
 
