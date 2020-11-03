@@ -14,6 +14,8 @@ public class SeatDto {
 	@NotBlank
 	private String seat_id;
 
+	private String seat_name; // nullable
+	
 	@NotBlank
 	private String floor;
 
