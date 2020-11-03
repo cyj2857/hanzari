@@ -33,7 +33,7 @@ public class Seat {
 	@Column(name = "seat_id", nullable = false)
 	private String seatId;
 	
-	@Column(name = "seat_name", nullable = false)
+	@Column(name = "seat_name", nullable = true)
 	private String seatName;
 
 	@ManyToOne(fetch = FetchType.LAZY)
