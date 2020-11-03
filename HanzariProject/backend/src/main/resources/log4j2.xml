@@ -19,31 +19,15 @@
 			</PatternLayout>
 
 			<Policies>
-				<TimeBasedTriggeringPolicy interval="20"
+				<TimeBasedTriggeringPolicy interval="24"
 					modulate="true" />
 				<SizeBasedTriggeringPolicy size="4 MB" />
 			</Policies>
 			<DefaultRolloverStrategy max="500" />
 		</RollingRandomAccessFile>
 		
-		<RollingRandomAccessFile name="AppLogger"
-			fileName="log/applog.log"
-			filePattern="log/applog/app/app-%d{yyyy-MM-dd_HH}_%i.log"
-			immediateFlush="false" append="true" ignoreExceptions="false">
-			<PatternLayout>
-				<Pattern>${pattern}</Pattern>
-			</PatternLayout>
-
-			<Policies>
-				<TimeBasedTriggeringPolicy interval="12"
-					modulate="true" />
-				<SizeBasedTriggeringPolicy size="4 MB" />
-			</Policies>
-			<DefaultRolloverStrategy max="500" />
-		</RollingRandomAccessFile>
-
 		<!--Console logger도 생성할지 회의 
-			ConsoleAppender에 대한 자료 찾ㄱ아보기 -->
+			ConsoleAppender에 대한 자료 찾아보기 -->
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout>
 				<Pattern>${pattern}</Pattern>
