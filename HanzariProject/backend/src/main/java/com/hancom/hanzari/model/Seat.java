@@ -32,6 +32,9 @@ public class Seat {
 	@NotNull
 	@Column(name = "seat_id", nullable = false)
 	private String seatId;
+	
+	@Column(name = "seat_name", nullable = false)
+	private String seatName;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull
