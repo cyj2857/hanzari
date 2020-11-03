@@ -52,10 +52,19 @@ Apache에 따르면 멀티 스레드 환경에서의 비동기 로거(Async Logg
 
 **slf4j + log4j2쓰자!**
 
+
+
+### LOGGER/APPENDER/ENCODER?
+
+* Logger : 실제 로깅을 수행하는 구성요소로 Level 속성을 통해서 출력할 로그의 레벨을 조절할 수 있다.
+* Appender : 로그 메시지가 출력될 대상을 결정하는 요소
+* Encoder : Appender에 포함되어 사용자가 지정한 형식으로 표현 될 로그메시지를 변환하는 역할을 담당하는 요소
+
+
+
 ### Appender
 
 - `ConsoleAppender` : 콘솔에 로그를 어떤 포맷으로 출력할지를 설정할 때 사용한다.
 - `FileAppender` : 파일에 로그를 어떤 포맷으로 출력할지를 설정한다.
 - `RollingFileAppender `: 로그의 양이 많아지면, 하나의 파일로 관리하기 어려워지는 경우가 생긴다.
   이런 문제를 해결하기 위해 **하루 단위로 로그를 관리하고자 할 경우 사용**된다.
-
