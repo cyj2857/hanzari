@@ -1180,7 +1180,7 @@ export default {
                 if (groupToObject.delete) {
                   // 001 011 delete
                   let deleteSeatKey = groupToObject.seatId;
-                  let deleteSeatFloor = groupToObject.floorid;
+                  let deleteSeatFloor = groupToObject.floor_id;
                   this.$emit(
                     "deleteSeatWithKey",
                     "seats",

@@ -430,17 +430,20 @@ export default {
           console.log(error);
         });
     },
-    deleteSeatWithKey(tableName, key, floor_id) {
+    deleteSeatWithKey(tableName, seatId, floor_id) {
       let deleteTableName = tableName;
-      let deleteKey = key;
+      let deleteKey = seatId;
       axios
         .delete(
           "http://" +
             host +
             ":" +
             portNum +
-            "/api/buildings/floors/" +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
             floor_id +
+            "/" +
             deleteTableName +
             "/" +
             deleteKey
