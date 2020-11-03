@@ -233,6 +233,7 @@ export default {
           for (var i = 0; i < response.data.length; i++) {
             let newSeat = {};
             newSeat.seat_id = response.data[i].seat_id;
+            newSeat.seat_name = reponse.data[i].seat_name;
             newSeat.floor = response.data[i].floor; // floor_id
             newSeat.x = response.data[i].x;
             newSeat.y = response.data[i].y;
@@ -284,6 +285,7 @@ export default {
               // 자리 수 만큼 돈다
               let newSeat = {};
               newSeat.seat_id = response.data[j].seat_id;
+              newSeat.seat_name = reponse.data[i].seat_name;
               newSeat.floor = response.data[j].floor; // floor_id
               newSeat.x = response.data[j].x;
               newSeat.y = response.data[j].y;

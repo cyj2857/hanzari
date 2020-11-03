@@ -32,6 +32,7 @@
     <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
+    <v-btn @click="test">test</v-btn>
     <EmployeeDialog
       :dialogStatus="this.employeeDialogStatus"
       @close="closeEmployeeDialog"
@@ -164,6 +165,10 @@ export default {
     this.clickLoadCurrentFloor();
   },
   methods: {
+    test() {
+      console.log(this.currentSelectedFloorId);
+      console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
+    },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
       console.log(this.employeeDialogStatus);
@@ -190,6 +195,24 @@ export default {
         return;
       }
       let activeObject = this.floorCanvas.getActiveObject();
+      activeObject.set("modify", true);
+      activeObject.seatName = inputSeatName;
+
+      let seatNameObject = new fabric.IText(inputSeatName, {
+        left: activeObject.item(0).left,
+        top: activeObject.item(0).top - 15,
+        fontSize: 15,
+        fill: "black",
+      });
+      if (activeObject.item(2)) {
+        // seatNmae 변경시
+        activeObject.remove(activeObject.item(2));
+      }
+
+      activeObject.add(seatNameObject);
+      activeObject.addWithUpdate();
+
+      this.floorCanvas.renderAll();
     },
     getChangeSeatDialog() {
       eventBus.$emit("initChangeSeatDialog", null);
@@ -731,15 +754,9 @@ export default {
           fill: "black",
         });
 
-        // let seatNameObject = new fabric.IText("", {
-        //   left: 0,
-        //   top: -15,
-        //   fontSize: 15,
-        //   fill: "black",
-        // }); => 추가를 할 시에 동적으로 group에 addWithUpdate
-
         group[i] = new fabric.Group([rectangle, textObject], {
           seatId: this.seatid,
+          seatName: null, // 이후에 추가될 정보
           floor_id: this.currentSelectedFloorId,
           employee_name: null,
           employee_department: null,
@@ -1095,6 +1112,7 @@ export default {
 
       let group = new fabric.Group([rectangle, textObject], {
         seatId: seat.seat_id,
+        seatName: seat.seat_name,
         employee_name: employee.name,
         employee_department: employee.department,
         employee_number: employee.number,
