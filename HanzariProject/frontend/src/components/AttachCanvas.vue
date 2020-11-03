@@ -327,6 +327,15 @@ export default {
           let modifyObject = e.target;
           modifyObject.set("modify", true);
         });
+
+        this.floorCanvas.on("object:selected", function (e) {
+          let evt = e.e;
+          if (evt.ctrlKey == true) {
+            console.log("wow");
+          }
+          var activeObject = this.floorCanvas.getActiveObject();
+          var activeGroup = this.floorCanvas.getActiveGroup();
+        });
       }
     },
     clickResetToRatio() {
@@ -1110,7 +1119,7 @@ export default {
                 if (groupToObject.delete) {
                   // 001 011 delete
                   let deleteSeatKey = groupToObject.seatId;
-                  let deleteSeatFloor = groupToObject.floorid;
+                  let deleteSeatFloor = groupToObject.floor_id;
                   this.$emit(
                     "deleteSeatWithKey",
                     "seats",

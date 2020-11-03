@@ -284,7 +284,7 @@ export default {
               // 자리 수 만큼 돈다
               let newSeat = {};
               newSeat.seat_id = response.data[j].seat_id;
-              newSeat.seat_name = reponse.data[i].seat_name;
+              newSeat.seat_name = response.data[j].seat_name;
               newSeat.floor = response.data[j].floor; // floor_id
               newSeat.x = response.data[j].x;
               newSeat.y = response.data[j].y;
@@ -430,17 +430,20 @@ export default {
           console.log(error);
         });
     },
-    deleteSeatWithKey(tableName, key, floor_id) {
+    deleteSeatWithKey(tableName, seatId, floor_id) {
       let deleteTableName = tableName;
-      let deleteKey = key;
+      let deleteKey = seatId;
       axios
         .delete(
           "http://" +
             host +
             ":" +
             portNum +
-            "/api/buildings/floors/" +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
             floor_id +
+            "/" +
             deleteTableName +
             "/" +
             deleteKey
