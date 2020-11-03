@@ -215,7 +215,7 @@ export default {
     },
     //우선 현재 층의 자리만 가져옴
     async getCurrentFloorSeats() {
-      //console.log(this.currentFloorId); // ok
+      console.log(this.currentFloorId); // ok
       let currentFloorSeatList = new Array();
       try {
         let response = await axios.get(
@@ -229,27 +229,26 @@ export default {
             this.currentFloorId +
             "/seats"
         );
-        if (response) {
-          for (var i = 0; i < response.data.length; i++) {
-            let newSeat = {};
-            newSeat.seat_id = response.data[i].seat_id;
-            newSeat.seat_name = reponse.data[i].seat_name;
-            newSeat.floor = response.data[i].floor; // floor_id
-            newSeat.x = response.data[i].x;
-            newSeat.y = response.data[i].y;
-            newSeat.is_group = response.data[i].is_group;
-            newSeat.building_id = response.data[i].building_id;
-            newSeat.employee_id = response.data[i].employee_id;
-            newSeat.width = response.data[i].width;
-            newSeat.height = response.data[i].height;
-            newSeat.degree = response.data[i].degree;
-            newSeat.shape_id = response.data[i].shape_id;
-            newSeat.create = false;
-            newSeat.delete = false;
-            newSeat.modify = false;
+        for (var i = 0; i < response.data.length; i++) {
+          let newSeat = {};
 
-            currentFloorSeatList.push(newSeat);
-          }
+          newSeat.seat_id = response.data[i].seat_id;
+          newSeat.seat_name = response.data[i].seat_name;
+          newSeat.floor = response.data[i].floor; // floor_id
+          newSeat.x = response.data[i].x;
+          newSeat.y = response.data[i].y;
+          newSeat.is_group = response.data[i].is_group;
+          newSeat.building_id = response.data[i].building_id;
+          newSeat.employee_id = response.data[i].employee_id;
+          newSeat.width = response.data[i].width;
+          newSeat.height = response.data[i].height;
+          newSeat.degree = response.data[i].degree;
+          newSeat.shape_id = response.data[i].shape_id;
+          newSeat.create = false;
+          newSeat.delete = false;
+          newSeat.modify = false;
+
+          currentFloorSeatList.push(newSeat);
         }
       } catch (e) {
         console.log(e);
