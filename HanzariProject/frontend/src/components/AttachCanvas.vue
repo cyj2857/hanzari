@@ -312,7 +312,7 @@ export default {
           opt.e.stopPropagation();
         });
 
-           /*this.floorCanvas.on("mouse:down", (event) => {
+        /*this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
             var pointer = this.floorCanvas.getPointer(event.e);
             var posX = pointer.x;
@@ -501,14 +501,26 @@ export default {
               this.floorCanvas.add(eachFloorSeatList[i]);
             }
           }
+          myGroup.item(0).set("opacity", 0);
+          myGroup.item(0).set("stroke", "blue");
+          myGroup.item(0).set("strokeWidth", 5);
+
+          myGroup.item(0).animate("opacity", 1, {
+            duration: 2000,
+            onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
+          });
           myGroup.item(0).animate("fill", "red", {
             onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
             duration: 2000,
-            onComplete: getOrginColor,
+            onComplete: getOrginItem,
           });
+
           let color = this.getColor(asObject.employee_department);
-          function getOrginColor() {
+          function getOrginItem() {
+            myGroup.item(0).set("opacity", 1);
             myGroup.item(0).set("fill", color);
+            myGroup.item(0).set("stroke", null);
+            myGroup.item(0).set("strokeWidth", null);
           }
         }
         //자리가 아직 없을때 예외처리 하기
@@ -1314,6 +1326,7 @@ export default {
         let evt = e.e;
         if (evt.ctrlKey === true) {
           console.log("ctrlKey");
+          this.getInputSeatNameDialog();
         } else {
           this.getChangeSeatDialog(); // 자리 이동 dialog
         }
