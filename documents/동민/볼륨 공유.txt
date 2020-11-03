@@ -1,0 +1,42 @@
+Dockerfile
+FROM busybox
+
+VOLUME /var/lib/mysql
+VOLUME /var/log
+
+*BusyBox bash에는 접근이 안되는데 기본 shell이 안깔려있다고한다.
+* -it는 터미널 입력을 위한 옵션
+
+
+볼륨 공유를 위한 컨테이너 생성(도커파일있는 디렉토리로 이동)
+docker image build -t volume_container:latest .
+이미지 컨테이너 런
+docker container run --name volume_container -d volume_container:latest
+
+볼륨 연결해서 mariadb 이미지 컨테이너화
+docker run -p 3306:3306 --name hanzaridb1 -e MYSQL_ROOT_PASSWORD=root --volumes-from=volume_container -d hanzaridb:latest
+
+docker run -p 3306:3306 --name hanzaridb2 -e MYSQL_ROOT_PASSWORD=root --volumes-from=volume_container -d hanzaridb:latest
+
+컨테이너 bash 접속(한글 설정 안주는 법을 위의 포트번호, 컨테이너 이름, mariadb 비밀번호, 공유 볼륨 등의 설정과 함께 도커파일로 만들기)
+docker exec -it -e LC_ALL=C.UTF-8 hanzaridb1 bash
+
+-> 해당 실행 명령어 도커파일에 저장하는 법 알아내기
+
+
+공유 볼륨 컨테이너를 만들어 볼륨이 공유는 되지만 해당 공유 볼륨 컨테이너를 이미지화 했을 때는 또 기존의 데이터들이 사라진다.
+
+bash 한글 설정 보기 locale
+mariadb 한글 설정 보기 show variables like 'c%';
+
+❤❤도커 남은 해야할 일❤❤
+컨테이너 한글 설정 및 mariadb 한글 설정 끝낸 컨테이너 이미지로 만들기
+port fowarding은 container stop만 시켜두면 동일한 port를 사용할 수 있다.
+컨테이너 bash 접속(한글 설정 안주는 법을 위의 포트번호, 컨테이너 이름, mariadb 비밀번호, 공유 볼륨 등의 설정과 함께 도커파일로 만들기)
+공유 볼륨 컨테이너 자체를 다시 이미지화 시킬 때 데이터가 사라지는 문제(데이터 보존 문제)
+
+도커 세트
+busybox : 공유 볼륨을 위한 이미지
+hanzaridb : mariadb 이미지에서 한글 설정을 바꿔 준 이미지
+volume share 디렉토리의 Dockerfile : 공유 볼륨 설정 위한 도커파일
+databse 디렉토리의 Dockerfile : 컨테이너 한글 설정 및 hanzaridb 이미지 컨테이너화를 위한 도커파일
