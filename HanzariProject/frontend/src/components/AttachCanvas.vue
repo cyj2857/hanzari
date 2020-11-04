@@ -40,7 +40,11 @@
       max-width="500"
     >
       <v-list>
-        <v-list-item v-for="(item, index) in contextMenuItems" :key="index">
+        <v-list-item
+          v-for="(item, index) in contextMenuItems"
+          :key="index"
+          @click="clickContextMenu(item.index)"
+        >
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -49,9 +53,7 @@
     <v-btn color="success" @click="$refs.Upload.click()"
       >Upload Background img file</v-btn
     >
-    <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
-    <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="test">test</v-btn>
@@ -99,9 +101,9 @@ export default {
       contextMenuXLocation: 0,
       contextMenuYLocation: 0,
       contextMenuItems: [
-        { title: "자리 비우기" },
-        { title: "삭제하기" },
-        { title: "층간 이동하기" },
+        { title: "자리 비우기", index: 0 },
+        { title: "삭제하기", index: 1 },
+        { title: "층간 이동하기", index: 2 },
       ],
 
       addVacantSwitch: false, // 공석 만들기 위한 스위치 상태
@@ -360,8 +362,11 @@ export default {
             } else if (this.floorCanvas.getActiveObject()) {
               //contextMenu
               var pointer = this.floorCanvas.getPointer(event.e);
-              var posX = pointer.x;
-              var posY = pointer.y;
+              //var posX = pointer.x;
+              //var posY = pointer.y;
+
+              var posX = this.floorCanvas.getActiveObject().left;
+              var posY = this.floorCanvas.getActiveObject().top;
               this.show(posX, posY);
               console.log(posX + "/" + posY);
             }
@@ -374,15 +379,6 @@ export default {
           modifyObject.set("modify", true);
         });
 
-        this.floorCanvas.on("object:selected", function (e) {
-          let evt = e.e;
-          if (evt.ctrlKey == true) {
-            console.log("wow");
-          }
-          var activeObject = this.floorCanvas.getActiveObject();
-          var activeGroup = this.floorCanvas.getActiveGroup();
-        });
-
         this.manageKeyboard(this.floorCanvas);
       }
     },
@@ -393,6 +389,20 @@ export default {
       this.$nextTick(() => {
         this.contextMenuStatus = true;
       });
+    },
+    clickContextMenu(index) {
+      console.log(index);
+      switch (index) {
+        case 0:
+          this.clickChangeToVacant();
+          break;
+        case 1:
+          this.deleteBtn();
+          break;
+        case 2:
+          this.getChangeSeatDialog();
+          break;
+      }
     },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
