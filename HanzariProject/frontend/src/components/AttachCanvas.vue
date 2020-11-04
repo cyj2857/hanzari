@@ -265,6 +265,7 @@ export default {
     // 층간이동
     confirmChangeSeatDialog(inputInfo) {
       console.log("<<<confirm dialog>>>");
+      console.log(inputInfo);
       this.changeSeatDialogStatus = false;
 
       if (!this.floorCanvas.getActiveObject()) {
@@ -973,13 +974,7 @@ export default {
       });
 
       group.on("mousedblclick", (e) => {
-        let evt = e.e;
-        if (evt.ctrlKey === true) {
-          console.log("ctrlKey");
-          this.getInputSeatNameDialog();
-        } else {
-          this.getChangeSeatDialog(); // 자리 이동 dialog
-        }
+        this.getInputSeatNameDialog();
       });
 
       this.floorCanvas.on("object:scaling", (e) => {
@@ -1274,13 +1269,7 @@ export default {
       });
 
       group.on("mousedblclick", (e) => {
-        let evt = e.e;
-        if (evt.ctrlKey === true) {
-          console.log("ctrlKey");
-          this.getInputSeatNameDialog();
-        } else {
-          this.getChangeSeatDialog(); // 자리 이동 dialog
-        }
+        this.getInputSeatNameDialog();
       });
 
       return group;
