@@ -33,12 +33,10 @@ public class EmployeeAdditionalInfo {
 	@Column(name = "extension_number", nullable = true)
 	private String extensionNumber;
 
-	@NotNull
-	@Column(name = "department_id", nullable = false)
+	@Column(name = "department_id", nullable = true)
 	private String departmentId;
 
-	@NotNull
-	@Column(name = "department_name", nullable = false)
+	@Column(name = "department_name", nullable = true)
 	private String departmentName;
 
 	public EmployeeAdditionalInfo() {
