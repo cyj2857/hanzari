@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -63,6 +64,13 @@ public class Employee {
 		List<String> result = new ArrayList<String>();
 		seat.forEach(e -> result.add(e.getSeatId()));
 		return result;
+	}
+
+	@PreRemove
+	public void preRemove() {
+		if (seat != null) {
+			seat.forEach(e -> e.setEmployee(null)); // 특정 사원이 삭제되기 전 해당 사원이 배정되었던 모든 자리에 대해 employee를 null로 변경
+		}
 	}
 
 	public EmployeeDto toDto() {
