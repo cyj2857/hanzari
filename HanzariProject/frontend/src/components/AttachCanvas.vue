@@ -379,8 +379,6 @@ export default {
           let modifyObject = e.target;
           modifyObject.set("modify", true);
         });
-
-        this.manageKeyboard(this.floorCanvas);
       }
     },
     show(clientX, clientY) {
@@ -408,14 +406,17 @@ export default {
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
-    manageKeyboard(floorCanvas) {
+    manageKeyboard(
+      floorCanvas,
+      currentSelectedFloorId,
+      allSeatMap,
+      eachEmployeeSeatMap
+    ) {
       document.onkeydown = function (event) {
         var key = window.event ? window.event.keyCode : event.keyCode;
-
         switch (key) {
           case 37: // left
             if (floorCanvas.getActiveObject()) {
-              //floorCanvas.getActiveObject().left -= 5;
               floorCanvas
                 .getActiveObject()
                 .set("left", floorCanvas.getActiveObject().left - 5);
@@ -425,7 +426,6 @@ export default {
             break;
           case 39: // right
             if (floorCanvas.getActiveObject()) {
-              //floorCanvas.getActiveObject().left += 5;
               floorCanvas
                 .getActiveObject()
                 .set("left", floorCanvas.getActiveObject().left + 5);
@@ -435,7 +435,6 @@ export default {
             break;
           case 38: // up
             if (floorCanvas.getActiveObject()) {
-              //floorCanvas.getActiveObject().top -= 5;
               floorCanvas
                 .getActiveObject()
                 .set("top", floorCanvas.getActiveObject().top - 5);
@@ -445,7 +444,6 @@ export default {
             break;
           case 40: // down
             if (floorCanvas.getActiveObject()) {
-              //floorCanvas.getActiveObject().top += 5;
               floorCanvas
                 .getActiveObject()
                 .set("top", floorCanvas.getActiveObject().top + 5);
@@ -453,8 +451,70 @@ export default {
               floorCanvas.renderAll();
             }
             break;
+          case 110: // delete
           case 46: // delete
-            if (floorCanvas.getActiveObject()) {
+            let activeObject = null;
+            let shapearray = new Array();
+            if (confirm("Are you sure?")) {
+              if (floorCanvas.getActiveObjects().length == 1) {
+                activeObject = floorCanvas.getActiveObject(); // 단일객체
+                activeObject.set("delete", true);
+
+                let groupToObject = activeObject.toObject([
+                  "seatId",
+                  "employee_id",
+                ]);
+                let oneEmployeeSeatList = eachEmployeeSeatMap.get(
+                  groupToObject.employee_id
+                );
+                for (let i = 0; i < oneEmployeeSeatList.length; i++) {
+                  if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
+                    oneEmployeeSeatList.splice(i, 1);
+                  }
+                }
+              } else {
+                activeObject = floorCanvas.getActiveObjects(); // 복수객체
+                for (let i = 0; i < activeObject.length; i++) {
+                  let groupToObject = activeObject[i].toObject([
+                    "seatId",
+                    "employee_id",
+                    "delete",
+                  ]);
+                  activeObject[i].set("delete", true);
+                  let oneEmployeeSeatList = eachEmployeeSeatMap.get(
+                    groupToObject.employee_id
+                  );
+                  for (let i = 0; i < oneEmployeeSeatList.length; i++) {
+                    if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
+                      oneEmployeeSeatList.splice(i, 1);
+                    }
+                  }
+                }
+                activeObject = floorCanvas.getActiveObject().toGroup();
+              }
+              floorCanvas
+                .getObjects()
+                .slice()
+                .forEach((obj) => {
+                  shapearray.push(obj);
+                });
+              if (activeObject) {
+                shapearray.slice().forEach((obj) => {
+                  if (obj == activeObject) {
+                    let groupToObject = activeObject.toObject(["seatId"]);
+                    let index = shapearray.indexOf(activeObject);
+                    shapearray.splice(index, 1);
+                  }
+                });
+                floorCanvas.remove(activeObject);
+                allSeatMap.get(currentSelectedFloorId).length = 0;
+                allSeatMap.set(currentSelectedFloorId, shapearray);
+                eventBus.$emit(
+                  "eachFloorSeatList",
+                  allSeatMap.get(currentSelectedFloorId)
+                );
+                eventBus.$emit("eachEmployeeSeatMap", eachEmployeeSeatMap);
+              }
             }
             break;
         }
@@ -540,6 +600,12 @@ export default {
         });
       };
       reader.readAsDataURL(file);
+      this.manageKeyboard(
+        this.floorCanvas,
+        this.currentSelectedFloorId,
+        this.allSeatMap,
+        this.eachEmployeeSeatMap
+      );
     },
     loadImageUrl(imgurl) {
       fabric.Image.fromURL(imgurl, (img) => {
@@ -552,6 +618,12 @@ export default {
           this.floorCanvas.renderAll.bind(this.floorCanvas)
         );
       });
+      this.manageKeyboard(
+        this.floorCanvas,
+        this.currentSelectedFloorId,
+        this.allSeatMap,
+        this.eachEmployeeSeatMap
+      );
     },
     changeImageFile(e) {
       let files = e.target.files || e.dataTransfer.files;
@@ -1281,7 +1353,8 @@ export default {
         let imgurl = this.currentFloorImageFromDb[i].url;
         let floorid = this.currentFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
-
+        this.currentSelectedFloorId = floorid;
+        
         this.loadImageUrl(imgurl);
 
         // 현재층 자리 로드
