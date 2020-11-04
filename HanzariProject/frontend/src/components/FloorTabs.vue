@@ -4,9 +4,9 @@
       <v-card-text class="text-center">
         <v-btn text @click="removeFloor">Remove Floor</v-btn>
         <v-divider class="mx-4" vertical></v-divider>
-        <v-btn text @click="getDialog">Add Floor</v-btn>
+        <v-btn text @click="getAddFloorDialog">Add Floor</v-btn>
         <v-divider class="mx-4" vertical></v-divider>
-        <!-- <v-btn text @click="changeFloorName">Change Floor Name</v-btn> 추후에 구현 예정-->
+        <v-btn text @click="getChangeFloorNameDialog">Change Floor Name</v-btn>
       </v-card-text>
       <v-tabs v-model="floorNum" background-color="cyan" dark>
         <v-tab
@@ -19,31 +19,42 @@
       </v-tabs>
     </v-card>
     <AddFloorDialog
-      :dialogStatus="this.dialogStatus"
-      @close="closeDialog"
+      :dialogStatus="this.addFloorDialogStatus"
+      @close="closeAddFloorDialog"
     ></AddFloorDialog>
+    <ChangeFloorNameDialog
+      :dialogStatus="this.changeFloorNameDialogStatus"
+      @close="closeChangeFloorNameDialog"
+    ></ChangeFloorNameDialog>
   </div>
 </template>
 
 <script>
 import { eventBus } from "../main.js";
 import AddFloorDialog from "@/components/AddFloorDialog.vue";
+import ChangeFloorNameDialog from "@/components/ChangeFloorNameDialog.vue";
 export default {
   props: ["copyFloors"],
   components: {
     AddFloorDialog,
+    ChangeFloorNameDialog,
   },
   data() {
     return {
       floorNum: null, //v-tabs v-model
-      dialogStatus: false,
-      inputFloorName: null,
-      seatFloor: null,
+      length: null,
+      firstLoadWatch: null,
+
       allFloorList: this.copyFloors, // 여기에서 sort 안먹음
       managerFloorList: [], // DB에 save 할 리스트
-      length: null,
-      initData: null,
-      firstLoadWatch: null,
+
+      seatFloor: null,
+
+      addFloorDialogStatus: false,
+      changeFloorNameDialogStatus: false,
+
+      inputFloorName: null,
+      inputChangeFloorName: null,
     };
   },
   created() {
@@ -58,7 +69,11 @@ export default {
     }
     eventBus.$on("AddFloor", (floor_name) => {
       this.inputFloorName = floor_name;
-      this.confirmDialog();
+      this.confirmAddFloorDialog();
+    });
+    eventBus.$on("ChangeFloorName", (floor_name) => {
+      this.inputChangeFloorName = floor_name;
+      this.confirmChangeFloorNameDialog();
     });
     eventBus.$on("showSeatFloor", (floor_id) => {
       this.seatFloorId = floor_id;
@@ -95,29 +110,23 @@ export default {
   },
   methods: {
     setFloor(floor) {
-      // floor 객체 자체를 보내줌
-      //console.log(floor);
       eventBus.$emit("changeFloor", floor);
 
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
-      //console.log(allFloors);
 
       let managerFloors = this.managerFloorList.slice();
       eventBus.$emit("managerFloorList", managerFloors);
-      //console.log(managerFloors);
-
-      //console.log("setFloor done");
     },
-    getDialog() {
+    getAddFloorDialog() {
       eventBus.$emit("initFloor", null);
-      this.dialogStatus = true;
+      this.addFloorDialogStatus = true;
     },
-    closeDialog() {
-      this.dialogStatus = false;
+    closeAddFloorDialog() {
+      this.addFloorDialogStatus = false;
     },
-    confirmDialog() {
-      this.dialogStatus = false;
+    confirmAddFloorDialog() {
+      this.addFloorDialogStatus = false;
 
       let newFloor = {};
       newFloor.floor_id = this.createFloorUUID();
@@ -132,8 +141,22 @@ export default {
       this.managerFloorList.push(newFloor);
       this.length++;
       this.floorNum = this.length + 1;
-      
+
       console.log(this.length + " length");
+    },
+    getChangeFloorNameDialog() {
+      eventBus.$emit(
+        "initChangeFloorName",
+        this.allFloorList[this.floorNum].floor_name
+      );
+      this.changeFloorNameDialogStatus = true;
+    },
+    closeChangeFloorNameDialog() {
+      this.changeFloorNameDialogStatus = false;
+    },
+    confirmChangeFloorNameDialog() {
+      this.changeFloorNameDialogStatus = false;
+      this.changeFloorName(this.inputChangeFloorName);
     },
     removeFloor() {
       if (this.length > 0) {
@@ -158,16 +181,16 @@ export default {
         alert("there are no seats to delete!");
       }
     },
-    changeFloorName() {
+    changeFloorName(inputChangeFloorName) {
       // 여기에서 floor의 modify true 해줄 예정
-      let currentFloorId = this.allFloorList[this.floorNum].floor_name;
+      let currentFloorId = this.allFloorList[this.floorNum].floor_id;
       const idx = this.allFloorList.findIndex(function (item) {
-        return item.floor_name == currentFloorId;
+        return item.floor_id == currentFloorId;
       });
-      this.allFloorList[idx].floor_name = "변경된 floor name";
+      this.allFloorList[idx].floor_name = inputChangeFloorName;
       this.allFloorList[idx].modify = true;
 
-      this.managerFloorList[idx].floor_name = "변경된 floor name";
+      this.managerFloorList[idx].floor_name = inputChangeFloorName;
       this.managerFloorList[idx].modify = true;
     },
     createFloorUUID() {
