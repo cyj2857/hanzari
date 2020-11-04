@@ -19,8 +19,8 @@ public class EmployeeAdditionalInfo {
 
 	@Id
 	@NotNull
-	@Column(name = "employee_id", nullable = false)
-	private String employeeId;
+	@Column(name = "addi_info_id", nullable = false)
+	private String employeeId; // employee_id와 동일
 
 	@NotNull
 	@Column(name = "employee_name", nullable = false)
