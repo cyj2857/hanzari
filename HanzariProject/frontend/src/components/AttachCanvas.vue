@@ -31,13 +31,29 @@
       height="800px"
       style="text-align: center"
     ></canvas>
+    <v-menu
+      v-model="contextMenuStatus"
+      :position-x="contextMenuXLocation"
+      :position-y="contextMenuYLocation"
+      absolute
+      offset-y
+      max-width="500"
+    >
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in contextMenuItems"
+          :key="index"
+          @click="clickContextMenu(item.index)"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <input v-show="false" ref="Upload" type="file" @change="changeImageFile" />
     <v-btn color="success" @click="$refs.Upload.click()"
       >Upload Background img file</v-btn
     >
-    <v-btn @click="deleteBtn">Delete Selected Shape</v-btn>
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
-    <v-btn @click="clickChangeToVacant">Change to Vacant</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="test">test</v-btn>
@@ -81,6 +97,15 @@ export default {
   },
   data: function () {
     return {
+      contextMenuStatus: false,
+      contextMenuXLocation: 0,
+      contextMenuYLocation: 0,
+      contextMenuItems: [
+        { title: "자리 비우기", index: 0 },
+        { title: "삭제하기", index: 1 },
+        { title: "층간 이동하기", index: 2 },
+      ],
+
       addVacantSwitch: false, // 공석 만들기 위한 스위치 상태
       min: 1,
       max: 50,
@@ -240,6 +265,7 @@ export default {
     // 층간이동
     confirmChangeSeatDialog(inputInfo) {
       console.log("<<<confirm dialog>>>");
+      console.log(inputInfo);
       this.changeSeatDialogStatus = false;
 
       if (!this.floorCanvas.getActiveObject()) {
@@ -327,12 +353,24 @@ export default {
 
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
-          if (event.button === 3 && this.addVacantSwitch) {
-            var pointer = this.floorCanvas.getPointer(event.e);
-            var posX = pointer.x;
-            var posY = pointer.y;
-            console.log(posX + ", " + posY);
-            this.addVacantSeat(posX, posY);
+          if (event.button === 3) {
+            if (this.addVacantSwitch) {
+              var pointer = this.floorCanvas.getPointer(event.e);
+              var posX = pointer.x;
+              var posY = pointer.y;
+              console.log(posX + ", " + posY);
+              this.addVacantSeat(posX, posY);
+            } else if (this.floorCanvas.getActiveObject()) {
+              //contextMenu
+              var pointer = this.floorCanvas.getPointer(event.e);
+              //var posX = pointer.x;
+              //var posY = pointer.y;
+
+              var posX = this.floorCanvas.getActiveObject().left;
+              var posY = this.floorCanvas.getActiveObject().top;
+              this.show(posX, posY);
+              console.log(posX + "/" + posY);
+            }
           }
         });
 
@@ -342,16 +380,29 @@ export default {
           modifyObject.set("modify", true);
         });
 
-        this.floorCanvas.on("object:selected", function (e) {
-          let evt = e.e;
-          if (evt.ctrlKey == true) {
-            console.log("wow");
-          }
-          var activeObject = this.floorCanvas.getActiveObject();
-          var activeGroup = this.floorCanvas.getActiveGroup();
-        });
-
         this.manageKeyboard(this.floorCanvas);
+      }
+    },
+    show(clientX, clientY) {
+      this.contextMenuStatus = false;
+      this.contextMenuXLocation = clientX + 650;
+      this.contextMenuYLocation = clientY;
+      this.$nextTick(() => {
+        this.contextMenuStatus = true;
+      });
+    },
+    clickContextMenu(index) {
+      console.log(index);
+      switch (index) {
+        case 0:
+          this.clickChangeToVacant();
+          break;
+        case 1:
+          this.deleteBtn();
+          break;
+        case 2:
+          this.getChangeSeatDialog();
+          break;
       }
     },
     clickResetToRatio() {
@@ -923,13 +974,7 @@ export default {
       });
 
       group.on("mousedblclick", (e) => {
-        let evt = e.e;
-        if (evt.ctrlKey === true) {
-          console.log("ctrlKey");
-          this.getInputSeatNameDialog();
-        } else {
-          this.getChangeSeatDialog(); // 자리 이동 dialog
-        }
+        this.getInputSeatNameDialog();
       });
 
       this.floorCanvas.on("object:scaling", (e) => {
@@ -1224,13 +1269,7 @@ export default {
       });
 
       group.on("mousedblclick", (e) => {
-        let evt = e.e;
-        if (evt.ctrlKey === true) {
-          console.log("ctrlKey");
-          this.getInputSeatNameDialog();
-        } else {
-          this.getChangeSeatDialog(); // 자리 이동 dialog
-        }
+        this.getInputSeatNameDialog();
       });
 
       return group;
