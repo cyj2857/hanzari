@@ -31,6 +31,20 @@
       height="800px"
       style="text-align: center"
     ></canvas>
+    <v-menu
+      v-model="contextMenuStatus"
+      :position-x="contextMenuXLocation"
+      :position-y="contextMenuYLocation"
+      absolute
+      offset-y
+      max-width="500"
+    >
+      <v-list>
+        <v-list-item v-for="(item, index) in contextMenuItems" :key="index">
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <input v-show="false" ref="Upload" type="file" @change="changeImageFile" />
     <v-btn color="success" @click="$refs.Upload.click()"
       >Upload Background img file</v-btn
@@ -81,6 +95,15 @@ export default {
   },
   data: function () {
     return {
+      contextMenuStatus: false,
+      contextMenuXLocation: 0,
+      contextMenuYLocation: 0,
+      contextMenuItems: [
+        { title: "자리 비우기" },
+        { title: "삭제하기" },
+        { title: "층간 이동하기" },
+      ],
+
       addVacantSwitch: false, // 공석 만들기 위한 스위치 상태
       min: 1,
       max: 50,
@@ -327,12 +350,21 @@ export default {
 
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
-          if (event.button === 3 && this.addVacantSwitch) {
-            var pointer = this.floorCanvas.getPointer(event.e);
-            var posX = pointer.x;
-            var posY = pointer.y;
-            console.log(posX + ", " + posY);
-            this.addVacantSeat(posX, posY);
+          if (event.button === 3) {
+            if (this.addVacantSwitch) {
+              var pointer = this.floorCanvas.getPointer(event.e);
+              var posX = pointer.x;
+              var posY = pointer.y;
+              console.log(posX + ", " + posY);
+              this.addVacantSeat(posX, posY);
+            } else if (this.floorCanvas.getActiveObject()) {
+              //contextMenu
+              var pointer = this.floorCanvas.getPointer(event.e);
+              var posX = pointer.x;
+              var posY = pointer.y;
+              this.show(posX, posY);
+              console.log(posX + "/" + posY);
+            }
           }
         });
 
@@ -353,6 +385,14 @@ export default {
 
         this.manageKeyboard(this.floorCanvas);
       }
+    },
+    show(clientX, clientY) {
+      this.contextMenuStatus = false;
+      this.contextMenuXLocation = clientX + 650;
+      this.contextMenuYLocation = clientY;
+      this.$nextTick(() => {
+        this.contextMenuStatus = true;
+      });
     },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
