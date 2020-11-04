@@ -3,11 +3,11 @@
     <v-form ref="form" lazy-validation>
       <v-card>
         <v-card-title>
-          <span class="headline">Add Floor</span>
+          <span class="headline">Change FloorName</span>
         </v-card-title>
         <v-text-field
           label="Floor"
-          v-model="inputFloorName"
+          v-model="inputChangeFloorName"
           required
         ></v-text-field>
         <v-card-actions>
@@ -30,12 +30,12 @@ export default {
   },
   data() {
     return {
-      inputFloorName: null,
+      inputChangeFloorName: null,
     };
   },
   created() {
-    eventBus.$on("initFloor", (initFloor) => {
-      this.inputFloorName = initFloor;
+    eventBus.$on("initChangeFloorName", (initFloor) => {
+      this.inputChangeFloorName = initFloor;
     });
   },
   computed: {
@@ -45,8 +45,8 @@ export default {
   },
   methods: {
     confirm() {
-      if (this.inputFloorName == null) return;
-      eventBus.$emit("AddFloor", this.inputFloorName);
+      if (this.inputChangeFloorName == null) return;
+      eventBus.$emit("ChangeFloorName", this.inputChangeFloorName);
     },
   },
 };

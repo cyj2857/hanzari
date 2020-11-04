@@ -179,6 +179,8 @@ export default {
     test() {
       console.log(this.currentSelectedFloorId);
       console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
+      console.log(this.allFloorList);
+      console.log(this.managerFloorList);
     },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
