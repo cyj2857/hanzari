@@ -312,6 +312,7 @@ export default {
           opt.e.stopPropagation();
         });
 
+        //원하는 위치에 자동으로 공석 생성하기
         /*this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
             var pointer = this.floorCanvas.getPointer(event.e);
@@ -336,10 +337,64 @@ export default {
           var activeObject = this.floorCanvas.getActiveObject();
           var activeGroup = this.floorCanvas.getActiveGroup();
         });
+
+        this.manageKeyboard(this.floorCanvas);
       }
     },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    },
+    manageKeyboard(floorCanvas) {
+      document.onkeydown = function (event) {
+        var key = window.event ? window.event.keyCode : event.keyCode;
+
+        switch (key) {
+          case 37: // left
+            if (floorCanvas.getActiveObject()) {
+              //floorCanvas.getActiveObject().left -= 5;
+              floorCanvas
+                .getActiveObject()
+                .set("left", floorCanvas.getActiveObject().left - 5);
+              floorCanvas.getActiveObject().set("modify", true);
+              floorCanvas.renderAll();
+            }
+            break;
+          case 39: // right
+            if (floorCanvas.getActiveObject()) {
+              //floorCanvas.getActiveObject().left += 5;
+              floorCanvas
+                .getActiveObject()
+                .set("left", floorCanvas.getActiveObject().left + 5);
+              floorCanvas.getActiveObject().set("modify", true);
+              floorCanvas.renderAll();
+            }
+            break;
+          case 38: // up
+            if (floorCanvas.getActiveObject()) {
+              //floorCanvas.getActiveObject().top -= 5;
+              floorCanvas
+                .getActiveObject()
+                .set("top", floorCanvas.getActiveObject().top - 5);
+              floorCanvas.getActiveObject().set("modify", true);
+              floorCanvas.renderAll();
+            }
+            break;
+          case 40: // down
+            if (floorCanvas.getActiveObject()) {
+              //floorCanvas.getActiveObject().top += 5;
+              floorCanvas
+                .getActiveObject()
+                .set("top", floorCanvas.getActiveObject().top + 5);
+              floorCanvas.getActiveObject().set("modify", true);
+              floorCanvas.renderAll();
+            }
+            break;
+          case 46: // delete
+            if (floorCanvas.getActiveObject()) {
+            }
+            break;
+        }
+      };
     },
     createSeatUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
