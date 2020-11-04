@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hancom.hanzari.dto.EmployeeDto;
 import com.hancom.hanzari.model.Employee;
+import com.hancom.hanzari.service.EmployeeAdditionalInfoService;
 import com.hancom.hanzari.service.EmployeeService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -26,6 +27,8 @@ public class EmployeeController {
 
 	@Autowired
 	private EmployeeService employeeService;
+	@Autowired
+	private EmployeeAdditionalInfoService employeeAdditionalInfoService;
 
 	// 전체사원 조회
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
