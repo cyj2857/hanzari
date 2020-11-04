@@ -1,10 +1,29 @@
 <template>
   <div>
-    <v-switch
-      v-model="addVacantSwitch"
-      inset
-      :label="`공석만들기 모드 ${addVacantSwitch.toString()}`"
-    ></v-switch>
+    <v-card flat color="transparent">
+      <v-card-text>
+        <v-row
+          ><v-col cols="12" sm="5">
+            <v-switch
+              v-model="addVacantSwitch"
+              inset
+              :label="`공석만들기 모드 ${addVacantSwitch.toString()} (클릭시 좌석 크기 설정 가능)`"
+            ></v-switch
+          ></v-col>
+          <v-col cols="12" sm="7" v-if="addVacantSwitch">
+            <v-slider
+              v-model="slider"
+              class="align-center"
+              thumb-label="always"
+              :max="max"
+              :min="min"
+              hide-details
+            >
+            </v-slider>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
     <canvas
       ref="canvas"
       class="canvas"
@@ -63,6 +82,10 @@ export default {
   data: function () {
     return {
       addVacantSwitch: false, // 공석 만들기 위한 스위치 상태
+      min: 1,
+      max: 50,
+      slider: 25,
+
       floorCanvas: null,
 
       currentSelectedFloorName: null,
@@ -850,8 +873,8 @@ export default {
       let seatId = this.createSeatUUID();
 
       let rectangle = new fabric.Rect({
-        width: 50,
-        height: 50,
+        width: this.slider,
+        height: this.slider,
         fill: this.getColor(null),
         opacity: 1,
       });
