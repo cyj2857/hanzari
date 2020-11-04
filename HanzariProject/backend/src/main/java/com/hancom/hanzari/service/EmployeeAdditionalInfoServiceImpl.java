@@ -16,16 +16,13 @@ public class EmployeeAdditionalInfoServiceImpl implements EmployeeAdditionalInfo
 
 	@Override
 	public EmployeeAdditionalInfo findByEmployee(Employee employee) throws Exception {
-		EmployeeAdditionalInfo employeeAdditionalInfo = employeeAdditionalInfoRepository.findByEmployee(employee);
-		if(employeeAdditionalInfo != null)
-			return employeeAdditionalInfo;
-		else 
-			throw new ResourceNotFoundException("EmployeeAdditionalInfo", "employee", employee);
+		return employeeAdditionalInfoRepository.findById(employee.getEmployeeId())
+				.orElseThrow(() -> new ResourceNotFoundException("EmployeeAdditionalInfo", "employee", employee));
 	}
 
 	@Override
 	public void deleteByEmployee(Employee employee) {
-		employeeAdditionalInfoRepository.deleteByEmployee(employee);
+		employeeAdditionalInfoRepository.deleteById(employee.getEmployeeId());
 	}
 
 	@Override
