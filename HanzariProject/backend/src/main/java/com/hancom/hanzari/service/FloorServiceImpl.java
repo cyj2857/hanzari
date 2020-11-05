@@ -60,11 +60,6 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
-	public void deleteByBuilding(Building building) {
-		floorRepository.deleteByBuilding(building);
-	}
-
-	@Override
 	public Floor save(Floor floor) {
 		return floorRepository.save(floor);
 	}
