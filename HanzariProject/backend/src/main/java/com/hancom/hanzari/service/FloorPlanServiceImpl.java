@@ -19,13 +19,22 @@ public class FloorPlanServiceImpl implements FloorPlanService {
 		return floorPlan;
 	}
 
+//	@Override
+//	public FloorPlan findByBuildingIdAndFloorId(String buildingId, String floorId) {
+//		FloorPlan floorPlan = floorPlanRepository.findByBuildingIdAndFloorId(buildingId, floorId);
+//		if(floorPlan != null)
+//			return floorPlan;
+//		else
+//			throw new ResourceNotFoundException("FloorPlan", "buildingId", buildingId);
+//	}
+	
 	@Override
-	public FloorPlan findByBuildingIdAndFloorId(String buildingId, String floorId) {
-		FloorPlan floorPlan = floorPlanRepository.findByBuildingIdAndFloorId(buildingId, floorId);
+	public FloorPlan findByFloorId(String floorId) {
+		FloorPlan floorPlan = floorPlanRepository.findByFloorId(floorId);
 		if(floorPlan != null)
 			return floorPlan;
 		else
-			throw new ResourceNotFoundException("FloorPlan", "buildingId", buildingId);
+			throw new ResourceNotFoundException("FloorPlan", "floorId", floorId);
 	}
 	
 }
