@@ -1,6 +1,5 @@
 package com.hancom.hanzari.controllers;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +34,6 @@ import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
 import com.hancom.hanzari.service.ShapeService;
 
-import lombok.extern.log4j.Log4j2;
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/seats")
@@ -60,6 +57,9 @@ public class SeatController {
 	public ResponseEntity<List<SeatDto>> getAllSeatsInFloorInBuilding(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId) throws Exception {
 
+		LOGGER.info("SeatController.getAllSeatsInFloorInBuilding called. (building_id : {}, floor_id : {})", buildingId,
+				floorId);
+
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
@@ -80,6 +80,9 @@ public class SeatController {
 	public ResponseEntity<SeatDto> getSeat(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @PathVariable("seat_id") String seat_id) throws Exception {
 
+		LOGGER.info("SeatController.getSeat called. (building_id : {}, floor_id : {}, seat_id : {})", buildingId,
+				floorId, seat_id);
+
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
@@ -95,6 +98,9 @@ public class SeatController {
 	@GetMapping(value = "/by-empid/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> getSeatsByEmpId(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @PathVariable("employee_id") String employeeId) throws Exception {
+
+		LOGGER.info("SeatController.getSeatsByEmpId called. (building_id : {}, floor_id : {}, emp_id : {})", buildingId,
+				floorId, employeeId);
 
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
@@ -117,7 +123,9 @@ public class SeatController {
 	@PostMapping
 	public ResponseEntity<Seat> save(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @RequestBody SeatDto seatDto) throws Exception {
-		LOGGER.info("SeatController.save called. (floor_id : {}, seat_id : {})" , floorId, seatDto.getSeat_id());
+
+		LOGGER.info("SeatController.save called. (building_id : {}, floor_id : {}, seat_id : {})", buildingId, floorId,
+				seatDto.getSeat_id());
 
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
@@ -139,15 +147,16 @@ public class SeatController {
 		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
 
-		Seat newSeat = Seat.builder().seatId(seatDto.getSeat_id()).seatName(seatDto.getSeat_name()).floor(floor).x(seatDto.getX()).y(seatDto.getY())
-				.isGroup(seatDto.getIs_group()).groupId(seatDto.getGroup_id()).employee(employee).figure(figure)
-				.build();
+		Seat newSeat = Seat.builder().seatId(seatDto.getSeat_id()).seatName(seatDto.getSeat_name()).floor(floor)
+				.x(seatDto.getX()).y(seatDto.getY()).isGroup(seatDto.getIs_group()).groupId(seatDto.getGroup_id())
+				.employee(employee).figure(figure).build();
 
 		return new ResponseEntity<Seat>(seatService.save(newSeat), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteSeat(@PathVariable("seat_id") String seat_id) {
+
 		LOGGER.info("SeatController.DeleteSeat called. (seat_id : {})", seat_id);
 		seatService.deleteById(seat_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
@@ -156,6 +165,7 @@ public class SeatController {
 
 	@RequestMapping("/get-all-seats")
 	public ResponseEntity<List<SeatDto>> getAllSeats() throws Exception {
+
 		LOGGER.info("SeatController.getAllSeats called.");
 		List<Seat> seat = seatService.findAll();
 		List<SeatDto> result = new ArrayList<>();

@@ -4,8 +4,7 @@
 	<properties>
 		<property name="appName">hanzariApp</property>
 		<property name="charset">UTF-8</property>
-		<property name="pattern">%d{HH:mm:ss.SSS} ${appName} %-5level
-			%logger{36} - %m%n</property>
+		<property name="pattern">%d{HH:mm:ss.SSS} ${appName} %-5level %logger{36} - %m%n</property>
 	</properties>
 
 	<Appenders>
