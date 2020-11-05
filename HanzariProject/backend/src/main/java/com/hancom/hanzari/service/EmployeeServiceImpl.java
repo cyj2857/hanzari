@@ -47,15 +47,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public Employee save(Employee employee) {
-		// TODO Auto-generated method stub
-		return null;
+		return employeeRepository.save(employee);
 	}
 
 	@Override
 	public List<Employee> findByKeyword(String keyword) {
 		List<Employee> employee = new ArrayList<Employee>();
 		employeeRepository.findAll().forEach(e -> {
-			if (e.getAdditionalInfo().getEmployeeName().toString().contains(keyword)||e.getAdditionalInfo().getDepartmentName().toString().contains(keyword)){
+			if (e.getAdditionalInfo().getEmployeeName().toString().contains(keyword)
+					|| e.getAdditionalInfo().getDepartmentName().toString().contains(keyword)) {
 				employee.add(e);
 			}
 		});

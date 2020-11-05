@@ -4,6 +4,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,11 +14,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hancom.hanzari.dto.EmployeeDto;
 import com.hancom.hanzari.model.Employee;
+import com.hancom.hanzari.model.EmployeeAdditionalInfo;
 import com.hancom.hanzari.service.EmployeeService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -61,7 +66,21 @@ public class EmployeeController {
 		employee.forEach(e -> result.add(e.toDto()));
 		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
 	}
-	
+
+	@Transactional
+	@PostMapping
+	public ResponseEntity<Employee> save(@RequestBody EmployeeDto employeeDto) throws Exception {
+		EmployeeAdditionalInfo additionalInfo = EmployeeAdditionalInfo.builder()
+				.employeeId(employeeDto.getEmployee_id()).employeeName(employeeDto.getEmployee_name())
+				.status(employeeDto.getStatus()).extensionNumber(employeeDto.getExtension_number())
+				.departmentName(employeeDto.getDepartment_name()).build();
+
+		Employee newEmployee = Employee.builder().employeeId(employeeDto.getEmployee_id())
+				.authority(employeeDto.getAuthority()).additionalInfo(additionalInfo).build();
+
+		return new ResponseEntity<Employee>(employeeService.save(newEmployee), HttpStatus.OK);
+	}
+
 	// employee_id로 삭제
 	@DeleteMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteEmp(@PathVariable("employee_id") String employee_id) {
