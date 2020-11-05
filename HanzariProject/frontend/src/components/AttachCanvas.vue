@@ -104,6 +104,8 @@ export default {
         { title: "자리 비우기", index: 0 },
         { title: "삭제하기", index: 1 },
         { title: "층간 이동하기", index: 2 },
+        { title: "복제하기", index: 3 },
+        { title: "seatName 입력", index: 4 },
       ],
 
       addVacantSwitch: false, // 공석 만들기 위한 스위치 상태
@@ -204,8 +206,9 @@ export default {
     test() {
       console.log(this.currentSelectedFloorId);
       console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
-      console.log(this.allFloorList);
-      console.log(this.managerFloorList);
+      console.log(
+        this.getManagerEachFloorSeatList(this.currentSelectedFloorId)
+      );
     },
     getEmployeeDialog() {
       this.employeeDialogStatus = true;
@@ -381,6 +384,74 @@ export default {
         });
       }
     },
+    //복제하기
+    copySelectedSeat() {
+      if (!this.floorCanvas.getActiveObject()) return;
+
+      let activeObject = this.floorCanvas.getActiveObject();
+      let floor_id = this.currentSelectedFloorId;
+      let _clipboard = null;
+
+      let canvas = this.floorCanvas;
+      let seatId = this.createSeatUUID();
+
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let managerEachFloorList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+        activeObject.employee_id
+      );
+
+      activeObject.clone(function (cloned) {
+        _clipboard = cloned;
+      });
+
+      _clipboard.clone(function (clonedObj) {
+        canvas.discardActiveObject();
+        clonedObj.set({
+          left: clonedObj.left + 10,
+          top: clonedObj.top + 10,
+          create: true,
+          delete: false,
+          modify: false,
+          seatId: seatId,
+          floor_id: floor_id,
+          angle: activeObject.angle,
+          seatName: activeObject.seatName,
+          employee_department: activeObject.employee_department,
+          employee_id: activeObject.employee_id,
+          employee_name: activeObject.employee_name,
+          employee_number: activeObject.employee_number,
+          evented: true,
+        });
+        if (clonedObj.type === "activeSelection") {
+          clonedObj.canvas = canvas;
+          clonedObj.forEachObject(function (obj) {
+            canvas.add(obj);
+          });
+          // this should solve the unselectability
+          clonedObj.setCoords();
+        } else {
+          canvas.add(clonedObj);
+        }
+
+        _clipboard.top += 10;
+        _clipboard.left += 10; // 한번 copy하면 연속 붙여넣기 가능하게 하기 위함
+
+        canvas.setActiveObject(clonedObj);
+        canvas.requestRenderAll();
+
+        eachFloorSeatList.push(clonedObj);
+        managerEachFloorList.push(clonedObj);
+        eachEmployeeSeatList.push(clonedObj);
+      });
+
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+    },
     show(clientX, clientY) {
       this.contextMenuStatus = false;
       this.contextMenuXLocation = clientX + 650;
@@ -400,6 +471,12 @@ export default {
           break;
         case 2:
           this.getChangeSeatDialog();
+          break;
+        case 3:
+          this.copySelectedSeat();
+          break;
+        case 4:
+          this.getInputSeatNameDialog();
           break;
       }
     },
@@ -976,6 +1053,7 @@ export default {
       eachEmployeeSeatList.push(activeObject);
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     addVacantSeat(posX, posY) {
@@ -1043,10 +1121,6 @@ export default {
           );
           this.getEmployeeDialog();
         }
-      });
-
-      group.on("mousedblclick", (e) => {
-        this.getInputSeatNameDialog();
       });
 
       this.floorCanvas.on("object:scaling", (e) => {
@@ -1340,10 +1414,6 @@ export default {
         }
       });
 
-      group.on("mousedblclick", (e) => {
-        this.getInputSeatNameDialog();
-      });
-
       return group;
     },
 
@@ -1354,7 +1424,7 @@ export default {
         let floorid = this.currentFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
         this.currentSelectedFloorId = floorid;
-        
+
         this.loadImageUrl(imgurl);
 
         // 현재층 자리 로드
