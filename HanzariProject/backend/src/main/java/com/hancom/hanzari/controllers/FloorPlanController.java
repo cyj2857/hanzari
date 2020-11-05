@@ -48,8 +48,7 @@ public class FloorPlanController {
 	@PostMapping
 	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		String floorPlanId = buildingId + "-" + floorId;
-		FloorPlan putfloorPlan = FloorPlan.builder().buildingId(buildingId)
-				.floorId(floorId).floorPlanId(floorPlanId).build();
+		FloorPlan putfloorPlan = FloorPlan.builder().floorId(floorId).floorPlanId(floorPlanId).build();
 		InputStream imagePutInputStream = file.getInputStream();
 		
 		floorPlanService.save(putfloorPlan);

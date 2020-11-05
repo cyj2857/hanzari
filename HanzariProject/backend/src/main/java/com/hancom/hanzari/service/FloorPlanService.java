@@ -6,5 +6,5 @@ public interface FloorPlanService {
 	public FloorPlan save(FloorPlan floorPlan);
 	
 	//public FloorPlan findByBuildingIdAndFloorId(String buildingId, String floorId) throws Exception;
-	public FloorPlan findByFloorId(String floorId) throws Exception;
+	public FloorPlan findByFloorPlanId(String floorPlanId) throws Exception;
 }

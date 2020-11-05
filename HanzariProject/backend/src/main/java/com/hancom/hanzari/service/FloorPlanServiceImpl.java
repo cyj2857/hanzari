@@ -29,12 +29,12 @@ public class FloorPlanServiceImpl implements FloorPlanService {
 //	}
 	
 	@Override
-	public FloorPlan findByFloorId(String floorId) {
-		FloorPlan floorPlan = floorPlanRepository.findByFloorId(floorId);
+	public FloorPlan findByFloorPlanId(String floorPlanId) {
+		FloorPlan floorPlan = floorPlanRepository.findByFloorPlanId(floorPlanId);
 		if(floorPlan != null)
 			return floorPlan;
 		else
-			throw new ResourceNotFoundException("FloorPlan", "floorId", floorId);
+			throw new ResourceNotFoundException("FloorPlanID", "floorPlanId", floorPlanId);
 	}
 	
 }

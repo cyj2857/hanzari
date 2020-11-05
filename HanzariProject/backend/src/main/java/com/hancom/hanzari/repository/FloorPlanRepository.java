@@ -9,5 +9,5 @@ import com.hancom.hanzari.model.FloorPlan;
 public interface FloorPlanRepository  extends JpaRepository<FloorPlan, String> {
 
 	//FloorPlan findByBuildingIdAndFloorId(String buildingId, String floorId);
-	FloorPlan findByFloorId(String floorId);
+	FloorPlan findByFloorPlanId(String floorPlanId);
 }
