@@ -60,7 +60,7 @@ public class FloorPlanController {
 				    .bucket(bucketName)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
 				    .object(floorPlanId)
-					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.	
+					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
 				    //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
 				    .stream(imagePutInputStream, file.getSize() , -1) 
 				    /*TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보낼 경우 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 명시적 contentType과 실제 데이터의 contentType이 달라 문제가 생길 수 있다.
