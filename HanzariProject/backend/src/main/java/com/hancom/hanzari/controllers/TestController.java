@@ -3,56 +3,58 @@ package com.hancom.hanzari.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.hancom.hanzari.dto.BuildingDto;
+import com.hancom.hanzari.dto.FloorDto;
+import com.hancom.hanzari.dto.SeatDto;
 import com.hancom.hanzari.model.Building;
 import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.EmployeeAdditionalInfo;
+import com.hancom.hanzari.model.Floor;
+import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.model.Shape;
+import com.hancom.hanzari.service.BuildingService;
+import com.hancom.hanzari.service.EmployeeService;
+import com.hancom.hanzari.service.FloorService;
+import com.hancom.hanzari.service.SeatService;
+import com.hancom.hanzari.service.ShapeService;
 
 /*
  * TEST에 필요한 메소드들을 모아놓은 Controller
 */
-@Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("test-api/")
 public class TestController {
 
 	@Autowired
-	private static SessionFactory sessionFactory;
+	private SeatService seatService;
+	@Autowired
+	private FloorService floorService;
+	@Autowired
+	private BuildingService buildingService;
+	@Autowired
+	private EmployeeService employeeService;
+	@Autowired
+	private ShapeService shapeService;
+	
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
+	
 
-	// view first vue.js->vue.js logo
-	@RequestMapping("/")
-	public String Index() {
-		return "indexing";
-	}
-
-	// view HanzariPrototype->한컴 화면
-	@RequestMapping("/test")
-	public String Welcome() {
-		return "welcome";
-	}
-
-	@GetMapping("/texttest")
-	@ResponseBody
-	public String Blaa() {
-		System.out.println("texttest");
-		return "hello blaalaa";
-	}
-
-	// 여러 더미데이터를 넣어주는 테스트코드
-	// hibernate.hbm2ddl.auto=create 로 시작해야함.
+	@Transactional
 	@GetMapping("/inserttestdata")
-	@ResponseBody
 	public void InsertTestData() {
-
-		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 
 		List<Shape> shapes = new ArrayList<Shape>();
 		shapes.add(new Shape("1", "네모", null));
@@ -118,26 +120,44 @@ public class TestController {
 		employee.add(Employee.builder().employeeId("95032205").authority("manager")
 				.additionalInfo(additionalInfo.get(11)).seat(null).build());
 
-		Session session = sessionFactory.openSession();
-		try {
-			Transaction tx = session.beginTransaction();
-
-			// Query
-			shapes.forEach(e -> session.save(e));
-			buildings.forEach(e -> session.save(e));
-			additionalInfo.forEach(e -> session.save(e));
-			employee.forEach(e -> session.save(e)); // instead of SQL statement
-
-			tx.commit();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		} finally {
-			session.close();
-			sessionFactory.close();
-			System.out.println("\n\n======= INSERT TESTDATA DONE =======\n\n\n");
-		}
-
+		shapes.forEach(e -> shapeService.save(e));
+		buildings.forEach(e -> buildingService.save(e));
+		employee.forEach(e -> employeeService.save(e));
 	}
+	
+	@Transactional
+	@RequestMapping("/get-all-buildings")
+	public ResponseEntity<List<BuildingDto>>  getAllBuildings() throws Exception {
+
+		LOGGER.info("TestController.getAllSeats called.");
+		List<Building> buildings = buildingService.findAll();
+		List<BuildingDto> result = new ArrayList<>();
+		buildings.forEach(e -> result.add(e.toDto()));
+		return new ResponseEntity<List<BuildingDto>>(result, HttpStatus.OK);
+	}
+	
+	@Transactional
+	@RequestMapping("/get-all-floors")
+	public ResponseEntity<List<FloorDto>>  getAllFloors() throws Exception {
+
+		LOGGER.info("TestController.getAllSeats called.");
+		List<Floor> floors = floorService.findAll();
+		List<FloorDto> result = new ArrayList<>();
+		floors.forEach(e -> result.add(e.toDto()));
+		return new ResponseEntity<List<FloorDto>>(result, HttpStatus.OK);
+	}
+	
+	@Transactional
+	@RequestMapping("/get-all-seats")
+	public ResponseEntity<List<SeatDto>>  getAllSeats() throws Exception {
+
+		LOGGER.info("TestController.getAllSeats called.");
+		List<Seat> seats = seatService.findAll();
+		List<SeatDto> result = new ArrayList<>();
+		seats.forEach(e -> result.add(e.toDto()));
+		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
+	}
+	
+	
+	
 }
