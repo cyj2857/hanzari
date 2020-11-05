@@ -49,6 +49,16 @@
         </v-list-item>
       </v-list>
     </v-menu>
+
+    <v-tooltip
+      left
+      v-model="toolTipStatus"
+      :position-x="toolTipXLocation"
+      :position-y="toolTipYLocation"
+    >
+      <span>Left tooltip</span>
+    </v-tooltip>
+
     <input v-show="false" ref="Upload" type="file" @change="changeImageFile" />
     <v-btn color="success" @click="$refs.Upload.click()"
       >Upload Background img file</v-btn
@@ -107,6 +117,10 @@ export default {
         { title: "복제하기", index: 3 },
         { title: "seatName 입력", index: 4 },
       ],
+
+      toolTipStatus: false,
+      toolTipXLocation: 100,
+      toolTipYLocation: 100,
 
       addVacantSwitch: false, // 공석 만들기 위한 스위치 상태
       min: 1,
@@ -329,6 +343,7 @@ export default {
           fireMiddleClick: true, // <-- enable firing of middle click events
           stopContextMenu: true, // <--  prevent context menu from showing
         });
+
         this.floorCanvas.on("mouse:wheel", (opt) => {
           if (!this.floorCanvas.viewportTransform) {
             return;
@@ -371,16 +386,49 @@ export default {
 
               var posX = this.floorCanvas.getActiveObject().left;
               var posY = this.floorCanvas.getActiveObject().top;
-              this.show(posX, posY);
+              this.showContextMenu(posX, posY);
               console.log(posX + "/" + posY);
             }
           }
         });
 
-        this.floorCanvas.on("object:modified", function (e) {
+        this.floorCanvas.on("object:modified", (e) => {
           //크기, 이동, 회전
           let modifyObject = e.target;
           modifyObject.set("modify", true);
+        });
+
+        this.floorCanvas.on("mouse:over", (e) => {
+          let group = e.target;
+
+          if (group != null) {
+            console.log(group.left + "현재 마우스 오버한 도형의 left");
+            var posX = group.left;
+            var posY = group.top;
+            this.showToolTip(posX, posY);
+
+            let groupToObject = group.toObject([
+              "employee_id",
+              "employee_name",
+              "employee_department",
+            ]);
+
+            console.log("Employee_id" + groupToObject.employee_id);
+            console.log("Employee_name" + groupToObject.employee_name);
+            console.log("Floor_name" + this.currentSelectedFloorName);
+            //eventBus.$emit("employee_id", groupToObject.employee_id);
+            //eventBus.$emit("employee_name", groupToObject.employee_name);
+            //eventBus.$emit("floor_name", this.currentSelectedFloorName);
+            //eventBus.$emit(
+            //  "employee_department",
+            //  groupToObject.employee_department
+            //);
+            //this.getEmployeeDialog();
+          }
+
+          else{
+            this.closeToolTip();
+          }
         });
       }
     },
@@ -452,9 +500,9 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    show(clientX, clientY) {
+    showContextMenu(clientX, clientY) {
       this.contextMenuStatus = false;
-      this.contextMenuXLocation = clientX + 650;
+      this.contextMenuXLocation = clientX+650;
       this.contextMenuYLocation = clientY;
       this.$nextTick(() => {
         this.contextMenuStatus = true;
@@ -479,6 +527,16 @@ export default {
           this.getInputSeatNameDialog();
           break;
       }
+    },
+    showToolTip(clientX, clientY) {
+      console.log(clientX);
+      console.log("===============");
+      this.toolTipXLocation = clientX;
+      this.toolTipYLocation = clientY;
+      this.toolTipStatus = true;
+    },
+    closeToolTip() {
+      this.toolTipStatus = false;
     },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
@@ -576,10 +634,7 @@ export default {
               "eachFloorSeatList",
               allSeatMap.get(currentSelectedFloorId)
             );
-            eventBus.$emit(
-              "eachEmployeeSeatMap",
-              eachEmployeeSeatMap
-            );
+            eventBus.$emit("eachEmployeeSeatMap", eachEmployeeSeatMap);
             break;
           case 37: // left
             if (floorCanvas.getActiveObject()) {
