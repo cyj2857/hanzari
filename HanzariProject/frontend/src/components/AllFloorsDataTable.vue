@@ -28,7 +28,8 @@
           </td>
           <td>
             <v-btn
-              id="MappingSeatButton"  draggable="true"
+              id="MappingSeatButton"
+              draggable="true"
               @click="MappingSeatButtonClicked(row.item)"
               >Mapping</v-btn
             >
@@ -72,7 +73,7 @@ export default {
   },
   methods: {
     showSeatButtonClicked(item) {
-      if(this.allEmployeeSeatMap){
+      if (this.allEmployeeSeatMap) {
         for (let k = 0; k < this.employees.length; k++) {
           if (this.employees[k].employee_id == item.employee_id) {
             let eachEmployeeSeatList = this.allEmployeeSeatMap.get(
@@ -83,14 +84,14 @@ export default {
             if (eachEmployeeSeatList) {
               console.log(
                 this.employees[k].employee_id +
-                 "employee_id? length" +
+                  "employee_id? length" +
                   eachEmployeeSeatList.length
               ); //2
               console.log(this.employees[k].name);
 
               this.employees[k].seatIdList = eachEmployeeSeatList;
               console.log(this.employees[k].seatIdList);
-            
+
               eventBus.$emit("showSeatDataTable", this.employees[k]);
             }
           }

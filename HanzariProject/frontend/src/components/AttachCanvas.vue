@@ -487,11 +487,100 @@ export default {
       floorCanvas,
       currentSelectedFloorId,
       allSeatMap,
-      eachEmployeeSeatMap
+      eachEmployeeSeatMap,
+      managerAllSeatMap
     ) {
+      let clipboard = null;
+      let activeObject = null;
+      let groupToObject = null;
+      let seatId = null;
+
       document.onkeydown = function (event) {
         var key = window.event ? window.event.keyCode : event.keyCode;
         switch (key) {
+          case 17 && 67: //ctrl+c
+            if (floorCanvas.getActiveObject()) {
+              activeObject = floorCanvas.getActiveObject();
+              activeObject.clone(function (cloned) {
+                clipboard = cloned;
+              });
+              groupToObject = activeObject.toObject([
+                "seatId",
+                "employee_id",
+                "employee_department",
+                "employee_name",
+                "employee_number",
+                "seatName",
+              ]);
+            }
+            break;
+          case 17 && 86: //ctrl+v
+            seatId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+              /[xy]/g,
+              function (c) {
+                let r = (Math.random() * 16) | 0,
+                  v = c == "x" ? r : (r & 3) | 8;
+                return v.toString(16);
+              }
+            );
+
+            clipboard.clone(function (clonedObj) {
+              floorCanvas.discardActiveObject();
+              clonedObj.set({
+                left: clonedObj.left + 10,
+                top: clonedObj.top + 10,
+                create: true,
+                delete: false,
+                modify: false,
+                seatId: seatId, //?
+                floor_id: currentSelectedFloorId,
+                angle: groupToObject.angle,
+                employee_department: groupToObject.employee_department,
+                employee_id: groupToObject.employee_id,
+                employee_name: groupToObject.employee_name,
+                employee_number: groupToObject.employee_number,
+                evented: true,
+              });
+
+              if (groupToObject.seatName) {
+                clonedObj.set({
+                  seatName: groupToObject.seatName,
+                });
+              }
+
+              if (clonedObj.type === "activeSelection") {
+                clonedObj.canvas = floorCanvas;
+                clonedObj.forEachObject(function (obj) {
+                  floorCanvas.add(obj);
+                });
+                // this should solve the unselectability
+                clonedObj.setCoords();
+              } else {
+                floorCanvas.add(clonedObj);
+              }
+
+              clipboard.top += 10;
+              clipboard.left += 10; // 한번 copy하면 연속 붙여넣기 가능하게 하기 위함
+
+              floorCanvas.setActiveObject(clonedObj);
+              floorCanvas.requestRenderAll();
+
+              allSeatMap.get(currentSelectedFloorId).push(clonedObj);
+              managerAllSeatMap.get(currentSelectedFloorId).push(clonedObj);
+              eachEmployeeSeatMap
+                .get(groupToObject.employee_id)
+                .push(clonedObj);
+            });
+
+            eventBus.$emit(
+              "eachFloorSeatList",
+              allSeatMap.get(currentSelectedFloorId)
+            );
+            eventBus.$emit(
+              "eachEmployeeSeatMap",
+              eachEmployeeSeatMap
+            );
+            break;
           case 37: // left
             if (floorCanvas.getActiveObject()) {
               floorCanvas
@@ -681,7 +770,8 @@ export default {
         this.floorCanvas,
         this.currentSelectedFloorId,
         this.allSeatMap,
-        this.eachEmployeeSeatMap
+        this.eachEmployeeSeatMap,
+        this.managerAllSeatMap
       );
     },
     loadImageUrl(imgurl) {
@@ -699,7 +789,8 @@ export default {
         this.floorCanvas,
         this.currentSelectedFloorId,
         this.allSeatMap,
-        this.eachEmployeeSeatMap
+        this.eachEmployeeSeatMap,
+        this.managerAllSeatMap
       );
     },
     changeImageFile(e) {
