@@ -3,6 +3,7 @@ package com.hancom.hanzari.controllers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,10 +47,10 @@ public class FloorPlanController {
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
-	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
-		String floorPlanId = buildingId + "-" + floorId;
-		FloorPlan putfloorPlan = FloorPlan.builder().buildingId(buildingId)
-				.floorId(floorId).floorPlanId(floorPlanId).build();
+	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorPlanId, @RequestParam("imageFile") MultipartFile file) throws IOException {
+		Date timeStamp = new Date();
+		String floorPlanFileName = floorPlanId + "-" + timeStamp;
+		FloorPlan putfloorPlan = FloorPlan.builder().floorPlanId(floorPlanId).floorPlanFileName(floorPlanFileName).build();
 		InputStream imagePutInputStream = file.getInputStream();
 		
 		floorPlanService.save(putfloorPlan);
@@ -60,7 +61,7 @@ public class FloorPlanController {
 				    .bucket(bucketName)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
 				    .object(floorPlanId)
-					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.	
+					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
 				    //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
 				    .stream(imagePutInputStream, file.getSize() , -1) 
 				    /*TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보낼 경우 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 명시적 contentType과 실제 데이터의 contentType이 달라 문제가 생길 수 있다.
@@ -86,14 +87,14 @@ public class FloorPlanController {
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
-	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
+	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorPlanId,  HttpServletResponse response) throws IOException {
 		InputStream imageGetInputStream = null;
-		String floorPlanId = null;
+		String floorPlanFileName = null;
 		FloorPlan getFloorPlan;
 		
 		try {
-			getFloorPlan = floorPlanService.findByBuildingIdAndFloorId(buildingId, floorId);
-			floorPlanId = getFloorPlan.getFloorPlanId();
+			getFloorPlan = floorPlanService.findByFloorPlanId(floorPlanId);
+			floorPlanFileName = getFloorPlan.getFloorPlanFileName();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -102,10 +103,10 @@ public class FloorPlanController {
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
 					 .bucket(bucketName)
-					 .object(floorPlanId)
+					 .object(floorPlanFileName)
 					 .build());
-			response.addHeader("Content-disposition", floorPlanId);
-			response.setContentType(URLConnection.guessContentTypeFromName(floorPlanId));
+			response.addHeader("Content-disposition", floorPlanFileName);
+			response.setContentType(URLConnection.guessContentTypeFromName(floorPlanFileName));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();			
 		} catch(Exception e) {
