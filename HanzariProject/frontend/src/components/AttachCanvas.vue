@@ -114,6 +114,7 @@ export default {
       slider: 25,
 
       floorCanvas: null,
+      clipboard: null,
 
       currentSelectedFloorName: null,
       currentSelectedFloorId: null,
@@ -384,17 +385,22 @@ export default {
         });
       }
     },
+    cloneSeat() {
+      this.copySelectedSeat();
+      this.pasteSelectedSeat();
+    },
     //복제하기
     copySelectedSeat() {
       if (!this.floorCanvas.getActiveObject()) return;
 
-      let activeObject = this.floorCanvas.getActiveObject();
-      let floor_id = this.currentSelectedFloorId;
-      let _clipboard = null;
-
+      this.floorCanvas.getActiveObject().clone((cloned) => {
+        this.clipboard = cloned;
+      });
+    },
+    pasteSelectedSeat() {
       let canvas = this.floorCanvas;
-      let seatId = this.createSeatUUID();
 
+      let activeObject = this.floorCanvas.getActiveObject();
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
@@ -402,10 +408,10 @@ export default {
         this.currentSelectedFloorId
       );
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-        activeObject.employee_id
+        this.floorCanvas.getActiveObject().employee_id
       );
 
-      activeObject.clone(function (clonedObj) {
+      activeObject.clone((clonedObj) => {
         canvas.discardActiveObject();
         clonedObj.set({
           left: clonedObj.left + 10,
@@ -413,8 +419,8 @@ export default {
           create: true,
           delete: false,
           modify: false,
-          seatId: seatId,
-          floor_id: floor_id,
+          seatId: this.createSeatUUID(),
+          floor_id: this.currentSelectedFloorId,
           angle: activeObject.angle,
           seatName: activeObject.seatName,
           employee_department: activeObject.employee_department,
@@ -466,7 +472,7 @@ export default {
           this.getChangeSeatDialog();
           break;
         case 3:
-          this.copySelectedSeat();
+          this.cloneSeat();
           break;
         case 4:
           this.getInputSeatNameDialog();
@@ -485,77 +491,10 @@ export default {
         var key = window.event ? window.event.keyCode : event.keyCode;
         switch (key) {
           case 17 && 67: //ctrl+c
-            if (this.floorCanvas.getActiveObject()) {
-              activeObject = this.floorCanvas.getActiveObject();
-              activeObject.clone(function (cloned) {
-                clipboard = cloned;
-              });
-              groupToObject = activeObject.toObject([
-                "seatId",
-                "employee_id",
-                "employee_department",
-                "employee_name",
-                "employee_number",
-                "seatName",
-              ]);
-            }
+            this.copySelectedSeat();
             break;
           case 17 && 86: //ctrl+v
-            clipboard.clone((clonedObj) => {
-              this.floorCanvas.discardActiveObject();
-              clonedObj.set({
-                left: clonedObj.left + 10,
-                top: clonedObj.top + 10,
-                create: true,
-                delete: false,
-                modify: false,
-                seatId: this.createSeatUUID(), //?
-                floor_id: this.currentSelectedFloorId,
-                angle: groupToObject.angle,
-                employee_department: groupToObject.employee_department,
-                employee_id: groupToObject.employee_id,
-                employee_name: groupToObject.employee_name,
-                employee_number: groupToObject.employee_number,
-                evented: true,
-              });
-
-              if (groupToObject.seatName) {
-                clonedObj.set({
-                  seatName: groupToObject.seatName,
-                });
-              }
-
-              if (clonedObj.type === "activeSelection") {
-                clonedObj.canvas = this.floorCanvas;
-                clonedObj.forEachObject((obj) => {
-                  this.floorCanvas.add(obj);
-                });
-                // this should solve the unselectability
-                clonedObj.setCoords();
-              } else {
-                this.floorCanvas.add(clonedObj);
-              }
-
-              clipboard.top += 10;
-              clipboard.left += 10; // 한번 copy하면 연속 붙여넣기 가능하게 하기 위함
-
-              this.floorCanvas.setActiveObject(clonedObj);
-              this.floorCanvas.requestRenderAll();
-
-              this.allSeatMap.get(this.currentSelectedFloorId).push(clonedObj);
-              this.managerAllSeatMap
-                .get(this.currentSelectedFloorId)
-                .push(clonedObj);
-              this.eachEmployeeSeatMap
-                .get(groupToObject.employee_id)
-                .push(clonedObj);
-            });
-
-            eventBus.$emit(
-              "eachFloorSeatList",
-              this.allSeatMap.get(this.currentSelectedFloorId)
-            );
-            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+            this.pasteSelectedSeat();
             break;
           case 37: // left
             if (this.floorCanvas.getActiveObject()) {
@@ -595,69 +534,7 @@ export default {
             break;
           case 110: // delete
           case 46: // delete
-            let activeObject = null;
-            let shapearray = new Array();
-            if (confirm("Are you sure?")) {
-              if (this.floorCanvas.getActiveObjects().length == 1) {
-                activeObject = this.floorCanvas.getActiveObject(); // 단일객체
-                activeObject.set("delete", true);
-
-                let groupToObject = activeObject.toObject([
-                  "seatId",
-                  "employee_id",
-                ]);
-                let oneEmployeeSeatList = this.eachEmployeeSeatMap.get(
-                  groupToObject.employee_id
-                );
-                for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-                  if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
-                    oneEmployeeSeatList.splice(i, 1);
-                  }
-                }
-              } else {
-                activeObject = this.floorCanvas.getActiveObjects(); // 복수객체
-                for (let i = 0; i < activeObject.length; i++) {
-                  let groupToObject = activeObject[i].toObject([
-                    "seatId",
-                    "employee_id",
-                    "delete",
-                  ]);
-                  activeObject[i].set("delete", true);
-                  let oneEmployeeSeatList = this.eachEmployeeSeatMap.get(
-                    groupToObject.employee_id
-                  );
-                  for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-                    if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
-                      oneEmployeeSeatList.splice(i, 1);
-                    }
-                  }
-                }
-                activeObject = this.floorCanvas.getActiveObject().toGroup();
-              }
-              this.floorCanvas
-                .getObjects()
-                .slice()
-                .forEach((obj) => {
-                  shapearray.push(obj);
-                });
-              if (activeObject) {
-                shapearray.slice().forEach((obj) => {
-                  if (obj == activeObject) {
-                    let groupToObject = activeObject.toObject(["seatId"]);
-                    let index = shapearray.indexOf(activeObject);
-                    shapearray.splice(index, 1);
-                  }
-                });
-                this.floorCanvas.remove(activeObject);
-                this.allSeatMap.get(this.currentSelectedFloorId).length = 0;
-                this.allSeatMap.set(this.currentSelectedFloorId, shapearray);
-                eventBus.$emit(
-                  "eachFloorSeatList",
-                  this.allSeatMap.get(this.currentSelectedFloorId)
-                );
-                eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-              }
-            }
+            this.deleteBtn();
             break;
         }
       });
