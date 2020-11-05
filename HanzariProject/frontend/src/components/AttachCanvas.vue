@@ -405,11 +405,7 @@ export default {
         activeObject.employee_id
       );
 
-      activeObject.clone(function (cloned) {
-        _clipboard = cloned;
-      });
-
-      _clipboard.clone(function (clonedObj) {
+      activeObject.clone(function (clonedObj) {
         canvas.discardActiveObject();
         clonedObj.set({
           left: clonedObj.left + 10,
@@ -437,9 +433,6 @@ export default {
         } else {
           canvas.add(clonedObj);
         }
-
-        _clipboard.top += 10;
-        _clipboard.left += 10; // 한번 copy하면 연속 붙여넣기 가능하게 하기 위함
 
         canvas.setActiveObject(clonedObj);
         canvas.requestRenderAll();
@@ -576,10 +569,7 @@ export default {
               "eachFloorSeatList",
               allSeatMap.get(currentSelectedFloorId)
             );
-            eventBus.$emit(
-              "eachEmployeeSeatMap",
-              eachEmployeeSeatMap
-            );
+            eventBus.$emit("eachEmployeeSeatMap", eachEmployeeSeatMap);
             break;
           case 37: // left
             if (floorCanvas.getActiveObject()) {
