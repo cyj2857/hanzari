@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -60,6 +61,10 @@ public class Floor {
 	@JsonManagedReference
 	private List<Seat> seats;
 
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval =false)
+	@JoinColumn(name="floor_plan_id")
+	private FloorPlan floorPlan;
+	
 	@PreRemove
 	public void preRemove() {
 		if (building != null) {
