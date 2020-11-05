@@ -54,6 +54,11 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
+	public void deleteAllInBatch(List<Floor> floors) {
+		floorRepository.deleteInBatch(floors);
+	}
+
+	@Override
 	public void deleteByFloorNameAndBuilding(String floorName, Building building) {
 		floorRepository.deleteByFloorNameAndBuilding(floorName, building);
 

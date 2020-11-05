@@ -15,6 +15,8 @@ public interface FloorService {
 	public List<Floor> findByBuilding(Building building) throws Exception;
 
 	public void deleteById(String floorId); // D
+	
+	public void deleteAllInBatch(List<Floor> floors);
 
 	public void deleteByFloorNameAndBuilding(String floorName, Building building);
 
