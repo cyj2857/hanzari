@@ -2,8 +2,6 @@ package com.hancom.hanzari.repository;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +15,4 @@ public interface FloorRepository extends JpaRepository<Floor, String> {
 	Floor findByFloorNameAndBuilding(String floorName, Building building);
 
 	void deleteByFloorNameAndBuilding(String floorName, Building building);
-
-	@Transactional
-	void deleteByBuilding(Building building);
 }

@@ -15,10 +15,10 @@ public interface FloorService {
 	public List<Floor> findByBuilding(Building building) throws Exception;
 
 	public void deleteById(String floorId); // D
+	
+	public void deleteAllInBatch(List<Floor> floors);
 
 	public void deleteByFloorNameAndBuilding(String floorName, Building building);
-
-	public void deleteByBuilding(Building building);
 
 	public Floor save(Floor floor);
 	// 이건 나중에 고려해봐야할듯. 지금은 save()가 알아서 INSERT나 UPDATE로 판단해서 작동되지만 이건 Id로 체크하는게아니고

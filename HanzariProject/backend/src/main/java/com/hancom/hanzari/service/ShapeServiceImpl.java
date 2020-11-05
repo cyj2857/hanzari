@@ -36,7 +36,6 @@ public class ShapeServiceImpl implements ShapeService {
 
 	@Override
 	public Shape save(Shape shape) {
-		// TODO 나중에 도형모양 확장 시 작성해야 할 부분
-		return null;
+		return shapeRepository.save(shape);
 	}
 }
