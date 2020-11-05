@@ -9,15 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hancom.hanzari.dto.BuildingDto;
 import com.hancom.hanzari.dto.FloorDto;
 import com.hancom.hanzari.dto.SeatDto;
+import com.hancom.hanzari.exception.ResourceNotFoundException;
 import com.hancom.hanzari.model.Building;
 import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.EmployeeAdditionalInfo;
@@ -35,7 +39,7 @@ import com.hancom.hanzari.service.ShapeService;
 */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("test-api/")
+@RequestMapping("test-api")
 public class TestController {
 
 	@Autowired
@@ -48,9 +52,8 @@ public class TestController {
 	private EmployeeService employeeService;
 	@Autowired
 	private ShapeService shapeService;
-	
+
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
-	
 
 	@Transactional
 	@GetMapping("/inserttestdata")
@@ -124,10 +127,10 @@ public class TestController {
 		buildings.forEach(e -> buildingService.save(e));
 		employee.forEach(e -> employeeService.save(e));
 	}
-	
+
 	@Transactional
 	@RequestMapping("/get-all-buildings")
-	public ResponseEntity<List<BuildingDto>>  getAllBuildings() throws Exception {
+	public ResponseEntity<List<BuildingDto>> getAllBuildings() throws Exception {
 
 		LOGGER.info("TestController.getAllSeats called.");
 		List<Building> buildings = buildingService.findAll();
@@ -135,10 +138,10 @@ public class TestController {
 		buildings.forEach(e -> result.add(e.toDto()));
 		return new ResponseEntity<List<BuildingDto>>(result, HttpStatus.OK);
 	}
-	
+
 	@Transactional
 	@RequestMapping("/get-all-floors")
-	public ResponseEntity<List<FloorDto>>  getAllFloors() throws Exception {
+	public ResponseEntity<List<FloorDto>> getAllFloors() throws Exception {
 
 		LOGGER.info("TestController.getAllSeats called.");
 		List<Floor> floors = floorService.findAll();
@@ -146,10 +149,10 @@ public class TestController {
 		floors.forEach(e -> result.add(e.toDto()));
 		return new ResponseEntity<List<FloorDto>>(result, HttpStatus.OK);
 	}
-	
+
 	@Transactional
 	@RequestMapping("/get-all-seats")
-	public ResponseEntity<List<SeatDto>>  getAllSeats() throws Exception {
+	public ResponseEntity<List<SeatDto>> getAllSeats() throws Exception {
 
 		LOGGER.info("TestController.getAllSeats called.");
 		List<Seat> seats = seatService.findAll();
@@ -157,7 +160,20 @@ public class TestController {
 		seats.forEach(e -> result.add(e.toDto()));
 		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
 	}
-	
-	
-	
+
+	// 특정 빌딩에 있는 모든 층 삭제
+	@Transactional
+	@DeleteMapping(value = "/buildings/{building_id}/floors", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Void> deleteAllFloorsFromBuilding(@PathVariable("building_id") String buildingId)
+			throws Exception {
+
+		List<Floor> floors = buildingService.findById(buildingId).getFloors();
+		if (floors == null) {
+			throw new ResourceNotFoundException("Floor", "floors", floors);
+		}
+		floors.forEach(e->{System.out.println( "확인 #########" + e.getFloorId() + "\n");});
+		floorService.deleteAllInBatch(floors);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	}
+
 }
