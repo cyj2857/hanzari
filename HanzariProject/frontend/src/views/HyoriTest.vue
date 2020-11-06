@@ -44,7 +44,6 @@
   </div>
 </template>
 
-
 <script>
 import axios from "axios";
 import AllFloorsDataTable from "@/components/AllFloorsDataTable.vue";
@@ -55,6 +54,7 @@ import EachEmployeeSeatDataTable from "@/components/EachEmployeeSeatDataTable.vu
 const portNum = 8081;
 const host = "172.30.1.53"; //yj
 const building_id = "HANCOM01";
+
 export default {
   name: "Admin",
   components: {
@@ -113,7 +113,6 @@ export default {
       } catch (error) {
         console.log(error);
       }
-
       return initEmployeeList;
     },
     async getFloors() {
@@ -156,7 +155,6 @@ export default {
       } catch (error) {
         console.log(error);
       }
-
       return allFloorList;
     },
 
@@ -176,10 +174,9 @@ export default {
         newImage.url = response.config.url;
         newImage.floorid = this.currentFloorId;
         currentFloorImage.push(newImage);
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log(error);
       }
-      console.log(currentFloorImage);
       return currentFloorImage;
     },
     //나머지 층 이미지 가져오기
@@ -197,25 +194,18 @@ export default {
           );
           let newImage = {};
           newImage.url = response.config.url;
-          console.log(newImage.url);
-
           newImage.floorid = this.floorIdList[i];
           responseList = newImage;
           otherFloorImageList.push(responseList);
-          //let imgurl =  response.config.url;
-          //responseList.push(imgurl);
         }
-        console.log(otherFloorImageList);
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
       }
-
       this.otherFloorsImage = otherFloorImageList;
       return this.otherFloorsImage;
     },
     //우선 현재 층의 자리만 가져옴
     async getCurrentFloorSeats() {
-      console.log(this.currentFloorId); // ok
       let currentFloorSeatList = new Array();
       try {
         let response = await axios.get(
@@ -250,10 +240,9 @@ export default {
 
           currentFloorSeatList.push(newSeat);
         }
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log(error);
       }
-      console.log(currentFloorSeatList);
       return currentFloorSeatList;
     },
     //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
@@ -275,7 +264,6 @@ export default {
           );
 
           let responseList = new Array();
-
           // 그 층에 자리가 없다면
           if (response.data.length == 0) {
             otherFloorSeatMap.set(this.floorIdList[i], new Array());
@@ -307,9 +295,8 @@ export default {
             } // end of for
           }
         } // end of for
-        console.log(otherFloorSeatMap);
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
       }
       this.otherFloorsSeat = otherFloorSeatMap;
       return this.otherFloorsSeat;
@@ -337,7 +324,7 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res.saveData);
+          console.log(res);
         });
     },
     saveImages(tableName, data, floor_id) {
@@ -350,10 +337,9 @@ export default {
       console.log("saveTableName is");
       console.log(saveTableName);
 
-      for (var value of saveData.values()) {
-        console.log(value);
-      }
-
+      //for (var value of saveData.values()) {
+      //  console.log(value);
+      //}
       axios
         .post(
           "http://172.30.1.56:8081/api/buildings/" +
@@ -402,7 +388,7 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res.saveData);
+          console.log(res);
         });
     },
     deleteFloorWtihKey(tableName, key) {
