@@ -48,8 +48,8 @@ public class FloorPlanController {
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
 	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorPlanId, @RequestParam("imageFile") MultipartFile file) throws IOException {
-		Date timeStamp = new Date();
-		String floorPlanFileName = floorPlanId + "-" + timeStamp;
+		Date currentTime = new Date();
+		String floorPlanFileName = floorPlanId + "-" + currentTime;
 		FloorPlan putfloorPlan = FloorPlan.builder().floorPlanId(floorPlanId).floorPlanFileName(floorPlanFileName).build();
 		InputStream imagePutInputStream = file.getInputStream();
 		

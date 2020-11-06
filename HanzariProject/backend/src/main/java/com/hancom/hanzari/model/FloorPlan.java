@@ -2,6 +2,8 @@ package com.hancom.hanzari.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -22,6 +24,7 @@ public class FloorPlan {
 	
 	//데이터베이스에 각각의 이미지 파일 이름을 찾아내기 위한(이전 이력들도 포함) 기본키와 연결된 필드
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@NotNull
 	@Column(name = "floor_plan_id", nullable = false)
 	private String floorPlanId;
