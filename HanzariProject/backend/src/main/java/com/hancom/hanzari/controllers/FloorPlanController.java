@@ -3,6 +3,8 @@ package com.hancom.hanzari.controllers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
@@ -41,16 +43,31 @@ public class FloorPlanController {
 	private MinioClient minioClient;
 	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
-	String bucketName = "hanzari";
+	private String bucketName = "hanzari";
+	private String spareBucketName = "hanzari-spare";
+	
+	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
+	private Date currentTime;
+	private LocalDate localDate;
+	private int year;
+	private int month;
+	private int day;
 	
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
-	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorPlanId, @RequestParam("imageFile") MultipartFile file) throws IOException {
-		Date timeStamp = new Date();
-		String floorPlanFileName = floorPlanId + "-" + timeStamp;
-		FloorPlan putfloorPlan = FloorPlan.builder().floorPlanId(floorPlanId).floorPlanFileName(floorPlanFileName).build();
+	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
+		currentTime = new Date();
+		localDate = currentTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		year = localDate.getYear();
+		month = localDate.getMonthValue(); //getMonthValue 메소드를 사용하면 0을 포함하지 않고 1 ~ 12를 리턴한다.
+		day = localDate.getDayOfMonth();
+				
+		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
+		String floorPlanFileName = floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day);
+		//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
+		FloorPlan putfloorPlan = FloorPlan.builder().floorPlanFileName(floorPlanFileName).build();
 		InputStream imagePutInputStream = file.getInputStream();
 		
 		floorPlanService.save(putfloorPlan);
@@ -60,7 +77,7 @@ public class FloorPlanController {
 				    PutObjectArgs.builder()
 				    .bucket(bucketName)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
-				    .object(floorPlanId)
+				    .object(floorPlanFileName)
 					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
 				    //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
 				    .stream(imagePutInputStream, file.getSize() , -1) 
