@@ -163,7 +163,11 @@ export default {
       let currentFloorImage = new Array();
       try {
         let response = await axios.get(
-          "http://172.30.1.56:8081/api/buildings/" +
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
             building_id +
             "/floors/" +
             this.currentFloorId +
@@ -186,7 +190,11 @@ export default {
       try {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
           let response = await axios.get(
-            "http://172.30.1.56:8081/api/buildings/" +
+            "http://" +
+              host +
+              ":" +
+              portNum +
+              "/api/buildings/" +
               building_id +
               "/floors/" +
               this.floorIdList[i] +
@@ -337,12 +345,13 @@ export default {
       console.log("saveTableName is");
       console.log(saveTableName);
 
-      //for (var value of saveData.values()) {
-      //  console.log(value);
-      //}
       axios
         .post(
-          "http://172.30.1.56:8081/api/buildings/" +
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
             building_id +
             "/floors/" +
             floor_id +
