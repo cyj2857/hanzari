@@ -105,13 +105,13 @@ public class FloorPlanController {
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
-	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorPlanId,  HttpServletResponse response) throws IOException {
+	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		InputStream imageGetInputStream = null;
 		String floorPlanFileName = null;
 		FloorPlan getFloorPlan;
 		
 		try {
-			getFloorPlan = floorPlanService.findByFloorPlanId(floorPlanId);
+			getFloorPlan = floorPlanService.findByFloorPlanId(floorId);
 			floorPlanFileName = getFloorPlan.getFloorPlanFileName();
 		} catch (Exception e) {
 			e.printStackTrace();
