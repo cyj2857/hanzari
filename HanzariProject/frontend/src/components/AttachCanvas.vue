@@ -360,9 +360,9 @@ export default {
 
           if (evt.ctrlKey === true) {
             //zoom in and out
-            if (zoom > 13) zoom = 13;
+            if (zoom > 10) zoom = 10;
             else if (zoom < 1) zoom = 1;
-            else if (5 <= zoom && zoom <= 10) {
+            else if (5 <= zoom && zoom <= 7) {
               console.log("5 <= zoom && zoom <= 10");
               console.log(zoom);
               this.floorCanvas.getObjects().forEach((obj) => {
@@ -371,7 +371,7 @@ export default {
                   obj.item(1).fontSize = parseInt(this.fontSize / zoom);
                 }
               });
-            } else if (10 < zoom && zoom <= 13) {
+            } else if (7 < zoom && zoom <= 10) {
               console.log("10 < zoom && zoom <= 13");
               console.log(zoom);
               this.floorCanvas.getObjects().forEach((obj) => {
