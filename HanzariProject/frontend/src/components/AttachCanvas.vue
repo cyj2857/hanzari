@@ -351,60 +351,28 @@ export default {
           if (!this.floorCanvas.viewportTransform) {
             return;
           }
+
           let evt = opt.e;
           let deltaY = evt.deltaY;
           this.zoom = this.floorCanvas.getZoom();
 
-          let zoom = this.zoom;
-          zoom = zoom - deltaY / 300;
+          this.zoom = this.zoom - deltaY / 300;
 
           if (evt.ctrlKey === true) {
             //zoom in and out
-            if (zoom > 10) zoom = 10;
-            else if (zoom < 1) zoom = 1;
-            else if (5 <= zoom && zoom <= 7) {
-              console.log("5 <= zoom && zoom <= 10");
-              console.log(zoom);
-              this.floorCanvas.getObjects().forEach((obj) => {
-                if (obj.employee_name) {
-                  obj.item(1).text = obj.employee_name;
-                  obj.item(1).fontSize = parseInt(this.fontSize / zoom);
-                }
-              });
-            } else if (7 < zoom && zoom <= 10) {
-              console.log("10 < zoom && zoom <= 13");
-              console.log(zoom);
-              this.floorCanvas.getObjects().forEach((obj) => {
-                if (obj.employee_name) {
-                  obj.item(1).text =
-                    obj.employee_name + "\n" + obj.employee_number;
+            if (this.zoom > 10) this.zoom = 10;
+            else if (this.zoom < 1) this.zoom = 1;
 
-                  obj.item(1).fontSize = parseInt(this.fontSize / zoom);
-                }
-              });
-            } else {
-              console.log("1<=zoom<5");
-              console.log(zoom);
-              this.floorCanvas.getObjects().forEach((obj) => {
-                obj.item(1).text = "";
-                obj.item(1).fontSize = parseInt(this.fontSize / zoom);
-              });
-            }
             this.floorCanvas.zoomToPoint(
               new fabric.Point(evt.offsetX, evt.offsetY),
-              zoom
+              this.zoom
             );
           } else {
             //reset canvas ratio
             this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-            zoom = 1;
-            this.floorCanvas.getObjects().forEach((obj) => {
-              obj.item(1).text = "";
-              obj.item(1).fontSize = parseInt(this.fontSize / zoom);
-            });
-
-            console.log(zoom);
+            this.zoom = 1;
           }
+          this.checkZoom();
           opt.e.preventDefault();
           opt.e.stopPropagation();
         });
@@ -469,6 +437,36 @@ export default {
         });
 
         this.manageKeyboard();
+      }
+    },
+    checkZoom() {
+      // text, fontSize 관련
+      let currentZoom = this.zoom;
+      if (5 <= currentZoom && currentZoom <= 7) {
+        console.log("5 <= zoom && zoom <= 10");
+        console.log(currentZoom);
+        this.floorCanvas.getObjects().forEach((obj) => {
+          if (obj.employee_name) {
+            obj.item(1).text = obj.employee_name;
+            obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+          }
+        });
+      } else if (7 < currentZoom && currentZoom <= 10) {
+        console.log("10 < zoom && zoom <= 13");
+        console.log(currentZoom);
+        this.floorCanvas.getObjects().forEach((obj) => {
+          if (obj.employee_name) {
+            obj.item(1).text = obj.employee_name + "\n" + obj.employee_number;
+
+            obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+          }
+        });
+      } else {
+        this.floorCanvas.getObjects().forEach((obj) => {
+          console.log(currentZoom);
+          obj.item(1).text = "";
+          obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+        });
       }
     },
     //복제하기 (컨텍스트 메뉴 내부)
@@ -966,13 +964,15 @@ export default {
       let shapearray = new Array();
 
       if (confirm("Are you sure?")) {
-        if (this.floorCanvas.getActiveObjects().length == 1) {// 단일객체
+        if (this.floorCanvas.getActiveObjects().length == 1) {
+          // 단일객체
           activeObject = this.floorCanvas.getActiveObject();
           activeObject.set("delete", true);
 
           let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
           this.deleteEachEmployeeSeatList(groupToObject);
-        } else {// 복수객체
+        } else {
+          // 복수객체
           this.floorCanvas.getActiveObjects().forEach((obj) => {
             obj.set("delete", true);
             this.deleteEachEmployeeSeatList(obj);
@@ -1065,12 +1065,13 @@ export default {
         .set("fill", this.getColor(activeObject.employee_department));
       //activeObject.item(1).set("text", item.name);
       activeObject.set("modify", true);
+      this.checkZoom();
+      
       this.floorCanvas.renderAll();
 
       eachEmployeeSeatList.push(activeObject);
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     addVacantSeat(posX, posY) {
@@ -1427,7 +1428,7 @@ export default {
     },
 
     clickLoadCurrentFloor() {
-      //현재 층 이미지 로드 
+      //현재 층 이미지 로드
       for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
         let imgurl = this.currentFloorImageFromDb[i].url;
         let floorid = this.currentFloorImageFromDb[i].floorid;
