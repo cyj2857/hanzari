@@ -2,8 +2,6 @@ MinIO
 
 docker run -p 9000:9000 --name minio1 -v D:\data:/data -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" minio/minio server /data
 
-docker run -p 9001:9000 --name minio_spare -v D:\data:/data -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" minio/minio server /data2
-
 key의 의미는
 minio에
 접속할 수 있는
