@@ -44,6 +44,7 @@ public class FloorPlanController {
 	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	private String bucketName = "hanzari";
+	private String spareBucketName = "hanzari-spare";
 	
 	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
 	private Date currentTime;
