@@ -356,8 +356,17 @@ export default {
             let deltaY = evt.deltaY;
             let zoom = this.floorCanvas.getZoom();
             zoom = zoom - deltaY / 300;
-            if (zoom > 20) zoom = 20;
-            if (zoom < 1) zoom = 0.95;
+
+            if (zoom > 15) zoom = 15;
+            else if (zoom < 1) zoom = 1;
+            else if (5 <= zoom && zoom <= 10) {
+              console.log("5 <= zoom && zoom <= 10");
+            } else if (10 < zoom && zoom <= 15) {
+              console.log("10 < zoom && zoom <= 15");
+            }
+            else{
+              console.log("1<=zoom<5")
+            }
             this.floorCanvas.zoomToPoint(
               new fabric.Point(evt.offsetX, evt.offsetY),
               zoom
@@ -1067,8 +1076,6 @@ export default {
         this.currentSelectedFloorId
       );
 
-      let seatId = this.createSeatUUID();
-
       let rectangle = new fabric.Rect({
         width: this.slider,
         height: this.slider,
@@ -1084,7 +1091,7 @@ export default {
       });
 
       let group = new fabric.Group([rectangle, textObject], {
-        seatId: seatId,
+        seatId: this.createSeatUUID(),
         floor_id: this.currentSelectedFloorId,
         employee_name: null,
         employee_department: null,
