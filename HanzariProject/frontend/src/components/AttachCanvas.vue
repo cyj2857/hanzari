@@ -1254,7 +1254,9 @@ export default {
                   //010 그 id에 대하여 post
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
-                  seatData.seat_name = groupToObject.seatName;
+                  if (groupToObject.seatName) {
+                    seatData.seat_name = groupToObject.seatName;
+                  }
                   seatData.floor = groupToObject.floor_id;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
@@ -1279,7 +1281,9 @@ export default {
                   //100 110 그 id에 대하여 post
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
-                  seatData.seat_name = groupToObject.seatName;
+                  if (groupToObject.seatName) {
+                    seatData.seat_name = groupToObject.seatName;
+                  }
                   seatData.floor = groupToObject.floor_id;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
@@ -1386,6 +1390,7 @@ export default {
           fill: "black",
         });
 
+        group.seatName = seat.seat_name;
         group.add(seatNameObject);
       }
 
