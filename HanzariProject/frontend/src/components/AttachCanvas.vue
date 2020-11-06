@@ -128,6 +128,8 @@ export default {
       slider: 25,
 
       floorCanvas: null,
+      zoom: 1,
+      fontSize: 25,
       clipboard: null,
 
       currentSelectedFloorName: null,
@@ -257,7 +259,7 @@ export default {
       let seatNameObject = new fabric.IText(inputSeatName, {
         left: activeObject.item(0).left,
         top: activeObject.item(0).top - 15,
-        fontSize: 15,
+        fontSize: this.fontSize,
         fill: "black",
       });
       if (activeObject.item(2)) {
@@ -350,22 +352,43 @@ export default {
             return;
           }
           let evt = opt.e;
+          let deltaY = evt.deltaY;
+          this.zoom = this.floorCanvas.getZoom();
+
+          let zoom = this.zoom;
+          zoom = zoom - deltaY / 300;
+
           if (evt.ctrlKey === true) {
             //zoom in and out
-            let evt = opt.e;
-            let deltaY = evt.deltaY;
-            let zoom = this.floorCanvas.getZoom();
-            zoom = zoom - deltaY / 300;
-
-            if (zoom > 15) zoom = 15;
+            if (zoom > 13) zoom = 13;
             else if (zoom < 1) zoom = 1;
             else if (5 <= zoom && zoom <= 10) {
               console.log("5 <= zoom && zoom <= 10");
-            } else if (10 < zoom && zoom <= 15) {
-              console.log("10 < zoom && zoom <= 15");
-            }
-            else{
-              console.log("1<=zoom<5")
+              console.log(zoom);
+              this.floorCanvas.getObjects().forEach((obj) => {
+                if (obj.employee_name) {
+                  obj.item(1).text = obj.employee_name;
+                  obj.item(1).fontSize = parseInt(this.fontSize / zoom);
+                }
+              });
+            } else if (10 < zoom && zoom <= 13) {
+              console.log("10 < zoom && zoom <= 13");
+              console.log(zoom);
+              this.floorCanvas.getObjects().forEach((obj) => {
+                if (obj.employee_name) {
+                  obj.item(1).text =
+                    obj.employee_name + "\n" + obj.employee_number;
+
+                  obj.item(1).fontSize = parseInt(this.fontSize / zoom);
+                }
+              });
+            } else {
+              console.log("1<=zoom<5");
+              console.log(zoom);
+              this.floorCanvas.getObjects().forEach((obj) => {
+                obj.item(1).text = "";
+                obj.item(1).fontSize = parseInt(this.fontSize / zoom);
+              });
             }
             this.floorCanvas.zoomToPoint(
               new fabric.Point(evt.offsetX, evt.offsetY),
@@ -374,6 +397,13 @@ export default {
           } else {
             //reset canvas ratio
             this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+            zoom = 1;
+            this.floorCanvas.getObjects().forEach((obj) => {
+              obj.item(1).text = "";
+              obj.item(1).fontSize = parseInt(this.fontSize / zoom);
+            });
+
+            console.log(zoom);
           }
           opt.e.preventDefault();
           opt.e.stopPropagation();
@@ -895,7 +925,7 @@ export default {
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(floor);
       console.log(managerEachFloorSeatList);
       for (let i = 0; i < managerEachFloorSeatList.length; i++) {
-        managerEachFloorSeatList[i].set("delete",true);
+        managerEachFloorSeatList[i].set("delete", true);
       }
     },
     //사원의 자리리스트에서 삭제된 자리를 삭제하기
@@ -1052,7 +1082,7 @@ export default {
       activeObject
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
-      activeObject.item(1).set("text", item.name);
+      //activeObject.item(1).set("text", item.name);
       activeObject.set("modify", true);
       this.floorCanvas.renderAll();
 
@@ -1089,7 +1119,7 @@ export default {
       let textObject = new fabric.IText("", {
         left: 0,
         top: rectangle.height / 3,
-        fontSize: 13,
+        fontSize: this.fontSize / this.zoom,
         fill: "black",
       });
 
@@ -1359,22 +1389,12 @@ export default {
         opacity: 1,
       });
 
-      let textObject = null;
-      if (seat.employee_id == null) {
-        textObject = new fabric.IText("", {
-          left: 0,
-          top: rectangle.height / 3,
-          fontSize: 15,
-          fill: "black",
-        });
-      } else {
-        textObject = new fabric.IText(employee.name, {
-          left: 0,
-          top: rectangle.height / 3,
-          fontSize: 15 * rectangle.scaleX,
-          fill: "black",
-        });
-      }
+      let textObject = new fabric.IText("", {
+        left: 0,
+        top: rectangle.height / 3,
+        fontSize: this.fontSize / this.zoom,
+        fill: "black",
+      });
 
       let group = new fabric.Group([rectangle, textObject], {
         seatId: seat.seat_id,
@@ -1396,7 +1416,7 @@ export default {
         let seatNameObject = new fabric.IText(seat.seat_name, {
           left: rectangle.left,
           top: rectangle.top - 15,
-          fontSize: 15,
+          fontSize: this.fontSize / this.zoom,
           fill: "black",
         });
 
@@ -1428,8 +1448,11 @@ export default {
 
     clickLoadCurrentFloor() {
       //현재 층 이미지 로드
-      console.log(this.currentFloorImageFromDb.length+"현재 가지고온 이미지의 개수입니다. -------------");
-      
+      console.log(
+        this.currentFloorImageFromDb.length +
+          "현재 가지고온 이미지의 개수입니다. -------------"
+      );
+
       for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
         let imgurl = this.currentFloorImageFromDb[i].url;
         let floorid = this.currentFloorImageFromDb[i].floorid;
