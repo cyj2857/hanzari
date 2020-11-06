@@ -56,7 +56,7 @@
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="test">test</v-btn>
+    <v-btn @click="deleteBtn">test</v-btn>
     <EmployeeDialog
       :dialogStatus="this.employeeDialogStatus"
       @close="closeEmployeeDialog"
@@ -385,21 +385,23 @@ export default {
         });
       }
     },
+    //복제하기 (컨텍스트 메뉴 내부)
     cloneSeat() {
       this.copySelectedSeat();
       this.pasteSelectedSeat();
     },
-    //복제하기
+    //clone하기 (ctrl+c)
     copySelectedSeat() {
       if (!this.floorCanvas.getActiveObject()) return;
 
+      //this.clipboard = null;
       this.floorCanvas.getActiveObject().clone((cloned) => {
         this.clipboard = cloned;
       });
+      console.log(this.clipboard);
     },
+    //paste하기 (ctrl+v)
     pasteSelectedSeat() {
-      let canvas = this.floorCanvas;
-
       let activeObject = this.floorCanvas.getActiveObject();
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
@@ -411,8 +413,8 @@ export default {
         this.floorCanvas.getActiveObject().employee_id
       );
 
-      activeObject.clone((clonedObj) => {
-        canvas.discardActiveObject();
+      this.clipboard.clone((clonedObj) => {
+        this.floorCanvas.discardActiveObject();
         clonedObj.set({
           left: clonedObj.left + 10,
           top: clonedObj.top + 10,
@@ -430,18 +432,20 @@ export default {
           evented: true,
         });
         if (clonedObj.type === "activeSelection") {
-          clonedObj.canvas = canvas;
+          clonedObj.canvas = this.floorCanvas;
           clonedObj.forEachObject(function (obj) {
-            canvas.add(obj);
+            this.floorCanvas.add(obj);
           });
           // this should solve the unselectability
           clonedObj.setCoords();
         } else {
-          canvas.add(clonedObj);
+          this.floorCanvas.add(clonedObj);
         }
+        this.clipboard.top += 10;
+        this.clipboard.left += 10;
 
-        canvas.setActiveObject(clonedObj);
-        canvas.requestRenderAll();
+        this.floorCanvas.setActiveObject(clonedObj);
+        this.floorCanvas.requestRenderAll();
 
         eachFloorSeatList.push(clonedObj);
         managerEachFloorList.push(clonedObj);
@@ -483,7 +487,6 @@ export default {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
     manageKeyboard() {
-      let clipboard = null;
       let activeObject = null;
       let groupToObject = null;
 
@@ -861,12 +864,14 @@ export default {
           this.getEachFloorSeatList(this.currentSelectedFloorId)
         );
         eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      } else {
+        return;
       }
     },
     deleteBtn() {
       //좌석 지우면 list에 있는거 없애기
       let activeObject = null;
-      let eachFloorSeatList = this.deleteEachFloorSeatList(
+      let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
 
@@ -882,18 +887,12 @@ export default {
           this.deleteEachEmployeeSeatList(groupToObject);
         } else {
           // 복수객체
-          activeObject = this.floorCanvas.getActiveObjects();
-          //activeObject.set("delete", true);
 
-          for (let i = 0; i < activeObject.length; i++) {
-            let groupToObject = activeObject[i].toObject([
-              "seatId",
-              "employee_id",
-              "delete",
-            ]);
-            activeObject[i].set("delete", true);
-            this.deleteEachEmployeeSeatList(groupToObject);
-          }
+          this.floorCanvas.getActiveObjects().forEach((obj) => {
+            obj.set("delete", true);
+            this.deleteEachEmployeeSeatList(obj);
+          });
+
           activeObject = this.floorCanvas.getActiveObject().toGroup();
         }
 
@@ -923,6 +922,8 @@ export default {
           );
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
         }
+      } else {
+        return;
       }
     },
     setMappingSeat(item) {
