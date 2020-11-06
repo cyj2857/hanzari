@@ -44,6 +44,7 @@ public class FloorPlanController {
 	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	private String bucketName = "hanzari";
+	//테스트용 버킷
 	private String spareBucketName = "hanzari-spare";
 	
 	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
@@ -75,7 +76,7 @@ public class FloorPlanController {
 		try {
 			minioClient.putObject(
 				    PutObjectArgs.builder()
-				    .bucket(bucketName)
+				    .bucket(spareBucketName)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
 				    .object(floorPlanFileName)
 					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
@@ -104,13 +105,13 @@ public class FloorPlanController {
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
-	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorPlanId,  HttpServletResponse response) throws IOException {
+	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		InputStream imageGetInputStream = null;
 		String floorPlanFileName = null;
 		FloorPlan getFloorPlan;
 		
 		try {
-			getFloorPlan = floorPlanService.findByFloorPlanId(floorPlanId);
+			getFloorPlan = floorPlanService.findByFloorPlanId(floorId);
 			floorPlanFileName = getFloorPlan.getFloorPlanFileName();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,7 +120,7 @@ public class FloorPlanController {
 		try {
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
-					 .bucket(bucketName)
+					 .bucket(spareBucketName)
 					 .object(floorPlanFileName)
 					 .build());
 			response.addHeader("Content-disposition", floorPlanFileName);
