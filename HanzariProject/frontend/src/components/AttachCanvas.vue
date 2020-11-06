@@ -37,7 +37,7 @@
       :position-y="contextMenuYLocation"
       absolute
       offset-y
-      max-width="500"
+      max-width="180"
     >
       <v-list>
         <v-list-item
@@ -398,7 +398,7 @@ export default {
         this.floorCanvas.on("mouse:over", (e) => {
           let group = e.target;
           if (group != null) {
-            console.log(group.left + "현재 마우스 오버한 도형의 left");
+            //console.log(group.left + "현재 마우스 오버한 도형의 left");
             var posX = group.left;
             var posY = group.top;
             this.showToolTip(posX, posY);
@@ -426,7 +426,7 @@ export default {
           }
         });
 
-        //키보드 조작(상하좌우 이동 /복붙/삭제)
+        //키보드 조작(상하좌우 이동/복붙/삭제)
         this.manageKeyboard();
       }
     },
@@ -434,8 +434,8 @@ export default {
       // text, fontSize 관련
       let currentZoom = this.zoom;
       if (5 <= currentZoom && currentZoom <= 7) {
-        console.log("5 <= zoom && zoom <= 10");
-        console.log(currentZoom);
+        //console.log("5 <= zoom && zoom <= 10");
+        //console.log(currentZoom);
         this.floorCanvas.getObjects().forEach((obj) => {
           if (obj.employee_name) {
             obj.item(1).text = obj.employee_name;
@@ -443,18 +443,17 @@ export default {
           }
         });
       } else if (7 < currentZoom && currentZoom <= 10) {
-        console.log("10 < zoom && zoom <= 13");
-        console.log(currentZoom);
+        //console.log("10 < zoom && zoom <= 13");
+        //console.log(currentZoom);
         this.floorCanvas.getObjects().forEach((obj) => {
           if (obj.employee_name) {
             obj.item(1).text = obj.employee_name + "\n" + obj.employee_number;
-
             obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
           }
         });
       } else {
         this.floorCanvas.getObjects().forEach((obj) => {
-          console.log(currentZoom);
+          //console.log(currentZoom);
           obj.item(1).text = "";
           obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
         });
@@ -468,7 +467,6 @@ export default {
     //clone하기 (ctrl+c)
     copySelectedSeat() {
       if (!this.floorCanvas.getActiveObject()) return;
-
       //this.clipboard = null;
       this.floorCanvas.getActiveObject().clone((cloned) => {
         this.clipboard = cloned;
@@ -477,7 +475,6 @@ export default {
     //paste하기 (ctrl+v)
     pasteSelectedSeat() {
       //console.log(this.clipboard);
-
       let activeObject = this.floorCanvas.getActiveObject();
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
@@ -538,13 +535,13 @@ export default {
     showContextMenu(clientX, clientY) {
       this.contextMenuStatus = false;
       this.contextMenuXLocation = clientX + 650;
-      this.contextMenuYLocation = clientY;
+      this.contextMenuYLocation = clientY + 100;
       this.$nextTick(() => {
         this.contextMenuStatus = true;
       });
     },
     clickContextMenu(index) {
-      console.log(index);
+      //console.log(index);
       switch (index) {
         case 0:
           this.clickChangeToVacant();
@@ -625,8 +622,7 @@ export default {
               this.floorCanvas.renderAll();
             }
             break;
-          case 110: // delete
-          case 46: // delete
+          case 110: case 46: // delete
             this.deleteBtn();
             break;
         }
@@ -767,7 +763,7 @@ export default {
           "seatId",
           "employee_department",
         ]);
-        console.log(asObject.floor_id + "층에 자리가 있습니다.");
+        //console.log(asObject.floor_id + "층에 자리가 있습니다.");
 
         let objectSeatId = asObject.seatId + "번";
         if (seat.seat_id == objectSeatId) {
