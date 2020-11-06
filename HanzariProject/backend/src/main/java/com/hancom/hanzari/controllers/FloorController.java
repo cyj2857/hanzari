@@ -64,12 +64,6 @@ public class FloorController {
 	@PostMapping
 	public ResponseEntity<Floor> save(@PathVariable("building_id") String buildingId, @RequestBody FloorDto floorDto)
 			throws Exception {
-		/*
-		 * for (Field field : floorDto.getClass().getDeclaredFields()) {
-		 * field.setAccessible(true); Object value = field.get(floorDto);
-		 * System.out.println(field.getName() + " : " + value + " // type : " +
-		 * value.getClass()); }
-		 */
 
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {

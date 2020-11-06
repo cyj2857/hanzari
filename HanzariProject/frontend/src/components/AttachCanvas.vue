@@ -128,6 +128,7 @@ export default {
       slider: 25,
 
       floorCanvas: null,
+      clipboard: null,
 
       currentSelectedFloorName: null,
       currentSelectedFloorId: null,
@@ -432,17 +433,22 @@ export default {
         });
       }
     },
+    cloneSeat() {
+      this.copySelectedSeat();
+      this.pasteSelectedSeat();
+    },
     //복제하기
     copySelectedSeat() {
       if (!this.floorCanvas.getActiveObject()) return;
 
-      let activeObject = this.floorCanvas.getActiveObject();
-      let floor_id = this.currentSelectedFloorId;
-      let _clipboard = null;
-
+      this.floorCanvas.getActiveObject().clone((cloned) => {
+        this.clipboard = cloned;
+      });
+    },
+    pasteSelectedSeat() {
       let canvas = this.floorCanvas;
-      let seatId = this.createSeatUUID();
 
+      let activeObject = this.floorCanvas.getActiveObject();
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
@@ -450,14 +456,10 @@ export default {
         this.currentSelectedFloorId
       );
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-        activeObject.employee_id
+        this.floorCanvas.getActiveObject().employee_id
       );
 
-      activeObject.clone(function (cloned) {
-        _clipboard = cloned;
-      });
-
-      _clipboard.clone(function (clonedObj) {
+      activeObject.clone((clonedObj) => {
         canvas.discardActiveObject();
         clonedObj.set({
           left: clonedObj.left + 10,
@@ -465,8 +467,8 @@ export default {
           create: true,
           delete: false,
           modify: false,
-          seatId: seatId,
-          floor_id: floor_id,
+          seatId: this.createSeatUUID(),
+          floor_id: this.currentSelectedFloorId,
           angle: activeObject.angle,
           seatName: activeObject.seatName,
           employee_department: activeObject.employee_department,
@@ -485,9 +487,6 @@ export default {
         } else {
           canvas.add(clonedObj);
         }
-
-        _clipboard.top += 10;
-        _clipboard.left += 10; // 한번 copy하면 연속 붙여넣기 가능하게 하기 위함
 
         canvas.setActiveObject(clonedObj);
         canvas.requestRenderAll();
@@ -521,7 +520,7 @@ export default {
           this.getChangeSeatDialog();
           break;
         case 3:
-          this.copySelectedSeat();
+          this.cloneSeat();
           break;
         case 4:
           this.getInputSeatNameDialog();
@@ -541,205 +540,62 @@ export default {
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
-    manageKeyboard(
-      floorCanvas,
-      currentSelectedFloorId,
-      allSeatMap,
-      eachEmployeeSeatMap,
-      managerAllSeatMap
-    ) {
+    manageKeyboard() {
       let clipboard = null;
       let activeObject = null;
       let groupToObject = null;
-      let seatId = null;
 
-      document.onkeydown = function (event) {
+      document.addEventListener("keydown", (event) => {
         var key = window.event ? window.event.keyCode : event.keyCode;
         switch (key) {
           case 17 && 67: //ctrl+c
-            if (floorCanvas.getActiveObject()) {
-              activeObject = floorCanvas.getActiveObject();
-              activeObject.clone(function (cloned) {
-                clipboard = cloned;
-              });
-              groupToObject = activeObject.toObject([
-                "seatId",
-                "employee_id",
-                "employee_department",
-                "employee_name",
-                "employee_number",
-                "seatName",
-              ]);
-            }
+            this.copySelectedSeat();
             break;
           case 17 && 86: //ctrl+v
-            seatId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-              /[xy]/g,
-              function (c) {
-                let r = (Math.random() * 16) | 0,
-                  v = c == "x" ? r : (r & 3) | 8;
-                return v.toString(16);
-              }
-            );
-
-            clipboard.clone(function (clonedObj) {
-              floorCanvas.discardActiveObject();
-              clonedObj.set({
-                left: clonedObj.left + 10,
-                top: clonedObj.top + 10,
-                create: true,
-                delete: false,
-                modify: false,
-                seatId: seatId, //?
-                floor_id: currentSelectedFloorId,
-                angle: groupToObject.angle,
-                employee_department: groupToObject.employee_department,
-                employee_id: groupToObject.employee_id,
-                employee_name: groupToObject.employee_name,
-                employee_number: groupToObject.employee_number,
-                evented: true,
-              });
-
-              if (groupToObject.seatName) {
-                clonedObj.set({
-                  seatName: groupToObject.seatName,
-                });
-              }
-
-              if (clonedObj.type === "activeSelection") {
-                clonedObj.canvas = floorCanvas;
-                clonedObj.forEachObject(function (obj) {
-                  floorCanvas.add(obj);
-                });
-                // this should solve the unselectability
-                clonedObj.setCoords();
-              } else {
-                floorCanvas.add(clonedObj);
-              }
-
-              clipboard.top += 10;
-              clipboard.left += 10; // 한번 copy하면 연속 붙여넣기 가능하게 하기 위함
-
-              floorCanvas.setActiveObject(clonedObj);
-              floorCanvas.requestRenderAll();
-
-              allSeatMap.get(currentSelectedFloorId).push(clonedObj);
-              managerAllSeatMap.get(currentSelectedFloorId).push(clonedObj);
-              eachEmployeeSeatMap
-                .get(groupToObject.employee_id)
-                .push(clonedObj);
-            });
-
-            eventBus.$emit(
-              "eachFloorSeatList",
-              allSeatMap.get(currentSelectedFloorId)
-            );
-            eventBus.$emit("eachEmployeeSeatMap", eachEmployeeSeatMap);
+            this.pasteSelectedSeat();
             break;
           case 37: // left
-            if (floorCanvas.getActiveObject()) {
-              floorCanvas
+            if (this.floorCanvas.getActiveObject()) {
+              this.floorCanvas
                 .getActiveObject()
-                .set("left", floorCanvas.getActiveObject().left - 5);
-              floorCanvas.getActiveObject().set("modify", true);
-              floorCanvas.renderAll();
+                .set("left", this.floorCanvas.getActiveObject().left - 5);
+              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas.renderAll();
             }
             break;
           case 39: // right
-            if (floorCanvas.getActiveObject()) {
-              floorCanvas
+            if (this.floorCanvas.getActiveObject()) {
+              this.floorCanvas
                 .getActiveObject()
-                .set("left", floorCanvas.getActiveObject().left + 5);
-              floorCanvas.getActiveObject().set("modify", true);
-              floorCanvas.renderAll();
+                .set("left", this.floorCanvas.getActiveObject().left + 5);
+              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas.renderAll();
             }
             break;
           case 38: // up
-            if (floorCanvas.getActiveObject()) {
-              floorCanvas
+            if (this.floorCanvas.getActiveObject()) {
+              this.floorCanvas
                 .getActiveObject()
-                .set("top", floorCanvas.getActiveObject().top - 5);
-              floorCanvas.getActiveObject().set("modify", true);
-              floorCanvas.renderAll();
+                .set("top", this.floorCanvas.getActiveObject().top - 5);
+              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas.renderAll();
             }
             break;
           case 40: // down
-            if (floorCanvas.getActiveObject()) {
-              floorCanvas
+            if (this.floorCanvas.getActiveObject()) {
+              this.floorCanvas
                 .getActiveObject()
-                .set("top", floorCanvas.getActiveObject().top + 5);
-              floorCanvas.getActiveObject().set("modify", true);
-              floorCanvas.renderAll();
+                .set("top", this.floorCanvas.getActiveObject().top + 5);
+              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas.renderAll();
             }
             break;
           case 110: // delete
           case 46: // delete
-            let activeObject = null;
-            let shapearray = new Array();
-            if (confirm("Are you sure?")) {
-              if (floorCanvas.getActiveObjects().length == 1) {
-                activeObject = floorCanvas.getActiveObject(); // 단일객체
-                activeObject.set("delete", true);
-
-                let groupToObject = activeObject.toObject([
-                  "seatId",
-                  "employee_id",
-                ]);
-                let oneEmployeeSeatList = eachEmployeeSeatMap.get(
-                  groupToObject.employee_id
-                );
-                for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-                  if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
-                    oneEmployeeSeatList.splice(i, 1);
-                  }
-                }
-              } else {
-                activeObject = floorCanvas.getActiveObjects(); // 복수객체
-                for (let i = 0; i < activeObject.length; i++) {
-                  let groupToObject = activeObject[i].toObject([
-                    "seatId",
-                    "employee_id",
-                    "delete",
-                  ]);
-                  activeObject[i].set("delete", true);
-                  let oneEmployeeSeatList = eachEmployeeSeatMap.get(
-                    groupToObject.employee_id
-                  );
-                  for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-                    if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
-                      oneEmployeeSeatList.splice(i, 1);
-                    }
-                  }
-                }
-                activeObject = floorCanvas.getActiveObject().toGroup();
-              }
-              floorCanvas
-                .getObjects()
-                .slice()
-                .forEach((obj) => {
-                  shapearray.push(obj);
-                });
-              if (activeObject) {
-                shapearray.slice().forEach((obj) => {
-                  if (obj == activeObject) {
-                    let groupToObject = activeObject.toObject(["seatId"]);
-                    let index = shapearray.indexOf(activeObject);
-                    shapearray.splice(index, 1);
-                  }
-                });
-                floorCanvas.remove(activeObject);
-                allSeatMap.get(currentSelectedFloorId).length = 0;
-                allSeatMap.set(currentSelectedFloorId, shapearray);
-                eventBus.$emit(
-                  "eachFloorSeatList",
-                  allSeatMap.get(currentSelectedFloorId)
-                );
-                eventBus.$emit("eachEmployeeSeatMap", eachEmployeeSeatMap);
-              }
-            }
+            this.deleteBtn();
             break;
         }
-      };
+      });
     },
     createSeatUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
@@ -821,13 +677,7 @@ export default {
         });
       };
       reader.readAsDataURL(file);
-      this.manageKeyboard(
-        this.floorCanvas,
-        this.currentSelectedFloorId,
-        this.allSeatMap,
-        this.eachEmployeeSeatMap,
-        this.managerAllSeatMap
-      );
+      this.manageKeyboard();
     },
     loadImageUrl(imgurl) {
       fabric.Image.fromURL(imgurl, (img) => {
@@ -840,13 +690,7 @@ export default {
           this.floorCanvas.renderAll.bind(this.floorCanvas)
         );
       });
-      this.manageKeyboard(
-        this.floorCanvas,
-        this.currentSelectedFloorId,
-        this.allSeatMap,
-        this.eachEmployeeSeatMap,
-        this.managerAllSeatMap
-      );
+      this.manageKeyboard();
     },
     changeImageFile(e) {
       let files = e.target.files || e.dataTransfer.files;
