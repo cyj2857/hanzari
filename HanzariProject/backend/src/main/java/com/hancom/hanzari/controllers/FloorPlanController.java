@@ -75,7 +75,7 @@ public class FloorPlanController {
 		try {
 			minioClient.putObject(
 				    PutObjectArgs.builder()
-				    .bucket(bucketName)
+				    .bucket(spareBucketName)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
 				    .object(floorPlanFileName)
 					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
@@ -119,7 +119,7 @@ public class FloorPlanController {
 		try {
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
-					 .bucket(bucketName)
+					 .bucket(spareBucketName)
 					 .object(floorPlanFileName)
 					 .build());
 			response.addHeader("Content-disposition", floorPlanFileName);
