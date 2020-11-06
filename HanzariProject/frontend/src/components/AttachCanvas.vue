@@ -128,6 +128,8 @@ export default {
       slider: 25,
 
       floorCanvas: null,
+      zoom: 1,
+      fontSize: 25,
       clipboard: null,
 
       currentSelectedFloorName: null,
@@ -251,7 +253,7 @@ export default {
       let seatNameObject = new fabric.IText(inputSeatName, {
         left: activeObject.item(0).left,
         top: activeObject.item(0).top - 15,
-        fontSize: 15,
+        fontSize: this.fontSize,
         fill: "black",
       });
       if (activeObject.item(2)) {
@@ -344,23 +346,28 @@ export default {
           if (!this.floorCanvas.viewportTransform) {
             return;
           }
+
           let evt = opt.e;
+          let deltaY = evt.deltaY;
+          this.zoom = this.floorCanvas.getZoom();
+
+          this.zoom = this.zoom - deltaY / 300;
+
           if (evt.ctrlKey === true) {
             //zoom in and out
-            let evt = opt.e;
-            let deltaY = evt.deltaY;
-            let zoom = this.floorCanvas.getZoom();
-            zoom = zoom - deltaY / 300;
-            if (zoom > 20) zoom = 20;
-            if (zoom < 1) zoom = 0.95;
+            if (this.zoom > 10) this.zoom = 10;
+            else if (this.zoom < 1) this.zoom = 1;
+
             this.floorCanvas.zoomToPoint(
               new fabric.Point(evt.offsetX, evt.offsetY),
-              zoom
+              this.zoom
             );
           } else {
             //reset canvas ratio
             this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+            this.zoom = 1;
           }
+          this.checkZoom();
           opt.e.preventDefault();
           opt.e.stopPropagation();
         });
@@ -422,6 +429,36 @@ export default {
 
         //키보드 조작(상하좌우 이동 /복붙/삭제)
         this.manageKeyboard();
+      }
+    },
+    checkZoom() {
+      // text, fontSize 관련
+      let currentZoom = this.zoom;
+      if (5 <= currentZoom && currentZoom <= 7) {
+        console.log("5 <= zoom && zoom <= 10");
+        console.log(currentZoom);
+        this.floorCanvas.getObjects().forEach((obj) => {
+          if (obj.employee_name) {
+            obj.item(1).text = obj.employee_name;
+            obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+          }
+        });
+      } else if (7 < currentZoom && currentZoom <= 10) {
+        console.log("10 < zoom && zoom <= 13");
+        console.log(currentZoom);
+        this.floorCanvas.getObjects().forEach((obj) => {
+          if (obj.employee_name) {
+            obj.item(1).text = obj.employee_name + "\n" + obj.employee_number;
+
+            obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+          }
+        });
+      } else {
+        this.floorCanvas.getObjects().forEach((obj) => {
+          console.log(currentZoom);
+          obj.item(1).text = "";
+          obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+        });
       }
     },
     //복제하기 (컨텍스트 메뉴 내부)
@@ -1018,14 +1055,15 @@ export default {
       activeObject
         .item(0)
         .set("fill", this.getColor(activeObject.employee_department));
-      activeObject.item(1).set("text", item.name);
+      //activeObject.item(1).set("text", item.name);
       activeObject.set("modify", true);
+      this.checkZoom();
+      
       this.floorCanvas.renderAll();
 
       eachEmployeeSeatList.push(activeObject);
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     addVacantSeat(posX, posY) {
@@ -1045,8 +1083,6 @@ export default {
         this.currentSelectedFloorId
       );
 
-      let seatId = this.createSeatUUID();
-
       let rectangle = new fabric.Rect({
         width: this.slider,
         height: this.slider,
@@ -1057,12 +1093,12 @@ export default {
       let textObject = new fabric.IText("", {
         left: 0,
         top: rectangle.height / 3,
-        fontSize: 13,
+        fontSize: this.fontSize / this.zoom,
         fill: "black",
       });
 
       let group = new fabric.Group([rectangle, textObject], {
-        seatId: seatId,
+        seatId: this.createSeatUUID(),
         floor_id: this.currentSelectedFloorId,
         employee_name: null,
         employee_department: null,
@@ -1232,7 +1268,9 @@ export default {
                   //010 그 id에 대하여 post
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
-                  seatData.seat_name = groupToObject.seatName;
+                  if (groupToObject.seatName) {
+                    seatData.seat_name = groupToObject.seatName;
+                  }
                   seatData.floor = groupToObject.floor_id;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
@@ -1256,7 +1294,9 @@ export default {
                   //100 110 그 id에 대하여 post
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
-                  seatData.seat_name = groupToObject.seatName;
+                  if (groupToObject.seatName) {
+                    seatData.seat_name = groupToObject.seatName;
+                  }
                   seatData.floor = groupToObject.floor_id;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
@@ -1322,22 +1362,12 @@ export default {
         opacity: 1,
       });
 
-      let textObject = null;
-      if (seat.employee_id == null) {
-        textObject = new fabric.IText("", {
-          left: 0,
-          top: rectangle.height / 3,
-          fontSize: 15,
-          fill: "black",
-        });
-      } else {
-        textObject = new fabric.IText(employee.name, {
-          left: 0,
-          top: rectangle.height / 3,
-          fontSize: 15 * rectangle.scaleX,
-          fill: "black",
-        });
-      }
+      let textObject = new fabric.IText("", {
+        left: 0,
+        top: rectangle.height / 3,
+        fontSize: this.fontSize / this.zoom,
+        fill: "black",
+      });
 
       let group = new fabric.Group([rectangle, textObject], {
         seatId: seat.seat_id,
@@ -1359,10 +1389,11 @@ export default {
         let seatNameObject = new fabric.IText(seat.seat_name, {
           left: rectangle.left,
           top: rectangle.top - 15,
-          fontSize: 15,
+          fontSize: this.fontSize / this.zoom,
           fill: "black",
         });
 
+        group.seatName = seat.seat_name;
         group.add(seatNameObject);
       }
 
