@@ -66,7 +66,7 @@
     <v-btn @click="deleteAllBtn">Delete All Shapes</v-btn>
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
-    <v-btn @click="deleteBtn">test</v-btn>
+    <v-btn @click="test">test</v-btn>
     <EmployeeDialog
       :dialogStatus="this.employeeDialogStatus"
       @close="closeEmployeeDialog"
@@ -425,12 +425,12 @@ export default {
             //  groupToObject.employee_department
             //);
             //this.getEmployeeDialog();
-          }
-
-          else{
+          } else {
             this.closeToolTip();
           }
         });
+
+        this.manageKeyboard();
       }
     },
     //복제하기 (컨텍스트 메뉴 내부)
@@ -446,10 +446,11 @@ export default {
       this.floorCanvas.getActiveObject().clone((cloned) => {
         this.clipboard = cloned;
       });
-      console.log(this.clipboard);
     },
     //paste하기 (ctrl+v)
     pasteSelectedSeat() {
+      console.log(this.clipboard);
+
       let activeObject = this.floorCanvas.getActiveObject();
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
@@ -472,13 +473,17 @@ export default {
           seatId: this.createSeatUUID(),
           floor_id: this.currentSelectedFloorId,
           angle: activeObject.angle,
-          seatName: activeObject.seatName,
           employee_department: activeObject.employee_department,
           employee_id: activeObject.employee_id,
           employee_name: activeObject.employee_name,
           employee_number: activeObject.employee_number,
           evented: true,
         });
+
+        if (activeObject.seatName) {
+          clonedObj.set({ seatName: activeObject.seatName });
+        }
+
         if (clonedObj.type === "activeSelection") {
           clonedObj.canvas = this.floorCanvas;
           clonedObj.forEachObject(function (obj) {
@@ -505,7 +510,7 @@ export default {
     },
     showContextMenu(clientX, clientY) {
       this.contextMenuStatus = false;
-      this.contextMenuXLocation = clientX+650;
+      this.contextMenuXLocation = clientX + 650;
       this.contextMenuYLocation = clientY;
       this.$nextTick(() => {
         this.contextMenuStatus = true;
@@ -680,7 +685,6 @@ export default {
         });
       };
       reader.readAsDataURL(file);
-      this.manageKeyboard();
     },
     loadImageUrl(imgurl) {
       fabric.Image.fromURL(imgurl, (img) => {
@@ -693,7 +697,6 @@ export default {
           this.floorCanvas.renderAll.bind(this.floorCanvas)
         );
       });
-      this.manageKeyboard();
     },
     changeImageFile(e) {
       let files = e.target.files || e.dataTransfer.files;
