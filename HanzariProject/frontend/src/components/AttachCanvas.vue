@@ -262,7 +262,6 @@ export default {
       }
 
       activeObject.add(seatNameObject);
-      activeObject.addWithUpdate();
 
       this.floorCanvas.renderAll();
     },
@@ -1093,7 +1092,7 @@ export default {
       let textObject = new fabric.IText("", {
         left: 0,
         top: rectangle.height / 3,
-        fontSize: this.fontSize / this.zoom,
+        fontSize: 0,
         fill: "black",
       });
 
@@ -1365,7 +1364,7 @@ export default {
       let textObject = new fabric.IText("", {
         left: 0,
         top: rectangle.height / 3,
-        fontSize: this.fontSize / this.zoom,
+        fontSize: 0,
         fill: "black",
       });
 
