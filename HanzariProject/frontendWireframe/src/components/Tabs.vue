@@ -9,9 +9,7 @@
         <v-tab-item v-for="item in items" :key="item.index">
           <v-card flat>
             <v-card-text>
-              <component
-                v-bind:is="item.content" v-if="floors" v-bind:copyFloors="floors"
-              ></component>
+              <component v-bind:is="item.content" :copyEmployeeList="employees"></component>
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -29,13 +27,16 @@ const building_id = "HANCOM01";
 
 import ManageSeats from "@/components/ManageSeats.vue";
 import ManageFloors from "@/components/ManageFloors.vue";
+import { eventBus } from '../main';
 export default {
+  props: ["copyEmployee"],
   components: {
     ManageSeats,
     ManageFloors,
   },
   data() {
     return {
+      employees: this.copyEmployee,
       tab: null,
       items: [
         { title: "Seat", index: 0, content: "ManageSeats" },
