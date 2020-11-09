@@ -58,8 +58,8 @@
       </v-row>
       <v-divider class="mx-4"></v-divider>
     </v-card>
-    <MappingEmployee v-if="mappingEmployeeComponentStatus" />
-    <ManageSeatInfo v-if="manageSeatInfocomponentStatus"/>
+    <MappingEmployee v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus" />
+    <ManageSeatInfo v-if="manageSeatInfocomponentStatus  && !mappingEmployeeComponentStatus"/>
   </div>
 </template>
 
