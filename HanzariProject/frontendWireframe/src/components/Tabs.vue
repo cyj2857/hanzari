@@ -1,31 +1,44 @@
 <template>
   <div>
     <v-card>
-      <v-tabs background-color="cyan" dark>
+      <v-tabs v-model="tab" background-color="cyan" dark>
         <v-tab
-          v-for="item of this.allTabItems"
+          v-for="item in items"
           :key="item.index"
-          @change="setComponent(item.index)"
         >
           {{ item.title }}</v-tab
         >
       </v-tabs>
+
+      <v-tabs-items v-model="tab">
+        <v-tab-item v-for="item in items" :key="item.index">
+          <v-card flat>
+            <v-card-text>
+              <component v-bind:is="item.content"></component>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
     </v-card>
   </div>
 </template>
 
 <script>
+import ManageSeats from "@/components/ManageSeats.vue";
 export default {
+  components: {
+    ManageSeats,
+  },
   data() {
     return {
-      allTabItems: [
-        { title: "Seat", index: 0 },
+      tab: null,
+      items: [
+        { title: "Seat", index: 0, content: "ManageSeats" },
         { title: "Floor", index: 1 },
         { title: "Search", index: 2 },
         { title: "MyPage", index: 3 },
       ],
     };
   },
-  created() {},
 };
 </script>
