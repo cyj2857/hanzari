@@ -2,6 +2,7 @@ package com.hancom.hanzari.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,16 @@ public class FloorServiceImpl implements FloorService {
 	public Floor findById(String floorId) throws Exception {
 		return floorRepository.findById(floorId)
 				.orElseThrow(() -> new ResourceNotFoundException("Floor", "floor_id", floorId));
+	}
+
+	@Override
+	public Floor findByIdNullable(String floorId) {
+		Optional<Floor> floor = floorRepository.findById(floorId);
+		if (!floor.isPresent()) {
+			return null;
+		} else {
+			return floor.get();
+		}
 	}
 
 	@Override

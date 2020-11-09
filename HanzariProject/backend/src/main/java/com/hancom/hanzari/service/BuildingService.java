@@ -9,6 +9,8 @@ public interface BuildingService {
 	
 	public Building findById(String buildingId) throws Exception;
 	
+	public Building findByIdNullable(String buildingId);
+	
 	public void deleteById(String buildingId);
 	
 	public Building save(Building building);

@@ -33,6 +33,7 @@ public class EmployeeController {
 	private EmployeeService employeeService;
 
 	// 전체사원 조회
+	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getAllEmps() {
 		List<Employee> employee = employeeService.findAll();
@@ -42,12 +43,14 @@ public class EmployeeController {
 	}
 
 	// employee_id로 한명의 사원 조회
+	@Transactional
 	@GetMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<EmployeeDto> getEmp(@PathVariable("employee_id") String employee_id) throws Exception {
 		return new ResponseEntity<EmployeeDto>(employeeService.findById(employee_id).toDto(), HttpStatus.OK);
 	}
 
 	// department_id로 사원 조회
+	@Transactional
 	@GetMapping(value = "/by-departmentid/{department_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getEmpBydepartmentId(@PathVariable("department_id") String department_id) {
 		List<Employee> employee = employeeService.findByDepartmentId(department_id);
@@ -58,6 +61,7 @@ public class EmployeeController {
 	}
 
 	// keyword로 자리 조회
+	@Transactional
 	@GetMapping(value = "/keyword/{keyword}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getEmpByKeyword(@PathVariable("keyword") String keyword) throws Exception {
 		keyword = URLDecoder.decode(keyword, "UTF-8"); // 방법1
@@ -70,15 +74,23 @@ public class EmployeeController {
 	@Transactional
 	@PostMapping
 	public ResponseEntity<Employee> save(@RequestBody EmployeeDto employeeDto) throws Exception {
+		HttpStatus status = null;
+		Employee employee = employeeService.findByIdNullable(employeeDto.getEmployee_id());
+		if(employee != null) {
+			status = HttpStatus.OK;
+		}
+		else {
+			status = HttpStatus.CREATED;
+		}
 		EmployeeAdditionalInfo additionalInfo = EmployeeAdditionalInfo.builder()
 				.employeeId(employeeDto.getEmployee_id()).employeeName(employeeDto.getEmployee_name())
 				.status(employeeDto.getStatus()).extensionNumber(employeeDto.getExtension_number())
 				.departmentName(employeeDto.getDepartment_name()).build();
 
-		Employee newEmployee = Employee.builder().employeeId(employeeDto.getEmployee_id())
-				.authority(employeeDto.getAuthority()).additionalInfo(additionalInfo).build();
-
-		return new ResponseEntity<Employee>(employeeService.save(newEmployee), HttpStatus.OK);
+		employee = Employee.builder().employeeId(employeeDto.getEmployee_id())
+				.authority(employeeDto.getAuthority()).additionalInfo(additionalInfo).build(); // Create Or Update
+		
+		return new ResponseEntity<Employee>(employeeService.save(employee), status);
 	}
 
 	// employee_id로 삭제

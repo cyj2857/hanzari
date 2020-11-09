@@ -64,16 +64,21 @@ public class FloorController {
 	@PostMapping
 	public ResponseEntity<Floor> save(@PathVariable("building_id") String buildingId, @RequestBody FloorDto floorDto)
 			throws Exception {
-
-		Building building = buildingService.findById(buildingId);
+		HttpStatus status = null;
+		Building building = buildingService.findByIdNullable(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
 		}
+		Floor floor = floorService.findByIdNullable(floorDto.getFloor_id());
+		if (floor != null) {
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.CREATED;
+		}
+		floor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name()).building(building)
+				.floorOrder(floorDto.getFloor_order()).build(); // Create Or Update
 
-		Floor newFloor = Floor.builder().floorId(floorDto.getFloor_id()).floorName(floorDto.getFloor_name())
-				.building(building).floorOrder(floorDto.getFloor_order()).build();
-
-		return new ResponseEntity<Floor>(floorService.save(newFloor), HttpStatus.OK);
+		return new ResponseEntity<Floor>(floorService.save(floor), status);
 	}
 
 	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
