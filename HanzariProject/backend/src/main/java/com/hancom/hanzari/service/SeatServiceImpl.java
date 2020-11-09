@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class SeatServiceImpl implements SeatService {
 
 	@Autowired
 	private SeatRepository seatRepository;
+
+	// Logger
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
 	@Override
 	public List<Seat> findAll() {
@@ -36,6 +41,7 @@ public class SeatServiceImpl implements SeatService {
 	public Seat findByIdNullable(String seatId) {
 		Optional<Seat> seat = seatRepository.findById(seatId);
 		if (!seat.isPresent()) {
+			LOGGER.info("Seat is not exist (seatId: {})", seatId);
 			return null;
 		} else {
 			return seat.get();
