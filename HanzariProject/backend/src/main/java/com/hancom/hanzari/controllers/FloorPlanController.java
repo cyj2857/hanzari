@@ -68,7 +68,7 @@ public class FloorPlanController {
 		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
 		String floorPlanFileName = floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day);
 		//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
-		FloorPlan putfloorPlan = FloorPlan.builder().floorPlanFileName(floorPlanFileName).build();
+		FloorPlan putfloorPlan = FloorPlan.builder().floorId(floorId).floorPlanFileName(floorPlanFileName).build();
 		InputStream imagePutInputStream = file.getInputStream();
 		
 		floorPlanService.save(putfloorPlan);
