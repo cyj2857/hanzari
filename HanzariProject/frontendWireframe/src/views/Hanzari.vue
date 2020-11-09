@@ -15,7 +15,7 @@
     <div class="d1">
       <Tabs v-if="this.employees" :copyEmployee="this.employees" />
     </div>
-    <div class="d2">
+    <div class="d2" id="d2">
       <AttachCanvas />
     </div>
   </div>
@@ -431,10 +431,13 @@ export default {
 <style scoped>
 .d1 {
   float: left;
+  width: 25%;
   height: 100%;
 }
 .d2 {
-  width: 70%;
+  float: left;
+  width: 75%;
   height: 100%;
+  text-align: center;
 }
 </style>

@@ -126,7 +126,7 @@ public class FloorPlanController {
 			response.addHeader("Content-disposition", floorPlanFileName);
 			response.setContentType(URLConnection.guessContentTypeFromName(floorPlanFileName));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
-			response.flushBuffer();			
+			response.flushBuffer();
 		} catch(Exception e) {
 			System.out.println("Error occurred: " + e);
 		} finally {
