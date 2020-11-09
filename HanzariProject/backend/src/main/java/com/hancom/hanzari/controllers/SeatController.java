@@ -50,6 +50,7 @@ public class SeatController {
 	@Autowired
 	private ShapeService shapeService;
 
+	// Logger
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
 	@Transactional
@@ -125,8 +126,10 @@ public class SeatController {
 	@PostMapping
 	public ResponseEntity<Seat> save(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @RequestBody SeatDto seatDto) throws Exception {
+
 		LOGGER.info("SeatController.save called. (building_id : {}, floor_id : {}, seat_id : {})", buildingId, floorId,
 				seatDto.getSeat_id());
+
 		HttpStatus status = null;
 		Building building = buildingService.findByIdNullable(buildingId);
 		if (building == null) {

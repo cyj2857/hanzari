@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,10 +37,16 @@ public class FloorController {
 	@Autowired
 	private BuildingService buildingService;
 
+	// Logger
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
+
 	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<FloorDto>> getAllFloorsInBuilding(@PathVariable("building_id") String buildingId)
 			throws Exception {
+
+		LOGGER.info("FloorController.getAllFloorsInBuilding called. (building_id : {})", buildingId);
+
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
@@ -53,6 +61,9 @@ public class FloorController {
 	@GetMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<FloorDto> getFloor(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId) throws Exception {
+
+		LOGGER.info("FloorController.getFloor called. (building_id : {}, floor_id : {})", buildingId, floorId);
+
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
@@ -64,6 +75,9 @@ public class FloorController {
 	@PostMapping
 	public ResponseEntity<Floor> save(@PathVariable("building_id") String buildingId, @RequestBody FloorDto floorDto)
 			throws Exception {
+		
+		LOGGER.info("FloorController.save called. (building_id : {}, floor_id : {})", buildingId, floorDto.getFloor_id());
+
 		HttpStatus status = null;
 		Building building = buildingService.findByIdNullable(buildingId);
 		if (building == null) {
@@ -83,6 +97,9 @@ public class FloorController {
 
 	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteFloorById(@PathVariable("floor_id") String floor_id) {
+		
+		LOGGER.info("FloorController.deleteFloorById called. (floor_id : {})", floor_id);
+
 		floorService.deleteById(floor_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
