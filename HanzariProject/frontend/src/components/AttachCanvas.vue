@@ -27,6 +27,7 @@
     <canvas
       ref="canvas"
       class="canvas"
+      id="canvas"
       width="950px"
       height="800px"
       style="text-align: center"
@@ -67,6 +68,7 @@
     <v-btn @click="clickResetToRatio" color="pink">Reset Ratio</v-btn>
     <v-btn @click="clickSaveBtn">Save Canvas</v-btn>
     <v-btn @click="test">test</v-btn>
+    <v-btn @click="clickPrintBtn">Print</v-btn>
     <EmployeeDialog
       :dialogStatus="this.employeeDialogStatus"
       @close="closeEmployeeDialog"
@@ -622,7 +624,8 @@ export default {
               this.floorCanvas.renderAll();
             }
             break;
-          case 110: case 46: // delete
+          case 110:
+          case 46: // delete
             this.deleteBtn();
             break;
         }
@@ -1053,7 +1056,7 @@ export default {
       //activeObject.item(1).set("text", item.name);
       activeObject.set("modify", true);
       this.checkZoom();
-      
+
       this.floorCanvas.renderAll();
 
       eachEmployeeSeatList.push(activeObject);
@@ -1519,6 +1522,21 @@ export default {
           }
         }
       }
+    },
+    clickPrintBtn() {
+      let url = document.getElementById("canvas").toDataURL();
+      var windowContent = "<!DOCTYPE html>";
+      windowContent += "<html>";
+      windowContent += "<head><title>Print</title>";
+      windowContent += "<style>@media print{.page-break{display:block; page-break-before:always;}}</style>";
+      windowContent += "</head>";
+      windowContent += "<body>";
+      windowContent += '<img src="' + url + '" onload=window.print();window.close();>';
+      windowContent += "</body>";
+      windowContent += "</html>";
+      var printWin = window.open("", "", "width=800,height=900");
+      printWin.document.open();
+      printWin.document.write(windowContent);
     },
   },
 };
