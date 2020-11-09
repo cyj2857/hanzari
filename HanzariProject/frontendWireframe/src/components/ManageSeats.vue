@@ -60,7 +60,7 @@
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
-      v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus"
+      v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus && employee"
     />
     <ManageSeatInfo
       v-if="manageSeatInfocomponentStatus"
@@ -100,7 +100,6 @@ export default {
     eventBus.$on(
       "manageSeatInfocomponentStatus",
       (manageSeatInfocomponentStatus) => {
-        console.log(manageSeatInfocomponentStatus);
         this.manageSeatInfocomponentStatus = manageSeatInfocomponentStatus;
       }
     );
