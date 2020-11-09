@@ -7,26 +7,28 @@
     <v-divider class="mx-4" vertical></v-divider>
     <v-divider class="mx-4" vertical></v-divider>
     <v-divider class="mx-4" vertical></v-divider>
-    <v-divider class="mx-4" vertical></v-divider>
-
     <v-btn small @click="removeFloor"
       ><v-icon dark>remove_circle</v-icon></v-btn
     >
     <hr />
+    <br />
 
-    <v-tabs v-model="floorNum" background-color="cyan" dark>
-    <v-tab
-      v-for="floor of this.allFloorList"
-      :key="floor.floor_id"
-      @change="setFloor(floor)"
-    > {{ floor.floor_name }}
-    </v-tab>
+    <v-tabs v-model="floorNum" background-color="black" dark>
+      <v-tab
+        v-for="floor of this.allFloorList"
+        :key="floor.floor_id"
+        @change="setFloor(floor)"
+      >
+        {{ floor.floor_name }}
+      </v-tab>
     </v-tabs>
-    
+    <component v-for="(btns, index) in floorBtns" :key="index" :is="btns" />
+
     <v-btn small @click="getAddFloorDialog"
       ><v-icon dark>add_circle</v-icon></v-btn
     >
     <hr />
+    <br />
 
     Floor Name
     <hr />
@@ -36,6 +38,9 @@
       @click="getChangeFloorNameDialog"
       v-on:keyup.enter="confirm"
     ></v-text-field>
+
+    <v-btn @click="test">Test</v-btn>
+
     <ManageAddFloors
       :dialogStatus="this.addFloorDialogStatus"
       @close="closeAddFloorDialog"
@@ -44,16 +49,25 @@
 </template>
 
 <script>
+const BtnComponent = {
+  template: "<button>" + "button" + "</button>",
+  data: {
+    allFloorList: this.copyFloors,
+  },
+  methods: {},
+};
 import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import ManageAddFloors from "@/components/ManageAddFloors.vue";
 export default {
   props: ["copyFloors"],
   components: {
-    ManageAddFloors
+    ManageAddFloors,
   },
   data() {
     return {
+      floorBtns: [BtnComponent],
+
       floorNum: null, //v-tabs v-model
       length: null,
       firstLoadWatch: null,
@@ -74,10 +88,6 @@ export default {
     this.managerFloorList = this.allFloorList.slice();
     this.length = this.copyFloors.length;
 
-    eventBus.$on("initChangeFloorName", (initFloor) => {
-      this.inputChangeFloorName = initFloor;
-    });
-
     if (this.length == 0) {
       /* 층 없는 상태에서 자리 생성 막기위해 넘겨줌
       길이가 늘어나지 않으므로 watch에서 불리지 않아서 created에서 불러주기*/
@@ -92,9 +102,12 @@ export default {
       this.inputChangeFloorName = floor_name;
       this.confirmChangeFloorNameDialog();
     });
+    eventBus.$on("initChangeFloorName", (initFloor) => {
+      this.inputChangeFloorName = initFloor;
+    });
     eventBus.$on("showSeatFloor", (floor_id) => {
       this.seatFloorId = floor_id;
-      console.log(this.seatFloorId + "가 넘어온 자리 층입니다");
+      //console.log(this.seatFloorId + "가 넘어온 자리 층입니다");
 
       for (let i = 0; i < this.allFloorList.length; i++) {
         if (this.seatFloorId == this.allFloorList[i].floor_id) {
@@ -126,6 +139,9 @@ export default {
     },
   },
   methods: {
+    test() {
+      console.log(this.allFloorList);
+    },
     confirm() {
       if (this.inputChangeFloorName == null) return;
       eventBus.$emit("ChangeFloorName", this.inputChangeFloorName);
@@ -161,6 +177,9 @@ export default {
 
       this.allFloorList.push(newFloor);
       this.managerFloorList.push(newFloor);
+
+      this.floorBtns.push(BtnComponent);
+
       this.length++;
       this.floorNum = this.length + 1;
 
@@ -198,7 +217,7 @@ export default {
         this.length--;
         this.floorNum = this.length - 1;
 
-        console.log(this.length + " length");
+        //console.log(this.length + " length");
       } else {
         alert("there are no seats to delete!");
       }
