@@ -175,5 +175,4 @@ public class TestController {
 		floorService.deleteAllInBatch(floors);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
-
 }
