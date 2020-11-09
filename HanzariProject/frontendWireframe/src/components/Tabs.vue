@@ -22,7 +22,7 @@
 
 <script>
 import ManageSeats from "@/components/ManageSeats.vue";
-import ManageFloors from "@/components/MangeFloors.vue";
+import ManageFloors from "@/components/ManageFloors.vue";
 export default {
   components: {
     ManageSeats,
