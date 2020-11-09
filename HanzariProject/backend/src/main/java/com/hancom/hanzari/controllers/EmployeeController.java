@@ -74,15 +74,23 @@ public class EmployeeController {
 	@Transactional
 	@PostMapping
 	public ResponseEntity<Employee> save(@RequestBody EmployeeDto employeeDto) throws Exception {
+		HttpStatus status = null;
+		Employee employee = employeeService.findByIdNullable(employeeDto.getEmployee_id());
+		if(employee != null) {
+			status = HttpStatus.OK;
+		}
+		else {
+			status = HttpStatus.CREATED;
+		}
 		EmployeeAdditionalInfo additionalInfo = EmployeeAdditionalInfo.builder()
 				.employeeId(employeeDto.getEmployee_id()).employeeName(employeeDto.getEmployee_name())
 				.status(employeeDto.getStatus()).extensionNumber(employeeDto.getExtension_number())
 				.departmentName(employeeDto.getDepartment_name()).build();
 
-		Employee newEmployee = Employee.builder().employeeId(employeeDto.getEmployee_id())
-				.authority(employeeDto.getAuthority()).additionalInfo(additionalInfo).build();
-
-		return new ResponseEntity<Employee>(employeeService.save(newEmployee), HttpStatus.OK);
+		employee = Employee.builder().employeeId(employeeDto.getEmployee_id())
+				.authority(employeeDto.getAuthority()).additionalInfo(additionalInfo).build(); // Create Or Update
+		
+		return new ResponseEntity<Employee>(employeeService.save(employee), status);
 	}
 
 	// employee_id로 삭제

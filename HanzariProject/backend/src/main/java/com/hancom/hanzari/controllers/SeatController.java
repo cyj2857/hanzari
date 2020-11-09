@@ -125,15 +125,14 @@ public class SeatController {
 	@PostMapping
 	public ResponseEntity<Seat> save(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @RequestBody SeatDto seatDto) throws Exception {
-
 		LOGGER.info("SeatController.save called. (building_id : {}, floor_id : {}, seat_id : {})", buildingId, floorId,
 				seatDto.getSeat_id());
-
-		Building building = buildingService.findById(buildingId);
+		HttpStatus status = null;
+		Building building = buildingService.findByIdNullable(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
 		}
-		Floor floor = floorService.findById(floorId);
+		Floor floor = floorService.findByIdNullable(floorId);
 		if (floor == null) {
 			throw new ResourceNotFoundException("Floor", "floor_id", floorId);
 		}
@@ -144,16 +143,20 @@ public class SeatController {
 				throw new ResourceNotFoundException("Employee", "employee_id", floorId);
 			}
 		}
-
+		Seat seat = seatService.findByIdNullable(seatDto.getSeat_id());
+		if (seat != null) {
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.CREATED;
+		}
 		Shape shape = shapeService.findById(seatDto.getShape_id()); // ShapeRepository에서 seatDto의 shape_id를 통해 해당 Shape을
 		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
 				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
-
-		Seat newSeat = Seat.builder().seatId(seatDto.getSeat_id()).seatName(seatDto.getSeat_name()).floor(floor)
+		seat = Seat.builder().seatId(seatDto.getSeat_id()).seatName(seatDto.getSeat_name()).floor(floor)
 				.x(seatDto.getX()).y(seatDto.getY()).isGroup(seatDto.getIs_group()).groupId(seatDto.getGroup_id())
-				.employee(employee).figure(figure).build();
+				.employee(employee).figure(figure).build(); // Create Or Update
 
-		return new ResponseEntity<Seat>(seatService.save(newSeat), HttpStatus.OK);
+		return new ResponseEntity<Seat>(seatService.save(seat), status);
 	}
 
 	@DeleteMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
