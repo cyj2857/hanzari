@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
+
+	// Logger
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
 	@Override
 	public List<Employee> findAll() {
@@ -34,6 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public Employee findByIdNullable(String employeeId) {
 		Optional<Employee> employee = employeeRepository.findById(employeeId);
 		if (!employee.isPresent()) {
+			LOGGER.info("Employee is not exist (employeeId: {})", employeeId);
 			return null;
 		} else {
 			return employee.get();

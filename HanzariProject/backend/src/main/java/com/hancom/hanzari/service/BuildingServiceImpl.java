@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class BuildingServiceImpl implements BuildingService {
 
 	@Autowired
 	private BuildingRepository buildingRepository;
+
+	// Logger
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
 	@Override
 	public List<Building> findAll() {
@@ -34,6 +39,7 @@ public class BuildingServiceImpl implements BuildingService {
 	public Building findByIdNullable(String buildingId) {
 		Optional<Building> building = buildingRepository.findById(buildingId);
 		if (!building.isPresent()) {
+			LOGGER.info("Building is not exist (buildingId: {})", buildingId);
 			return null;
 		} else {
 			return building.get();
