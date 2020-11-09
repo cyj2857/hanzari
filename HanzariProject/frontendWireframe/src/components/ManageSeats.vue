@@ -10,7 +10,11 @@
           <v-card-title>Create Vacant Seats</v-card-title></v-col
         >
         <v-col cols="12" sm="3">
-          <v-switch v-model="addVacantSwitch" inset></v-switch
+          <v-switch
+            v-model="addVacantSwitch"
+            inset
+            @change="changeSwitchStatus"
+          ></v-switch
         ></v-col>
         <v-col cols="12"
           ><v-slider
@@ -21,6 +25,7 @@
             :max="max"
             :min="min"
             hide-details
+            @change="changeSliderValue"
           >
           </v-slider
         ></v-col>
@@ -60,11 +65,13 @@
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
-      v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus && employee"
+      v-if="
+        mappingEmployeeComponentStatus &&
+        !manageSeatInfocomponentStatus &&
+        employee
+      "
     />
-    <ManageSeatInfo
-      v-if="manageSeatInfocomponentStatus"
-    />
+    <ManageSeatInfo v-if="manageSeatInfocomponentStatus" />
   </div>
 </template>
 
@@ -109,6 +116,13 @@ export default {
       this.mappingEmployeeComponentStatus = true;
     },
     changeImageFile() {},
+    changeSwitchStatus() {
+      eventBus.$emit("changeAddVacantSwitch", this.addVacantSwitch);
+      eventBus.$emit("changeslider", this.slider);
+    },
+    changeSliderValue() {
+      eventBus.$emit("changeslider", this.slider);
+    },
   },
 };
 </script>

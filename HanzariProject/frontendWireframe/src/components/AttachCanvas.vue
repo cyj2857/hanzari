@@ -69,7 +69,20 @@ export default {
       toolTipYLocation: 100,
       toolTipColor: null,
       toolTipText: null,
+
+      ableAddVacant: false,
+      seatLength: null,
     };
+  },
+  created() {
+    eventBus.$on("changeAddVacantSwitch", (switchValue) => {
+      console.log(switchValue)
+      this.ableAddVacant = switchValue;
+    });
+    eventBus.$on("changeslider", (sliderValue) => {
+      console.log(sliderValue)
+      this.seatLength = sliderValue;
+    });
   },
   mounted() {
     this.initializing();
@@ -181,6 +194,9 @@ export default {
         //this.manageKeyboard();
       }
     },
+    initSeatSize(){
+
+    },
     showToolTip(
       clientX,
       clientY,
@@ -214,6 +230,7 @@ export default {
 
     clickTestSeat() {
       eventBus.$emit("manageSeatInfocomponentStatus", true);
+      console.log(this.switchValue);
     },
   },
 };
