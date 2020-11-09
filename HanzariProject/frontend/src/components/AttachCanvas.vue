@@ -52,12 +52,13 @@
     </v-menu>
 
     <v-tooltip
-      left
+      top
       v-model="toolTipStatus"
       :position-x="toolTipXLocation"
       :position-y="toolTipYLocation"
+      :color="toolTipColor"
     >
-      <span>Left tooltip</span>
+      <span v-html="toolTipText"> </span>
     </v-tooltip>
 
     <input v-show="false" ref="Upload" type="file" @change="changeImageFile" />
@@ -123,6 +124,8 @@ export default {
       toolTipStatus: false,
       toolTipXLocation: 100,
       toolTipYLocation: 100,
+      toolTipColor:null,
+      toolTipText: null,
 
       addVacantSwitch: false, // 공석 만들기 위한 스위치 상태
       min: 1,
@@ -402,15 +405,20 @@ export default {
           if (group != null) {
             var posX = event.e.clientX;
             var posY = event.e.clientY;
-            console.log(posX + ", " + posY); // Log to console
-            
-            this.showToolTip(posX, posY);
 
             let groupToObject = group.toObject([
               "employee_id",
               "employee_name",
               "employee_department",
             ]);
+
+            this.showToolTip(
+              posX,
+              posY,
+              groupToObject.employee_id,
+              groupToObject.employee_name,
+              groupToObject.employee_department
+            );
 
             //console.log("Employee_id" + groupToObject.employee_id);
             //console.log("Employee_name" + groupToObject.employee_name);
@@ -563,11 +571,32 @@ export default {
           break;
       }
     },
-    showToolTip(clientX, clientY) {
-      //console.log(clientX);
-      //console.log("===============");
+    showToolTip(
+      clientX,
+      clientY,
+      employee_id,
+      employee_name,
+      employee_department
+    ) {
       this.toolTipXLocation = clientX;
       this.toolTipYLocation = clientY;
+
+      if (employee_id == null) {
+        this.toolTipText = "공석";
+        this.toolTipColor = null;
+        
+      } else {
+        this.toolTipText =
+          "이름 : " +
+          employee_name +
+          "<br>아이디 : " +
+          employee_id +
+          "<br>부서 : " +
+          employee_department;
+
+        this.toolTipColor = "pink lighten-";
+      }
+
       this.toolTipStatus = true;
     },
     closeToolTip() {
