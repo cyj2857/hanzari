@@ -1,6 +1,5 @@
 package com.hancom.hanzari.controllers;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,14 +48,17 @@ public class BuildingController {
 	@Transactional
 	@PostMapping
 	public ResponseEntity<Building> save(@RequestBody BuildingDto buildingDto) throws Exception {
-		for (Field field : buildingDto.getClass().getDeclaredFields()) {
-			field.setAccessible(true);
-			Object value = field.get(buildingDto);
-			System.out.println(field.getName() + " : " + value);
+		HttpStatus status = null;
+		Building building = buildingService.findByIdNullable(buildingDto.getBuilding_id());
+		if (building != null) {
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.CREATED;
 		}
-		Building newBuilding = Building.builder().buildingId(buildingDto.getBuilding_id())
-				.buildingName(buildingDto.getBuilding_name()).build();
-		return new ResponseEntity<Building>(buildingService.save(newBuilding), HttpStatus.OK);
+		building = Building.builder().buildingId(buildingDto.getBuilding_id())
+				.buildingName(buildingDto.getBuilding_name()).build(); // Create Or Update
+
+		return new ResponseEntity<Building>(buildingService.save(building), status);
 	}
 
 	@DeleteMapping(value = "/{building_id}", produces = { MediaType.APPLICATION_JSON_VALUE })

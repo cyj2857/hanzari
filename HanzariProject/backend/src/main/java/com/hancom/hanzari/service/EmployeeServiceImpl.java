@@ -2,6 +2,7 @@ package com.hancom.hanzari.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public Employee findById(String employee_id) throws Exception {
 		return employeeRepository.findById(employee_id)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "employee_id", employee_id));
+	}
+
+	@Override
+	public Employee findByIdNullable(String employeeId) {
+		Optional<Employee> employee = employeeRepository.findById(employeeId);
+		if (!employee.isPresent()) {
+			return null;
+		} else {
+			return employee.get();
+		}
 	}
 
 	@Override
