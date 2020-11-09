@@ -12,7 +12,10 @@ export const eventBus = new Vue()
 
 Vue.prototype.$axios = axios
 
-Vue.use(Vuetify)
+Vue.use(Vuetify, {
+  iconfont: 'mdi' // 'md' || 'mdi' || 'fa' || 'fa4'
+})
+
 
 /* eslint-disable no-new */
 new Vue({
