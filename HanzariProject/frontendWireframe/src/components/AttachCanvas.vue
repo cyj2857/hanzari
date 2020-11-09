@@ -1,6 +1,6 @@
 <template>
   <div>
     <canvas></canvas>
-    hihi
+    hihi canvas
   </div>
 </template>
