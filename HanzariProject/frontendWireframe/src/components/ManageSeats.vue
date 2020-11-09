@@ -58,8 +58,13 @@
       </v-row>
       <v-divider class="mx-4"></v-divider>
     </v-card>
-    <MappingEmployee v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus" />
-    <ManageSeatInfo v-if="manageSeatInfocomponentStatus  && !mappingEmployeeComponentStatus"/>
+    <MappingEmployee
+      :copyEmployeeListTwo="employee"
+      v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus"
+    />
+    <ManageSeatInfo
+      v-if="manageSeatInfocomponentStatus"
+    />
   </div>
 </template>
 
@@ -69,12 +74,14 @@ import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
+  props: ["copyEmployeeList"],
   components: {
     MappingEmployee,
     ManageSeatInfo,
   },
   data() {
     return {
+      employee: this.copyEmployeeList,
       addVacantSwitch: false, // 공석 만들기 위한 스위치 상태
       min: 1,
       max: 50,
@@ -93,6 +100,7 @@ export default {
     eventBus.$on(
       "manageSeatInfocomponentStatus",
       (manageSeatInfocomponentStatus) => {
+        console.log(manageSeatInfocomponentStatus);
         this.manageSeatInfocomponentStatus = manageSeatInfocomponentStatus;
       }
     );

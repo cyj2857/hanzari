@@ -12,7 +12,7 @@
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="testEmployees"
+      :items="this.employees"
       :search="search"
       height="265px"
     >
@@ -34,8 +34,10 @@
 import { eventBus } from "../main";
 export default {
   name: "MappingEmployee",
+  props: ["copyEmployeeListTwo"],
   data() {
     return {
+      employees: this.copyEmployeeListTwo,
       search: "",
       headers: [
         {
@@ -56,6 +58,11 @@ export default {
         },
       ],
     };
+  },
+  created() {
+    console.log(this.employees);
+
+    
   },
   methods: {
     /*MappingSeatButtonClicked(item) {
