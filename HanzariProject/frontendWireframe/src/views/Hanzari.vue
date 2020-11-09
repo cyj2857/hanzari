@@ -12,10 +12,10 @@
       </v-toolbar-items>
     </v-toolbar>
     
-    <div class="d1">
+    <div class="d1" id="d1">
       <Tabs />
     </div>
-    <div class="d2">
+    <div class="d2" id="d2">
       <AttachCanvas />
     </div>
   </div>
@@ -41,10 +41,13 @@ export default {
 <style scoped>
 .d1 {
   float: left;
+  width: 25%;
   height: 100%;
 }
 .d2 {
-  width: 70%;
+  float: left;
+  width: 75%;
   height: 100%;
+  text-align: center;
 }
 </style>
