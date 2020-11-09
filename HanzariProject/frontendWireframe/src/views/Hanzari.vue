@@ -1,20 +1,23 @@
 <template>
   <div class="hanzari" id="hanzari">
-    한자리는 전체틀 이 안에 컴포넌트들 만들면 된다.
+    <Tabs />
+    <AttachCanvas />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 
+import Taps from "@/components/Taps.vue";
+import AttachCanvas from "@/components/AttachCanvas.vue";
 export default {
   name: "Hanzari",
   components: {
+    Taps,
+    AttachCanvas,
   },
   data() {
-    return {
-    };
+    return {};
   },
-  
 };
 </script>
