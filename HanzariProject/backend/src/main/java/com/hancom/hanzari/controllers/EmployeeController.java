@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,10 +34,16 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 
+	// Logger
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
+
 	// 전체사원 조회
 	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getAllEmps() {
+		
+		LOGGER.info("EmployeeController.getAllEmps called.");
+
 		List<Employee> employee = employeeService.findAll();
 		List<EmployeeDto> result = new ArrayList<>();
 		employee.forEach(e -> result.add(e.toDto()));
@@ -46,6 +54,9 @@ public class EmployeeController {
 	@Transactional
 	@GetMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<EmployeeDto> getEmp(@PathVariable("employee_id") String employee_id) throws Exception {
+
+		LOGGER.info("EmployeeController.getEmp called. (employee_id : {} )", employee_id);
+
 		return new ResponseEntity<EmployeeDto>(employeeService.findById(employee_id).toDto(), HttpStatus.OK);
 	}
 
@@ -53,6 +64,9 @@ public class EmployeeController {
 	@Transactional
 	@GetMapping(value = "/by-departmentid/{department_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getEmpBydepartmentId(@PathVariable("department_id") String department_id) {
+		
+		LOGGER.info("EmployeeController.getEmpBydepartmentId called. (department_id : {} )", department_id);
+
 		List<Employee> employee = employeeService.findByDepartmentId(department_id);
 		List<EmployeeDto> result = new ArrayList<>();
 		employee.forEach(e -> result.add(e.toDto()));
@@ -64,6 +78,9 @@ public class EmployeeController {
 	@Transactional
 	@GetMapping(value = "/keyword/{keyword}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getEmpByKeyword(@PathVariable("keyword") String keyword) throws Exception {
+
+		LOGGER.info("EmployeeController.getEmpByKeyword called. (keyword : {} )", keyword);
+
 		keyword = URLDecoder.decode(keyword, "UTF-8"); // 방법1
 		List<Employee> employee = employeeService.findByKeyword(keyword);
 		List<EmployeeDto> result = new ArrayList<>();
@@ -74,12 +91,14 @@ public class EmployeeController {
 	@Transactional
 	@PostMapping
 	public ResponseEntity<Employee> save(@RequestBody EmployeeDto employeeDto) throws Exception {
+		
+		LOGGER.info("EmployeeController.save called. (employee_id : {} )", employeeDto.getEmployee_id());
+		
 		HttpStatus status = null;
 		Employee employee = employeeService.findByIdNullable(employeeDto.getEmployee_id());
-		if(employee != null) {
+		if (employee != null) {
 			status = HttpStatus.OK;
-		}
-		else {
+		} else {
 			status = HttpStatus.CREATED;
 		}
 		EmployeeAdditionalInfo additionalInfo = EmployeeAdditionalInfo.builder()
@@ -87,15 +106,18 @@ public class EmployeeController {
 				.status(employeeDto.getStatus()).extensionNumber(employeeDto.getExtension_number())
 				.departmentName(employeeDto.getDepartment_name()).build();
 
-		employee = Employee.builder().employeeId(employeeDto.getEmployee_id())
-				.authority(employeeDto.getAuthority()).additionalInfo(additionalInfo).build(); // Create Or Update
-		
+		employee = Employee.builder().employeeId(employeeDto.getEmployee_id()).authority(employeeDto.getAuthority())
+				.additionalInfo(additionalInfo).build(); // Create Or Update
+
 		return new ResponseEntity<Employee>(employeeService.save(employee), status);
 	}
 
 	// employee_id로 삭제
 	@DeleteMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteEmp(@PathVariable("employee_id") String employee_id) {
+
+		LOGGER.info("EmployeeController.deleteEmp called. (employee_id : {} )", employee_id);
+		
 		employeeService.deleteById(employee_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
