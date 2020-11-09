@@ -51,10 +51,12 @@
               @change="changeImageFile"
             />
             <v-btn @click="$refs.Upload.click()"
-              >Background Image Setting</v-btn
-            ></v-card-text
-          ></v-col
-        >
+              >Background Image Setting</v-btn>
+              <v-card>
+              <v-card-text>{{currentFloorImage}}</v-card-text>
+              </v-card>
+            </v-card-text>
+            </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
     </v-card>
@@ -62,9 +64,7 @@
       :copyEmployeeListTwo="employee"
       v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus"
     />
-    <ManageSeatInfo
-      v-if="manageSeatInfocomponentStatus"
-    />
+    <ManageSeatInfo v-if="manageSeatInfocomponentStatus" />
   </div>
 </template>
 
@@ -82,12 +82,16 @@ export default {
   data() {
     return {
       employee: this.copyEmployeeList,
-      addVacantSwitch: false, // °ø¼® ¸¸µé±â À§ÇÑ ½ºÀ§Ä¡ »óÅÂ
+      addVacantSwitch: false, // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
       min: 1,
       max: 50,
       slider: 25,
       mappingEmployeeComponentStatus: false,
       manageSeatInfocomponentStatus: false,
+
+      allImageMap: null,
+      currentSelectedFloorId: "One",
+      currentFloorImage: null,
     };
   },
   created() {
@@ -104,12 +108,27 @@ export default {
         this.manageSeatInfocomponentStatus = manageSeatInfocomponentStatus;
       }
     );
+    if (this.allImageMap == null) {
+      this.allImageMap = new Map();
+    }
   },
   methods: {
     getMappingEmployeeComponent() {
       this.mappingEmployeeComponentStatus = true;
     },
-    changeImageFile() {},
+    changeImageFile(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.saveImageFile(files[0]);
+      //this.loadImageFile(files[0]);
+    },
+    saveImageFile(file) {
+      console.log(file);
+      this.currentFloorImage = file.name;
+      this.allImageMap.set(this.currentSelectedFloorId, file);
+      console.log(this.allImageMap.size);
+      eventBus.$emit("allImageMap", this.allImageMap);
+    },
   },
 };
 </script>
