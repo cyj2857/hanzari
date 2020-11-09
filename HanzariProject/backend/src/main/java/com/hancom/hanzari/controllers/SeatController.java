@@ -95,6 +95,7 @@ public class SeatController {
 	}
 
 	// employee_id로 자리 조회
+	@Transactional
 	@GetMapping(value = "/by-empid/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> getSeatsByEmpId(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @PathVariable("employee_id") String employeeId) throws Exception {
@@ -120,6 +121,7 @@ public class SeatController {
 		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
 	}
 
+	@Transactional
 	@PostMapping
 	public ResponseEntity<Seat> save(@PathVariable("building_id") String buildingId,
 			@PathVariable("floor_id") String floorId, @RequestBody SeatDto seatDto) throws Exception {
@@ -161,15 +163,5 @@ public class SeatController {
 		seatService.deleteById(seat_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 
-	}
-
-	@RequestMapping("/get-all-seats")
-	public ResponseEntity<List<SeatDto>> getAllSeats() throws Exception {
-
-		LOGGER.info("SeatController.getAllSeats called.");
-		List<Seat> seat = seatService.findAll();
-		List<SeatDto> result = new ArrayList<>();
-		seat.forEach(e -> result.add(e.toDto()));
-		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
 	}
 }
