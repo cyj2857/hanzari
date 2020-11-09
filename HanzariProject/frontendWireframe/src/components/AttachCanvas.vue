@@ -50,8 +50,10 @@ export default {
       fontSize: 25,
       clipboard: null,
 
+      allImageMap: null,
+
       currentSelectedFloorName: null,
-      currentSelectedFloorId: null,
+      currentSelectedFloorId: "One",
 
       contextMenuStatus: false,
       contextMenuXLocation: 0,
@@ -81,7 +83,12 @@ export default {
     });
     eventBus.$on("changeslider", (sliderValue) => {
       console.log(sliderValue)
-      this.seatLength = sliderValue;
+      this.seatLength = sliderValue;});
+    eventBus.$on("allImageMap", (allImageMap) => {
+      this.allImageMap = allImageMap;
+      console.log(this.allImageMap);
+
+      this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
   },
   mounted() {
@@ -194,9 +201,56 @@ export default {
         //this.manageKeyboard();
       }
     },
-    initSeatSize(){
+    changeFloor() {
+      this.floorCanvas
+        .getObjects()
+        .slice()
+        .forEach((obj) => {
+          this.floorCanvas.remove(obj);
+        });
 
+      if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
+        let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+        if (typeof typeCheck === "string") {
+          //url
+          this.loadImageUrl(this.allImageMap.get(this.currentSelectedFloorId));
+        } else {
+          //file
+          this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+        }
+      }
     },
+
+    loadImageFile(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        fabric.Image.fromURL(e.target.result, (img) => {
+          img.set({
+            scaleX: this.floorCanvas.width / img.width,
+            scaleY: this.floorCanvas.height / img.height,
+          });
+          this.floorCanvas.setBackgroundImage(
+            img,
+            this.floorCanvas.renderAll.bind(this.floorCanvas)
+          );
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+
+    loadImageUrl(imgurl) {
+      fabric.Image.fromURL(imgurl, (img) => {
+        img.set({
+          scaleX: this.floorCanvas.width / img.width,
+          scaleY: this.floorCanvas.height / img.height,
+        });
+        this.floorCanvas.setBackgroundImage(
+          img,
+          this.floorCanvas.renderAll.bind(this.floorCanvas)
+        );
+      });
+    },
+
     showToolTip(
       clientX,
       clientY,
