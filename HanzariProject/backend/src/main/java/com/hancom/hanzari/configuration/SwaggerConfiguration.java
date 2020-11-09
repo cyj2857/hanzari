@@ -1,4 +1,5 @@
 package com.hancom.hanzari.configuration;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -12,18 +13,17 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
-@EnableSwagger2
-@EnableWebMvc
 public class SwaggerConfiguration {
+
 	@Bean
-	public Docket swaggerApi() {
-		return new Docket(DocumentationType.SWAGGER_2).apiInfo(swaggerInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("com.hancom.hanzari.controllers")).paths(PathSelectors.any())
-				.build().useDefaultResponseMessages(false); // 기본으로 세팅되는 200,401,403,404 메시지를 표시 하지 않음
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(RequestHandlerSelectors.basePackage("com.hancom.hanzari")).paths(PathSelectors.any()).build();
 	}
 
-	private ApiInfo swaggerInfo() {
-		return new ApiInfoBuilder().title("Spring API Documentation").description("앱 개발시 사용되는 서버 API에 대한 연동 문서입니다")
-				.build();
+	private ApiInfo apiInfo() {
+		return new ApiInfoBuilder().title("제목 작성").version("버전 작성").description("설명 작성").license("라이센스 작성")
+				.licenseUrl("라이센스 URL 작성").build();
 	}
+
 }
