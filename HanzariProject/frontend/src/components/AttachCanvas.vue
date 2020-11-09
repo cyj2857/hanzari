@@ -397,12 +397,13 @@ export default {
           modifyObject.set("modify", true);
         });
 
-        this.floorCanvas.on("mouse:over", (e) => {
-          let group = e.target;
+        this.floorCanvas.on("mouse:over", (event) => {
+          let group = event.target;
           if (group != null) {
-            //console.log(group.left + "현재 마우스 오버한 도형의 left");
-            var posX = group.left;
-            var posY = group.top;
+            var posX = event.e.clientX;
+            var posY = event.e.clientY;
+            console.log(posX + ", " + posY); // Log to console
+            
             this.showToolTip(posX, posY);
 
             let groupToObject = group.toObject([
@@ -1528,10 +1529,12 @@ export default {
       var windowContent = "<!DOCTYPE html>";
       windowContent += "<html>";
       windowContent += "<head><title>Print</title>";
-      windowContent += "<style>@media print{.page-break{display:block; page-break-before:always;}}</style>";
+      windowContent +=
+        "<style>@media print{.page-break{display:block; page-break-before:always;}}</style>";
       windowContent += "</head>";
       windowContent += "<body>";
-      windowContent += '<img src="' + url + '" onload=window.print();window.close();>';
+      windowContent +=
+        '<img src="' + url + '" onload=window.print();window.close();>';
       windowContent += "</body>";
       windowContent += "</html>";
       var printWin = window.open("", "", "width=800,height=900");
