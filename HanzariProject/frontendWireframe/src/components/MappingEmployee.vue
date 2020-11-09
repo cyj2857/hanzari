@@ -22,7 +22,12 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-btn id="MappingSeatButton" draggable="true">Mapping</v-btn>
+            <v-btn
+              id="MappingSeatButton"
+              draggable="true"
+              @click="MappingSeatButtonClicked(row.item)"
+              >Mapping</v-btn
+            >
           </td>
         </tr>
       </template>
@@ -50,24 +55,18 @@ export default {
         { text: "Number", value: "number" },
         { text: "", value: "mapSeatButton" },
       ],
-      testEmployees: [
-        {
-          name: "NoYunji",
-          department: "human resource",
-          number: "123-5677",
-        },
-      ],
+      allEmployeeSeatMap: null,
     };
   },
   created() {
-    console.log(this.employees);
-
-    
+    eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
+      this.allEmployeeSeatMap = eachEmployeeSeatMap;
+    });
   },
   methods: {
-    /*MappingSeatButtonClicked(item) {
+    MappingSeatButtonClicked(item) {
       eventBus.$emit("MappingSeat", item);
-    },*/
+    },
     changeBackPage() {
       eventBus.$emit("mappingEmployeeComponentStatus", false);
     },

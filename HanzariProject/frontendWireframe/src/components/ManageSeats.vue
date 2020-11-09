@@ -10,7 +10,11 @@
           <v-card-title>Create Vacant Seats</v-card-title></v-col
         >
         <v-col cols="12" sm="3">
-          <v-switch v-model="addVacantSwitch" inset></v-switch
+          <v-switch
+            v-model="addVacantSwitch"
+            inset
+            @change="changeSwitchStatus"
+          ></v-switch
         ></v-col>
         <v-col cols="12"
           ><v-slider
@@ -21,6 +25,7 @@
             :max="max"
             :min="min"
             hide-details
+            @change="changeSliderValue"
           >
           </v-slider
         ></v-col>
@@ -51,18 +56,23 @@
               @change="changeImageFile"
             />
             <v-btn @click="$refs.Upload.click()"
-              >Background Image Setting</v-btn>
-              <v-card>
-              <v-card-text>{{currentFloorImage}}</v-card-text>
-              </v-card>
-            </v-card-text>
-            </v-col>
+              >Background Image Setting</v-btn
+            >
+            <v-card>
+              <v-card-text>{{ currentFloorImage }}</v-card-text>
+            </v-card>
+          </v-card-text>
+        </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
-      v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus"
+      v-if="
+        mappingEmployeeComponentStatus &&
+        !manageSeatInfocomponentStatus &&
+        employee
+      "
     />
     <ManageSeatInfo v-if="manageSeatInfocomponentStatus" />
   </div>
@@ -104,7 +114,6 @@ export default {
     eventBus.$on(
       "manageSeatInfocomponentStatus",
       (manageSeatInfocomponentStatus) => {
-        console.log(manageSeatInfocomponentStatus);
         this.manageSeatInfocomponentStatus = manageSeatInfocomponentStatus;
       }
     );
@@ -115,6 +124,14 @@ export default {
   methods: {
     getMappingEmployeeComponent() {
       this.mappingEmployeeComponentStatus = true;
+    },
+    changeImageFile() {},
+    changeSwitchStatus() {
+      eventBus.$emit("changeAddVacantSwitch", this.addVacantSwitch);
+      eventBus.$emit("changeslider", this.slider);
+    },
+    changeSliderValue() {
+      eventBus.$emit("changeslider", this.slider);
     },
     changeImageFile(e) {
       let files = e.target.files || e.dataTransfer.files;

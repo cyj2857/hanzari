@@ -71,9 +71,19 @@ export default {
       toolTipYLocation: 100,
       toolTipColor: null,
       toolTipText: null,
+
+      ableAddVacant: false,
+      seatLength: null,
     };
   },
   created() {
+    eventBus.$on("changeAddVacantSwitch", (switchValue) => {
+      console.log(switchValue)
+      this.ableAddVacant = switchValue;
+    });
+    eventBus.$on("changeslider", (sliderValue) => {
+      console.log(sliderValue)
+      this.seatLength = sliderValue;});
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       console.log(this.allImageMap);
@@ -274,6 +284,7 @@ export default {
 
     clickTestSeat() {
       eventBus.$emit("manageSeatInfocomponentStatus", true);
+      console.log(this.switchValue);
     },
   },
 };
