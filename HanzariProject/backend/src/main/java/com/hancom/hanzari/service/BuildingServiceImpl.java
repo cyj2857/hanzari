@@ -2,6 +2,7 @@ package com.hancom.hanzari.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,16 @@ public class BuildingServiceImpl implements BuildingService {
 	public Building findById(String buildingId) throws Exception {
 		return buildingRepository.findById(buildingId)
 				.orElseThrow(() -> new ResourceNotFoundException("Building", "building_id", buildingId));
+	}
+
+	@Override
+	public Building findByIdNullable(String buildingId) {
+		Optional<Building> building = buildingRepository.findById(buildingId);
+		if (!building.isPresent()) {
+			return null;
+		} else {
+			return building.get();
+		}
 	}
 
 	@Override
