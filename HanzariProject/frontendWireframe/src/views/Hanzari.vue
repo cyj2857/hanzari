@@ -13,7 +13,9 @@
     </v-toolbar>
 
     <div class="d1">
-      <Tabs v-if="this.employees" :copyEmployee="this.employees" />
+      <Tabs v-if="this.employees && this.floors" 
+       :copyEmployee="this.employees" 
+       :copyFloors="this.floors" />
     </div>
     <div class="d2" id="d2">
       <AttachCanvas />
@@ -54,9 +56,8 @@ export default {
   async created() {
     // 사원 load
     this.employees = await this.getEmployees();
-    console.log(this.employees)
     // 층 load
-    //this.floors = await this.getFloors();
+    this.floors = await this.getFloors();
     // 현재 층 이미지 load
     //this.currentFloorImage = await this.getCurrentFloorImage();
     // 현재 층 자리 load
@@ -87,7 +88,7 @@ export default {
       }
       return initEmployeeList;
     },
-    /*async getFloors() {
+    async getFloors() {
       let allFloorList = new Array();
       try {
         let response = await axios.get(
@@ -131,7 +132,7 @@ export default {
     },
 
     //현재 층 이미지 가져오기
-    async getCurrentFloorImage() {
+   /* async getCurrentFloorImage() {
       let currentFloorImage = new Array();
       try {
         let response = await axios.get(
