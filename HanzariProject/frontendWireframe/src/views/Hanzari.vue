@@ -1,5 +1,17 @@
 <template>
   <div class="hanzari" id="hanzari">
+    <v-toolbar color="black" dark>
+      <v-toolbar-title>Hanzari</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn text> Delete All </v-btn>
+        <v-divider vertical></v-divider>
+        <v-btn text> Save </v-btn>
+        <v-divider vertical></v-divider>
+        <v-btn text> Export </v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
+    
     <div class="d1">
       <Tabs />
     </div>

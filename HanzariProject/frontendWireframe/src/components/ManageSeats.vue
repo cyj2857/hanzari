@@ -1,6 +1,10 @@
 <template>
   <div>
-    <v-card flat color="transparent" v-if="!mappingEmployeeComponentStatus">
+    <v-card
+      flat
+      color="transparent"
+      v-if="!mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus"
+    >
       <v-row>
         <v-col cols="12" sm="9">
           <v-card-title>Create Vacant Seats</v-card-title></v-col
@@ -54,17 +58,20 @@
       </v-row>
       <v-divider class="mx-4"></v-divider>
     </v-card>
-    <MappingEmployee v-if="mappingEmployeeComponentStatus" />
+    <MappingEmployee v-if="mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus" />
+    <ManageSeatInfo v-if="manageSeatInfocomponentStatus  && !mappingEmployeeComponentStatus"/>
   </div>
 </template>
 
 <script>
 import MappingEmployee from "@/components/MappingEmployee.vue";
+import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
   components: {
     MappingEmployee,
+    ManageSeatInfo,
   },
   data() {
     return {
@@ -73,6 +80,7 @@ export default {
       max: 50,
       slider: 25,
       mappingEmployeeComponentStatus: false,
+      manageSeatInfocomponentStatus: false,
     };
   },
   created() {
@@ -80,6 +88,12 @@ export default {
       "mappingEmployeeComponentStatus",
       (mappingEmployeeComponentStatus) => {
         this.mappingEmployeeComponentStatus = mappingEmployeeComponentStatus;
+      }
+    );
+    eventBus.$on(
+      "manageSeatInfocomponentStatus",
+      (manageSeatInfocomponentStatus) => {
+        this.manageSeatInfocomponentStatus = manageSeatInfocomponentStatus;
       }
     );
   },
