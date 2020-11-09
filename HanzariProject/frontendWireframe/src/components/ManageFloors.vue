@@ -60,7 +60,7 @@ import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import ManageAddFloors from "@/components/ManageAddFloors.vue";
 export default {
-  props: ["copyFloors"],
+  props: ["copyfloorList"],
   components: {
     ManageAddFloors,
   },
@@ -72,7 +72,7 @@ export default {
       length: null,
       firstLoadWatch: null,
 
-      allFloorList: this.copyFloors, // 여기에서 sort 안먹음
+      allFloorList: this.copyfloorList, // 여기에서 sort 안먹음
       managerFloorList: [], // DB에 save 할 리스트
 
       seatFloor: null,
