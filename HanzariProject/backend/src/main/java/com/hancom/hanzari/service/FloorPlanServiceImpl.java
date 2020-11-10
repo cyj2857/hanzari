@@ -37,4 +37,13 @@ public class FloorPlanServiceImpl implements FloorPlanService {
 			throw new ResourceNotFoundException("FloorPlanID", "floorPlanId", floorPlanId);
 	}
 	
+	@Override
+	public FloorPlan findByFloorIdAndLatest(String floorId, boolean latest) {
+		FloorPlan floorPlan = floorPlanRepository.findByFloorIdAndLatest(floorId, latest);
+		if(floorPlan != null)
+			return floorPlan;
+		else
+			throw new ResourceNotFoundException("FloorID", "floorId", floorId);
+	}
+	
 }

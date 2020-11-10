@@ -10,4 +10,6 @@ public interface FloorPlanRepository  extends JpaRepository<FloorPlan, String> {
 
 	//FloorPlan findByBuildingIdAndFloorId(String buildingId, String floorId);
 	FloorPlan findByFloorPlanId(String floorPlanId);
+	
+	FloorPlan findByFloorIdAndLatest(String floorId, boolean latest);
 }
