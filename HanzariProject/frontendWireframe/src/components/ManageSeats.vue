@@ -3,7 +3,7 @@
     <v-card
       flat
       color="transparent"
-      v-if="!mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus"
+      v-if="!mappingEmployeeComponentStatus"
     >
       <v-row>
         <v-col cols="12" sm="9">
@@ -69,25 +69,22 @@
     <MappingEmployee
       :copyEmployeeListTwo="employee"
       v-if="
-        mappingEmployeeComponentStatus &&
-        !manageSeatInfocomponentStatus &&
+        mappingEmployeeComponentStatus && 
         employee
       "
     />
-    <ManageSeatInfo v-if="manageSeatInfocomponentStatus" />
+    
   </div>
 </template>
 
 <script>
 import MappingEmployee from "@/components/MappingEmployee.vue";
-import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
   props: ["copyEmployeeList"],
   components: {
     MappingEmployee,
-    ManageSeatInfo,
   },
   data() {
     return {
@@ -97,7 +94,6 @@ export default {
       max: 50,
       slider: 25,
       mappingEmployeeComponentStatus: false,
-      manageSeatInfocomponentStatus: false,
 
       allImageMap: null,
       currentSelectedFloorId: "One",
@@ -111,12 +107,7 @@ export default {
         this.mappingEmployeeComponentStatus = mappingEmployeeComponentStatus;
       }
     );
-    eventBus.$on(
-      "manageSeatInfocomponentStatus",
-      (manageSeatInfocomponentStatus) => {
-        this.manageSeatInfocomponentStatus = manageSeatInfocomponentStatus;
-      }
-    );
+
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
     }

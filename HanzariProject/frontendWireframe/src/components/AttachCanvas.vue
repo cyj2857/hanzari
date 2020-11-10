@@ -14,8 +14,8 @@
       ref="canvas"
       class="canvas"
       id="canvas"
-      width="1850px"
-      height="1100px"
+      width="1150px"
+      height="800px"
       style="text-align: center"
     ></canvas>
     <v-menu
@@ -50,8 +50,12 @@
 
 <script>
 import { eventBus } from "../main.js";
+import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 export default {
   name: "AttachCanvas",
+  components: {
+    ManageSeatInfo,
+  },
   data() {
     return {
       floorCanvas: null,
@@ -535,7 +539,10 @@ export default {
 
       group.on("mousedblclick", (e) => {
         let group = e.target;
-        eventBus.$emit("manageSeatInfocomponentStatus", true);
+
+        //manageSeatInfo
+        eventBus.$emit("dblClickedGroup", group);
+        //eventBus.$emit("manageSeatInfocomponentStatus", false); //manageSeats
       });
 
       this.floorCanvas.on("object:scaling", (e) => {
@@ -1056,7 +1063,7 @@ export default {
         '<img src="' + url + '" onload=window.print();window.close();>';
       windowContent += "</body>";
       windowContent += "</html>";
-      var printWin = window.open("", "", "width=800,height=900");
+      var printWin = window.open("", "", "width=1850,height=1100");
       printWin.document.open();
       printWin.document.write(windowContent);
     },
@@ -1069,8 +1076,8 @@ export default {
   margin-left: 45px;
   border: 1px solid #000;
   background: aliceblue;
-  height: 800px;
-  width: 900px;
+  width: 75%;
+  height: 100%;
 }
 ul {
   padding: 0px;

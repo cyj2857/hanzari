@@ -1,7 +1,12 @@
 <template>
   <div>
-    <v-card flat color="transparent" v-if="!seatFloorMovementStatus">
-      <v-btn style="float: right" @click="changeBackPage">X</v-btn>
+    <v-toolbar color="black" dark>
+    </v-toolbar>
+    <v-card
+      flat
+      
+      v-if="!seatFloorMovementStatus"
+    >
       <v-card-title>SeatName</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"
@@ -33,7 +38,8 @@
         label="employeeDepartment"
         solo
         readonly
-      ></v-text-field
+      >
+      </v-text-field
       ><v-card-title>Floor</v-card-title>
       <v-row>
         <v-col cols="12" sm="9"
@@ -74,11 +80,18 @@ export default {
     eventBus.$on("seatFloorMovementStatus", (seatFloorMovementStatus) => {
       this.seatFloorMovementStatus = seatFloorMovementStatus;
     });
+    eventBus.$on("dblClickedGroup", (dblClickedGroup) => {
+      console.log(dblClickedGroup);
+      let groupToObject = dblClickedGroup.toObject([
+        "employee_id",
+        "employee_name",
+        "employee_department",
+      ]);
+      this.employeeName = groupToObject.employee_name;
+      this.employeeDepartment = groupToObject.employee_department;
+    });
   },
   methods: {
-    changeBackPage() {
-      eventBus.$emit("manageSeatInfocomponentStatus", false);
-    },
     inputSeatName() {
       if (this.seatName) {
         eventBus.$emit("inputSeatName", this.seatName);
@@ -92,6 +105,8 @@ export default {
     },
     changeToVacant() {
       eventBus.$emit("changeToVacant", true);
+      this.employeeName = null;
+      this.employeeDepartment = null;
     },
   },
 };
