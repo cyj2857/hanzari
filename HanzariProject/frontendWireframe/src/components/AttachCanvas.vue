@@ -50,7 +50,7 @@ export default {
       clipboard: null,
 
       currentSelectedFloorName: null,
-      currentSelectedFloorId: null,
+      currentSelectedFloorId: "One",
 
       currentFloorImageFromDb: this.currentFloorImage,
       otherFloorImageFromDb: this.otherFloorsImageList,
@@ -68,13 +68,6 @@ export default {
 
       allFloorList: this.copyFloors, // 가시적 층 리스트
       managerFloorList: this.copyFloors, // DB 관리 층 리스트
-
-      employeeDialogStatus: false, // 사원 정보 다이얼로그
-      changeSeatDialogStatus: false, // 자리 변경 다이얼로그
-      inputSeatNameDialogStatus: false, // seatName 입력 다이얼로그 => 다이얼로그 이후에 모두 UI 변경 예정
-
-      currentSelectedFloorName: null,
-      currentSelectedFloorId: "One",
 
       contextMenuStatus: false,
       contextMenuXLocation: 100,
@@ -106,11 +99,14 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setMappingSeat(item);
     });
-
     eventBus.$on("changeToVacant", (status) => {
       if (status) {
         this.changeToVacant();
       }
+    });
+    eventBus.$on("inputSeatName", (seatName) => {
+      console.log(seatName)
+      this.inputSeatName(seatName);
     });
 
     eventBus.$on("allImageMap", (allImageMap) => {
@@ -486,9 +482,9 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
-      //let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-      //  this.currentSelectedFloorId
-      //);
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
 
       let rectangle = new fabric.Rect({
         width: this.seatLength,
@@ -542,7 +538,7 @@ export default {
 
       this.floorCanvas.add(group);
       eachFloorSeatList.push(group);
-      //managerEachFloorSeatList.push(group);
+      managerEachFloorSeatList.push(group);
       this.floorCanvas.renderAll();
 
       console.log("전체층의 가시석 자리 맵 size = " + this.allSeatMap.size);
@@ -625,6 +621,28 @@ export default {
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+    },
+    inputSeatName(seatName) {
+      if (!this.floorCanvas.getActiveObject()) {
+        return;
+      }
+      let activeObject = this.floorCanvas.getActiveObject();
+      activeObject.set("modify", true);
+      activeObject.seatName = seatName;
+
+      let seatNameObject = new fabric.IText(seatName, {
+        left: activeObject.item(0).left,
+        top: activeObject.item(0).top - 15,
+        fontSize: 13,
+        fill: "black",
+      });
+      if (activeObject.item(2)) {
+        // seatNmae 변경시
+        activeObject.remove(activeObject.item(2));
+      }
+
+      activeObject.add(seatNameObject);
+      this.floorCanvas.renderAll();
     },
     deleteBtn() {
       //좌석 지우면 list에 있는거 제거

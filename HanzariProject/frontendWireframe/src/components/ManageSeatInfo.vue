@@ -11,7 +11,9 @@
             solo
           ></v-text-field
         ></v-col>
-        <v-col cols="12" sm="3"> <v-btn>edit</v-btn></v-col>
+        <v-col cols="12" sm="3">
+          <v-btn @click="inputSeatName">Enter</v-btn></v-col
+        >
       </v-row>
       <v-card-title>Name</v-card-title>
       <v-row
@@ -77,6 +79,11 @@ export default {
     changeBackPage() {
       eventBus.$emit("manageSeatInfocomponentStatus", false);
     },
+    inputSeatName() {
+      if (this.seatName) {
+        eventBus.$emit("inputSeatName", this.seatName);
+      }
+    },
     mappingOtherEmployee() {
       this.makingOtherEmployeeStatus = true;
     },
@@ -84,7 +91,6 @@ export default {
       this.seatFloorMovementStatus = true;
     },
     changeToVacant() {
-      console.log("clickChangeToVacant");
       eventBus.$emit("changeToVacant", true);
     },
   },
