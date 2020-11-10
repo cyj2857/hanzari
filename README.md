@@ -10,4 +10,3 @@
 * 마효리 [hyori100](https://github.com/hyori100)
 * 김동민 [Dongmin Kim](https://github.com/DongminKim94)
 * 최유진 [yujin0519](https://github.com/cyj2857)
-
