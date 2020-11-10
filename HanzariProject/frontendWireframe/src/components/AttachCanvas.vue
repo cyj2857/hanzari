@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-toolbar color="black" dark>
+      <v-toolbar-title>{{currentSelectedFloorName}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn @click="deleteAllBtn" text> Delete All </v-btn>
@@ -960,10 +961,14 @@ export default {
         }
 
         //이미지 저장
+        console.log("asfdsfsdfsdfsdfsdfsdf");
+        console.log(this.managerFloorList.length);
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let imgData = new FormData();
           let floorid = this.managerFloorList[i].floor_id;
           let file = this.allImageMap.get(floorid);
+          console.log("@@@@@@@@@@@")
+          console.log(file)
           if (file != null) {
             imgData.append("imageFile", file);
             this.$emit("saveImages", "images", imgData, floorid);

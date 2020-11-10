@@ -45,8 +45,8 @@ export default {
       firstLoadWatch: null,
       floorName: null,
 
-      allFloorList: this.copyfloorList, // ¿©±â¿¡¼­ sort ¾È¸ÔÀ½
-      managerFloorList: [], // DB¿¡ save ÇÒ ¸®½ºÆ®
+      allFloorList: this.copyfloorList, // ï¿½ï¿½ï¿½â¿¡ï¿½ï¿½ sort ï¿½È¸ï¿½ï¿½ï¿½
+      managerFloorList: [], // DBï¿½ï¿½ save ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
 
       currentSelectedFloor: this.copyfloorList[0],
     };
@@ -68,11 +68,12 @@ export default {
     clickFloor(floor) {
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
+      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats
       console.log(floor);
     },
     removeFloor() {
       if (this.length > 0) {
-        //items¿¡¼­ id°¡ ÇöÀç floorÀÎ ¾Ö index °¡Á®¿À±â
+        //itemsï¿½ï¿½ï¿½ï¿½ idï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ floorï¿½ï¿½ ï¿½ï¿½ index ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         let currentFloorId = this.currentSelectedFloor.floor_id;
         const idx = this.allFloorList.findIndex(function (item) {
           return item.floor_id == currentFloorId;
@@ -80,10 +81,10 @@ export default {
         if (idx > -1) {
           eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
 
-          // »èÁ¦ °¡´É
+          // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
-          //items¿¡¼­ ±× index »èÁ¦
+          //itemsï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ index ï¿½ï¿½ï¿½ï¿½
         }
         this.length--;
 
