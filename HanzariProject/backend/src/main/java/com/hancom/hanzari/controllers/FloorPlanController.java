@@ -47,6 +47,11 @@ public class FloorPlanController {
 	//테스트용 버킷
 	private String spareBucketName = "hanzari-spare";
 	
+	private FloorPlan latestFloorPlan;
+	private FloorPlan putFloorPlan;
+	private String floorPlanFileName;
+	
+	
 	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
 	private Date currentTime;
 	private LocalDate localDate;
@@ -65,14 +70,23 @@ public class FloorPlanController {
 		month = localDate.getMonthValue(); //getMonthValue 메소드를 사용하면 0을 포함하지 않고 1 ~ 12를 리턴한다.
 		day = localDate.getDayOfMonth();
 				
-		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
-		String floorPlanFileName = floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day);
-		//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
-		FloorPlan putfloorPlan = FloorPlan.builder().floorId(floorId).latest(true).floorPlanFileName(floorPlanFileName).build();
+		try {
+			//해당 층의 가장 최신으로 연결되어있는 floorPlan 레코드의 latest 컬럼을 false로 변경해준다.
+			latestFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
+			latestFloorPlan.setLatest(false);
+			floorPlanService.save(latestFloorPlan);
+			
+			//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
+			floorPlanFileName = floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day);
+			//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
+			putFloorPlan = FloorPlan.builder().floorId(floorId).latest(true).floorPlanFileName(floorPlanFileName).build();
+			floorPlanService.save(putFloorPlan);
+		} catch(Exception e) {
+			System.out.println("Error occurred: " + e);
+		}
+		
 		InputStream imagePutInputStream = file.getInputStream();
-		
-		floorPlanService.save(putfloorPlan);
-		
+
 		try {
 			minioClient.putObject(
 				    PutObjectArgs.builder()
@@ -81,7 +95,7 @@ public class FloorPlanController {
 				    .object(floorPlanFileName)
 					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
 				    //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
-				    .stream(imagePutInputStream, file.getSize() , -1) 
+				    .stream(imagePutInputStream, file.getSize() , -1)
 				    /*TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보낼 경우 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 명시적 contentType과 실제 데이터의 contentType이 달라 문제가 생길 수 있다.
 				    따라서 해당 문제를 해결하기 위해서는 엄격히 업로드되는 contentType을 제한하거나(해당 인자를 "image/png"로 제한하는 등) 실제 데이터를 열어보아 어떤 contentType인지 알아내는 방법들을 사용해야한다.*/
 				    .contentType(file.getContentType())
