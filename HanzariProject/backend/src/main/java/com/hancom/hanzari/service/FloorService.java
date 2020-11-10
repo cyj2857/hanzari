@@ -14,6 +14,8 @@ public interface FloorService {
 
 	public Floor findByFloorNameAndBuilding(String floorName, Building building) throws Exception;
 
+	public Floor findFirstByOrderByFloorOrderDesc();
+
 	public List<Floor> findByBuilding(Building building) throws Exception;
 
 	public void deleteById(String floorId);
