@@ -2,22 +2,15 @@
   <div class="hanzari" id="hanzari">
     <v-toolbar color="black" dark>
       <v-toolbar-title>Hanzari</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn text> Delete All </v-btn>
-        <v-divider vertical></v-divider>
-        <v-btn text> Save </v-btn>
-        <v-divider vertical></v-divider>
-        <v-btn text> Print </v-btn>
-      </v-toolbar-items>
     </v-toolbar>
-
     <div class="d1">
-      <Tabs v-if="this.employees && this.floors" 
-       :copyEmployee="this.employees" 
-       :copyFloors="this.floors" />
+      <Tabs
+        v-if="this.employees && this.floors"
+        :copyEmployee="this.employees"
+        :copyFloors="this.floors"
+      />
     </div>
-    <div class="d2" id="d2">
+    <div class="d2">
       <AttachCanvas />
     </div>
   </div>
@@ -132,7 +125,7 @@ export default {
     },
 
     //���� �� �̹��� ��������
-   /* async getCurrentFloorImage() {
+    /* async getCurrentFloorImage() {
       let currentFloorImage = new Array();
       try {
         let response = await axios.get(
