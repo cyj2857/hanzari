@@ -61,7 +61,7 @@ public class Floor {
 	@JsonManagedReference
 	private List<Seat> seats;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval =false)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = false)
 	@JoinColumn(name="floor_plan_id")
 	private FloorPlan floorPlan;
 	

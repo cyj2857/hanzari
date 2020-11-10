@@ -143,7 +143,6 @@ export default {
       if (this.inputChangeFloorName == null) return;
       eventBus.$emit("ChangeFloorName", this.inputChangeFloorName);
     },
-
     setFloor(floor) {
       eventBus.$emit("changeFloor", floor);
 

@@ -5,13 +5,33 @@
     </v-toolbar>
     <div class="d1">
       <Tabs
-        v-if="this.employees && this.floors"
-        :copyEmployee="this.employees"
-        :copyFloors="this.floors"
+        v-if="employees && floors"
+        v-bind:copyEmployee="employees"
+        v-bind:copyFloors="floors"
       />
     </div>
     <div class="d2">
-      <AttachCanvas />
+      <AttachCanvas
+        v-if="
+          employees &&
+          floors &&
+          currentFloorImage &&
+          otherFloorsImage &&
+          currentFloorSeats &&
+          otherFloorsSeat
+        "
+        v-bind:copyEmployee="employees"
+        v-bind:copyFloors="floors"
+        v-bind:currentFloorImage="currentFloorImage"
+        v-bind:otherFloorsImageList="otherFloorsImage"
+        v-bind:currentFloorSeatsList="currentFloorSeats"
+        v-bind:otherFloorsSeatsList="otherFloorsSeat"
+        v-on:saveImages="saveImages"
+        v-on:saveFloors="saveFloors"
+        v-on:saveSeats="saveSeats"
+        v-on:deleteFloorWithKey="deleteFloorWtihKey"
+        v-on:deleteSeatWithKey="deleteSeatWithKey"
+      />
     </div>
 
     <div class="d3" id="d3">
@@ -28,9 +48,11 @@ import Tabs from "@/components/Tabs.vue";
 import AttachCanvas from "@/components/AttachCanvas.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
 import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
+
 const portNum = 8081;
-const host = "172.30.1.53"; //yj
+const host = "172.30.1.53";
 const building_id = "HANCOM01";
+
 export default {
   name: "Hanzari",
   components: {
@@ -54,18 +76,18 @@ export default {
     };
   },
   async created() {
-    // ��� load
+    // 사원 load
     this.employees = await this.getEmployees();
-    // �� load
+    // 층 load
     this.floors = await this.getFloors();
-    // ���� �� �̹��� load
-    //this.currentFloorImage = await this.getCurrentFloorImage();
-    // ���� �� �ڸ� load
-    //this.currentFloorSeats = await this.getCurrentFloorSeats();
-    // ������ �� �̹��� load
-    //this.otherFloorsImage = await this.loadOtherFloorsImage();
-    // ������ �� �ڸ� load
-    //this.otherFloorsSeat = await this.loadOtherFloorSeats();
+    // 현재 층 이미지 load
+    this.currentFloorImage = await this.getCurrentFloorImage();
+    // 현재 층 자리 load
+    this.currentFloorSeats = await this.getCurrentFloorSeats();
+    // 나머지 층 이미지 load
+    this.otherFloorsImage = await this.loadOtherFloorsImage();
+    // 나머지 층 자리 load
+    this.otherFloorsSeat = await this.loadOtherFloorSeats();
   },
   methods: {
     async getEmployees() {
@@ -131,8 +153,8 @@ export default {
       return allFloorList;
     },
 
-    //���� �� �̹��� ��������
-    /* async getCurrentFloorImage() {
+    //현재 층 이미지 가져오기
+    async getCurrentFloorImage() {
       let currentFloorImage = new Array();
       try {
         let response = await axios.get(
@@ -156,7 +178,7 @@ export default {
       }
       return currentFloorImage;
     },
-    //������ �� �̹��� ��������
+    //나머지 층 이미지 가져오기
     async loadOtherFloorsImage() {
       let otherFloorImageList = new Array();
       let responseList = null;
@@ -185,7 +207,7 @@ export default {
       this.otherFloorsImage = otherFloorImageList;
       return this.otherFloorsImage;
     },
-    //�켱 ���� ���� �ڸ��� ������
+    //우선 현재 층의 자리만 가져옴
     async getCurrentFloorSeats() {
       let currentFloorSeatList = new Array();
       try {
@@ -226,12 +248,12 @@ export default {
       }
       return currentFloorSeatList;
     },
-    //���� ���� ������ �ٸ� ���� �ڸ����� �����ͼ� ��׶��� ����Ʈ�� ������ �ֱ�
+    //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
     async loadOtherFloorSeats() {
       let otherFloorSeatMap = new Map();
       try {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
-          // ����ŭ ����
+          // 층만큼 돈다
           let response = await axios.get(
             "http://" +
               host +
@@ -245,12 +267,12 @@ export default {
           );
 
           let responseList = new Array();
-          // �� ���� �ڸ��� ���ٸ�
+          // 그 층에 자리가 없다면
           if (response.data.length == 0) {
             otherFloorSeatMap.set(this.floorIdList[i], new Array());
           } else {
             for (let j = 0; j < response.data.length; j++) {
-              // �ڸ� �� ��ŭ ����
+              // 자리 수 만큼 돈다
               let newSeat = {};
               newSeat.seat_id = response.data[j].seat_id;
               newSeat.seat_name = response.data[j].seat_name;
@@ -309,7 +331,7 @@ export default {
         });
     },
     saveImages(tableName, data, floor_id) {
-      //���Ŀ� api ���� ����� ���� �����Ͽ� table, DTO�� �Ѱܹ޾� �����ϴ� ���� ���� �Լ��� ��������.
+      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
@@ -424,7 +446,7 @@ export default {
           // handle error
           console.log(error);
         });
-    },*/
+    },
   },
 };
 </script>
