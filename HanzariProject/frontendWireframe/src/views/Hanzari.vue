@@ -33,6 +33,11 @@
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       />
     </div>
+
+    <div class="d3" id="d3">
+      <ManageSeatInfo/>
+    </div>
+
   </div>
 </template>
 
@@ -41,6 +46,8 @@ import axios from "axios";
 
 import Tabs from "@/components/Tabs.vue";
 import AttachCanvas from "@/components/AttachCanvas.vue";
+import MappingEmployee from "@/components/MappingEmployee.vue";
+import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 
 const portNum = 8081;
 const host = "172.30.1.53";
@@ -50,7 +57,7 @@ export default {
   name: "Hanzari",
   components: {
     Tabs,
-    AttachCanvas,
+    AttachCanvas,MappingEmployee,ManageSeatInfo
   },
   data() {
     return {
@@ -452,8 +459,13 @@ export default {
 }
 .d2 {
   float: left;
-  width: 75%;
+  width: 50%;
   height: 100%;
   text-align: center;
+}
+.d3 {
+  float: right;
+  width: 25%;
+  height: 100%;
 }
 </style>
