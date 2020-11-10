@@ -9,17 +9,11 @@
           class="d-flex child-flex"
           cols="4"
         >
-          <v-btn large @click="clickFloor(floor)">{{
-            floor.floor_name
-          }}</v-btn>
+          <v-btn large @click="clickFloor(floor)">{{ floor.floor_name }}</v-btn>
         </v-col>
       </v-row>
-      <v-btn small
-        ><v-icon dark>remove_circle</v-icon></v-btn
-      >
-      <v-btn small
-        ><v-icon dark>add_circle</v-icon></v-btn
-      >
+      <v-btn small><v-icon dark>remove_circle</v-icon></v-btn>
+      <v-btn small><v-icon dark>add_circle</v-icon></v-btn>
       <v-divider class="mx-4"></v-divider>
       <v-card-title>FloorName</v-card-title>
       <v-text-field
@@ -55,7 +49,20 @@ export default {
   },
   methods: {
     clickFloor(floor) {
-      eventBus.$emit("currentSelectedFloor", floor);
+      eventBus.$emit("currentSelectedFloor", floor); //attachCanvas
+      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
+    },
+    setFloor(floor) {
+      eventBus.$emit("changeFloor", floor);
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
     },
   },
 };

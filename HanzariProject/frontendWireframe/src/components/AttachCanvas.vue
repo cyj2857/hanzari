@@ -111,7 +111,7 @@ export default {
       if (floor) {// null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
-        //this.changeFloor();
+        this.changeFloor();
       } else {
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
@@ -971,10 +971,14 @@ export default {
         }
 
         //이미지 저장
+        console.log("asfdsfsdfsdfsdfsdfsdf");
+        console.log(this.managerFloorList.length);
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let imgData = new FormData();
           let floorid = this.managerFloorList[i].floor_id;
           let file = this.allImageMap.get(floorid);
+          console.log("@@@@@@@@@@@")
+          console.log(file)
           if (file != null) {
             imgData.append("imageFile", file);
             this.$emit("saveImages", "images", imgData, floorid);

@@ -101,7 +101,7 @@ export default {
     };
   },
   created() {
-     eventBus.$on("changeFloor", (floor) => {
+     eventBus.$on("currentSelectedFloorToManageSeats", (floor) => {
       if (floor) {// null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
@@ -139,6 +139,7 @@ export default {
     },
     saveImageFile(file) {
       this.currentFloorImage = file.name;
+      console.log(this.currentSelectedFloorId);
       this.allImageMap.set(this.currentSelectedFloorId, file);
       eventBus.$emit("allImageMap",this.allImageMap);
     },
