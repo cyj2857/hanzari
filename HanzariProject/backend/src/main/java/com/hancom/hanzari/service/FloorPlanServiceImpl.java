@@ -42,7 +42,8 @@ public class FloorPlanServiceImpl implements FloorPlanService {
 		FloorPlan floorPlan = floorPlanRepository.findByFloorIdAndLatest(floorId, latest);
 		if(floorPlan != null)
 			return floorPlan;
-		
+		else
+			throw new ResourceNotFoundException("FloorID", "floorId", floorId);
 	}
 	
 }
