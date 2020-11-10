@@ -70,6 +70,21 @@ public class FloorController {
 		}
 		return new ResponseEntity<FloorDto>(floorService.findById(floorId).toDto(), HttpStatus.OK);
 	}
+	
+	@Transactional
+	@GetMapping(value = "/get-latest-floor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<FloorDto> getLatestFloor(@PathVariable("building_id") String buildingId) throws Exception {
+
+		LOGGER.info("FloorController.getLatestFloor called. (building_id : {})", buildingId);
+		
+		Building building = buildingService.findById(buildingId);
+		if (building == null) {
+			throw new ResourceNotFoundException("Building", "building_id", buildingId);
+		}
+		
+		
+		return new ResponseEntity<FloorDto>(floorService.findFirstByOrderByFloorOrderDesc().toDto(), HttpStatus.OK);
+	}
 
 	@Transactional
 	@PostMapping

@@ -57,6 +57,17 @@ public class FloorServiceImpl implements FloorService {
 	}
 
 	@Override
+	public Floor findFirstByOrderByFloorOrderDesc() {
+		Optional<Floor> floor = Optional.ofNullable(floorRepository.findFirstByOrderByFloorOrderDesc());
+		if (!floor.isPresent()) {
+			LOGGER.info("Floor is not exist");
+			return null;
+		} else {
+			return floor.get();
+		}
+	}
+
+	@Override
 	public List<Floor> findByBuilding(Building building) throws Exception {
 		List<Floor> floor = floorRepository.findByBuilding(building);
 		if (floor != null)

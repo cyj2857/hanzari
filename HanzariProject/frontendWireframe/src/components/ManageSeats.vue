@@ -100,11 +100,20 @@ export default {
       manageSeatInfocomponentStatus: false,
 
       allImageMap: null,
-      currentSelectedFloorId: "One",
+      currentSelectedFloorId: null,
       currentFloorImage: null,
     };
   },
   created() {
+     eventBus.$on("changeFloor", (floor) => {
+      if (floor) {// null 이 아닐때
+        this.currentSelectedFloorId = floor.floor_id;
+        this.currentSelectedFloorName = floor.floor_name;
+      } else {
+        this.currentSelectedFloorId = null;
+        this.currentSelectedFloorName = null;
+      }
+    });
     eventBus.$on(
       "mappingEmployeeComponentStatus",
       (mappingEmployeeComponentStatus) => {
@@ -125,7 +134,6 @@ export default {
     getMappingEmployeeComponent() {
       this.mappingEmployeeComponentStatus = true;
     },
-    changeImageFile() {},
     changeSwitchStatus() {
       eventBus.$emit("changeAddVacantSwitch", this.addVacantSwitch);
       eventBus.$emit("changeslider", this.slider);
@@ -137,14 +145,11 @@ export default {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       this.saveImageFile(files[0]);
-      //this.loadImageFile(files[0]);
     },
     saveImageFile(file) {
-      console.log(file);
       this.currentFloorImage = file.name;
       this.allImageMap.set(this.currentSelectedFloorId, file);
-      console.log(this.allImageMap.size);
-      eventBus.$emit("allImageMap", this.allImageMap);
+      eventBus.$emit("allImageMap",this.allImageMap);
     },
   },
 };
