@@ -106,6 +106,9 @@ export default {
       console.log(sliderValue);
       this.seatLength = sliderValue;
     });
+    eventBus.$on("MappingSeat", (item) => {
+      this.setMappingSeat(item);
+    });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       console.log(this.allImageMap);
@@ -113,11 +116,18 @@ export default {
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
 
+    if (this.allImageMap == null) {
+      this.allImageMap = new Map();
+    }
     if (this.allSeatMap == null) {
       this.allSeatMap = new Map();
     }
-    if (this.allImageMap == null) {
-      this.allImageMap = new Map();
+    if (this.managerAllSeatMap == null) {
+      this.managerAllSeatMap = new Map();
+    }
+
+    if (this.eachEmployeeSeatMap == null) {
+      this.eachEmployeeSeatMap = new Map();
     }
   },
   mounted() {
@@ -215,6 +225,35 @@ export default {
         this.manageKeyboard();
       }
     },
+    checkZoom() {
+      // text, fontSize 관련
+      let currentZoom = this.zoom;
+      if (5 <= currentZoom && currentZoom <= 7) {
+        //console.log("5 <= zoom && zoom <= 10");
+        //console.log(currentZoom);
+        this.floorCanvas.getObjects().forEach((obj) => {
+          if (obj.employee_name) {
+            obj.item(1).text = obj.employee_name;
+            obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+          }
+        });
+      } else if (7 < currentZoom && currentZoom <= 10) {
+        //console.log("10 < zoom && zoom <= 13");
+        //console.log(currentZoom);
+        this.floorCanvas.getObjects().forEach((obj) => {
+          if (obj.employee_name) {
+            obj.item(1).text = obj.employee_name + "\n" + obj.employee_number;
+            obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+          }
+        });
+      } else {
+        this.floorCanvas.getObjects().forEach((obj) => {
+          //console.log(currentZoom);
+          obj.item(1).text = "";
+          obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
+        });
+      }
+    },
     changeFloor() {
       this.floorCanvas
         .getObjects()
@@ -226,9 +265,9 @@ export default {
       let eachfloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
-      //let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-      //  this.currentSelectedFloorId
-      //);
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
 
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
@@ -312,6 +351,44 @@ export default {
         //console.log(this.allSeatMap.size + "allSeatMap 현재 자리 맵 사이즈입니다" );
         return this.allSeatMap.get(floor);
       }
+    },
+    getManagerEachFloorSeatList: function (floor) {
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
+        return;
+      }
+      if (!this.managerAllSeatMap.get(floor)) {
+        let newSeatsList = new Array();
+        this.managerAllSeatMap.set(floor, newSeatsList);
+        //console.log(this.managerAllSeatMap.size + "managerAllSeatMap 처음의 자리 맵 사이즈입니다");
+        return this.managerAllSeatMap.get(floor);
+      } else {
+        //console.log(this.managerAllSeatMap.size + "managerAllSeatMap 현재 자리 맵 사이즈입니다" );
+        return this.managerAllSeatMap.get(floor);
+      }
+    },
+    getEachEmployeeSeatList: function (employee_id) {
+      if (!this.eachEmployeeSeatMap.get(employee_id)) {
+        let newEmployeeSeatList = new Array();
+        this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
+        return this.eachEmployeeSeatMap.get(employee_id);
+      } else {
+        return this.eachEmployeeSeatMap.get(employee_id);
+      }
+    },
+    //사원의 자리리스트에서 삭제된 자리를 삭제하기
+    deleteEachEmployeeSeatList: function (groupToObject) {
+      let oneEmployeeSeatList = this.getEachEmployeeSeatList(
+        groupToObject.employee_id
+      );
+      for (let i = 0; i < oneEmployeeSeatList.length; i++) {
+        if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
+          oneEmployeeSeatList.splice(i, 1);
+        }
+      }
+      console.log(
+        oneEmployeeSeatList.length + "전체 삭제한 자리 리스트 길이입니다."
+      );
     },
     manageKeyboard() {
       let activeObject = null;
@@ -483,6 +560,70 @@ export default {
       //);
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+    },
+    setMappingSeat(item) {
+      // 공석 또는 사원이 매핑된 좌석에 사원 매핑
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
+
+      let activeObject = this.floorCanvas.getActiveObject(); //group 객체
+
+      //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
+      if (
+        activeObject.employee_id != null &&
+        activeObject.employee_id != item.employee_id
+      ) {
+        if (
+          confirm(
+            activeObject.employee_name +
+              "사원의 자리를 " +
+              item.name +
+              "자리로 변경하시겠습니까?"
+          )
+        ) {
+          let groupToObject = activeObject.toObject([
+            "seatId",
+            "employee_id",
+            "floor_id",
+          ]);
+          activeObject.set("modify", true);
+          this.deleteEachEmployeeSeatList(groupToObject);
+        } else {
+          return;
+        }
+      }
+      //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
+      else if (
+        activeObject.employee_id != null &&
+        activeObject.employee_id == item.employee_id
+      ) {
+        alert("이 자리는 이미 " + item.name + "의 자리입니다.");
+        return;
+      }
+
+      //해당 자리가 공석이라면 바로 매핑 가능
+      activeObject.employee_name = item.name;
+      activeObject.employee_department = item.department;
+      activeObject.employee_number = item.number;
+      activeObject.employee_id = item.employee_id;
+      activeObject
+        .item(0)
+        .set("fill", this.getColor(activeObject.employee_department));
+      //activeObject.item(1).set("text", item.name);
+      activeObject.set("modify", true);
+      this.checkZoom();
+
+      this.floorCanvas.renderAll();
+
+      eachEmployeeSeatList.push(activeObject);
+
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
 
     showToolTip(
