@@ -515,12 +515,9 @@ export default {
         delete: false, //삭제
       });
 
-      group.on("mousedown", (e) => {
+      group.on("mousedblclick", (e) => {
         let group = e.target;
-        if (e.button === 1) {
-          eventBus.$emit("manageSeatInfocomponentStatus", true);
-          console.log(this.switchValue);
-        }
+        eventBus.$emit("manageSeatInfocomponentStatus", true);
       });
 
       this.floorCanvas.on("object:scaling", (e) => {
