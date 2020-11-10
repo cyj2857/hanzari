@@ -32,7 +32,7 @@ import ManageSeats from "@/components/ManageSeats.vue";
 import ManageFloors from "@/components/ManageFloors.vue";
 import { eventBus } from '../main';
 export default {
-  props: ["copyEmployee"],
+  props: ["copyEmployee","copyFloors"],
   components: {
     ManageSeats,
     ManageFloors,
