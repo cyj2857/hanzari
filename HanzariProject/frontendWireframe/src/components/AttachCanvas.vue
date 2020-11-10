@@ -84,8 +84,8 @@ export default {
       employees: this.copyEmployee,
       eachEmployeeSeatMap: null, //each Employee's seats map
 
-      allFloorList: this.copyFloors, // 가시적 층 리스트
-      managerFloorList: this.copyFloors, // DB 관리 층 리스트
+      //allFloorList: this.copyFloors, // 가시적 층 리스트
+      //managerFloorList: this.copyFloors, // DB 관리 층 리스트
 
       contextMenuStatus: false,
       contextMenuXLocation: 100,
@@ -135,7 +135,9 @@ export default {
     eventBus.$on("inputSeatName", (seatName) => {
       this.inputSeatName(seatName);
     });
-
+    eventBus.$on("allFloorList", (allFloors) => {
+      console.log(allFloors);
+    });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       console.log(this.allImageMap)
