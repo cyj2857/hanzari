@@ -41,7 +41,7 @@
 
     <v-btn @click="test">Test</v-btn>
 
-    <ManageAddFloors
+    <ManageAddFloors 
       :dialogStatus="this.addFloorDialogStatus"
       @close="closeAddFloorDialog"
     ></ManageAddFloors>
@@ -51,9 +51,6 @@
 <script>
 const BtnComponent = {
   template: "<button>" + "button" + "</button>",
-  data: {
-    allFloorList: this.copyFloors,
-  },
   methods: {},
 };
 import { eventBus } from "../main.js";
@@ -86,7 +83,7 @@ export default {
   },
   created() {
     this.managerFloorList = this.allFloorList.slice();
-    this.length = this.copyFloors.length;
+    this.length = this.copyfloorList.length;
 
     if (this.length == 0) {
       /* 층 없는 상태에서 자리 생성 막기위해 넘겨줌
