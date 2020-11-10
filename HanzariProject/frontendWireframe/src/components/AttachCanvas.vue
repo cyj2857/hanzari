@@ -80,11 +80,8 @@ export default {
       contextMenuXLocation: 100,
       contextMenuYLocation: 100,
       contextMenuItems: [
-        { title: "자리 비우기", index: 0 },
-        { title: "삭제하기", index: 1 },
-        { title: "층간 이동하기", index: 2 },
-        { title: "복제하기", index: 3 },
-        { title: "seatName 입력", index: 4 },
+        { title: "삭제하기", index: 0 },
+        { title: "복제하기", index: 1 },
       ],
 
       toolTipStatus: false,
@@ -109,6 +106,13 @@ export default {
     eventBus.$on("MappingSeat", (item) => {
       this.setMappingSeat(item);
     });
+
+    eventBus.$on("changeToVacant", (status) => {
+      if (status) {
+        this.changeToVacant();
+      }
+    });
+
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       console.log(this.allImageMap);
@@ -674,7 +678,7 @@ export default {
         return;
       }
     },
-    clickChangeToVacant() {
+    changeToVacant() {
       let activeObject = null;
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
@@ -794,19 +798,10 @@ export default {
       //console.log(index);
       switch (index) {
         case 0:
-          this.clickChangeToVacant();
-          break;
-        case 1:
           this.deleteBtn();
           break;
-        case 2:
-          //this.getChangeSeatDialog();
-          break;
-        case 3:
+        case 1:
           this.cloneSeat();
-          break;
-        case 4:
-          //this.getInputSeatNameDialog();
           break;
       }
     },
