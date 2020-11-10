@@ -8,7 +8,7 @@
         <v-divider vertical></v-divider>
         <v-btn text> Save </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn text> Export </v-btn>
+        <v-btn text> Print </v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
@@ -54,17 +54,17 @@ export default {
     };
   },
   async created() {
-    // »ç¿ø load
+    // ï¿½ï¿½ï¿½ load
     this.employees = await this.getEmployees();
-    // Ãþ load
+    // ï¿½ï¿½ load
     this.floors = await this.getFloors();
-    // ÇöÀç Ãþ ÀÌ¹ÌÁö load
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ load
     //this.currentFloorImage = await this.getCurrentFloorImage();
-    // ÇöÀç Ãþ ÀÚ¸® load
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¸ï¿½ load
     //this.currentFloorSeats = await this.getCurrentFloorSeats();
-    // ³ª¸ÓÁö Ãþ ÀÌ¹ÌÁö load
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ load
     //this.otherFloorsImage = await this.loadOtherFloorsImage();
-    // ³ª¸ÓÁö Ãþ ÀÚ¸® load
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¸ï¿½ load
     //this.otherFloorsSeat = await this.loadOtherFloorSeats();
   },
   methods: {
@@ -131,7 +131,7 @@ export default {
       return allFloorList;
     },
 
-    //ÇöÀç Ãþ ÀÌ¹ÌÁö °¡Á®¿À±â
+    //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    /* async getCurrentFloorImage() {
       let currentFloorImage = new Array();
       try {
@@ -156,7 +156,7 @@ export default {
       }
       return currentFloorImage;
     },
-    //³ª¸ÓÁö Ãþ ÀÌ¹ÌÁö °¡Á®¿À±â
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     async loadOtherFloorsImage() {
       let otherFloorImageList = new Array();
       let responseList = null;
@@ -185,7 +185,7 @@ export default {
       this.otherFloorsImage = otherFloorImageList;
       return this.otherFloorsImage;
     },
-    //¿ì¼± ÇöÀç ÃþÀÇ ÀÚ¸®¸¸ °¡Á®¿È
+    //ï¿½ì¼± ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     async getCurrentFloorSeats() {
       let currentFloorSeatList = new Array();
       try {
@@ -226,12 +226,12 @@ export default {
       }
       return currentFloorSeatList;
     },
-    //ÇöÀç ÃþÀ» Á¦¿ÜÇÑ ´Ù¸¥ ÃþÀÇ ÀÚ¸®µéÀ» °¡Á®¿Í¼­ ¹é±×¶ó¿îµå ¸®½ºÆ®¿¡ °¡Áö°í ÀÖ±â
+    //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½ï¿½×¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½
     async loadOtherFloorSeats() {
       let otherFloorSeatMap = new Map();
       try {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
-          // Ãþ¸¸Å­ µ·´Ù
+          // ï¿½ï¿½ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½
           let response = await axios.get(
             "http://" +
               host +
@@ -245,12 +245,12 @@ export default {
           );
 
           let responseList = new Array();
-          // ±× Ãþ¿¡ ÀÚ¸®°¡ ¾ø´Ù¸é
+          // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
           if (response.data.length == 0) {
             otherFloorSeatMap.set(this.floorIdList[i], new Array());
           } else {
             for (let j = 0; j < response.data.length; j++) {
-              // ÀÚ¸® ¼ö ¸¸Å­ µ·´Ù
+              // ï¿½Ú¸ï¿½ ï¿½ï¿½ ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½
               let newSeat = {};
               newSeat.seat_id = response.data[j].seat_id;
               newSeat.seat_name = response.data[j].seat_name;
@@ -309,7 +309,7 @@ export default {
         });
     },
     saveImages(tableName, data, floor_id) {
-      //ÃßÈÄ¿¡ api ±¸Á¶ º¯°æµÉ °ÍÀ» »ý°¢ÇÏ¿© table, DTO¸¦ ³Ñ°Ü¹Þ¾Æ ÀúÀåÇÏ´Â °ÍÀ» °°Àº ÇÔ¼ö·Î ¹­Áö¾ÊÀ½.
+      //ï¿½ï¿½ï¿½Ä¿ï¿½ api ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ table, DTOï¿½ï¿½ ï¿½Ñ°Ü¹Þ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");

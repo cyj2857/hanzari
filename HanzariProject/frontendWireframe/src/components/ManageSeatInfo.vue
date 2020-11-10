@@ -2,6 +2,19 @@
   <div>
     <v-card flat color="transparent" v-if="!seatFloorMovementStatus">
       <v-btn style="float: right" @click="changeBackPage">X</v-btn>
+      <v-card-title>SeatName</v-card-title>
+      <v-row
+        ><v-col cols="12" sm="9"
+          ><v-text-field
+            v-model="seatName"
+            label="seatName을 입력하세요."
+            solo
+          ></v-text-field
+        ></v-col>
+        <v-col cols="12" sm="3">
+          <v-btn @click="mappingOtherEmployee">edit</v-btn></v-col
+        >
+      </v-row>
       <v-card-title>Name</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"
@@ -51,6 +64,7 @@ export default {
   components: { SeatFloorMovement },
   data() {
     return {
+      seatName: null,
       employeeName: null,
       employeeDepartment: null,
       employeeFloor: null,
