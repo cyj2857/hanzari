@@ -1,5 +1,15 @@
 <template>
   <div>
+    <v-toolbar color="black" dark>
+      <v-spacer></v-spacer>
+      <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn @click="deleteAllBtn" text> Delete All </v-btn>
+        <v-divider vertical></v-divider>
+        <v-btn @click="clickSaveBtn" text> Save </v-btn>
+        <v-divider vertical></v-divider>
+        <v-btn @click="clickPrintBtn" text> Print </v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
     <canvas
       ref="canvas"
       class="canvas"
@@ -105,7 +115,7 @@ export default {
       }
     });
     eventBus.$on("inputSeatName", (seatName) => {
-      console.log(seatName)
+      console.log(seatName);
       this.inputSeatName(seatName);
     });
 
@@ -376,6 +386,14 @@ export default {
         return this.eachEmployeeSeatMap.get(employee_id);
       }
     },
+    // 해당 층의 도형 리스트의 Delete field 전체 true 만들기
+    deleteManagerEachFloorSeatList: function (floor) {
+      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(floor);
+      console.log(managerEachFloorSeatList);
+      for (let i = 0; i < managerEachFloorSeatList.length; i++) {
+        managerEachFloorSeatList[i].set("delete", true);
+      }
+    },
     //사원의 자리리스트에서 삭제된 자리를 삭제하기
     deleteEachEmployeeSeatList: function (groupToObject) {
       let oneEmployeeSeatList = this.getEachEmployeeSeatList(
@@ -644,6 +662,30 @@ export default {
       activeObject.add(seatNameObject);
       this.floorCanvas.renderAll();
     },
+    deleteAllBtn() {
+      // 전체 삭제
+      if (confirm("Are you sure?")) {
+        this.floorCanvas
+          .getObjects()
+          .slice()
+          .forEach((obj) => {
+            let groupToObject = obj.toObject(["seatId", "employee_id"]);
+            this.deleteEachEmployeeSeatList(groupToObject);
+            this.floorCanvas.remove(obj);
+          });
+
+        this.getEachFloorSeatList(this.currentSelectedFloorId).length = 0;
+        this.deleteManagerEachFloorSeatList(this.currentSelectedFloorId);
+
+        eventBus.$emit(
+          "eachFloorSeatList",
+          this.getEachFloorSeatList(this.currentSelectedFloorId)
+        );
+        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      } else {
+        return;
+      }
+    },
     deleteBtn() {
       //좌석 지우면 list에 있는거 제거
       let activeObject = null;
@@ -852,6 +894,171 @@ export default {
     },
     closeToolTip() {
       this.toolTipStatus = false;
+    },
+    clickSaveBtn() {
+      if (this.managerFloorList) {
+        //층 저장
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          if (!this.managerFloorList[i].create) {
+            // 원본
+            if (this.managerFloorList[i].delete) {
+              // 001 011 delete
+              let deleteFloorKey = this.managerFloorList[i].floor_id;
+              this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
+            } else if (this.managerFloorList[i].modify) {
+              //010 그 id에 대하여 post
+              let floorData = {};
+              floorData.floor_id = this.managerFloorList[i].floor_id;
+              floorData.floor_name = this.managerFloorList[i].floor_name;
+              floorData.building_id = this.managerFloorList[i].building_id;
+              floorData.floor_order = this.managerFloorList[i].floor_order;
+
+              this.$emit("saveFloors", "floors", floorData);
+            }
+          } else {
+            // front에서 생성
+            if (this.managerFloorList[i].delete) {
+              //101 111 nothing
+              return;
+            } else {
+              //100 110 그 id에 대하여 post
+              let floorData = {};
+              floorData.floor_id = this.managerFloorList[i].floor_id;
+              floorData.floor_name = this.managerFloorList[i].floor_name;
+              floorData.building_id = this.managerFloorList[i].building_id;
+              floorData.floor_order = this.managerFloorList[i].floor_order;
+
+              this.$emit("saveFloors", "floors", floorData);
+            }
+          }
+        }
+
+        //이미지 저장
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          let imgData = new FormData();
+          let floorid = this.managerFloorList[i].floor_id;
+          let file = this.allImageMap.get(floorid);
+          if (file != null) {
+            imgData.append("imageFile", file);
+            this.$emit("saveImages", "images", imgData, floorid);
+          }
+        }
+
+        //자리 저장
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+            this.managerFloorList[i].floor_id
+          );
+
+          if (managerEachFloorSeatList.length > 0) {
+            console.log(
+              managerEachFloorSeatList.length +
+                this.managerFloorList[i].floor_id +
+                "층의 자리 개수입니다."
+            );
+
+            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+              let groupToObject = managerEachFloorSeatList[j].toObject([
+                "seatId",
+                "seatName",
+                "floor_id",
+                "left",
+                "top",
+                "employee_department",
+                "employee_id",
+                "width",
+                "height",
+                "scaleX",
+                "scaleY",
+                "create",
+                "modify",
+                "delete",
+              ]);
+
+              console.log(groupToObject);
+              //axios api 호출
+              if (!groupToObject.create) {
+                // 원본
+                if (groupToObject.delete) {
+                  // 001 011 delete
+                  let deleteSeatKey = groupToObject.seatId;
+                  let deleteSeatFloor = groupToObject.floor_id;
+                  this.$emit(
+                    "deleteSeatWithKey",
+                    "seats",
+                    deleteSeatKey,
+                    deleteSeatFloor
+                  );
+                } else if (groupToObject.modify) {
+                  //010 그 id에 대하여 post
+                  let seatData = {};
+                  seatData.seat_id = groupToObject.seatId;
+                  if (groupToObject.seatName) {
+                    seatData.seat_name = groupToObject.seatName;
+                  }
+                  seatData.floor = groupToObject.floor_id;
+                  seatData.x = groupToObject.left;
+                  seatData.y = groupToObject.top;
+                  seatData.is_group = false;
+                  seatData.group_id = null;
+                  seatData.building_id = "HANCOM01";
+                  seatData.employee_id = groupToObject.employee_id;
+                  seatData.width = groupToObject.width * groupToObject.scaleX;
+                  seatData.height = groupToObject.height * groupToObject.scaleY;
+                  seatData.degree = groupToObject.angle;
+                  seatData.shape_id = "1";
+
+                  this.$emit("saveSeats", "seats", seatData, seatData.floor);
+                }
+              } else {
+                // front에서 생성
+                if (groupToObject.delete) {
+                  //101 111 nothing
+                  return;
+                } else {
+                  //100 110 그 id에 대하여 post
+                  let seatData = {};
+                  seatData.seat_id = groupToObject.seatId;
+                  if (groupToObject.seatName) {
+                    seatData.seat_name = groupToObject.seatName;
+                  }
+                  seatData.floor = groupToObject.floor_id;
+                  seatData.x = groupToObject.left;
+                  seatData.y = groupToObject.top;
+                  seatData.is_group = false;
+                  seatData.group_id = null;
+                  seatData.building_id = "HANCOM01";
+                  seatData.employee_id = groupToObject.employee_id;
+                  seatData.width = groupToObject.width * groupToObject.scaleX;
+                  seatData.height = groupToObject.height * groupToObject.scaleY;
+                  seatData.degree = groupToObject.angle;
+                  seatData.shape_id = "1";
+
+                  console.log(seatData);
+                  this.$emit("saveSeats", "seats", seatData, seatData.floor);
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    clickPrintBtn() {
+      let url = document.getElementById("canvas").toDataURL();
+      var windowContent = "<!DOCTYPE html>";
+      windowContent += "<html>";
+      windowContent += "<head><title>Print</title>";
+      windowContent +=
+        "<style>@media print{.page-break{display:block; page-break-before:always;}}</style>";
+      windowContent += "</head>";
+      windowContent += "<body>";
+      windowContent +=
+        '<img src="' + url + '" onload=window.print();window.close();>';
+      windowContent += "</body>";
+      windowContent += "</html>";
+      var printWin = window.open("", "", "width=800,height=900");
+      printWin.document.open();
+      printWin.document.write(windowContent);
     },
   },
 };
