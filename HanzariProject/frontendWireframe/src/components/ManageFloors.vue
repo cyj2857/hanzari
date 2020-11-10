@@ -12,15 +12,22 @@
           <v-btn large @click="clickFloor(floor)">{{ floor.floor_name }}</v-btn>
         </v-col>
       </v-row>
-      <v-btn small><v-icon dark>remove_circle</v-icon></v-btn>
-      <v-btn small><v-icon dark>add_circle</v-icon></v-btn>
+      <v-btn small
+        ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
+      >
+      <v-btn small><v-icon dark @click="addFloor">add_circle</v-icon></v-btn>
       <v-divider class="mx-4"></v-divider>
       <v-card-title>FloorName</v-card-title>
-      <v-text-field
-        v-model="floorName"
-        label="Enter FloorName"
-        solo
-      ></v-text-field>
+      <v-row>
+        <v-text-field
+          v-model="currentSelectedFloor.floor_name"
+          label="Enter FloorName"
+          solo
+        ></v-text-field
+      ></v-row>
+      <v-divider class="mx-4"></v-divider>
+      <v-card-title> Vacant Seats </v-card-title>
+      <v-card-title> All Seats </v-card-title>
     </v-card>
   </div>
 </template>
@@ -34,13 +41,14 @@ export default {
   components: {},
   data() {
     return {
-      floorNum: null, //v-tabs v-model
       length: null,
       firstLoadWatch: null,
       floorName: null,
 
       allFloorList: this.copyfloorList, // ���⿡�� sort �ȸ���
       managerFloorList: [], // DB�� save �� ����Ʈ
+
+      currentSelectedFloor: this.copyfloorList[0],
     };
   },
   created() {
@@ -48,22 +56,60 @@ export default {
     this.length = this.copyfloorList.length;
   },
   methods: {
+    createFloorUUID() {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+        c
+      ) {
+        let r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 3) | 8;
+        return v.toString(16);
+      });
+    },
     clickFloor(floor) {
-      eventBus.$emit("currentSelectedFloor", floor); //attachCanvas
-      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats
-
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
-    },
-    setFloor(floor) {
+      this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
+      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats
+      console.log(floor);
     },
+    removeFloor() {
+      if (this.length > 0) {
+        //items���� id�� ���� floor�� �� index ��������
+        let currentFloorId = this.currentSelectedFloor.floor_id;
+        const idx = this.allFloorList.findIndex(function (item) {
+          return item.floor_id == currentFloorId;
+        });
+        if (idx > -1) {
+          eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
+
+          // ���� ����
+          this.allFloorList.splice(idx, 1);
+          this.managerFloorList[idx].delete = true;
+          //items���� �� index ����
+        }
+        this.length--;
+
+        console.log(this.length + " length");
+      } else {
+        alert("there are no seats to delete!");
+      }
+    },
+    addFloor() {
+      let newFloor = {};
+      newFloor.floor_id = this.createFloorUUID();
+      newFloor.floor_name = "";
+      newFloor.building_id = "HANCOM01";
+      newFloor.floor_order = this.allFloorList.length;
+      newFloor.create = true;
+      newFloor.modify = false;
+      newFloor.delete = false;
+
+      this.allFloorList.push(newFloor);
+      this.managerFloorList.push(newFloor);
+
+      this.length++;
+    },
+    editFloorName() {},
   },
 };
 </script>
+

@@ -107,16 +107,6 @@ export default {
     };
   },
   created() {
-    eventBus.$on("currentSelectedFloor", (floor) => {
-      if (floor) {// null 이 아닐때
-        this.currentSelectedFloorId = floor.floor_id;
-        this.currentSelectedFloorName = floor.floor_name;
-        this.changeFloor();
-      } else {
-        this.currentSelectedFloorId = null;
-        this.currentSelectedFloorName = null;
-      }
-    });
      eventBus.$on("changeFloor", (floor) => {
       if (floor) {// null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
