@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card>
-      <v-tabs v-model="tab" background-color="black" dark>
+      <v-tabs v-model="tab" background-color="black" dark height="65" >
         <v-tab v-for="item in items" :key="item.index"> {{ item.title }}</v-tab>
       </v-tabs>
 
