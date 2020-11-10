@@ -35,7 +35,6 @@
     >
       <span v-html="toolTipText"> </span>
     </v-tooltip>
-    <v-btn @click="clickTestSeat">Test Seat</v-btn>
   </div>
 </template>
 
@@ -50,7 +49,29 @@ export default {
       fontSize: 25,
       clipboard: null,
 
-      allImageMap: null,
+      currentSelectedFloorName: null,
+      currentSelectedFloorId: null,
+
+      currentFloorImageFromDb: this.currentFloorImage,
+      otherFloorImageFromDb: this.otherFloorsImageList,
+      //이미지 맵 하나로 관리(삭제 고려X)
+      allImageMap: null, //모든 이미지 저장과 로드(floorid,file or url)
+
+      currentFloorSeatListFromDb: this.currentFloorSeatsList, //current floor's seatList
+      otherFloorSeatListFromDb: this.otherFloorsSeatsList,
+      //seats: this.seat, //DB로부터 넘어온 현재 층의 자리들을 제외한 자리 Map <층이름, 자리리스트>
+      allSeatMap: null, // -> all seat map (가시적 map)
+      managerAllSeatMap: null, // -> DB 관리 자리 map
+
+      employees: this.copyEmployee,
+      eachEmployeeSeatMap: null, //each Employee's seats map
+
+      allFloorList: this.copyFloors, // 가시적 층 리스트
+      managerFloorList: this.copyFloors, // DB 관리 층 리스트
+
+      employeeDialogStatus: false, // 사원 정보 다이얼로그
+      changeSeatDialogStatus: false, // 자리 변경 다이얼로그
+      inputSeatNameDialogStatus: false, // seatName 입력 다이얼로그 => 다이얼로그 이후에 모두 UI 변경 예정
 
       currentSelectedFloorName: null,
       currentSelectedFloorId: "One",
@@ -78,18 +99,26 @@ export default {
   },
   created() {
     eventBus.$on("changeAddVacantSwitch", (switchValue) => {
-      console.log(switchValue)
+      console.log(switchValue);
       this.ableAddVacant = switchValue;
     });
     eventBus.$on("changeslider", (sliderValue) => {
-      console.log(sliderValue)
-      this.seatLength = sliderValue;});
+      console.log(sliderValue);
+      this.seatLength = sliderValue;
+    });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       console.log(this.allImageMap);
 
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
+
+    if (this.allSeatMap == null) {
+      this.allSeatMap = new Map();
+    }
+    if (this.allImageMap == null) {
+      this.allImageMap = new Map();
+    }
   },
   mounted() {
     this.initializing();
@@ -139,11 +168,10 @@ export default {
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
-            if (this.addVacantSwitch) {
+            if (this.ableAddVacant) {
               var pointer = this.floorCanvas.getPointer(event.e);
               var posX = pointer.x;
               var posY = pointer.y;
-              //console.log(posX + ", " + posY);
               this.addVacantSeat(posX, posY);
             } else if (this.floorCanvas.getActiveObject()) {
               //contextMenu
@@ -151,7 +179,6 @@ export default {
               var posX = this.floorCanvas.getActiveObject().left;
               var posY = this.floorCanvas.getActiveObject().top;
               this.showContextMenu(posX, posY);
-              //console.log(posX + "/" + posY);
             }
           }
         });
@@ -179,26 +206,13 @@ export default {
               groupToObject.employee_name,
               groupToObject.employee_department
             );
-
-            //console.log("Employee_id" + groupToObject.employee_id);
-            //console.log("Employee_name" + groupToObject.employee_name);
-            //console.log("Floor_name" + this.currentSelectedFloorName);
-
-            //eventBus.$emit("employee_id", groupToObject.employee_id);
-            //eventBus.$emit("employee_name", groupToObject.employee_name);
-            //eventBus.$emit("floor_name", this.currentSelectedFloorName);
-            //eventBus.$emit(
-            //  "employee_department",
-            //  groupToObject.employee_department
-            //);
-            //this.getEmployeeDialog();
           } else {
             this.closeToolTip();
           }
         });
 
         //키보드 조작(상하좌우 이동/복붙/삭제)
-        //this.manageKeyboard();
+        this.manageKeyboard();
       }
     },
     changeFloor() {
@@ -209,6 +223,13 @@ export default {
           this.floorCanvas.remove(obj);
         });
 
+      let eachfloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      //let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+      //  this.currentSelectedFloorId
+      //);
+
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
         if (typeof typeCheck === "string") {
@@ -218,6 +239,31 @@ export default {
           //file
           this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
         }
+        //현재 층에 그린 도형들이 있다면
+        if (eachfloorSeatList) {
+          for (let i = 0; i < eachfloorSeatList.length; i++) {
+            this.floorCanvas.add(eachfloorSeatList[i]);
+            console.log("eachfloorSeatList : ");
+            console.log(eachfloorSeatList[i]);
+          }
+
+          eventBus.$emit("eachFloorSeatList", eachfloorSeatList);
+        }
+      } else if (this.allImageMap.get(this.currentSelectedFloorId) == null) {
+        //현재 층의 이미지가 저장되어있지 않다면
+        //화면에 그려져있던 이미지와 도형 초기화
+        this.floorCanvas
+          .getObjects()
+          .slice()
+          .forEach((obj) => {
+            this.floorCanvas.remove(obj);
+          });
+
+        this.floorCanvas.backgroundImage = 0;
+        this.floorCanvas.backgroundColor = "aliceblue";
+        this.floorCanvas.renderAll();
+
+        eventBus.$emit("eachFloorSeatList", eachfloorSeatList);
       }
     },
 
@@ -250,6 +296,194 @@ export default {
         );
       });
     },
+    //각 층의 도형 리스트 반환하기
+    getEachFloorSeatList: function (floor) {
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
+        return;
+      }
+      //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
+      if (!this.allSeatMap.get(floor)) {
+        let newSeatsList = new Array();
+        this.allSeatMap.set(floor, newSeatsList);
+        //console.log(this.allSeatMap.size + "allSeatMap 처음의 자리 맵 사이즈입니다");
+        return this.allSeatMap.get(floor);
+      } else {
+        //console.log(this.allSeatMap.size + "allSeatMap 현재 자리 맵 사이즈입니다" );
+        return this.allSeatMap.get(floor);
+      }
+    },
+    manageKeyboard() {
+      let activeObject = null;
+      let groupToObject = null;
+
+      document.addEventListener("keydown", (event) => {
+        var key = window.event ? window.event.keyCode : event.keyCode;
+        switch (key) {
+          case 17 && 67: //ctrl+c
+            this.copySelectedSeat();
+            break;
+          case 17 && 86: //ctrl+v
+            this.pasteSelectedSeat();
+            break;
+          case 37: // left
+            if (this.floorCanvas.getActiveObject()) {
+              this.floorCanvas
+                .getActiveObject()
+                .set("left", this.floorCanvas.getActiveObject().left - 5);
+              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas.renderAll();
+            }
+            break;
+          case 39: // right
+            if (this.floorCanvas.getActiveObject()) {
+              this.floorCanvas
+                .getActiveObject()
+                .set("left", this.floorCanvas.getActiveObject().left + 5);
+              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas.renderAll();
+            }
+            break;
+          case 38: // up
+            if (this.floorCanvas.getActiveObject()) {
+              this.floorCanvas
+                .getActiveObject()
+                .set("top", this.floorCanvas.getActiveObject().top - 5);
+              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas.renderAll();
+            }
+            break;
+          case 40: // down
+            if (this.floorCanvas.getActiveObject()) {
+              this.floorCanvas
+                .getActiveObject()
+                .set("top", this.floorCanvas.getActiveObject().top + 5);
+              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas.renderAll();
+            }
+            break;
+          case 110:
+          case 46: // delete
+            this.deleteBtn();
+            break;
+        }
+      });
+    },
+    createSeatUUID() {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+        c
+      ) {
+        let r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 3) | 8;
+        return v.toString(16);
+      });
+    },
+    getColor(department) {
+      const Colors = {
+        Orange: "orange",
+        Yellow: "yellow",
+        Green: "green",
+        Blue: "blue",
+        Gray: "Gray",
+      };
+      if (department == "부서1") return Colors.Orange;
+      else if (department == "부서2") return Colors.Yellow;
+      else if (department == "부서3") return Colors.Green;
+      else return Colors.Gray;
+    },
+
+    addVacantSeat(posX, posY) {
+      let x = posX;
+      let y = posY;
+
+      if (!this.allImageMap.get(this.currentSelectedFloorId)) {
+        alert("도면 이미지가 없습니다");
+        console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
+        return;
+      }
+
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      //let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+      //  this.currentSelectedFloorId
+      //);
+
+      let rectangle = new fabric.Rect({
+        width: this.seatLength,
+        height: this.seatLength,
+        fill: this.getColor(null),
+        opacity: 1,
+      });
+
+      let textObject = new fabric.IText("", {
+        left: 0,
+        top: rectangle.height / 3,
+        fontSize: 0,
+        fill: "black",
+      });
+
+      let group = new fabric.Group([rectangle, textObject], {
+        seatId: this.createSeatUUID(),
+        floor_id: this.currentSelectedFloorId,
+        employee_name: null,
+        employee_department: null,
+        employee_number: null,
+        employee_id: null,
+        left: x,
+        top: y,
+        angle: 0,
+        create: true, //생성
+        modify: false, //변경
+        delete: false, //삭제
+      });
+
+      group.on("mousedown", (e) => {
+        let group = e.target;
+        if (e.button === 1) {
+          eventBus.$emit("manageSeatInfocomponentStatus", true);
+          console.log(this.switchValue);
+        }
+      });
+
+      this.floorCanvas.on("object:scaling", (e) => {
+        let scaledObject = e.target;
+        let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
+        let height = scaledObject.getScaledHeight() / scaledObject.scaleY;
+
+        scaledObject.width = width;
+        scaledObject.height = height;
+
+        let groupx = scaledObject.toObject([
+          "width",
+          "height",
+          "scaleX",
+          "scaleY",
+        ]);
+      });
+
+      this.floorCanvas.add(group);
+      eachFloorSeatList.push(group);
+      //managerEachFloorSeatList.push(group);
+      this.floorCanvas.renderAll();
+
+      console.log("전체층의 가시석 자리 맵 size = " + this.allSeatMap.size);
+      //console.log(
+      //  "전체층의 관리 자리 맵 size = " + this.managerAllSeatMap.size
+      //);
+      console.log(
+        this.currentSelectedFloorId +
+          "의 자리 리스트 length = " +
+          eachFloorSeatList.length
+      );
+      //console.log(
+      //  this.currentSelectedFloorId +
+      //    "의 자리 리스트 length = " +
+      //    managerEachFloorSeatList.length
+      //);
+
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+    },
 
     showToolTip(
       clientX,
@@ -280,11 +514,6 @@ export default {
     },
     closeToolTip() {
       this.toolTipStatus = false;
-    },
-
-    clickTestSeat() {
-      eventBus.$emit("manageSeatInfocomponentStatus", true);
-      console.log(this.switchValue);
     },
   },
 };
