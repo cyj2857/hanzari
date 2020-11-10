@@ -11,9 +11,7 @@
             solo
           ></v-text-field
         ></v-col>
-        <v-col cols="12" sm="3">
-          <v-btn @click="mappingOtherEmployee">edit</v-btn></v-col
-        >
+        <v-col cols="12" sm="3"> <v-btn>edit</v-btn></v-col>
       </v-row>
       <v-card-title>Name</v-card-title>
       <v-row
@@ -25,9 +23,7 @@
             readonly
           ></v-text-field
         ></v-col>
-        <v-col cols="12" sm="3">
-          <v-btn @click="mappingOtherEmployee">edit</v-btn></v-col
-        >
+        <v-col cols="12" sm="3"> <v-btn>edit</v-btn></v-col>
       </v-row>
       <v-card-title>Department</v-card-title>
       <v-text-field
@@ -52,7 +48,7 @@
       </v-row>
       <v-btn @click="changeToVacant">Change To Vacant</v-btn>
     </v-card>
-    <SeatFloorMovement v-if="seatFloorMovementStatus"/>
+    <SeatFloorMovement v-if="seatFloorMovementStatus" />
   </div>
 </template>
 
@@ -87,7 +83,10 @@ export default {
     setSeatFloorMovement() {
       this.seatFloorMovementStatus = true;
     },
-    changeToVacant() {},
+    changeToVacant() {
+      console.log("clickChangeToVacant");
+      eventBus.$emit("changeToVacant", true);
+    },
   },
 };
 </script>
