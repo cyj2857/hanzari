@@ -9,7 +9,7 @@
           class="d-flex child-flex"
           cols="4"
         >
-          <v-btn large @click="clickFloor(floor.floor_id)">{{
+          <v-btn large @click="clickFloor(floor)">{{
             floor.floor_name
           }}</v-btn>
         </v-col>
@@ -45,8 +45,8 @@ export default {
       firstLoadWatch: null,
       floorName: null,
 
-      allFloorList: this.copyfloorList, // ¿©±â¿¡¼­ sort ¾È¸ÔÀ½
-      managerFloorList: [], // DB¿¡ save ÇÒ ¸®½ºÆ®
+      allFloorList: this.copyfloorList, // ï¿½ï¿½ï¿½â¿¡ï¿½ï¿½ sort ï¿½È¸ï¿½ï¿½ï¿½
+      managerFloorList: [], // DBï¿½ï¿½ save ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
     };
   },
   created() {
@@ -54,7 +54,9 @@ export default {
     this.length = this.copyfloorList.length;
   },
   methods: {
-    clickFloor(floor_id) {},
+    clickFloor(floor) {
+      eventBus.$emit("currentSelectedFloor", floor);
+    },
   },
 };
 </script>
