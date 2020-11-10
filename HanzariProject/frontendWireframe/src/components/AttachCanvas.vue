@@ -77,8 +77,8 @@ export default {
       currentSelectedFloorId: "One",
 
       contextMenuStatus: false,
-      contextMenuXLocation: 0,
-      contextMenuYLocation: 0,
+      contextMenuXLocation: 100,
+      contextMenuYLocation: 100,
       contextMenuItems: [
         { title: "자리 비우기", index: 0 },
         { title: "삭제하기", index: 1 },
@@ -625,7 +625,194 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
+    deleteBtn() {
+      //좌석 지우면 list에 있는거 제거
+      let activeObject = null;
+      let shapearray = new Array();
 
+      if (confirm("Are you sure?")) {
+        if (this.floorCanvas.getActiveObjects().length == 1) {
+          // 단일객체
+          activeObject = this.floorCanvas.getActiveObject();
+          activeObject.set("delete", true);
+
+          let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
+          this.deleteEachEmployeeSeatList(groupToObject);
+        } else {
+          // 복수객체
+          this.floorCanvas.getActiveObjects().forEach((obj) => {
+            obj.set("delete", true);
+            this.deleteEachEmployeeSeatList(obj);
+          });
+          activeObject = this.floorCanvas.getActiveObject().toGroup();
+        }
+
+        this.floorCanvas
+          .getObjects()
+          .slice()
+          .forEach((obj) => {
+            shapearray.push(obj);
+          });
+
+        if (activeObject) {
+          //층의 자리 리스트에서 제거하기
+          shapearray.slice().forEach((obj) => {
+            if (obj == activeObject) {
+              let groupToObject = activeObject.toObject(["seatId"]);
+              let index = shapearray.indexOf(activeObject);
+              shapearray.splice(index, 1);
+            }
+          });
+          this.floorCanvas.remove(activeObject);
+          this.getEachFloorSeatList(this.currentSelectedFloorId).length = 0;
+          this.allSeatMap.set(this.currentSelectedFloorId, shapearray);
+
+          eventBus.$emit(
+            "eachFloorSeatList",
+            this.getEachFloorSeatList(this.currentSelectedFloorId)
+          );
+          eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+        }
+      } else {
+        return;
+      }
+    },
+    clickChangeToVacant() {
+      let activeObject = null;
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+
+      if (!this.floorCanvas.getActiveObject()) {
+        return;
+      }
+      if (this.floorCanvas.getActiveObject().type == "group") {
+        activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
+
+        activeObject.set("modify", true);
+
+        activeObject.employee_name = null;
+        activeObject.employee_department = null;
+        activeObject.employee_number = null;
+
+        let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
+        console.log(groupToObject.seatId + "비우고자하는 자리의 SeatId입니다.");
+        console.log(
+          groupToObject.employee_id + "비우고자하는 자리의 employee_id입니다."
+        );
+        this.deleteEachEmployeeSeatList(groupToObject);
+
+        activeObject.employee_id = null; // delete employee information in group
+
+        activeObject
+          .item(0)
+          .set("fill", this.getColor(activeObject.employee_department));
+        this.floorCanvas.remove(activeObject.item(1)); // delete textObject
+        activeObject.item(1).set("text", "");
+        this.floorCanvas.renderAll();
+      }
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+    },
+    cloneSeat() {
+      this.copySelectedSeat();
+      this.pasteSelectedSeat();
+    }, //clone하기 (ctrl+c)
+    copySelectedSeat() {
+      if (!this.floorCanvas.getActiveObject()) return;
+      //this.clipboard = null;
+      this.floorCanvas.getActiveObject().clone((cloned) => {
+        this.clipboard = cloned;
+      });
+    },
+    //paste하기 (ctrl+v)
+    pasteSelectedSeat() {
+      //console.log(this.clipboard);
+      let activeObject = this.floorCanvas.getActiveObject();
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let managerEachFloorList = this.getManagerEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+        this.floorCanvas.getActiveObject().employee_id
+      );
+
+      this.clipboard.clone((clonedObj) => {
+        this.floorCanvas.discardActiveObject();
+        clonedObj.set({
+          left: clonedObj.left + 10,
+          top: clonedObj.top + 10,
+          create: true,
+          delete: false,
+          modify: false,
+          seatId: this.createSeatUUID(),
+          floor_id: this.currentSelectedFloorId,
+          angle: activeObject.angle,
+          employee_department: activeObject.employee_department,
+          employee_id: activeObject.employee_id,
+          employee_name: activeObject.employee_name,
+          employee_number: activeObject.employee_number,
+          evented: true,
+        });
+
+        if (activeObject.seatName) {
+          clonedObj.set({ seatName: activeObject.seatName });
+        }
+
+        if (clonedObj.type === "activeSelection") {
+          clonedObj.canvas = this.floorCanvas;
+          clonedObj.forEachObject(function (obj) {
+            this.floorCanvas.add(obj);
+          });
+          // this should solve the unselectability
+          clonedObj.setCoords();
+        } else {
+          this.floorCanvas.add(clonedObj);
+        }
+        this.clipboard.top += 10;
+        this.clipboard.left += 10;
+
+        this.floorCanvas.setActiveObject(clonedObj);
+        this.floorCanvas.requestRenderAll();
+
+        eachFloorSeatList.push(clonedObj);
+        managerEachFloorList.push(clonedObj);
+        eachEmployeeSeatList.push(clonedObj);
+      });
+
+      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+    },
+    showContextMenu(clientX, clientY) {
+      this.contextMenuStatus = false;
+      this.contextMenuXLocation = clientX + 750;
+      this.contextMenuYLocation = clientY;
+      this.$nextTick(() => {
+        this.contextMenuStatus = true;
+      });
+    },
+    clickContextMenu(index) {
+      //console.log(index);
+      switch (index) {
+        case 0:
+          this.clickChangeToVacant();
+          break;
+        case 1:
+          this.deleteBtn();
+          break;
+        case 2:
+          //this.getChangeSeatDialog();
+          break;
+        case 3:
+          this.cloneSeat();
+          break;
+        case 4:
+          //this.getInputSeatNameDialog();
+          break;
+      }
+    },
     showToolTip(
       clientX,
       clientY,
