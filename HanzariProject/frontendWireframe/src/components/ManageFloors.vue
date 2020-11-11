@@ -28,8 +28,10 @@
         ></v-text-field
       ></v-row>
       <v-divider class="mx-4"></v-divider>
-      <v-card-title> Vacant Seats </v-card-title>
-      <v-card-title> All Seats </v-card-title>
+      <v-card-title>
+        Vacant Seats {{ currentFloorVacantSeatsLength }}
+      </v-card-title>
+      <v-card-title> All Seats {{ currentFloorSeatsLength }} </v-card-title>
     </v-card>
   </div>
 </template>
@@ -47,10 +49,15 @@ export default {
       firstLoadWatch: null,
       floorName: null,
 
-      allFloorList: this.copyfloorList, // ���⿡�� sort �ȸ���
-      managerFloorList: [], // DB�� save �� ����Ʈ
+      allFloorList: this.copyfloorList,
+      managerFloorList: [],
 
       currentSelectedFloor: null,
+
+      currentFloorSeatsLength: 0,
+      currentFloorVacantSeatsLength: 0,
+
+      employees: [],
     };
   },
   created() {
@@ -58,24 +65,33 @@ export default {
       this.currentSelectedFloor = this.copyfloorList[
         this.copyfloorList.length - 1
       ];
-      eventBus.$emit("changeFloor", this.currentSelectedFloor);
-      eventBus.$emit(
-        "currentSelectedFloorToManageSeats",
-        this.currentSelectedFloor
-      );
-
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyfloorList.length;
     }
+
+    eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
+      if (eachFloorSeatList == undefined) {
+        return;
+      } else {
+        this.renderEachFloorSeatList(eachFloorSeatList);
+      }
+    });
   },
   methods: {
     editFloorName() {
+      const idx = this.allFloorList.findIndex((item) => {
+        return item.floor_id == this.currentSelectedFloor.floor_id;
+      });
+
+      this.allFloorList[idx].modify = true;
+      this.managerFloorList[idx].modify = true;
+
       eventBus.$emit("changeFloor", this.currentSelectedFloor);
       eventBus.$emit(
         "currentSelectedFloorToManageSeats",
         this.currentSelectedFloor
       );
-
+      
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
 
@@ -152,13 +168,47 @@ export default {
       this.length++;
 
       eventBus.$emit("changeFloor", this.currentSelectedFloor);
-      eventBus.$emit("currentSelectedFloorToManageSeats", this.currentSelectedFloor);
-      
+      eventBus.$emit(
+        "currentSelectedFloorToManageSeats",
+        this.currentSelectedFloor
+      );
+
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
 
       let managerFloors = this.managerFloorList.slice();
       eventBus.$emit("managerFloorList", managerFloors);
+    },
+    renderEachFloorSeatList(eachFloorSeatList) {
+      //리스트 초기화
+      this.employees = [];
+      this.currentFloorVacantSeatsLength = 0;
+
+      if (eachFloorSeatList.length != 0) {
+        for (let i = 0; i < eachFloorSeatList.length; i++) {
+          if (eachFloorSeatList[i].employee_id == null) {
+            console.log(eachFloorSeatList[i].seatId + "빈공석의 seatId입니다");
+            this.currentFloorVacantSeatsLength++;
+          }
+
+          let employee = {};
+          employee.name = eachFloorSeatList[i].employee_name;
+          employee.department = eachFloorSeatList[i].employee_department;
+          employee.number = eachFloorSeatList[i].employee_number;
+
+          this.employees.push({
+            name: employee.name,
+            department: employee.department,
+            number: employee.number,
+          });
+
+          this.currentFloorSeatsLength = this.employees.length;
+
+          console.log(employee.number);
+        }
+      } else {
+        this.currentFloorSeatsLength = 0;
+      }
     },
   },
 };

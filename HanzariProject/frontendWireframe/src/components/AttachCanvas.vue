@@ -108,6 +108,13 @@ export default {
     };
   },
   created() {
+    this.currentSelectedFloorName = this.allFloorList[
+      this.allFloorList.length - 1
+    ].floor_name;
+    this.currentSelectedFloorId = this.allFloorList[
+      this.allFloorList.length - 1
+    ].floor_id;
+
     eventBus.$on("changeFloor", (floor) => {
       if (floor) {
         this.currentSelectedFloorId = floor.floor_id;
@@ -131,9 +138,12 @@ export default {
     });
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
+      console.log(this.allFloorList);
     });
     eventBus.$on("managerFloorList", (managerFloors) => {
       this.managerFloorList = managerFloors;
+
+      console.log(this.managerFloorList);
     });
     eventBus.$on("changeToVacant", (status) => {
       if (status) {
@@ -143,18 +153,9 @@ export default {
     eventBus.$on("inputSeatName", (seatName) => {
       this.inputSeatName(seatName);
     });
-    eventBus.$on("allFloorList", (allFloors) => {
-      //console.log(allFloors);
-    });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
-    });
-    eventBus.$on("allFloorList", (allFloors) => {
-      this.allFloorList = allFloors;
-    });
-    eventBus.$on("managerFloorList", (managerFloors) => {
-      this.managerFloorList = managerFloors;
     });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
       this.allSeatMap.delete(floor_id);
