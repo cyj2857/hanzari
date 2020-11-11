@@ -33,9 +33,6 @@
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       />
     </div>
-    <div class="d3" id="d3">
-      <ManageSeatInfo />
-    </div>
   </div>
 </template>
 
@@ -466,13 +463,8 @@ export default {
 }
 .d2 {
   float: left;
-  width: 50%;
+  width: 75%;
   height: 100%;
   text-align: center;
-}
-.d3 {
-  float: right;
-  width: 25%;
-  height: 100%;
 }
 </style>
