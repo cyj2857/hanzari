@@ -9,7 +9,16 @@
           class="d-flex child-flex"
           cols="4"
         >
-          <v-btn large @click="clickFloor(floor)">{{ floor.floor_name }}</v-btn>
+          <v-btn
+            large
+            @click="clickFloor(floor)"
+            :style="{
+              border: clickIndexes.includes(floor.floor_id)
+                ? 'thick solid black'
+                : '',
+            }"
+            >{{ floor.floor_name }}</v-btn
+          >
         </v-col>
       </v-row>
       <v-btn small
@@ -49,6 +58,8 @@ export default {
       firstLoadWatch: null,
       floorName: null,
 
+      changeBackgroundColor: false,
+
       allFloorList: this.copyfloorList,
       managerFloorList: [],
 
@@ -58,6 +69,8 @@ export default {
       currentFloorVacantSeatsLength: 0,
 
       employees: [],
+
+      clickIndexes: null,
     };
   },
   created() {
@@ -67,6 +80,7 @@ export default {
       ];
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyfloorList.length;
+      this.clickIndexes = this.currentSelectedFloor.floor_id;
     }
 
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
@@ -91,7 +105,7 @@ export default {
         "currentSelectedFloorToManageSeats",
         this.currentSelectedFloor
       );
-      
+
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
 
@@ -108,6 +122,9 @@ export default {
       });
     },
     clickFloor(floor) {
+      this.clickIndexes = [];
+      this.clickIndexes.push(floor.floor_id);
+
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
       eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats to manage image
@@ -120,7 +137,6 @@ export default {
     },
     removeFloor() {
       if (this.length > 0) {
-        //items���� id�� ���� floor�� �� index ��������
         let currentFloorId = this.currentSelectedFloor.floor_id;
         const idx = this.allFloorList.findIndex(function (item) {
           return item.floor_id == currentFloorId;
@@ -143,6 +159,9 @@ export default {
 
           this.currentSelectedFloor = this.allFloorList[idx - 1];
 
+          this.clickIndexes = [];
+          this.clickIndexes.push(this.currentSelectedFloor.floor_id);
+
           this.length--;
         }
         console.log(this.length + " length");
@@ -164,6 +183,9 @@ export default {
       this.managerFloorList.push(newFloor);
 
       this.currentSelectedFloor = newFloor;
+
+      this.clickIndexes = [];
+      this.clickIndexes.push(this.currentSelectedFloor.floor_id);
 
       this.length++;
 
