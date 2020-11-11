@@ -21,6 +21,7 @@ import lombok.Setter;
 @Table(name = "floor_plan")
 @Builder
 public class FloorPlan {
+	
 	//데이터베이스에 각각의 이미지 파일 이름을 찾아내기 위한(이전 이력들도 포함) 기본키와 연결된 필드
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -32,6 +33,11 @@ public class FloorPlan {
 	@NotNull
 	@Column(name = "floor_id")
 	private String floorId;
+	
+	//최신의 도면이면 true, 이전 도면들은 false
+	@NotNull
+	@Column(name = "latest")
+	private boolean latest;
 	
 	//MinIO 버킷에 들어갈 이미지 파일 이름과 연결된 필드
 	@NotNull

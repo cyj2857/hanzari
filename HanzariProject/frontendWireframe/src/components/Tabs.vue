@@ -30,12 +30,14 @@ const building_id = "HANCOM01";
 
 import ManageSeats from "@/components/ManageSeats.vue";
 import ManageFloors from "@/components/ManageFloors.vue";
+import ManageSearch from "@/components/ManageSearch.vue";
 import { eventBus } from '../main';
 export default {
-  props: ["copyEmployee","copyFloors"],
+  props: ["copyEmployee","copyFloors","ManageSearch"],
   components: {
     ManageSeats,
     ManageFloors,
+    ManageSearch
   },
   data() {
     return {
@@ -44,9 +46,9 @@ export default {
      
       tab: null,
       items: [
-        { title: "Seat", index: 0, content: "ManageSeats" },
-        { title: "Floor", index: 1, content: "ManageFloors" },
-        { title: "Search", index: 2 },
+        { title: "Floor", index: 0, content: "ManageFloors" },
+        { title: "Seat", index: 1, content: "ManageSeats" },
+        { title: "Search", index: 2, content : "ManageSearch" },
         { title: "MyPage", index: 3 },
       ],
       

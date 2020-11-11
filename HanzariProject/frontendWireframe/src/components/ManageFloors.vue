@@ -1,235 +1,102 @@
 <template>
   <div>
-    Floors
-    <v-divider class="mx-4" vertical></v-divider>
-    <v-divider class="mx-4" vertical></v-divider>
-    <v-divider class="mx-4" vertical></v-divider>
-    <v-divider class="mx-4" vertical></v-divider>
-    <v-divider class="mx-4" vertical></v-divider>
-    <v-divider class="mx-4" vertical></v-divider>
-    <v-btn small @click="removeFloor"
-      ><v-icon dark>remove_circle</v-icon></v-btn
-    >
-    <hr />
-    <br />
-
-    <v-tabs v-model="floorNum" background-color="black" dark>
-      <v-tab
-        v-for="floor of this.allFloorList"
-        :key="floor.floor_id"
-        @change="setFloor(floor)"
+    <v-card flat color="transparent">
+      <v-card-title>Floor</v-card-title>
+      <v-row>
+        <v-col
+          v-for="floor of this.allFloorList"
+          :key="floor.floor_id"
+          class="d-flex child-flex"
+          cols="4"
+        >
+          <v-btn large @click="clickFloor(floor)">{{ floor.floor_name }}</v-btn>
+        </v-col>
+      </v-row>
+      <v-btn small
+        ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
       >
-        {{ floor.floor_name }}
-      </v-tab>
-    </v-tabs>
-    <component v-for="(btns, index) in floorBtns" :key="index" :is="btns" />
-
-    <v-btn small @click="getAddFloorDialog"
-      ><v-icon dark>add_circle</v-icon></v-btn
-    >
-    <hr />
-    <br />
-
-    Floor Name
-    <hr />
-    <v-text-field
-      v-model="inputChangeFloorName"
-      required
-      @click="getChangeFloorNameDialog"
-      v-on:keyup.enter="confirm"
-    ></v-text-field>
-
-    <v-btn @click="test">Test</v-btn>
-
-    <ManageAddFloors 
-      :dialogStatus="this.addFloorDialogStatus"
-      @close="closeAddFloorDialog"
-    ></ManageAddFloors>
+      <v-btn small><v-icon dark @click="addFloor">add_circle</v-icon></v-btn>
+      <v-divider class="mx-4"></v-divider>
+      <v-card-title>FloorName</v-card-title>
+      <v-row>
+        <v-text-field
+          v-if="currentSelectedFloor"
+          v-model="currentSelectedFloor.floor_name"
+          @keyup="editFloorName"
+          label="Enter FloorName"
+          solo
+        ></v-text-field
+      ></v-row>
+      <v-divider class="mx-4"></v-divider>
+      <v-card-title>
+        Vacant Seats {{ currentFloorVacantSeatsLength }}
+      </v-card-title>
+      <v-card-title> All Seats {{ currentFloorSeatsLength }} </v-card-title>
+    </v-card>
   </div>
 </template>
 
 <script>
-const BtnComponent = {
-  template: "<button>" + "button" + "</button>",
-  methods: {},
-};
 import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
-import ManageAddFloors from "@/components/ManageAddFloors.vue";
+
 export default {
   props: ["copyfloorList"],
-  components: {
-    ManageAddFloors,
-  },
+  components: {},
   data() {
     return {
-      floorBtns: [BtnComponent],
-
-      floorNum: null, //v-tabs v-model
       length: null,
       firstLoadWatch: null,
+      floorName: null,
 
-      allFloorList: this.copyfloorList, // ¿©±â¿¡¼­ sort ¾È¸ÔÀ½
-      managerFloorList: [], // DB¿¡ save ÇÒ ¸®½ºÆ®
+      allFloorList: this.copyfloorList,
+      managerFloorList: [],
 
-      seatFloor: null,
+      currentSelectedFloor: null,
 
-      addFloorDialogStatus: false,
-      changeFloorNameDialogStatus: false,
+      currentFloorSeatsLength: 0,
+      currentFloorVacantSeatsLength: 0,
 
-      inputFloorName: null,
-      inputChangeFloorName: null,
+      employees: [],
     };
   },
   created() {
-    this.managerFloorList = this.allFloorList.slice();
-    this.length = this.copyfloorList.length;
-
-    if (this.length == 0) {
-      /* Ãþ ¾ø´Â »óÅÂ¿¡¼­ ÀÚ¸® »ý¼º ¸·±âÀ§ÇØ ³Ñ°ÜÁÜ
-      ±æÀÌ°¡ ´Ã¾î³ªÁö ¾ÊÀ¸¹Ç·Î watch¿¡¼­ ºÒ¸®Áö ¾Ê¾Æ¼­ created¿¡¼­ ºÒ·¯ÁÖ±â*/
-      let allFloors = this.allFloorList;
-      eventBus.$emit("allFloorList", allFloors);
+    if (this.copyfloorList) {
+      this.currentSelectedFloor = this.copyfloorList[
+        this.copyfloorList.length - 1
+      ];
+      this.managerFloorList = this.allFloorList.slice();
+      this.length = this.copyfloorList.length;
     }
-    eventBus.$on("AddFloor", (floor_name) => {
-      this.inputFloorName = floor_name;
-      this.confirmAddFloorDialog();
-    });
-    eventBus.$on("ChangeFloorName", (floor_name) => {
-      this.inputChangeFloorName = floor_name;
-      this.confirmChangeFloorNameDialog();
-    });
-    eventBus.$on("initChangeFloorName", (initFloor) => {
-      this.inputChangeFloorName = initFloor;
-    });
-    eventBus.$on("showSeatFloor", (floor_id) => {
-      this.seatFloorId = floor_id;
-      //console.log(this.seatFloorId + "°¡ ³Ñ¾î¿Â ÀÚ¸® ÃþÀÔ´Ï´Ù");
 
-      for (let i = 0; i < this.allFloorList.length; i++) {
-        if (this.seatFloorId == this.allFloorList[i].floor_id) {
-          this.floorNum = i;
-          this.setFloor(this.allFloorList[this.floorNum]);
-        }
+    eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
+      if (eachFloorSeatList == undefined) {
+        return;
+      } else {
+        this.renderEachFloorSeatList(eachFloorSeatList);
       }
     });
-  },
-  watch: {
-    length(length) {
-      /* DB¿¡¼­ ·ÎµåÇØ¿Ã¶§µµ length°¡ ´Ã¾î³ª±â ¶§¹®¿¡ watch°¡ ºÒ¸²
-      ÃþÀ» »èÁ¦ÇÏ´Â °æ¿ì¿¡µµ managerFloors ¿¡´Â ³²¾ÆÀÖÀ¸¹Ç·Î »èÁ¦µÈ ÃþÀÇ ÀÚ¸®µéµµ ÀúÀåÇÏ´Â °æ¿ì°¡ ÀÖÀ»¼ö ÀÖ±â ¶§¹®¿¡
-      µÑ´Ù eventBus·Î º¸³»Áà¾ßÇÔ*/
-      if (!this.firstLoadWatch) {
-        //Ã³À½ load
-        this.floorNum = length - 1; // floorÀÇ index°¡ µÇ´Â floorNum
-        this.firstLoadWatch = true;
-      } else {
-        //DB ·Îµå ³¡³½ ÈÄ¿¡ ºÒ¸®´Â ºÎºÐ
-        this.floorNum = length - 1; // floorÀÇ index°¡ µÇ´Â floorNum
-      }
-
-      if (this.length == 0) {
-        this.setFloor(null);
-      } else {
-        this.setFloor(this.allFloorList[this.floorNum]);
-      }
-    },
   },
   methods: {
-    test() {
-      console.log(this.allFloorList);
-    },
-    confirm() {
-      if (this.inputChangeFloorName == null) return;
-      eventBus.$emit("ChangeFloorName", this.inputChangeFloorName);
-    },
+    editFloorName() {
+      const idx = this.allFloorList.findIndex((item) => {
+        return item.floor_id == this.currentSelectedFloor.floor_id;
+      });
 
-    setFloor(floor) {
-      eventBus.$emit("changeFloor", floor);
+      this.allFloorList[idx].modify = true;
+      this.managerFloorList[idx].modify = true;
 
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit(
+        "currentSelectedFloorToManageSeats",
+        this.currentSelectedFloor
+      );
+      
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
 
       let managerFloors = this.managerFloorList.slice();
       eventBus.$emit("managerFloorList", managerFloors);
-    },
-    getAddFloorDialog() {
-      eventBus.$emit("initFloor", null);
-      this.addFloorDialogStatus = true;
-    },
-    closeAddFloorDialog() {
-      this.addFloorDialogStatus = false;
-    },
-    confirmAddFloorDialog() {
-      this.addFloorDialogStatus = false;
-
-      let newFloor = {};
-      newFloor.floor_id = this.createFloorUUID();
-      newFloor.floor_name = this.inputFloorName;
-      newFloor.building_id = "HANCOM01";
-      newFloor.floor_order = this.allFloorList.length;
-      newFloor.create = true;
-      newFloor.modify = false;
-      newFloor.delete = false;
-
-      this.allFloorList.push(newFloor);
-      this.managerFloorList.push(newFloor);
-
-      this.floorBtns.push(BtnComponent);
-
-      this.length++;
-      this.floorNum = this.length + 1;
-
-      console.log(this.length + " length");
-    },
-    getChangeFloorNameDialog() {
-      eventBus.$emit(
-        "initChangeFloorName",
-        this.allFloorList[this.floorNum].floor_name
-      );
-      this.changeFloorNameDialogStatus = true;
-    },
-    closeChangeFloorNameDialog() {
-      this.changeFloorNameDialogStatus = false;
-    },
-    confirmChangeFloorNameDialog() {
-      this.changeFloorNameDialogStatus = false;
-      this.changeFloorName(this.inputChangeFloorName);
-    },
-    removeFloor() {
-      if (this.length > 0) {
-        //items¿¡¼­ id°¡ ÇöÀç floorÀÎ ¾Ö index °¡Á®¿À±â
-        let currentFloorId = this.allFloorList[this.floorNum].floor_id;
-        const idx = this.allFloorList.findIndex(function (item) {
-          return item.floor_id == currentFloorId;
-        });
-        if (idx > -1) {
-          eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
-
-          // »èÁ¦ °¡´É
-          this.allFloorList.splice(idx, 1);
-          this.managerFloorList[idx].delete = true;
-          //items¿¡¼­ ±× index »èÁ¦
-        }
-        this.length--;
-        this.floorNum = this.length - 1;
-
-        //console.log(this.length + " length");
-      } else {
-        alert("there are no seats to delete!");
-      }
-    },
-    changeFloorName(inputChangeFloorName) {
-      // ¿©±â¿¡¼­ floorÀÇ modify true ÇØÁÙ ¿¹Á¤
-      let currentFloorId = this.allFloorList[this.floorNum].floor_id;
-      const idx = this.allFloorList.findIndex(function (item) {
-        return item.floor_id == currentFloorId;
-      });
-      this.allFloorList[idx].floor_name = inputChangeFloorName;
-      this.allFloorList[idx].modify = true;
-
-      this.managerFloorList[idx].floor_name = inputChangeFloorName;
-      this.managerFloorList[idx].modify = true;
     },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
@@ -240,6 +107,110 @@ export default {
         return v.toString(16);
       });
     },
+    clickFloor(floor) {
+      this.currentSelectedFloor = floor;
+      eventBus.$emit("changeFloor", floor);
+      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats to manage image
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
+    },
+    removeFloor() {
+      if (this.length > 0) {
+        //itemsï¿½ï¿½ï¿½ï¿½ idï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ floorï¿½ï¿½ ï¿½ï¿½ index ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        let currentFloorId = this.currentSelectedFloor.floor_id;
+        const idx = this.allFloorList.findIndex(function (item) {
+          return item.floor_id == currentFloorId;
+        });
+        if (idx > -1) {
+          eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
+          this.allFloorList.splice(idx, 1);
+          this.managerFloorList[idx].delete = true;
+
+          eventBus.$emit("changeFloor", this.allFloorList[idx - 1]);
+          eventBus.$emit(
+            "currentSelectedFloorToManageSeats",
+            this.allFloorList[idx - 1]
+          );
+          let allFloors = this.allFloorList.slice();
+          eventBus.$emit("allFloorList", allFloors);
+
+          let managerFloors = this.managerFloorList.slice();
+          eventBus.$emit("managerFloorList", managerFloors);
+
+          this.currentSelectedFloor = this.allFloorList[idx - 1];
+
+          this.length--;
+        }
+        console.log(this.length + " length");
+      } else {
+        alert("there are no seats to delete!");
+      }
+    },
+    addFloor() {
+      let newFloor = {};
+      newFloor.floor_id = this.createFloorUUID();
+      newFloor.floor_name = "";
+      newFloor.building_id = "HANCOM01";
+      newFloor.floor_order = this.allFloorList.length;
+      newFloor.create = true;
+      newFloor.modify = false;
+      newFloor.delete = false;
+
+      this.allFloorList.push(newFloor);
+      this.managerFloorList.push(newFloor);
+
+      this.currentSelectedFloor = newFloor;
+
+      this.length++;
+
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit(
+        "currentSelectedFloorToManageSeats",
+        this.currentSelectedFloor
+      );
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
+    },
+    renderEachFloorSeatList(eachFloorSeatList) {
+      //ë¦¬ìŠ¤íŠ¸ ì´ˆê¸°í™”
+      this.employees = [];
+      this.currentFloorVacantSeatsLength = 0;
+
+      if (eachFloorSeatList.length != 0) {
+        for (let i = 0; i < eachFloorSeatList.length; i++) {
+          if (eachFloorSeatList[i].employee_id == null) {
+            console.log(eachFloorSeatList[i].seatId + "ë¹ˆê³µì„ì˜ seatIdìž…ë‹ˆë‹¤");
+            this.currentFloorVacantSeatsLength++;
+          }
+
+          let employee = {};
+          employee.name = eachFloorSeatList[i].employee_name;
+          employee.department = eachFloorSeatList[i].employee_department;
+          employee.number = eachFloorSeatList[i].employee_number;
+
+          this.employees.push({
+            name: employee.name,
+            department: employee.department,
+            number: employee.number,
+          });
+
+          this.currentFloorSeatsLength = this.employees.length;
+
+          console.log(employee.number);
+        }
+      } else {
+        this.currentFloorSeatsLength = 0;
+      }
+    },
   },
 };
 </script>
+

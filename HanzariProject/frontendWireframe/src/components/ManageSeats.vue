@@ -3,7 +3,7 @@
     <v-card
       flat
       color="transparent"
-      v-if="!mappingEmployeeComponentStatus && !manageSeatInfocomponentStatus"
+      v-if="!mappingEmployeeComponentStatus"
     >
       <v-row>
         <v-col cols="12" sm="9">
@@ -69,25 +69,22 @@
     <MappingEmployee
       :copyEmployeeListTwo="employee"
       v-if="
-        mappingEmployeeComponentStatus &&
-        !manageSeatInfocomponentStatus &&
+        mappingEmployeeComponentStatus && 
         employee
       "
     />
-    <ManageSeatInfo v-if="manageSeatInfocomponentStatus" />
+    
   </div>
 </template>
 
 <script>
 import MappingEmployee from "@/components/MappingEmployee.vue";
-import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
   props: ["copyEmployeeList"],
   components: {
     MappingEmployee,
-    ManageSeatInfo,
   },
   data() {
     return {
@@ -97,26 +94,29 @@ export default {
       max: 50,
       slider: 25,
       mappingEmployeeComponentStatus: false,
-      manageSeatInfocomponentStatus: false,
 
       allImageMap: null,
-      currentSelectedFloorId: "One",
+      currentSelectedFloorId: null,
       currentFloorImage: null,
     };
   },
   created() {
+     eventBus.$on("currentSelectedFloorToManageSeats", (floor) => {
+      if (floor) {// null 이 아닐때
+        this.currentSelectedFloorId = floor.floor_id;
+        this.currentSelectedFloorName = floor.floor_name;
+      } else {
+        this.currentSelectedFloorId = null;
+        this.currentSelectedFloorName = null;
+      }
+    });
     eventBus.$on(
       "mappingEmployeeComponentStatus",
       (mappingEmployeeComponentStatus) => {
         this.mappingEmployeeComponentStatus = mappingEmployeeComponentStatus;
       }
     );
-    eventBus.$on(
-      "manageSeatInfocomponentStatus",
-      (manageSeatInfocomponentStatus) => {
-        this.manageSeatInfocomponentStatus = manageSeatInfocomponentStatus;
-      }
-    );
+
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
     }
@@ -125,7 +125,6 @@ export default {
     getMappingEmployeeComponent() {
       this.mappingEmployeeComponentStatus = true;
     },
-    changeImageFile() {},
     changeSwitchStatus() {
       eventBus.$emit("changeAddVacantSwitch", this.addVacantSwitch);
       eventBus.$emit("changeslider", this.slider);
@@ -137,14 +136,11 @@ export default {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       this.saveImageFile(files[0]);
-      //this.loadImageFile(files[0]);
     },
     saveImageFile(file) {
-      console.log(file);
       this.currentFloorImage = file.name;
       this.allImageMap.set(this.currentSelectedFloorId, file);
-      console.log(this.allImageMap.size);
-      eventBus.$emit("allImageMap", this.allImageMap);
+      eventBus.$emit("allImageMap",this.allImageMap);
     },
   },
 };

@@ -1,7 +1,11 @@
 <template>
   <div>
-    <v-card flat color="transparent" v-if="!seatFloorMovementStatus">
-      <v-btn style="float: right" @click="changeBackPage">X</v-btn>
+    <v-toolbar color="black" dark>
+    </v-toolbar>
+    <v-card
+      flat   
+      v-if="!seatFloorMovementStatus"
+    >
       <v-card-title>SeatName</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"
@@ -25,15 +29,17 @@
             readonly
           ></v-text-field
         ></v-col>
-        <v-col cols="12" sm="3"> <v-btn>edit</v-btn></v-col>
       </v-row>
       <v-card-title>Department</v-card-title>
-      <v-text-field
-        v-model="employeeDepartment"
-        label="employeeDepartment"
-        solo
-        readonly
-      ></v-text-field
+      <v-row
+        ><v-col cols="12" sm="9">
+          <v-text-field
+            v-model="employeeDepartment"
+            label="employeeDepartment"
+            solo
+            readonly
+          >
+          </v-text-field> </v-col></v-row
       ><v-card-title>Floor</v-card-title>
       <v-row>
         <v-col cols="12" sm="9"
@@ -44,6 +50,12 @@
             readonly
           ></v-text-field
         ></v-col>
+
+        <v-col cols="12" sm="3">
+          <v-selectmenu :data="list" v-if="selectMenuStatus" align="center">
+            <v-btn>edit</v-btn>
+          </v-selectmenu>
+        </v-col>
         <v-col cols="12" sm="3">
           <v-btn @click="setSeatFloorMovement">edit</v-btn></v-col
         >
@@ -68,17 +80,33 @@ export default {
       employeeFloor: null,
       makingOtherEmployeeStatus: false,
       seatFloorMovementStatus: false,
+
+      selectMenuStatus: true,
+      list: [
+        { id: 1, name: "One" },
+        { id: 2, name: "Two" },
+        { id: 3, name: "Three" },
+        { id: 4, name: "Four" },
+        { id: 5, name: "Five" },
+      ],
     };
   },
   created() {
     eventBus.$on("seatFloorMovementStatus", (seatFloorMovementStatus) => {
       this.seatFloorMovementStatus = seatFloorMovementStatus;
     });
+    eventBus.$on("dblClickedGroup", (dblClickedGroup) => {
+      console.log(dblClickedGroup);
+      let groupToObject = dblClickedGroup.toObject([
+        "employee_id",
+        "employee_name",
+        "employee_department",
+      ]);
+      this.employeeName = groupToObject.employee_name;
+      this.employeeDepartment = groupToObject.employee_department;
+    });
   },
   methods: {
-    changeBackPage() {
-      eventBus.$emit("manageSeatInfocomponentStatus", false);
-    },
     inputSeatName() {
       if (this.seatName) {
         eventBus.$emit("inputSeatName", this.seatName);
@@ -92,6 +120,8 @@ export default {
     },
     changeToVacant() {
       eventBus.$emit("changeToVacant", true);
+      this.employeeName = null;
+      this.employeeDepartment = null;
     },
   },
 };
