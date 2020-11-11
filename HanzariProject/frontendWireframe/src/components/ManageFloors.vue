@@ -75,6 +75,12 @@ export default {
         "currentSelectedFloorToManageSeats",
         this.currentSelectedFloor
       );
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
     },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
@@ -89,7 +95,12 @@ export default {
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
       eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats to manage image
-      console.log(floor);
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
     },
     removeFloor() {
       if (this.length > 0) {
@@ -100,14 +111,24 @@ export default {
         });
         if (idx > -1) {
           eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
-
-          // ���� ����
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
-          //items���� �� index ����
-        }
-        this.length--;
 
+          eventBus.$emit("changeFloor", this.allFloorList[idx - 1]);
+          eventBus.$emit(
+            "currentSelectedFloorToManageSeats",
+            this.allFloorList[idx - 1]
+          );
+          let allFloors = this.allFloorList.slice();
+          eventBus.$emit("allFloorList", allFloors);
+
+          let managerFloors = this.managerFloorList.slice();
+          eventBus.$emit("managerFloorList", managerFloors);
+
+          this.currentSelectedFloor = this.allFloorList[idx - 1];
+
+          this.length--;
+        }
         console.log(this.length + " length");
       } else {
         alert("there are no seats to delete!");
@@ -126,7 +147,18 @@ export default {
       this.allFloorList.push(newFloor);
       this.managerFloorList.push(newFloor);
 
+      this.currentSelectedFloor = newFloor;
+
       this.length++;
+
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit("currentSelectedFloorToManageSeats", this.currentSelectedFloor);
+      
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
     },
   },
 };

@@ -924,6 +924,7 @@ export default {
     },
     clickSaveBtn() {
       if (this.managerFloorList) {
+        console.log(this.managerFloorList);
         //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
