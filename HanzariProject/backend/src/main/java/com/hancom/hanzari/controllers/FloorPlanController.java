@@ -9,6 +9,8 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,10 +44,20 @@ public class FloorPlanController {
 	@Autowired
 	private MinioClient minioClient;
 	
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
+	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	private String bucketName = "hanzari";
 	//테스트용 버킷
 	private String spareBucketName = "hanzari-spare";
+	
+	private FloorPlan latestFloorPlan;
+	private FloorPlan putFloorPlan;
+	private FloorPlan getFloorPlan;
+	//기존 문자열이 사용하였던 메모리 공간을 재활용하고 후에 멀티 쓰레드 환경 확장을 생각하여 StringBuffer를 사용함
+	private StringBuffer putFloorPlanFileName;
+	private StringBuffer getFloorPlanFileName;
+	
 	
 	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
 	private Date currentTime;
@@ -59,35 +71,47 @@ public class FloorPlanController {
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
 	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
+		
+		LOGGER.info("FloorPlanController.putImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
+		
 		currentTime = new Date();
 		localDate = currentTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		year = localDate.getYear();
 		month = localDate.getMonthValue(); //getMonthValue 메소드를 사용하면 0을 포함하지 않고 1 ~ 12를 리턴한다.
 		day = localDate.getDayOfMonth();
-				
+		
+		try {
+			//해당 층의 가장 최신으로 연결되어있는 floorPlan 레코드의 latest 컬럼을 false로 변경해준다.
+			latestFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
+			latestFloorPlan.setLatest(false);
+			floorPlanService.save(latestFloorPlan);
+		} catch(Exception e) {
+			LOGGER.error("Can't find matched floorPlan record. Exception message : {}", e);
+		}
+		
 		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
-		String floorPlanFileName = floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day);
+		putFloorPlanFileName = new StringBuffer(floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day));
 		//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
-		FloorPlan putfloorPlan = FloorPlan.builder().floorId(floorId).latest(true).floorPlanFileName(floorPlanFileName).build();
+		putFloorPlan = FloorPlan.builder().floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
+		floorPlanService.save(putFloorPlan);
+		
 		InputStream imagePutInputStream = file.getInputStream();
-		
-		floorPlanService.save(putfloorPlan);
-		
+
 		try {
 			minioClient.putObject(
 				    PutObjectArgs.builder()
 				    .bucket(spareBucketName)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
-				    .object(floorPlanFileName)
+				    .object(putFloorPlanFileName.toString())
 					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
 				    //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
-				    .stream(imagePutInputStream, file.getSize() , -1) 
+				    .stream(imagePutInputStream, file.getSize() , -1)
 				    /*TODO getContentType을 사용하면 클라이언트 측에서 이름을 변경하여 보낼 경우 다른 형식으로 업로드 되어 후에 클라이언트에 내려줄 때 명시적 contentType과 실제 데이터의 contentType이 달라 문제가 생길 수 있다.
 				    따라서 해당 문제를 해결하기 위해서는 엄격히 업로드되는 contentType을 제한하거나(해당 인자를 "image/png"로 제한하는 등) 실제 데이터를 열어보아 어떤 contentType인지 알아내는 방법들을 사용해야한다.*/
 				    .contentType(file.getContentType())
 				    .build());
 		} catch (Exception e) {
-			System.out.println("Error occurred: " + e);
+			LOGGER.error("Can't put object in the MinIO bucket. Exception message : {}", e);
 		} finally {
 			//finally안에는 try안에서 리턴문에 의해 메소드가 종료될 경우 그 전에 해야할 작업들을 적어줄 수 있다.
 			//해당 finally문 안에는 후에 try문 안에 return문을 작성할 경우를 대비해 imagePutInputStream을 닫아주어야한다.
@@ -106,29 +130,30 @@ public class FloorPlanController {
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
 	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
-		InputStream imageGetInputStream = null;
-		String floorPlanFileName = null;
-		FloorPlan getFloorPlan;
+		
+		LOGGER.info("FloorPlanController.getImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
 		try {
-			getFloorPlan = floorPlanService.findByFloorPlanId(floorId);
-			floorPlanFileName = getFloorPlan.getFloorPlanFileName();
+			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Can't find FloorPlan record from database. Exception message : {}", e);
 		}
-
+		
+		getFloorPlanFileName = new StringBuffer(getFloorPlan.getFloorPlanFileName());
+		InputStream imageGetInputStream = null;
+		
 		try {
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
 					 .bucket(spareBucketName)
-					 .object(floorPlanFileName)
+					 .object(getFloorPlanFileName.toString())
 					 .build());
-			response.addHeader("Content-disposition", floorPlanFileName);
-			response.setContentType(URLConnection.guessContentTypeFromName(floorPlanFileName));
+			response.addHeader("Content-disposition", getFloorPlanFileName.toString());
+			response.setContentType(URLConnection.guessContentTypeFromName(getFloorPlanFileName.toString()));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch(Exception e) {
-			System.out.println("Error occurred: " + e);
+			LOGGER.error("Can't get object from the MinIO bucket. Exception message : {}", e);
 		} finally {
 			//TODO putImageFile 메소드 안의 finally문에 작성한 내용 참조
 			if(imageGetInputStream != null)

@@ -22,6 +22,7 @@
         <v-text-field
           v-if="currentSelectedFloor"
           v-model="currentSelectedFloor.floor_name"
+          @keyup="editFloorName"
           label="Enter FloorName"
           solo
         ></v-text-field
@@ -49,14 +50,38 @@ export default {
       allFloorList: this.copyfloorList, // ���⿡�� sort �ȸ���
       managerFloorList: [], // DB�� save �� ����Ʈ
 
-      currentSelectedFloor: this.copyfloorList[0],
+      currentSelectedFloor: null,
     };
   },
   created() {
-    this.managerFloorList = this.allFloorList.slice();
-    this.length = this.copyfloorList.length;
+    if (this.copyfloorList) {
+      this.currentSelectedFloor = this.copyfloorList[
+        this.copyfloorList.length - 1
+      ];
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit(
+        "currentSelectedFloorToManageSeats",
+        this.currentSelectedFloor
+      );
+
+      this.managerFloorList = this.allFloorList.slice();
+      this.length = this.copyfloorList.length;
+    }
   },
   methods: {
+    editFloorName() {
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit(
+        "currentSelectedFloorToManageSeats",
+        this.currentSelectedFloor
+      );
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
+    },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
         c
@@ -69,8 +94,13 @@ export default {
     clickFloor(floor) {
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
-      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats
-      console.log(floor);
+      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats to manage image
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
     },
     removeFloor() {
       if (this.length > 0) {
@@ -81,14 +111,24 @@ export default {
         });
         if (idx > -1) {
           eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
-
-          // ���� ����
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
-          //items���� �� index ����
-        }
-        this.length--;
 
+          eventBus.$emit("changeFloor", this.allFloorList[idx - 1]);
+          eventBus.$emit(
+            "currentSelectedFloorToManageSeats",
+            this.allFloorList[idx - 1]
+          );
+          let allFloors = this.allFloorList.slice();
+          eventBus.$emit("allFloorList", allFloors);
+
+          let managerFloors = this.managerFloorList.slice();
+          eventBus.$emit("managerFloorList", managerFloors);
+
+          this.currentSelectedFloor = this.allFloorList[idx - 1];
+
+          this.length--;
+        }
         console.log(this.length + " length");
       } else {
         alert("there are no seats to delete!");
@@ -107,7 +147,18 @@ export default {
       this.allFloorList.push(newFloor);
       this.managerFloorList.push(newFloor);
 
+      this.currentSelectedFloor = newFloor;
+
       this.length++;
+
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit("currentSelectedFloorToManageSeats", this.currentSelectedFloor);
+      
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
     },
   },
 };
