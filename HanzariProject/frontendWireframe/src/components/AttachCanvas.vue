@@ -564,6 +564,7 @@ export default {
 
         //manageSeatInfo
         eventBus.$emit("dblClickedGroup", group);
+        console.log("불림");
         //eventBus.$emit("manageSeatInfocomponentStatus", false); //manageSeats
       });
 
@@ -587,21 +588,6 @@ export default {
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);
       this.floorCanvas.renderAll();
-
-      //console.log("전체층의 가시석 자리 맵 size = " + this.allSeatMap.size);
-      //console.log(
-      //  "전체층의 관리 자리 맵 size = " + this.managerAllSeatMap.size
-      //);
-      //console.log(
-      //  this.currentSelectedFloorId +
-      //    "의 자리 리스트 length = " +
-      //    eachFloorSeatList.length
-      //);
-      //console.log(
-      //  this.currentSelectedFloorId +
-      //    "의 자리 리스트 length = " +
-      //    managerEachFloorSeatList.length
-      //);
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
@@ -1149,24 +1135,29 @@ export default {
         group.add(seatNameObject);
       }
 
-      group.on("mousedown", (e) => {
+      group.on("mousedblclick", (e) => {
         let group = e.target;
-        if (e.button === 2) {
-          let groupToObject = group.toObject([
-            "employee_id",
-            "employee_name",
-            "employee_department",
-          ]);
-          eventBus.$emit("employee_id", groupToObject.employee_id);
-          eventBus.$emit("employee_name", groupToObject.employee_name);
-          eventBus.$emit("floor_name", this.currentSelectedFloorName);
-          eventBus.$emit(
-            "employee_department",
-            groupToObject.employee_department
-          );
-          this.getEmployeeDialog();
-        }
+
+        eventBus.$emit("dblClickedGroup", group);
+        console.log("불림");
       });
+
+      this.floorCanvas.on("object:scaling", (e) => {
+        let scaledObject = e.target;
+        let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
+        let height = scaledObject.getScaledHeight() / scaledObject.scaleY;
+
+        scaledObject.width = width;
+        scaledObject.height = height;
+
+        let groupx = scaledObject.toObject([
+          "width",
+          "height",
+          "scaleX",
+          "scaleY",
+        ]);
+      });
+
       return group;
     },
     clickLoadCurrentFloor() {
