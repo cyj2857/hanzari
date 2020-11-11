@@ -33,7 +33,6 @@
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       />
     </div>
-
     <div class="d3" id="d3">
       <ManageSeatInfo/>
     </div>
@@ -57,7 +56,9 @@ export default {
   name: "Hanzari",
   components: {
     Tabs,
-    AttachCanvas,MappingEmployee,ManageSeatInfo
+    AttachCanvas,
+    MappingEmployee,
+    ManageSeatInfo
   },
   data() {
     return {
@@ -331,7 +332,6 @@ export default {
         });
     },
     saveImages(tableName, data, floor_id) {
-      //추후에 api 구조 변경될 것을 생각하여 table, DTO를 넘겨받아 저장하는 것을 같은 함수로 묶지않음.
       let saveData = data;
       let saveTableName = tableName;
       console.log("saveData is");
