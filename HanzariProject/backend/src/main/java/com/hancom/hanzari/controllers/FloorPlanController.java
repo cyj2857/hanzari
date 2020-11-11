@@ -135,11 +135,11 @@ public class FloorPlanController {
 		
 		try {
 			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
-			getFloorPlanFileName = new StringBuffer(getFloorPlan.getFloorPlanFileName());
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Can't find FloorPlan record from database. Exception message : {}", e);
 		}
-
+		
+		getFloorPlanFileName = new StringBuffer(getFloorPlan.getFloorPlanFileName());
 		InputStream imageGetInputStream = null;
 		
 		try {
