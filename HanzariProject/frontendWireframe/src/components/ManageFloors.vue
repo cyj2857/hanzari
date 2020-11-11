@@ -60,7 +60,7 @@ export default {
 
       changeBackgroundColor: false,
 
-      allFloorList: this.copyfloorList,
+      allFloorList: [],
       managerFloorList: [],
 
       currentSelectedFloor: null,
@@ -74,13 +74,15 @@ export default {
     };
   },
   created() {
-    if (this.copyfloorList) {
+    if (this.copyfloorList.length) {
       this.currentSelectedFloor = this.copyfloorList[
         this.copyfloorList.length - 1
       ];
+      this.allFloorList = this.copyfloorList;
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyfloorList.length;
       this.clickIndexes = this.currentSelectedFloor.floor_id;
+    } else {
     }
 
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
@@ -158,13 +160,15 @@ export default {
           eventBus.$emit("managerFloorList", managerFloors);
 
           this.currentSelectedFloor = this.allFloorList[idx - 1];
+        }
 
+        this.length--;
+
+        if (this.length > 0) {
           this.clickIndexes = [];
           this.clickIndexes.push(this.currentSelectedFloor.floor_id);
-
-          this.length--;
+          console.log(this.length + " length");
         }
-        console.log(this.length + " length");
       } else {
         alert("there are no seats to delete!");
       }
