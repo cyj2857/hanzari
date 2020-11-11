@@ -3,8 +3,7 @@
     <v-toolbar color="black" dark>
     </v-toolbar>
     <v-card
-      flat
-      
+      flat   
       v-if="!seatFloorMovementStatus"
     >
       <v-card-title>SeatName</v-card-title>
