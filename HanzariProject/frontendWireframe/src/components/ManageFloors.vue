@@ -68,7 +68,7 @@ export default {
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyfloorList.length;
     }
-
+    
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
       if (eachFloorSeatList == undefined) {
         return;
@@ -91,7 +91,7 @@ export default {
         "currentSelectedFloorToManageSeats",
         this.currentSelectedFloor
       );
-      
+
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
 

@@ -82,7 +82,7 @@ import MappingEmployee from "@/components/MappingEmployee.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
-  props: ["copyEmployeeList"],
+  props: ["copyEmployeeList","copyfloorList"],
   components: {
     MappingEmployee,
   },
@@ -98,16 +98,21 @@ export default {
       allImageMap: null,
       currentSelectedFloorId: null,
       currentFloorImage: null,
+
+      allFloorList: this.copyfloorList,
     };
   },
   created() {
+    this.currentSelectedFloorId = this.allFloorList[
+      this.allFloorList.length - 1
+    ].floor_id;
+
      eventBus.$on("currentSelectedFloorToManageSeats", (floor) => {
+       console.log(floor);
       if (floor) {// null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
-        this.currentSelectedFloorName = floor.floor_name;
       } else {
         this.currentSelectedFloorId = null;
-        this.currentSelectedFloorName = null;
       }
     });
     eventBus.$on(
@@ -139,6 +144,7 @@ export default {
     },
     saveImageFile(file) {
       this.currentFloorImage = file.name;
+      console.log(this.currentSelectedFloorId);
       this.allImageMap.set(this.currentSelectedFloorId, file);
       eventBus.$emit("allImageMap",this.allImageMap);
     },
