@@ -657,27 +657,35 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
+    addSeatNameInGroup() {},
     inputSeatName(seatName) {
+      let activeObject = null;
+      var seatNumber = 0;
+
       if (!this.floorCanvas.getActiveObject()) {
         return;
       }
-      let activeObject = this.floorCanvas.getActiveObject();
-      activeObject.set("modify", true);
-      activeObject.seatName = seatName;
 
-      let seatNameObject = new fabric.IText(seatName, {
-        left: activeObject.item(0).left,
-        top: activeObject.item(0).top - 15,
-        fontSize: 13,
-        fill: "black",
+      this.floorCanvas.getActiveObjects().forEach((obj) => {
+        if (obj.item(2)) {
+          obj.remove(obj.item(2));
+        }
+
+        seatNumber++;
+        obj.set("modify", true);
+        obj.seatName = seatName + seatNumber;
+
+        let seatNameObject = new fabric.IText(obj.seatName, {
+          left: obj.item(0).left,
+          top: obj.item(0).top - 15,
+          fontSize: 13,
+          fill: "black",
+        });
+
+        obj.add(seatNameObject);
       });
-      if (activeObject.item(2)) {
-        // seatNmae 변경시
-        activeObject.remove(activeObject.item(2));
-      }
-
-      activeObject.add(seatNameObject);
       this.floorCanvas.renderAll();
+
     },
     deleteAllBtn() {
       if (confirm("Are you sure?")) {
@@ -864,7 +872,7 @@ export default {
     },
     showContextMenu(clientX, clientY) {
       this.contextMenuStatus = false;
-      this.contextMenuXLocation = clientX+10;
+      this.contextMenuXLocation = clientX + 10;
       this.contextMenuYLocation = clientY;
       this.$nextTick(() => {
         this.contextMenuStatus = true;

@@ -65,6 +65,21 @@
         </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
+
+      <v-card-title>SeatName</v-card-title>
+      <v-row
+        ><v-col cols="12" sm="9"
+          ><v-text-field
+            v-model="seatName"
+            label="seatName을 입력하세요."
+            solo
+          ></v-text-field
+        ></v-col>
+        <v-col cols="12" sm="3">
+          <v-btn @click="inputSeatName">Enter</v-btn></v-col
+        >
+      </v-row>
+      
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
@@ -82,7 +97,7 @@ import MappingEmployee from "@/components/MappingEmployee.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
-  props: ["copyEmployeeList","copyfloorList"],
+  props: ["copyEmployeeList", "copyfloorList"],
   components: {
     MappingEmployee,
   },
@@ -100,6 +115,7 @@ export default {
       currentFloorImage: null,
 
       allFloorList: this.copyfloorList,
+      seatName:null,
     };
   },
   created() {
@@ -107,9 +123,10 @@ export default {
       this.allFloorList.length - 1
     ].floor_id;
 
-     eventBus.$on("changeFloor", (floor) => {
-       console.log(floor);
-      if (floor) {// null 이 아닐때
+    eventBus.$on("changeFloor", (floor) => {
+      console.log(floor);
+      if (floor) {
+        // null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
       } else {
         this.currentSelectedFloorId = null;
@@ -127,6 +144,11 @@ export default {
     }
   },
   methods: {
+    inputSeatName() {
+      if (this.seatName) {
+        eventBus.$emit("inputSeatName", this.seatName);
+      }
+    },
     getMappingEmployeeComponent() {
       this.mappingEmployeeComponentStatus = true;
     },
@@ -146,7 +168,7 @@ export default {
       this.currentFloorImage = file.name;
       console.log(this.currentSelectedFloorId);
       this.allImageMap.set(this.currentSelectedFloorId, file);
-      eventBus.$emit("allImageMap",this.allImageMap);
+      eventBus.$emit("allImageMap", this.allImageMap);
     },
   },
 };
