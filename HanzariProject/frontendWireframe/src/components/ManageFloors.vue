@@ -1,8 +1,17 @@
 <template>
   <div>
     <v-card flat color="transparent">
-      <v-card-title>Floor</v-card-title>
       <v-row>
+        <v-col cols="12" sm="8">
+        <v-card-title>Floor</v-card-title></v-col><v-col cols="12" sm="4">
+        <v-btn small
+          ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
+        >
+        <v-btn small
+          ><v-icon dark @click="addFloor">add_circle</v-icon></v-btn
+        ></v-col></v-row
+      >
+      <v-row style="overflow-y: scroll; height: 180px">
         <v-col
           v-for="floor of this.allFloorList"
           :key="floor.floor_id"
@@ -21,10 +30,6 @@
           >
         </v-col>
       </v-row>
-      <v-btn small
-        ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
-      >
-      <v-btn small><v-icon dark @click="addFloor">add_circle</v-icon></v-btn>
       <v-divider class="mx-4"></v-divider>
       <v-card-title>FloorName</v-card-title>
       <v-row>
@@ -125,7 +130,7 @@ export default {
 
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
-     
+
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
 
