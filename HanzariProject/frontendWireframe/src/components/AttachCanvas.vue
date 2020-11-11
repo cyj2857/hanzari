@@ -232,9 +232,8 @@ export default {
               this.addVacantSeat(posX, posY);
             } else if (this.floorCanvas.getActiveObject()) {
               //contextMenu
-              var pointer = this.floorCanvas.getPointer(event.e);
-              var posX = this.floorCanvas.getActiveObject().left;
-              var posY = this.floorCanvas.getActiveObject().top;
+              var posX = event.e.clientX;
+              var posY = event.e.clientY;
               this.showContextMenu(posX, posY);
             }
           }
@@ -863,7 +862,7 @@ export default {
     },
     showContextMenu(clientX, clientY) {
       this.contextMenuStatus = false;
-      this.contextMenuXLocation = clientX + 750;
+      this.contextMenuXLocation = clientX+10;
       this.contextMenuYLocation = clientY;
       this.$nextTick(() => {
         this.contextMenuStatus = true;
