@@ -37,7 +37,7 @@
 <script>
 import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
-import ManageAddFloors from "@/components/ManageAddFloors.vue";
+
 export default {
   props: ["copyfloorList"],
   components: {},

@@ -1,7 +1,11 @@
 <template>
   <div>
-    <v-toolbar color="black" dark> </v-toolbar>
-    <v-card flat v-if="!seatFloorMovementStatus">
+    <v-toolbar color="black" dark>
+    </v-toolbar>
+    <v-card
+      flat   
+      v-if="!seatFloorMovementStatus"
+    >
       <v-card-title>SeatName</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"

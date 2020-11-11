@@ -139,7 +139,6 @@ export default {
     },
     saveImageFile(file) {
       this.currentFloorImage = file.name;
-      console.log(this.currentSelectedFloorId);
       this.allImageMap.set(this.currentSelectedFloorId, file);
       eventBus.$emit("allImageMap",this.allImageMap);
     },
