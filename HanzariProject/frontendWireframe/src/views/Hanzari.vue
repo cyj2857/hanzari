@@ -34,9 +34,8 @@
       />
     </div>
     <div class="d3" id="d3">
-      <ManageSeatInfo/>
+      <ManageSeatInfo />
     </div>
-
   </div>
 </template>
 
@@ -58,7 +57,7 @@ export default {
     Tabs,
     AttachCanvas,
     MappingEmployee,
-    ManageSeatInfo
+    ManageSeatInfo,
   },
   data() {
     return {
@@ -339,6 +338,14 @@ export default {
       console.log("------------");
       console.log("saveTableName is");
       console.log(saveTableName);
+
+      for (var key of saveData.keys()) {
+        console.log(key);
+      }
+
+      for (var value of saveData.values()) {
+        console.log(value);
+      }
 
       axios
         .post(

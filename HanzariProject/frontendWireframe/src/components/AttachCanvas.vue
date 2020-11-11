@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-toolbar color="black" dark>
-      <v-toolbar-title>{{currentSelectedFloorName}}</v-toolbar-title>
+      <v-toolbar-title>{{ currentSelectedFloorName }} Floor</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn @click="deleteAllBtn" text> Delete All </v-btn>
@@ -108,7 +108,7 @@ export default {
     };
   },
   created() {
-     eventBus.$on("changeFloor", (floor) => {
+    eventBus.$on("changeFloor", (floor) => {
       if (floor) {
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
@@ -159,7 +159,7 @@ export default {
     eventBus.$on("deleteSeatListKey", (floor_id) => {
       this.allSeatMap.delete(floor_id);
       //managerAllSeatMap 에서 삭제되어도 되는 이유 :
-      //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것. 
+      //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것.
       //그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함
       this.managerAllSeatMap.delete(floor_id);
     });
@@ -181,7 +181,8 @@ export default {
     this.clickLoadCurrentFloor(); //현재 층 이미지와 자리 로드
   },
   methods: {
-    initializing() { //canvas, map 생성
+    initializing() {
+      //canvas, map 생성
       if (this.floorCanvas == null) {
         const ref = this.$refs.canvas;
         this.floorCanvas = new fabric.Canvas(ref, {
@@ -209,7 +210,8 @@ export default {
               new fabric.Point(evt.offsetX, evt.offsetY),
               this.zoom
             );
-          } else {//reset canvas ratio
+          } else {
+            //reset canvas ratio
             this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
             this.zoom = 1;
           }
@@ -271,7 +273,8 @@ export default {
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
-    checkZoom() {// text, fontSize 관련
+    checkZoom() {
+      // text, fontSize 관련
       let currentZoom = this.zoom;
       if (5 <= currentZoom && currentZoom <= 7) {
         this.floorCanvas.getObjects().forEach((obj) => {
@@ -310,9 +313,11 @@ export default {
       );
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
-        if (typeof typeCheck === "string") {//url
+        if (typeof typeCheck === "string") {
+          //url
           this.loadImageUrl(this.allImageMap.get(this.currentSelectedFloorId));
-        } else { //file
+        } else {
+          //file
           this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
         }
         //현재 층에 그린 도형들이 있다면
@@ -368,7 +373,8 @@ export default {
     },
     //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
-      if (!floor) { // 초반에 층이 생성 안되었을때
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
         return;
       }
       //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
@@ -383,7 +389,8 @@ export default {
       }
     },
     getManagerEachFloorSeatList: function (floor) {
-      if (!floor) { // 초반에 층이 생성 안되었을때
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
         return;
       }
       if (!this.managerAllSeatMap.get(floor)) {
@@ -476,7 +483,8 @@ export default {
               this.floorCanvas.renderAll();
             }
             break;
-          case 110: case 46: // delete
+          case 110:
+          case 46: // delete
             this.deleteBtn();
             break;
         }
@@ -683,7 +691,7 @@ export default {
       activeObject.add(seatNameObject);
       this.floorCanvas.renderAll();
     },
-    deleteAllBtn() { 
+    deleteAllBtn() {
       if (confirm("Are you sure?")) {
         this.floorCanvas
           .getObjects()
@@ -798,7 +806,7 @@ export default {
     cloneSeat() {
       this.copySelectedSeat();
       this.pasteSelectedSeat();
-    }, 
+    },
     //clone하기 (ctrl+c)
     copySelectedSeat() {
       if (!this.floorCanvas.getActiveObject()) return;
@@ -916,6 +924,7 @@ export default {
     },
     clickSaveBtn() {
       if (this.managerFloorList) {
+        console.log(this.managerFloorList);
         //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
