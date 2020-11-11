@@ -9,6 +9,8 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,6 +43,8 @@ public class FloorPlanController {
 	
 	@Autowired
 	private MinioClient minioClient;
+	
+	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	private String bucketName = "hanzari";
@@ -79,7 +83,7 @@ public class FloorPlanController {
 			latestFloorPlan.setLatest(false);
 			floorPlanService.save(latestFloorPlan);
 		} catch(Exception e) {
-			System.out.println("Can't find matched floorPlan record / " + e);
+			LOGGER.error("Can't find matched floorPlan record. Exception message : " + e);
 		}
 		
 		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
@@ -104,7 +108,7 @@ public class FloorPlanController {
 				    .contentType(file.getContentType())
 				    .build());
 		} catch (Exception e) {
-			System.out.println("Can't put object in the MinIO bucket / " + e);
+			LOGGER.error("Can't put object in the MinIO bucket. Exception message : " + e);
 		} finally {
 			//finally안에는 try안에서 리턴문에 의해 메소드가 종료될 경우 그 전에 해야할 작업들을 적어줄 수 있다.
 			//해당 finally문 안에는 후에 try문 안에 return문을 작성할 경우를 대비해 imagePutInputStream을 닫아주어야한다.
@@ -145,7 +149,7 @@ public class FloorPlanController {
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch(Exception e) {
-			System.out.println("Can't get object from the MinIO bucket / " + e);
+			LOGGER.error("Can't get object from the MinIO bucket. Exception message : " + e);
 		} finally {
 			//TODO putImageFile 메소드 안의 finally문에 작성한 내용 참조
 			if(imageGetInputStream != null)
