@@ -9,7 +9,16 @@
           class="d-flex child-flex"
           cols="4"
         >
-          <v-btn large @click="clickFloor(floor)">{{ floor.floor_name }}</v-btn>
+          <v-btn
+            large
+            @click="clickFloor(floor)"
+            :style="{
+              border: clickIndexes.includes(floor.floor_id)
+                ? 'thick solid black'
+                : '',
+            }"
+            >{{ floor.floor_name }}</v-btn
+          >
         </v-col>
       </v-row>
       <v-btn small
@@ -49,7 +58,9 @@ export default {
       firstLoadWatch: null,
       floorName: null,
 
-      allFloorList: this.copyfloorList,
+      changeBackgroundColor: false,
+
+      allFloorList: [],
       managerFloorList: [],
 
       currentSelectedFloor: null,
@@ -58,15 +69,20 @@ export default {
       currentFloorVacantSeatsLength: 0,
 
       employees: [],
+
+      clickIndexes: null,
     };
   },
   created() {
-    if (this.copyfloorList) {
+    if (this.copyfloorList.length) {
       this.currentSelectedFloor = this.copyfloorList[
         this.copyfloorList.length - 1
       ];
+      this.allFloorList = this.copyfloorList;
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyfloorList.length;
+      this.clickIndexes = this.currentSelectedFloor.floor_id;
+    } else {
     }
 
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
@@ -104,6 +120,9 @@ export default {
       });
     },
     clickFloor(floor) {
+      this.clickIndexes = [];
+      this.clickIndexes.push(floor.floor_id);
+
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
      
@@ -115,7 +134,6 @@ export default {
     },
     removeFloor() {
       if (this.length > 0) {
-        //items���� id�� ���� floor�� �� index ��������
         let currentFloorId = this.currentSelectedFloor.floor_id;
         const idx = this.allFloorList.findIndex(function (item) {
           return item.floor_id == currentFloorId;
@@ -137,10 +155,15 @@ export default {
           eventBus.$emit("managerFloorList", managerFloors);
 
           this.currentSelectedFloor = this.allFloorList[idx - 1];
-
-          this.length--;
         }
-        console.log(this.length + " length");
+
+        this.length--;
+
+        if (this.length > 0) {
+          this.clickIndexes = [];
+          this.clickIndexes.push(this.currentSelectedFloor.floor_id);
+          console.log(this.length + " length");
+        }
       } else {
         alert("there are no seats to delete!");
       }
@@ -159,6 +182,9 @@ export default {
       this.managerFloorList.push(newFloor);
 
       this.currentSelectedFloor = newFloor;
+
+      this.clickIndexes = [];
+      this.clickIndexes.push(this.currentSelectedFloor.floor_id);
 
       this.length++;
 

@@ -108,12 +108,14 @@ export default {
     };
   },
   created() {
-    this.currentSelectedFloorName = this.allFloorList[
-      this.allFloorList.length - 1
-    ].floor_name;
-    this.currentSelectedFloorId = this.allFloorList[
-      this.allFloorList.length - 1
-    ].floor_id;
+    if (this.allFloorList.length) {
+      this.currentSelectedFloorName = this.allFloorList[
+        this.allFloorList.length - 1
+      ].floor_name;
+      this.currentSelectedFloorId = this.allFloorList[
+        this.allFloorList.length - 1
+      ].floor_id;
+    }
 
     eventBus.$on("changeFloor", (floor) => {
       if (floor) {
