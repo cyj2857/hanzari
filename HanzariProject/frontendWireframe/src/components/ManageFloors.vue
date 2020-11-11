@@ -49,10 +49,15 @@ export default {
       allFloorList: this.copyfloorList, // ���⿡�� sort �ȸ���
       managerFloorList: [], // DB�� save �� ����Ʈ
 
-      currentSelectedFloor: this.copyfloorList[0],
+      currentSelectedFloor: null,
     };
   },
   created() {
+    this.currentSelectedFloor = this.copyfloorList[
+      this.copyfloorList.length - 1
+    ];
+    eventBus.$emit("changeFloor", this.currentSelectedFloor);
+
     this.managerFloorList = this.allFloorList.slice();
     this.length = this.copyfloorList.length;
   },
