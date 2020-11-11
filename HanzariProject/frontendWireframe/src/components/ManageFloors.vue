@@ -68,7 +68,7 @@ export default {
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyfloorList.length;
     }
-    
+
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
       if (eachFloorSeatList == undefined) {
         return;
@@ -87,10 +87,6 @@ export default {
       this.managerFloorList[idx].modify = true;
 
       eventBus.$emit("changeFloor", this.currentSelectedFloor);
-      eventBus.$emit(
-        "currentSelectedFloorToManageSeats",
-        this.currentSelectedFloor
-      );
 
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
@@ -110,8 +106,7 @@ export default {
     clickFloor(floor) {
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
-      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats to manage image
-
+     
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
 

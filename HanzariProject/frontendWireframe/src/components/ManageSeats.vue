@@ -107,7 +107,7 @@ export default {
       this.allFloorList.length - 1
     ].floor_id;
 
-     eventBus.$on("currentSelectedFloorToManageSeats", (floor) => {
+     eventBus.$on("changeFloor", (floor) => {
        console.log(floor);
       if (floor) {// null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
