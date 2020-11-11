@@ -84,7 +84,7 @@ export default {
       this.clickIndexes = this.currentSelectedFloor.floor_id;
     } else {
     }
-
+    
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
       if (eachFloorSeatList == undefined) {
         return;
