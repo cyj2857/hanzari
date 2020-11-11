@@ -125,6 +125,13 @@ export default {
       } else {
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
+
+        this.floorCanvas.backgroundImage = 0;
+        this.floorCanvas.backgroundColor = "aliceblue";
+        this.floorCanvas.getObjects().forEach((obj) => {
+          this.floorCanvas.remove(obj);
+        });
+        this.floorCanvas.renderAll();
       }
     });
     eventBus.$on("changeAddVacantSwitch", (switchValue) => {
@@ -165,6 +172,9 @@ export default {
       //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것.
       //그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함
       this.managerAllSeatMap.delete(floor_id);
+
+      if (this.allFloorList.length == 0) {
+      }
     });
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
@@ -864,7 +874,7 @@ export default {
     },
     showContextMenu(clientX, clientY) {
       this.contextMenuStatus = false;
-      this.contextMenuXLocation = clientX+10;
+      this.contextMenuXLocation = clientX + 10;
       this.contextMenuYLocation = clientY;
       this.$nextTick(() => {
         this.contextMenuStatus = true;
