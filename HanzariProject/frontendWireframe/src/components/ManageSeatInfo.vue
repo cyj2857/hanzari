@@ -25,25 +25,17 @@
             readonly
           ></v-text-field
         ></v-col>
-        <v-col cols="12" sm="3">
-          <v-selectmenu
-            :data="list"
-            v-model="value"
-            type="regular"
-            align="center"
-          >
-            <v-btn>edit</v-btn>
-            </v-selectmenu>
-        </v-col>
       </v-row>
       <v-card-title>Department</v-card-title>
-      <v-text-field
-        v-model="employeeDepartment"
-        label="employeeDepartment"
-        solo
-        readonly
-      >
-      </v-text-field
+      <v-row
+        ><v-col cols="12" sm="9">
+          <v-text-field
+            v-model="employeeDepartment"
+            label="employeeDepartment"
+            solo
+            readonly
+          >
+          </v-text-field> </v-col></v-row
       ><v-card-title>Floor</v-card-title>
       <v-row>
         <v-col cols="12" sm="9"
@@ -54,6 +46,12 @@
             readonly
           ></v-text-field
         ></v-col>
+
+        <v-col cols="12" sm="3">
+          <v-selectmenu :data="list" v-if="selectMenuStatus" align="center">
+            <v-btn>edit</v-btn>
+          </v-selectmenu>
+        </v-col>
         <v-col cols="12" sm="3">
           <v-btn @click="setSeatFloorMovement">edit</v-btn></v-col
         >
@@ -79,14 +77,13 @@ export default {
       makingOtherEmployeeStatus: false,
       seatFloorMovementStatus: false,
 
-      value: "hllo",
+      selectMenuStatus: true,
       list: [
-        { id: 1, name: "김인사", desc: "hii" },
-        { id: 2, name: "마효리", desc: "joo" },
-        { id: 3, name: "노윤지", desc: "joo" },
-        { id: 4, name: "안현호", desc: "joo" },
-        { id: 5, name: "최유진", desc: "joo" },
-        { id: 6, name: "김동민", desc: "joo" },
+        { id: 1, name: "One" },
+        { id: 2, name: "Two" },
+        { id: 3, name: "Three" },
+        { id: 4, name: "Four" },
+        { id: 5, name: "Five" },
       ],
     };
   },

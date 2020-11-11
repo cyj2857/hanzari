@@ -44,8 +44,8 @@ export default {
      
       tab: null,
       items: [
-        { title: "Seat", index: 0, content: "ManageSeats" },
-        { title: "Floor", index: 1, content: "ManageFloors" },
+        { title: "Floor", index: 0, content: "ManageFloors" },
+        { title: "Seat", index: 1, content: "ManageSeats" },
         { title: "Search", index: 2 },
         { title: "MyPage", index: 3 },
       ],
