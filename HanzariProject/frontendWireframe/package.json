@@ -11,8 +11,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@jeremyhamm/vue-slider": "^0.2.0",
     "axios": "^0.20.0",
     "fabric": "^4.2.0",
+    "v-selectmenu": "^2.0.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuetify": "^2.3.10"
