@@ -1,12 +1,7 @@
 <template>
   <div>
-    <v-toolbar color="black" dark>
-    </v-toolbar>
-    <v-card
-      flat
-      
-      v-if="!seatFloorMovementStatus"
-    >
+    <v-toolbar color="black" dark> </v-toolbar>
+    <v-card flat v-if="!seatFloorMovementStatus">
       <v-card-title>SeatName</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"
@@ -30,7 +25,16 @@
             readonly
           ></v-text-field
         ></v-col>
-        <v-col cols="12" sm="3"> <v-btn>edit</v-btn></v-col>
+        <v-col cols="12" sm="3">
+          <v-selectmenu
+            :data="list"
+            v-model="value"
+            type="regular"
+            align="center"
+          >
+            <v-btn>edit</v-btn>
+            </v-selectmenu>
+        </v-col>
       </v-row>
       <v-card-title>Department</v-card-title>
       <v-text-field
@@ -74,6 +78,16 @@ export default {
       employeeFloor: null,
       makingOtherEmployeeStatus: false,
       seatFloorMovementStatus: false,
+
+      value: "hllo",
+      list: [
+        { id: 1, name: "김인사", desc: "hii" },
+        { id: 2, name: "마효리", desc: "joo" },
+        { id: 3, name: "노윤지", desc: "joo" },
+        { id: 4, name: "안현호", desc: "joo" },
+        { id: 5, name: "최유진", desc: "joo" },
+        { id: 6, name: "김동민", desc: "joo" },
+      ],
     };
   },
   created() {

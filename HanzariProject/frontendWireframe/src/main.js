@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import vSelectMenu from 'v-selectmenu'
 
 import axios from 'axios' // we can use this.$axios without using 'import' in vue instance
 
@@ -15,7 +16,9 @@ Vue.prototype.$axios = axios
 Vue.use(Vuetify, {
   iconfont: 'mdi' // 'md' || 'mdi' || 'fa' || 'fa4'
 })
-
+Vue.use(vSelectMenu, {
+  language: 'en'
+})
 
 /* eslint-disable no-new */
 new Vue({
