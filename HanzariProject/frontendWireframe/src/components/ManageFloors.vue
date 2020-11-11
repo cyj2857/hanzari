@@ -22,6 +22,7 @@
         <v-text-field
           v-if="currentSelectedFloor"
           v-model="currentSelectedFloor.floor_name"
+          @keyup="editFloorName"
           label="Enter FloorName"
           solo
         ></v-text-field
@@ -53,15 +54,28 @@ export default {
     };
   },
   created() {
-    this.currentSelectedFloor = this.copyfloorList[
-      this.copyfloorList.length - 1
-    ];
-    eventBus.$emit("changeFloor", this.currentSelectedFloor);
+    if (this.copyfloorList) {
+      this.currentSelectedFloor = this.copyfloorList[
+        this.copyfloorList.length - 1
+      ];
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit(
+        "currentSelectedFloorToManageSeats",
+        this.currentSelectedFloor
+      );
 
-    this.managerFloorList = this.allFloorList.slice();
-    this.length = this.copyfloorList.length;
+      this.managerFloorList = this.allFloorList.slice();
+      this.length = this.copyfloorList.length;
+    }
   },
   methods: {
+    editFloorName() {
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit(
+        "currentSelectedFloorToManageSeats",
+        this.currentSelectedFloor
+      );
+    },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
         c
@@ -74,7 +88,7 @@ export default {
     clickFloor(floor) {
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
-      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats
+      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats to manage image
       console.log(floor);
     },
     removeFloor() {
