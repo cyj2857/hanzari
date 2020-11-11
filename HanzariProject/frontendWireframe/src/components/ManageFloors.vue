@@ -20,6 +20,7 @@
       <v-card-title>FloorName</v-card-title>
       <v-row>
         <v-text-field
+          v-if="currentSelectedFloor"
           v-model="currentSelectedFloor.floor_name"
           label="Enter FloorName"
           solo
@@ -108,7 +109,6 @@ export default {
 
       this.length++;
     },
-    editFloorName() {},
   },
 };
 </script>
