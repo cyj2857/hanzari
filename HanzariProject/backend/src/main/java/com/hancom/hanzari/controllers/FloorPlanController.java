@@ -50,8 +50,9 @@ public class FloorPlanController {
 	private FloorPlan latestFloorPlan;
 	private FloorPlan putFloorPlan;
 	private FloorPlan getFloorPlan;
-	private String putFloorPlanFileName;
-	private String getFloorPlanFileName;
+	//기존 문자열이 사용하였던 메모리 공간을 재활용하고 후에 멀티 쓰레드 환경 확장을 생각하여 StringBuffer를 사용함
+	private StringBuffer putFloorPlanFileName;
+	private StringBuffer getFloorPlanFileName;
 	
 	
 	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
@@ -71,8 +72,7 @@ public class FloorPlanController {
 		year = localDate.getYear();
 		month = localDate.getMonthValue(); //getMonthValue 메소드를 사용하면 0을 포함하지 않고 1 ~ 12를 리턴한다.
 		day = localDate.getDayOfMonth();
-		putFloorPlanFileName = null;
-				
+		
 		try {
 			//해당 층의 가장 최신으로 연결되어있는 floorPlan 레코드의 latest 컬럼을 false로 변경해준다.
 			latestFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
@@ -83,9 +83,9 @@ public class FloorPlanController {
 		}
 		
 		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
-		putFloorPlanFileName = floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day);
+		putFloorPlanFileName = new StringBuffer(floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day));
 		//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
-		putFloorPlan = FloorPlan.builder().floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName).build();
+		putFloorPlan = FloorPlan.builder().floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
 		floorPlanService.save(putFloorPlan);
 		
 		InputStream imagePutInputStream = file.getInputStream();
@@ -95,7 +95,7 @@ public class FloorPlanController {
 				    PutObjectArgs.builder()
 				    .bucket(spareBucketName)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
-				    .object(putFloorPlanFileName)
+				    .object(putFloorPlanFileName.toString())
 					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
 				    //Object의 사이즈를 알 경우에는 3번째 인자인 partSize를 자동감지를 위해 -1로 준다.
 				    .stream(imagePutInputStream, file.getSize() , -1)
@@ -127,7 +127,7 @@ public class FloorPlanController {
 		
 		try {
 			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
-			getFloorPlanFileName = getFloorPlan.getFloorPlanFileName();
+			getFloorPlanFileName = new StringBuffer(getFloorPlan.getFloorPlanFileName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -138,10 +138,10 @@ public class FloorPlanController {
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
 					 .bucket(spareBucketName)
-					 .object(getFloorPlanFileName)
+					 .object(getFloorPlanFileName.toString())
 					 .build());
-			response.addHeader("Content-disposition", getFloorPlanFileName);
-			response.setContentType(URLConnection.guessContentTypeFromName(getFloorPlanFileName));
+			response.addHeader("Content-disposition", getFloorPlanFileName.toString());
+			response.setContentType(URLConnection.guessContentTypeFromName(getFloorPlanFileName.toString()));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch(Exception e) {
