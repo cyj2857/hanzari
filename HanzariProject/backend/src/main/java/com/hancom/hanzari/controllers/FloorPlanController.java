@@ -71,6 +71,9 @@ public class FloorPlanController {
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
 	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
+		
+		LOGGER.info("FloorPlanController.putImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
+		
 		currentTime = new Date();
 		localDate = currentTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		year = localDate.getYear();
@@ -83,7 +86,7 @@ public class FloorPlanController {
 			latestFloorPlan.setLatest(false);
 			floorPlanService.save(latestFloorPlan);
 		} catch(Exception e) {
-			LOGGER.error("Can't find matched floorPlan record. Exception message : " + e);
+			LOGGER.error("Can't find matched floorPlan record. Exception message : {}", e);
 		}
 		
 		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
@@ -108,7 +111,7 @@ public class FloorPlanController {
 				    .contentType(file.getContentType())
 				    .build());
 		} catch (Exception e) {
-			LOGGER.error("Can't put object in the MinIO bucket. Exception message : " + e);
+			LOGGER.error("Can't put object in the MinIO bucket. Exception message : {}", e);
 		} finally {
 			//finally안에는 try안에서 리턴문에 의해 메소드가 종료될 경우 그 전에 해야할 작업들을 적어줄 수 있다.
 			//해당 finally문 안에는 후에 try문 안에 return문을 작성할 경우를 대비해 imagePutInputStream을 닫아주어야한다.
@@ -127,7 +130,8 @@ public class FloorPlanController {
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
 	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
-		getFloorPlanFileName = null;
+		
+		LOGGER.info("FloorPlanController.getImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
 		try {
 			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
@@ -149,7 +153,7 @@ public class FloorPlanController {
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch(Exception e) {
-			LOGGER.error("Can't get object from the MinIO bucket. Exception message : " + e);
+			LOGGER.error("Can't get object from the MinIO bucket. Exception message : {}", e);
 		} finally {
 			//TODO putImageFile 메소드 안의 finally문에 작성한 내용 참조
 			if(imageGetInputStream != null)
