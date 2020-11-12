@@ -76,7 +76,7 @@ export default {
 
           if (seats[j].employee_id != null) {
             //공석 제외
-            newSeat.seatid = seats[j].seatId + "번";
+            newSeat.seatid = seats[j].seatId;
             newSeat.employeeid = seats[j].employee_id;
             newSeat.name = seats[j].employee_name;
             newSeat.department = seats[j].employee_department;
@@ -89,8 +89,9 @@ export default {
       console.log(this.allEmployeeSeat);
     },
     showSeatButtonClicked(item) {
+      console.log(item)
       eventBus.$emit("showSeat", item);
-      eventBus.$emit("showSeatFloor", item.floor_id);
+      eventBus.$emit("showSeatFloor", item.floorid);
     },
   },
 };
