@@ -108,6 +108,7 @@ public class FloorPlanController {
 		
 		InputStream imagePutInputStream = file.getInputStream();
 
+		//층 정보가 넘
 		try {
 			minioClient.putObject(
 				    PutObjectArgs.builder()
@@ -144,17 +145,17 @@ public class FloorPlanController {
 		
 		LOGGER.info("FloorPlanController.getImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
-		try {
-			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
-		} catch (Exception e) {
-			LOGGER.error("Can't find FloorPlan record from database. Exception message : ", e);
-		}
-		
-		getFloorPlanFileName = new StringBuffer();
-		getFloorPlanFileName.append(getFloorPlan.getFloorPlanFileName());
 		InputStream imageGetInputStream = null;
 		
+		//클라이언트에서 요청을 할 때 잘못된 요청(floorId가 undefined가 오는 등)이 오더라도 try catch문을 두개로 나눠두었기에 이전 getFloorPlanFileName에 저장되어있던 이전 이미지 파일을 가져오게 된다.
+		//따라서 모든 과정을 하나의 try catch문에 넣어주어 하나의 과정에서 에러가 난다면 다음 단계로 넘어갈 수 없도록 해주어야한다.
 		try {
+			//DB에서 요청한 층 정보와 연결된 레코드를 찾아 이미지 이름 찾기
+			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
+			getFloorPlanFileName = new StringBuffer();
+			getFloorPlanFileName.append(getFloorPlan.getFloorPlanFileName());
+			
+			//MinIO 서버 버킷에서 이미지 가져오기
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
 					 .bucket(spareBucketName)
@@ -164,8 +165,9 @@ public class FloorPlanController {
 			response.setContentType(URLConnection.guessContentTypeFromName(getFloorPlanFileName.toString()));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
-		} catch(Exception e) {
-			LOGGER.error("Can't get object from the MinIO bucket. Exception message : ", e);
+
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
 		} finally {
 			//TODO putImageFile 메소드 안의 finally문에 작성한 내용 참조
 			if(imageGetInputStream != null)
