@@ -2,8 +2,7 @@
   <div>
     <v-toolbar color="black" dark>
       <v-toolbar-title>{{ currentSelectedFloorName }} Floor</v-toolbar-title>
-      <v-spacer></v-spacer
-      >
+      <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn @click="deleteAllBtn" text> Delete All </v-btn>
         <v-divider vertical></v-divider>
@@ -19,9 +18,12 @@
       ref="canvas"
       class="canvas"
       id="canvas"
-      width="1150px"
       height="800px"
       style="text-align: center"
+      width="1150px"
+      :style="{
+        marginLeft: this.canvasStatus ? '250px' : '50px',
+      }"
     ></canvas>
 
     <v-menu
@@ -69,6 +71,7 @@ export default {
   data() {
     return {
       floorCanvas: null,
+      canvasStatus: false,
 
       zoom: 1,
       fontSize: 25,
@@ -112,6 +115,10 @@ export default {
     };
   },
   created() {
+    eventBus.$on("canvasStatus", (isStatusOn) => {
+      console.log(isStatusOn);
+      this.canvasStatus = isStatusOn;
+    });
     if (this.allFloorList.length) {
       this.currentSelectedFloorName = this.allFloorList[
         this.allFloorList.length - 1
@@ -279,7 +286,7 @@ export default {
               "employee_id",
               "employee_name",
               "employee_department",
-              "employee_number"
+              "employee_number",
             ]);
 
             this.showToolTip(
@@ -378,6 +385,8 @@ export default {
           img.set({
             scaleX: this.floorCanvas.width / img.width,
             scaleY: this.floorCanvas.height / img.height,
+            centeredRotation: true,
+            centeredScaling: true,
           });
           this.floorCanvas.setBackgroundImage(
             img,
@@ -679,7 +688,7 @@ export default {
 
       eachEmployeeSeatList.push(activeObject);
 
-      eventBus.$emit("allSeatMap", this.allSeatMap)
+      eventBus.$emit("allSeatMap", this.allSeatMap);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     addSeatNameInGroup() {},
@@ -934,7 +943,7 @@ export default {
           "<br>아이디 : " +
           employee_id +
           "<br>부서 : " +
-          employee_department+
+          employee_department +
           "<br>내선번호 : " +
           employee_number;
 
@@ -946,7 +955,8 @@ export default {
     closeToolTip() {
       this.toolTipStatus = false;
     },
-    showSeat(seat) { //좌석 하이라이트
+    showSeat(seat) {
+      //좌석 하이라이트
       let seatFloor = null;
       //seat의 층과 현재층이 같지 않다면
       if (this.currentSelectedFloorId != seat.floorid) {
@@ -957,7 +967,7 @@ export default {
       else {
         seatFloor = this.currentSelectedFloorId;
       }
-      
+
       let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
       for (let i = 0; i < eachFloorSeatList.length; i++) {
         let group = eachFloorSeatList[i];
@@ -1070,7 +1080,6 @@ export default {
             imgData.append("imageFile", file);
             this.$emit("saveImages", "images", imgData, floorid);
           }
-
         }
 
         //자리 저장
@@ -1370,6 +1379,7 @@ export default {
     },
     clickPrintBtn() {
       let url = document.getElementById("canvas").toDataURL();
+      console.log(url)
       var windowContent = "<!DOCTYPE html>";
       windowContent += "<html>";
       windowContent += "<head><title>Print</title>";
