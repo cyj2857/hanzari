@@ -1,8 +1,13 @@
 <template>
   <div>
     <v-toolbar color="black" dark>
-      <v-toolbar-title>{{currentSelectedFloorName}}</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-toolbar-title>{{ currentSelectedFloorName }} Floor</v-toolbar-title>
+      <v-spacer></v-spacer
+      ><v-toolbar-items class="hidden-sm-and-down"
+        ><v-btn text @click="clickDobuleCanvasMode"
+          >Dobule Canvas Mode</v-btn
+        ></v-toolbar-items
+      ><v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn @click="deleteAllBtn" text> Delete All </v-btn>
         <v-divider vertical></v-divider>
@@ -13,14 +18,16 @@
         <v-btn @click="clickPrintBtn" text> Print </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    <canvas
-      ref="canvas"
-      class="canvas"
-      id="canvas"
-      width="1150px"
-      height="800px"
-      style="text-align: center"
-    ></canvas>
+    
+      <canvas
+        ref="canvas"
+        class="canvas"
+        id="canvas"
+        width="1150px"
+        height="800px"
+        style="text-align: center"
+      ></canvas>
+      
     <v-menu
       v-model="contextMenuStatus"
       :position-x="contextMenuXLocation"
@@ -65,7 +72,11 @@ export default {
   ],
   data() {
     return {
+      doubleCanvasStatus: false,
+
       floorCanvas: null,
+      floorCanvas2: null,
+
       zoom: 1,
       fontSize: 25,
       clipboard: null,
@@ -108,7 +119,16 @@ export default {
     };
   },
   created() {
-     eventBus.$on("changeFloor", (floor) => {
+    if (this.allFloorList.length) {
+      this.currentSelectedFloorName = this.allFloorList[
+        this.allFloorList.length - 1
+      ].floor_name;
+      this.currentSelectedFloorId = this.allFloorList[
+        this.allFloorList.length - 1
+      ].floor_id;
+    }
+
+    eventBus.$on("changeFloor", (floor) => {
       if (floor) {
         this.currentSelectedFloorId = floor.floor_id;
         this.currentSelectedFloorName = floor.floor_name;
@@ -116,6 +136,13 @@ export default {
       } else {
         this.currentSelectedFloorId = null;
         this.currentSelectedFloorName = null;
+
+        this.floorCanvas.backgroundImage = 0;
+        this.floorCanvas.backgroundColor = "aliceblue";
+        this.floorCanvas.getObjects().forEach((obj) => {
+          this.floorCanvas.remove(obj);
+        });
+        this.floorCanvas.renderAll();
       }
     });
     eventBus.$on("changeAddVacantSwitch", (switchValue) => {
@@ -131,37 +158,40 @@ export default {
     });
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
+      console.log(this.allFloorList);
     });
     eventBus.$on("managerFloorList", (managerFloors) => {
       this.managerFloorList = managerFloors;
+
+      console.log(this.managerFloorList);
     });
     eventBus.$on("changeToVacant", (status) => {
-      if (status) {
+      if (status && this.floorCanvas.getActiveObject()) {
         this.changeToVacant();
+      } else {
+        alert("there is no selected object");
       }
     });
     eventBus.$on("inputSeatName", (seatName) => {
-      this.inputSeatName(seatName);
-    });
-    eventBus.$on("allFloorList", (allFloors) => {
-      //console.log(allFloors);
+      if (seatName && this.floorCanvas.getActiveObject()) {
+        this.inputSeatName(seatName);
+      } else {
+        alert("there is no selected object");
+      }
     });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
-    eventBus.$on("allFloorList", (allFloors) => {
-      this.allFloorList = allFloors;
-    });
-    eventBus.$on("managerFloorList", (managerFloors) => {
-      this.managerFloorList = managerFloors;
-    });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
       this.allSeatMap.delete(floor_id);
       //managerAllSeatMap 에서 삭제되어도 되는 이유 :
-      //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것. 
+      //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것.
       //그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함
       this.managerAllSeatMap.delete(floor_id);
+
+      if (this.allFloorList.length == 0) {
+      }
     });
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
@@ -181,7 +211,8 @@ export default {
     this.clickLoadCurrentFloor(); //현재 층 이미지와 자리 로드
   },
   methods: {
-    initializing() { //canvas, map 생성
+    initializing() {
+      //canvas, map 생성
       if (this.floorCanvas == null) {
         const ref = this.$refs.canvas;
         this.floorCanvas = new fabric.Canvas(ref, {
@@ -209,7 +240,8 @@ export default {
               new fabric.Point(evt.offsetX, evt.offsetY),
               this.zoom
             );
-          } else {//reset canvas ratio
+          } else {
+            //reset canvas ratio
             this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
             this.zoom = 1;
           }
@@ -229,9 +261,8 @@ export default {
               this.addVacantSeat(posX, posY);
             } else if (this.floorCanvas.getActiveObject()) {
               //contextMenu
-              var pointer = this.floorCanvas.getPointer(event.e);
-              var posX = this.floorCanvas.getActiveObject().left;
-              var posY = this.floorCanvas.getActiveObject().top;
+              var posX = event.e.clientX;
+              var posY = event.e.clientY;
               this.showContextMenu(posX, posY);
             }
           }
@@ -268,10 +299,15 @@ export default {
         this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
       }
     },
+    clickDobuleCanvasMode() {
+      this.doubleCanvasStatus = !this.doubleCanvasStatus;
+      console.log(this.doubleCanvasStatus);
+    },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
-    checkZoom() {// text, fontSize 관련
+    checkZoom() {
+      // text, fontSize 관련
       let currentZoom = this.zoom;
       if (5 <= currentZoom && currentZoom <= 7) {
         this.floorCanvas.getObjects().forEach((obj) => {
@@ -310,9 +346,11 @@ export default {
       );
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
-        if (typeof typeCheck === "string") {//url
+        if (typeof typeCheck === "string") {
+          //url
           this.loadImageUrl(this.allImageMap.get(this.currentSelectedFloorId));
-        } else { //file
+        } else {
+          //file
           this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
         }
         //현재 층에 그린 도형들이 있다면
@@ -368,7 +406,8 @@ export default {
     },
     //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
-      if (!floor) { // 초반에 층이 생성 안되었을때
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
         return;
       }
       //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
@@ -383,7 +422,8 @@ export default {
       }
     },
     getManagerEachFloorSeatList: function (floor) {
-      if (!floor) { // 초반에 층이 생성 안되었을때
+      if (!floor) {
+        // 초반에 층이 생성 안되었을때
         return;
       }
       if (!this.managerAllSeatMap.get(floor)) {
@@ -476,7 +516,8 @@ export default {
               this.floorCanvas.renderAll();
             }
             break;
-          case 110: case 46: // delete
+          case 110:
+          case 46: // delete
             this.deleteBtn();
             break;
         }
@@ -556,6 +597,7 @@ export default {
 
         //manageSeatInfo
         eventBus.$emit("dblClickedGroup", group);
+        console.log("불림");
         //eventBus.$emit("manageSeatInfocomponentStatus", false); //manageSeats
       });
 
@@ -579,21 +621,6 @@ export default {
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);
       this.floorCanvas.renderAll();
-
-      //console.log("전체층의 가시석 자리 맵 size = " + this.allSeatMap.size);
-      //console.log(
-      //  "전체층의 관리 자리 맵 size = " + this.managerAllSeatMap.size
-      //);
-      //console.log(
-      //  this.currentSelectedFloorId +
-      //    "의 자리 리스트 length = " +
-      //    eachFloorSeatList.length
-      //);
-      //console.log(
-      //  this.currentSelectedFloorId +
-      //    "의 자리 리스트 length = " +
-      //    managerEachFloorSeatList.length
-      //);
 
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
     },
@@ -661,29 +688,37 @@ export default {
       eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
+    addSeatNameInGroup() {},
     inputSeatName(seatName) {
+      let activeObject = null;
+      var seatNumber = 0;
+
       if (!this.floorCanvas.getActiveObject()) {
         return;
       }
-      let activeObject = this.floorCanvas.getActiveObject();
-      activeObject.set("modify", true);
-      activeObject.seatName = seatName;
 
-      let seatNameObject = new fabric.IText(seatName, {
-        left: activeObject.item(0).left,
-        top: activeObject.item(0).top - 15,
-        fontSize: 13,
-        fill: "black",
+      this.floorCanvas.getActiveObjects().forEach((obj) => {
+        if (obj.item(2)) {
+          obj.remove(obj.item(2));
+        }
+
+        seatNumber++;
+        obj.set("modify", true);
+        obj.seatName = seatName + seatNumber;
+
+        let seatNameObject = new fabric.IText(obj.seatName, {
+          left: obj.item(0).left,
+          top: obj.item(0).top - 15,
+          fontSize: 13,
+          fill: "black",
+        });
+
+        obj.add(seatNameObject);
       });
-      if (activeObject.item(2)) {
-        // seatNmae 변경시
-        activeObject.remove(activeObject.item(2));
-      }
-
-      activeObject.add(seatNameObject);
       this.floorCanvas.renderAll();
+
     },
-    deleteAllBtn() { 
+    deleteAllBtn() {
       if (confirm("Are you sure?")) {
         this.floorCanvas
           .getObjects()
@@ -798,7 +833,7 @@ export default {
     cloneSeat() {
       this.copySelectedSeat();
       this.pasteSelectedSeat();
-    }, 
+    },
     //clone하기 (ctrl+c)
     copySelectedSeat() {
       if (!this.floorCanvas.getActiveObject()) return;
@@ -868,7 +903,7 @@ export default {
     },
     showContextMenu(clientX, clientY) {
       this.contextMenuStatus = false;
-      this.contextMenuXLocation = clientX + 750;
+      this.contextMenuXLocation = clientX + 10;
       this.contextMenuYLocation = clientY;
       this.$nextTick(() => {
         this.contextMenuStatus = true;
@@ -916,6 +951,7 @@ export default {
     },
     clickSaveBtn() {
       if (this.managerFloorList) {
+        console.log(this.managerFloorList);
         //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
@@ -1140,24 +1176,29 @@ export default {
         group.add(seatNameObject);
       }
 
-      group.on("mousedown", (e) => {
+      group.on("mousedblclick", (e) => {
         let group = e.target;
-        if (e.button === 2) {
-          let groupToObject = group.toObject([
-            "employee_id",
-            "employee_name",
-            "employee_department",
-          ]);
-          eventBus.$emit("employee_id", groupToObject.employee_id);
-          eventBus.$emit("employee_name", groupToObject.employee_name);
-          eventBus.$emit("floor_name", this.currentSelectedFloorName);
-          eventBus.$emit(
-            "employee_department",
-            groupToObject.employee_department
-          );
-          this.getEmployeeDialog();
-        }
+
+        eventBus.$emit("dblClickedGroup", group);
+        console.log("불림");
       });
+
+      this.floorCanvas.on("object:scaling", (e) => {
+        let scaledObject = e.target;
+        let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
+        let height = scaledObject.getScaledHeight() / scaledObject.scaleY;
+
+        scaledObject.width = width;
+        scaledObject.height = height;
+
+        let groupx = scaledObject.toObject([
+          "width",
+          "height",
+          "scaleX",
+          "scaleY",
+        ]);
+      });
+
       return group;
     },
     clickLoadCurrentFloor() {

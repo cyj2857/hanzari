@@ -33,10 +33,6 @@
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       />
     </div>
-    <div class="d3" id="d3">
-      <ManageSeatInfo/>
-    </div>
-
   </div>
 </template>
 
@@ -58,7 +54,7 @@ export default {
     Tabs,
     AttachCanvas,
     MappingEmployee,
-    ManageSeatInfo
+    ManageSeatInfo,
   },
   data() {
     return {
@@ -340,6 +336,14 @@ export default {
       console.log("saveTableName is");
       console.log(saveTableName);
 
+      for (var key of saveData.keys()) {
+        console.log(key);
+      }
+
+      for (var value of saveData.values()) {
+        console.log(value);
+      }
+
       axios
         .post(
           "http://" +
@@ -459,13 +463,8 @@ export default {
 }
 .d2 {
   float: left;
-  width: 50%;
+  width: 75%;
   height: 100%;
   text-align: center;
-}
-.d3 {
-  float: right;
-  width: 25%;
-  height: 100%;
 }
 </style>

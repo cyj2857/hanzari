@@ -1,34 +1,73 @@
 <template>
   <div>
     <v-card flat color="transparent">
-      <v-card-title>Floor</v-card-title>
       <v-row>
+        <v-col cols="12" sm="8"> <v-card-title>Floor</v-card-title></v-col
+        ><v-col cols="12" sm="4">
+          <v-btn small
+            ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
+          >
+          <v-btn small
+            ><v-icon dark @click="addFloor">add_circle</v-icon></v-btn
+          ></v-col
+        ></v-row
+      >
+      <v-row style="overflow-y: scroll; height: 180px">
         <v-col
           v-for="floor of this.allFloorList"
           :key="floor.floor_id"
           class="d-flex child-flex"
           cols="4"
         >
-          <v-btn large @click="clickFloor(floor)">{{ floor.floor_name }}</v-btn>
+          <v-btn
+            large
+            @click="clickFloor(floor)"
+            :style="{
+              border: clickIndexes.includes(floor.floor_id)
+                ? 'thick solid black'
+                : '',
+            }"
+            >{{ floor.floor_name }}</v-btn
+          >
         </v-col>
       </v-row>
-      <v-btn small
-        ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
-      >
-      <v-btn small><v-icon dark @click="addFloor">add_circle</v-icon></v-btn>
       <v-divider class="mx-4"></v-divider>
       <v-card-title>FloorName</v-card-title>
       <v-row>
         <v-text-field
           v-if="currentSelectedFloor"
           v-model="currentSelectedFloor.floor_name"
+          @keyup="editFloorName"
           label="Enter FloorName"
           solo
         ></v-text-field
       ></v-row>
       <v-divider class="mx-4"></v-divider>
-      <v-card-title> Vacant Seats </v-card-title>
-      <v-card-title> All Seats </v-card-title>
+      <v-card-title>
+        Vacant Seats {{ currentFloorVacantSeatsLength }}
+      </v-card-title>
+      <v-card-title> All Seats {{ currentFloorSeatsLength }} </v-card-title>
+
+      <v-row>
+        <v-col cols="12">
+          <v-card-title>Get Image From Your PC</v-card-title>
+          <v-card-text>
+            <input
+              v-show="false"
+              ref="Upload"
+              type="file"
+              @change="changeImageFile"
+            />
+            <v-btn @click="$refs.Upload.click()"
+              >Background Image Setting</v-btn
+            >
+            <v-card>
+              <v-card-text>{{ currentFloorImage }}</v-card-text>
+            </v-card>
+          </v-card-text>
+        </v-col>
+      </v-row>
+      <v-divider class="mx-4"></v-divider>
     </v-card>
   </div>
 </template>
@@ -36,7 +75,7 @@
 <script>
 import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
-import ManageAddFloors from "@/components/ManageAddFloors.vue";
+
 export default {
   props: ["copyfloorList"],
   components: {},
@@ -46,17 +85,74 @@ export default {
       firstLoadWatch: null,
       floorName: null,
 
-      allFloorList: this.copyfloorList, // ���⿡�� sort �ȸ���
-      managerFloorList: [], // DB�� save �� ����Ʈ
+      changeBackgroundColor: false,
 
-      currentSelectedFloor: this.copyfloorList[0],
+      allFloorList: [],
+      managerFloorList: [],
+
+      currentSelectedFloor: null,
+
+      currentFloorSeatsLength: 0,
+      currentFloorVacantSeatsLength: 0,
+
+      employees: [],
+
+      clickIndexes: null,
+
+      allImageMap: null,
+      currentFloorImage: null,
     };
   },
   created() {
-    this.managerFloorList = this.allFloorList.slice();
-    this.length = this.copyfloorList.length;
+    if (this.copyfloorList.length) {
+      this.currentSelectedFloor = this.copyfloorList[
+        this.copyfloorList.length - 1
+      ];
+      this.allFloorList = this.copyfloorList;
+      this.managerFloorList = this.allFloorList.slice();
+      this.length = this.copyfloorList.length;
+      this.clickIndexes = this.currentSelectedFloor.floor_id;
+    } else {
+    }
+
+    if (this.allImageMap == null) {
+      this.allImageMap = new Map();
+    }
+    eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
+      if (eachFloorSeatList == undefined) {
+        return;
+      } else {
+        this.renderEachFloorSeatList(eachFloorSeatList);
+      }
+    });
   },
   methods: {
+    changeImageFile(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.saveImageFile(files[0]);
+    },
+    saveImageFile(file) {
+      this.currentFloorImage = file.name;
+      this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
+      eventBus.$emit("allImageMap", this.allImageMap);
+    },
+    editFloorName() {
+      const idx = this.allFloorList.findIndex((item) => {
+        return item.floor_id == this.currentSelectedFloor.floor_id;
+      });
+
+      this.allFloorList[idx].modify = true;
+      this.managerFloorList[idx].modify = true;
+
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
+    },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
         c
@@ -67,29 +163,50 @@ export default {
       });
     },
     clickFloor(floor) {
+      this.clickIndexes = [];
+      this.clickIndexes.push(floor.floor_id);
+
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
-      eventBus.$emit("currentSelectedFloorToManageSeats", floor); //ManageSeats
-      console.log(floor);
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
     },
     removeFloor() {
       if (this.length > 0) {
-        //items���� id�� ���� floor�� �� index ��������
         let currentFloorId = this.currentSelectedFloor.floor_id;
         const idx = this.allFloorList.findIndex(function (item) {
           return item.floor_id == currentFloorId;
         });
         if (idx > -1) {
           eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
-
-          // ���� ����
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
-          //items���� �� index ����
+
+          eventBus.$emit("changeFloor", this.allFloorList[idx - 1]);
+          eventBus.$emit(
+            "currentSelectedFloorToManageSeats",
+            this.allFloorList[idx - 1]
+          );
+          let allFloors = this.allFloorList.slice();
+          eventBus.$emit("allFloorList", allFloors);
+
+          let managerFloors = this.managerFloorList.slice();
+          eventBus.$emit("managerFloorList", managerFloors);
+
+          this.currentSelectedFloor = this.allFloorList[idx - 1];
         }
+
         this.length--;
 
-        console.log(this.length + " length");
+        if (this.length > 0) {
+          this.clickIndexes = [];
+          this.clickIndexes.push(this.currentSelectedFloor.floor_id);
+          console.log(this.length + " length");
+        }
       } else {
         alert("there are no seats to delete!");
       }
@@ -107,7 +224,55 @@ export default {
       this.allFloorList.push(newFloor);
       this.managerFloorList.push(newFloor);
 
+      this.currentSelectedFloor = newFloor;
+
+      this.clickIndexes = [];
+      this.clickIndexes.push(this.currentSelectedFloor.floor_id);
+
       this.length++;
+
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit(
+        "currentSelectedFloorToManageSeats",
+        this.currentSelectedFloor
+      );
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
+    },
+    renderEachFloorSeatList(eachFloorSeatList) {
+      //리스트 초기화
+      this.employees = [];
+      this.currentFloorVacantSeatsLength = 0;
+
+      if (eachFloorSeatList.length != 0) {
+        for (let i = 0; i < eachFloorSeatList.length; i++) {
+          if (eachFloorSeatList[i].employee_id == null) {
+            console.log(eachFloorSeatList[i].seatId + "빈공석의 seatId입니다");
+            this.currentFloorVacantSeatsLength++;
+          }
+
+          let employee = {};
+          employee.name = eachFloorSeatList[i].employee_name;
+          employee.department = eachFloorSeatList[i].employee_department;
+          employee.number = eachFloorSeatList[i].employee_number;
+
+          this.employees.push({
+            name: employee.name,
+            department: employee.department,
+            number: employee.number,
+          });
+
+          this.currentFloorSeatsLength = this.employees.length;
+
+          console.log(employee.number);
+        }
+      } else {
+        this.currentFloorSeatsLength = 0;
+      }
     },
   },
 };
