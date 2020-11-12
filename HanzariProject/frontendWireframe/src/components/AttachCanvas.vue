@@ -3,11 +3,7 @@
     <v-toolbar color="black" dark>
       <v-toolbar-title>{{ currentSelectedFloorName }} Floor</v-toolbar-title>
       <v-spacer></v-spacer
-      ><v-toolbar-items class="hidden-sm-and-down"
-        ><v-btn text @click="clickDobuleCanvasMode"
-          >Dobule Canvas Mode</v-btn
-        ></v-toolbar-items
-      ><v-spacer></v-spacer>
+      >
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn @click="deleteAllBtn" text> Delete All </v-btn>
         <v-divider vertical></v-divider>
@@ -18,16 +14,16 @@
         <v-btn @click="clickPrintBtn" text> Print </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    
-      <canvas
-        ref="canvas"
-        class="canvas"
-        id="canvas"
-        width="1150px"
-        height="800px"
-        style="text-align: center"
-      ></canvas>
-      
+
+    <canvas
+      ref="canvas"
+      class="canvas"
+      id="canvas"
+      width="1150px"
+      height="800px"
+      style="text-align: center"
+    ></canvas>
+
     <v-menu
       v-model="contextMenuStatus"
       :position-x="contextMenuXLocation"
@@ -72,10 +68,7 @@ export default {
   ],
   data() {
     return {
-      doubleCanvasStatus: false,
-
       floorCanvas: null,
-      floorCanvas2: null,
 
       zoom: 1,
       fontSize: 25,
@@ -305,10 +298,6 @@ export default {
         this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
       }
     },
-    clickDobuleCanvasMode() {
-      this.doubleCanvasStatus = !this.doubleCanvasStatus;
-      //console.log(this.doubleCanvasStatus);
-    },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
@@ -364,7 +353,7 @@ export default {
           for (let i = 0; i < eachfloorSeatList.length; i++) {
             this.floorCanvas.add(eachfloorSeatList[i]);
           }
-          eventBus.$emit("eachFloorSeatList", eachfloorSeatList);
+          eventBus.$emit("allSeatMap", this.allSeatMap);
         }
       } else if (this.allImageMap.get(this.currentSelectedFloorId) == null) {
         //현재 층의 이미지가 저장되어있지 않다면 화면에 그려져있던 이미지와 도형 초기화
@@ -379,7 +368,7 @@ export default {
         this.floorCanvas.backgroundColor = "aliceblue";
         this.floorCanvas.renderAll();
 
-        eventBus.$emit("eachFloorSeatList", eachfloorSeatList);
+        eventBus.$emit("allSeatMap", this.allSeatMap);
       }
     },
     loadImageFile(file) {
@@ -627,8 +616,7 @@ export default {
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);
       this.floorCanvas.renderAll();
-
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("allSeatMap", this.allSeatMap);
     },
     setMappingSeat(item) {
       // 공석 또는 사원이 매핑된 좌석에 사원 매핑
@@ -691,7 +679,7 @@ export default {
 
       eachEmployeeSeatList.push(activeObject);
 
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("allSeatMap", this.allSeatMap)
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     addSeatNameInGroup() {},
@@ -722,7 +710,6 @@ export default {
         obj.add(seatNameObject);
       });
       this.floorCanvas.renderAll();
-
     },
     deleteAllBtn() {
       if (confirm("Are you sure?")) {
@@ -832,7 +819,8 @@ export default {
         activeObject.item(1).set("text", "");
         this.floorCanvas.renderAll();
       }
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+
+      eventBus.$emit("allSeatMap", this.allSeatMap);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     //복제하기 (컨텍스트 메뉴 내부)
@@ -904,7 +892,7 @@ export default {
         eachEmployeeSeatList.push(clonedObj);
       });
 
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("allSeatMap", this.allSeatMap);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     showContextMenu(clientX, clientY) {
@@ -1326,7 +1314,7 @@ export default {
             managerEachFloorSeatList.push(group);
             eachEmployeeSeatList.push(group);
 
-            eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+            eventBus.$emit("allSeatMap", this.allSeatMap);
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
             //console.log(
             //  this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
