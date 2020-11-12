@@ -26,9 +26,17 @@
         >
       </v-toolbar>
       <Tabs
-        v-if="employees && floors && !isStatusOn"
+        v-if="
+          employees &&
+          floors &&
+          !isStatusOn &&
+          currentFloorImage &&
+          otherFloorsImage
+        "
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
+        v-bind:currentFloorImage="currentFloorImage"
+        v-bind:otherFloorsImageList="otherFloorsImage"
       />
     </div>
     <div
