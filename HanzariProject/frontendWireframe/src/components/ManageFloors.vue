@@ -2,14 +2,15 @@
   <div>
     <v-card flat color="transparent">
       <v-row>
-        <v-col cols="12" sm="8">
-        <v-card-title>Floor</v-card-title></v-col><v-col cols="12" sm="4">
-        <v-btn small
-          ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
-        >
-        <v-btn small
-          ><v-icon dark @click="addFloor">add_circle</v-icon></v-btn
-        ></v-col></v-row
+        <v-col cols="12" sm="8"> <v-card-title>Floor</v-card-title></v-col
+        ><v-col cols="12" sm="4">
+          <v-btn small
+            ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
+          >
+          <v-btn small
+            ><v-icon dark @click="addFloor">add_circle</v-icon></v-btn
+          ></v-col
+        ></v-row
       >
       <v-row style="overflow-y: scroll; height: 180px">
         <v-col
@@ -46,6 +47,27 @@
         Vacant Seats {{ currentFloorVacantSeatsLength }}
       </v-card-title>
       <v-card-title> All Seats {{ currentFloorSeatsLength }} </v-card-title>
+
+      <v-row>
+        <v-col cols="12">
+          <v-card-title>Get Image From Your PC</v-card-title>
+          <v-card-text>
+            <input
+              v-show="false"
+              ref="Upload"
+              type="file"
+              @change="changeImageFile"
+            />
+            <v-btn @click="$refs.Upload.click()"
+              >Background Image Setting</v-btn
+            >
+            <v-card>
+              <v-card-text>{{ currentFloorImage }}</v-card-text>
+            </v-card>
+          </v-card-text>
+        </v-col>
+      </v-row>
+      <v-divider class="mx-4"></v-divider>
     </v-card>
   </div>
 </template>
@@ -76,6 +98,9 @@ export default {
       employees: [],
 
       clickIndexes: null,
+
+      allImageMap: null,
+      currentFloorImage: null,
     };
   },
   created() {
@@ -90,6 +115,9 @@ export default {
     } else {
     }
 
+    if (this.allImageMap == null) {
+      this.allImageMap = new Map();
+    }
     eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
       if (eachFloorSeatList == undefined) {
         return;
@@ -99,6 +127,16 @@ export default {
     });
   },
   methods: {
+    changeImageFile(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.saveImageFile(files[0]);
+    },
+    saveImageFile(file) {
+      this.currentFloorImage = file.name;
+      this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
+      eventBus.$emit("allImageMap", this.allImageMap);
+    },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
         return item.floor_id == this.currentSelectedFloor.floor_id;
