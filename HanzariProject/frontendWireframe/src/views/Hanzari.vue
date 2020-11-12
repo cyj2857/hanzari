@@ -3,18 +3,48 @@
     <v-toolbar color="black" dark>
       <v-toolbar-title>Hanzari</v-toolbar-title>
     </v-toolbar>
-    <div class="d1">
+    <div
+      class="d1"
+      :style="{
+        width: isStatusOn ? '10%' : '25%',
+      }"
+    >
+      <v-toolbar color="black" dark>
+        <v-toolbar-items class="hidden-sm-and-down">
+          <v-btn v-if="isStatusOn"
+            ><v-icon large dark @click="toggleOnOff"
+              >keyboard_arrow_right</v-icon
+            ></v-btn
+          ></v-toolbar-items
+        >
+        <v-toolbar-items
+          ><v-btn v-if="!isStatusOn"
+            ><v-icon large dark @click="toggleOnOff"
+              >keyboard_arrow_left</v-icon
+            ></v-btn
+          ></v-toolbar-items
+        >
+      </v-toolbar>
       <Tabs
-        v-if="employees && floors && 
+        v-if="
+          employees &&
+          floors &&
+          !isStatusOn &&
           currentFloorImage &&
-          otherFloorsImage"
+          otherFloorsImage
+        "
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
         v-bind:currentFloorImage="currentFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
       />
     </div>
-    <div class="d2">
+    <div
+      class="d2"
+      :style="{
+        width: isStatusOn ? '90%' : '75%',
+      }"
+    >
       <AttachCanvas
         v-if="
           employees &&
@@ -47,6 +77,7 @@ import Tabs from "@/components/Tabs.vue";
 import AttachCanvas from "@/components/AttachCanvas.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
 import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
+import { eventBus } from "../main";
 
 const portNum = 8081;
 const host = "172.30.1.53";
@@ -74,6 +105,7 @@ export default {
       floorIdList: [],
       currentFloor: null,
       currentFloorId: null,
+      isStatusOn: false,
     };
   },
   async created() {
@@ -91,6 +123,15 @@ export default {
     this.otherFloorsSeat = await this.loadOtherFloorSeats();
   },
   methods: {
+    toggleOnOff() {
+      this.isStatusOn = !this.isStatusOn;
+
+      this.statusIndex = [];
+      this.statusIndex.push(this.isStatusOn);
+
+      eventBus.$emit("canvasStatus", this.isStatusOn);
+    },
+
     async getEmployees() {
       let initEmployeeList = new Array();
       try {
