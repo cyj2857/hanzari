@@ -99,11 +99,11 @@ export default {
 
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      console.log(this.allFloorList);
+      //console.log(this.allFloorList);
     });
 
     eventBus.$on("changeFloor", (floor) => {
-      console.log(floor);
+      //console.log(floor);
       if (floor) {
         // null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;

@@ -153,50 +153,65 @@ export default {
     //현재 층 이미지 가져오기
     async getCurrentFloorImage() {
       let currentFloorImage = new Array();
-      try {
-        let response = await axios.get(
-          "http://172.30.1.56:" +
-            portNum +
-            "/api/buildings/" +
-            building_id +
-            "/floors/" +
-            this.currentFloorId +
-            "/images"
-        );
+      if (this.currentFloorId != null) {
+        try {
+          console.log(this.currentFloorId); //undefined
+          let response = await axios.get(
+            "http://" +
+              "172.30.1.56" +
+              ":" +
+              portNum +
+              "/api/buildings/" +
+              building_id +
+              "/floors/" +
+              this.currentFloorId +
+              "/images"
+          );
 
-        let newImage = {};
-        newImage.url = response.config.url;
-        newImage.floorid = this.currentFloorId;
-        currentFloorImage.push(newImage);
-      } catch (error) {
-        console.log(error);
+          let newImage = {};
+          newImage.url = response.config.url;
+          newImage.floorid = this.currentFloorId;
+          currentFloorImage.push(newImage);
+        } catch (error) {
+          console.log(error);
+        }
       }
+
       return currentFloorImage;
     },
     //나머지 층 이미지 가져오기
     async loadOtherFloorsImage() {
       let otherFloorImageList = new Array();
       let responseList = null;
-      try {
-        for (let i = 0; i < this.floorIdList.length - 1; i++) {
-          let response = await axios.get(
-            "http://172.30.1.56:" +
-              portNum +
-              "/api/buildings/" +
-              building_id +
-              "/floors/" +
-              this.floorIdList[i] +
-              "/images"
-          );
-          let newImage = {};
-          newImage.url = response.config.url;
-          newImage.floorid = this.floorIdList[i];
-          responseList = newImage;
-          otherFloorImageList.push(responseList);
+
+      if (this.floorIdList.length > 0) {
+        try {
+          //console.log(this.floorIdList.length);
+          for (let i = 0; i < this.floorIdList.length - 1; i++) {
+            //console.log(this.floorIdList[i]);
+            let response = await axios.get(
+              "http://" +
+                "172.30.1.56" +
+                ":" +
+                portNum +
+                "/api/buildings/" +
+                building_id +
+                "/floors/" +
+                this.floorIdList[i] +
+                "/images"
+            );
+
+            let newImage = {};
+            newImage.url = response.config.url;
+            newImage.floorid = this.floorIdList[i];
+            responseList = newImage;
+            otherFloorImageList.push(responseList);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
       }
+
       this.otherFloorsImage = otherFloorImageList;
       return this.otherFloorsImage;
     },
@@ -332,18 +347,18 @@ export default {
       console.log("saveTableName is");
       console.log(saveTableName);
 
-      for (var key of saveData.keys()) {
-        console.log(key);
-      }
+      //for (var key of saveData.keys()) {
+      //  console.log(key);
+      //}
 
-      for (var value of saveData.values()) {
-        console.log(value);
-      }
+      //for (var value of saveData.values()) {
+      //  console.log(value);
+      //}
 
       axios
         .post(
           "http://" +
-            host +
+            "172.30.1.56" +
             ":" +
             portNum +
             "/api/buildings/" +

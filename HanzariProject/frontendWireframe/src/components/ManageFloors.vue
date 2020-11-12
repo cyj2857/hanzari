@@ -121,6 +121,14 @@ export default {
     eventBus.$on("allSeatMap", (allSeatMap) => {
       this.allSeatMap = allSeatMap;
     });
+    eventBus.$on("showSeatFloor", (floorid) => {
+      let seatFloorId = floorid;
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        if (seatFloorId == this.allFloorList[i].floor_id) {
+          this.clickFloor(this.allFloorList[i]);
+        }
+      }
+    });
   },
   methods: {
     showToolTip(floor) {
@@ -267,7 +275,7 @@ export default {
         if (this.length > 0) {
           this.clickIndexes = [];
           this.clickIndexes.push(this.currentSelectedFloor.floor_id);
-          console.log(this.length + " length");
+          //console.log(this.length + " length");
         }
       } else {
         alert("there are no seats to delete!");

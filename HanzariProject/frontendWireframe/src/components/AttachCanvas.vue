@@ -176,6 +176,10 @@ export default {
       this.allImageMap = allImageMap;
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
+    eventBus.$on("showSeat", (seat) => {
+      //console.log(seat);
+      this.showSeat(seat);
+    });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
       this.allSeatMap.delete(floor_id);
       //managerAllSeatMap 에서 삭제되어도 되는 이유 :
@@ -275,6 +279,7 @@ export default {
               "employee_id",
               "employee_name",
               "employee_department",
+              "employee_number"
             ]);
 
             this.showToolTip(
@@ -282,7 +287,8 @@ export default {
               posY,
               groupToObject.employee_id,
               groupToObject.employee_name,
-              groupToObject.employee_department
+              groupToObject.employee_department,
+              groupToObject.employee_number
             );
           } else {
             this.closeToolTip();
@@ -586,7 +592,7 @@ export default {
 
         //manageSeatInfo
         eventBus.$emit("dblClickedGroup", group);
-        console.log("불림");
+        //console.log("불림");
         //eventBus.$emit("manageSeatInfocomponentStatus", false); //manageSeats
       });
 
@@ -912,7 +918,8 @@ export default {
       clientY,
       employee_id,
       employee_name,
-      employee_department
+      employee_department,
+      employee_number
     ) {
       this.toolTipXLocation = clientX;
       this.toolTipYLocation = clientY;
@@ -927,7 +934,9 @@ export default {
           "<br>아이디 : " +
           employee_id +
           "<br>부서 : " +
-          employee_department;
+          employee_department+
+          "<br>내선번호 : " +
+          employee_number;
 
         this.toolTipColor = "pink lighten-2";
       }
@@ -937,9 +946,85 @@ export default {
     closeToolTip() {
       this.toolTipStatus = false;
     },
+    showSeat(seat) { //좌석 하이라이트
+      let seatFloor = null;
+      //seat의 층과 현재층이 같지 않다면
+      if (this.currentSelectedFloorId != seat.floorid) {
+        //탭 전환 코드
+        seatFloor = seat.floorid;
+      }
+      //seat의 층과 현재층이 같다면
+      else {
+        seatFloor = this.currentSelectedFloorId;
+      }
+      
+      let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
+      for (let i = 0; i < eachFloorSeatList.length; i++) {
+        let group = eachFloorSeatList[i];
+        let asObject = group.toObject([
+          "employee_id",
+          "floor_id",
+          "seatId",
+          "employee_department",
+        ]);
+
+        let objectSeatId = asObject.seatId;
+        if (seat.seatid == objectSeatId) {
+          this.floorCanvas
+            .getObjects()
+            .slice()
+            .forEach((obj) => {
+              this.floorCanvas.remove(obj);
+            });
+
+          //각 층의 저장된 도형 리스트 화면에 뿌려주기
+          //현재 층의 이미지가 저장되어있다면
+          if (this.allImageMap.get(seatFloor) != null) {
+            let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+            if (typeof typeCheck === "string") {
+              //url
+              this.loadImageUrl(
+                this.allImageMap.get(this.currentSelectedFloorId)
+              );
+            } else {
+              //file
+              this.loadImageFile(
+                this.allImageMap.get(this.currentSelectedFloorId)
+              );
+            }
+
+            for (let i = 0; i < eachFloorSeatList.length; i++) {
+              this.floorCanvas.add(eachFloorSeatList[i]);
+            }
+          }
+          group.item(0).set("opacity", 0);
+          group.item(0).set("stroke", "blue");
+          group.item(0).set("strokeWidth", 5);
+
+          group.item(0).animate("opacity", 1, {
+            duration: 2000,
+            onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
+          });
+          group.item(0).animate("fill", "red", {
+            onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
+            duration: 2000,
+            onComplete: getOrginItem,
+          });
+
+          let color = this.getColor(asObject.employee_department);
+          function getOrginItem() {
+            group.item(0).set("opacity", 1);
+            group.item(0).set("fill", color);
+            group.item(0).set("stroke", null);
+            group.item(0).set("strokeWidth", null);
+          }
+        }
+        //자리가 아직 없을때 예외처리 하기
+      }
+    },
     clickSaveBtn() {
       if (this.managerFloorList) {
-        console.log(this.managerFloorList);
+        //console.log(this.managerFloorList);
         //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
@@ -985,6 +1070,7 @@ export default {
             imgData.append("imageFile", file);
             this.$emit("saveImages", "images", imgData, floorid);
           }
+
         }
 
         //자리 저장
@@ -994,11 +1080,11 @@ export default {
           );
 
           if (managerEachFloorSeatList.length > 0) {
-            console.log(
-              managerEachFloorSeatList.length +
-                this.managerFloorList[i].floor_id +
-                "층의 자리 개수입니다."
-            );
+            //console.log(
+            //  managerEachFloorSeatList.length +
+            //    this.managerFloorList[i].floor_id +
+            //    "층의 자리 개수입니다."
+            //);
 
             for (let j = 0; j < managerEachFloorSeatList.length; j++) {
               let groupToObject = managerEachFloorSeatList[j].toObject([
@@ -1077,7 +1163,7 @@ export default {
                   seatData.degree = groupToObject.angle;
                   seatData.shape_id = "1";
 
-                  console.log(seatData);
+                  //console.log(seatData);
                   this.$emit("saveSeats", "seats", seatData, seatData.floor);
                 }
               }
@@ -1168,7 +1254,7 @@ export default {
         let group = e.target;
 
         eventBus.$emit("dblClickedGroup", group);
-        console.log("불림");
+        //console.log("불림");
       });
 
       this.floorCanvas.on("object:scaling", (e) => {
@@ -1191,20 +1277,22 @@ export default {
     },
     clickLoadCurrentFloor() {
       //현재 층 이미지 로드
+      //console.log(this.currentFloorImageFromDb.length);
       for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
         let imgurl = this.currentFloorImageFromDb[i].url;
         let floorid = this.currentFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
+        //console.log(this.allImageMap.get(floorid));
         this.currentSelectedFloorId = floorid;
 
         this.loadImageUrl(imgurl);
         // 현재층 자리 로드
         if (this.currentFloorSeatListFromDb.length) {
           for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
-            console.log(
-              "현재층의 자리 개수는 ------> " +
-                this.currentFloorSeatListFromDb.length
-            );
+            //console.log(
+            //  "현재층의 자리 개수는 ------> " +
+            //    this.currentFloorSeatListFromDb.length
+            //);
             this.currentSelectedFloorId = this.currentFloorSeatListFromDb[
               i
             ].floor;
@@ -1228,17 +1316,17 @@ export default {
 
             eventBus.$emit("allSeatMap", this.allSeatMap);
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-            console.log(
-              this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
-            );
-            console.log(
-              this.currentFloorSeatListFromDb[i].employee_id +
-                "의 자리 리스트 개수는 " +
-                this.getEachEmployeeSeatList(
-                  this.currentFloorSeatListFromDb[i].employee_id
-                ).length +
-                "입니다."
-            );
+            //console.log(
+            //  this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
+            //);
+            //console.log(
+            //  this.currentFloorSeatListFromDb[i].employee_id +
+            //    "의 자리 리스트 개수는 " +
+            //    this.getEachEmployeeSeatList(
+            //      this.currentFloorSeatListFromDb[i].employee_id
+            //    ).length +
+            //    "입니다."
+            //);
           }
         } else {
           //console.log(floorid);
