@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-card
-      flat
-      color="transparent"
-      v-if="!mappingEmployeeComponentStatus"
-    >
+    <v-card flat color="transparent" v-if="!mappingEmployeeComponentStatus">
       <v-row>
         <v-col cols="12" sm="9">
           <v-card-title>Create Vacant Seats</v-card-title></v-col
@@ -68,12 +64,8 @@
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
-      v-if="
-        mappingEmployeeComponentStatus && 
-        employee
-      "
+      v-if="mappingEmployeeComponentStatus && employee"
     />
-    
   </div>
 </template>
 
@@ -82,7 +74,7 @@ import MappingEmployee from "@/components/MappingEmployee.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
-  props: ["copyEmployeeList","copyfloorList"],
+  props: ["copyEmployeeList", "copyfloorList"],
   components: {
     MappingEmployee,
   },
@@ -103,13 +95,23 @@ export default {
     };
   },
   created() {
-    this.currentSelectedFloorId = this.allFloorList[
-      this.allFloorList.length - 1
-    ].floor_id;
+    if (this.copyfloorList.length) {
+      this.currentSelectedFloorId = this.allFloorList[
+        this.allFloorList.length - 1
+      ].floor_id;
+    } else {
+      this.currentSelectedFloorId = null;
+    }
 
-     eventBus.$on("changeFloor", (floor) => {
-       console.log(floor);
-      if (floor) {// null 이 아닐때
+    eventBus.$on("allFloorList", (allFloors) => {
+      this.allFloorList = allFloors;
+      console.log(this.allFloorList);
+    });
+
+    eventBus.$on("changeFloor", (floor) => {
+      console.log(floor);
+      if (floor) {
+        // null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
       } else {
         this.currentSelectedFloorId = null;
@@ -146,7 +148,7 @@ export default {
       this.currentFloorImage = file.name;
       console.log(this.currentSelectedFloorId);
       this.allImageMap.set(this.currentSelectedFloorId, file);
-      eventBus.$emit("allImageMap",this.allImageMap);
+      eventBus.$emit("allImageMap", this.allImageMap);
     },
   },
 };
