@@ -955,7 +955,6 @@ export default {
     },
     showSeat(seat) { //좌석 하이라이트
       let seatFloor = null;
-
       //seat의 층과 현재층이 같지 않다면
       if (this.currentSelectedFloorId != seat.floorid) {
         //탭 전환 코드
@@ -968,8 +967,8 @@ export default {
       
       let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
       for (let i = 0; i < eachFloorSeatList.length; i++) {
-        let myGroup = eachFloorSeatList[i];
-        let asObject = myGroup.toObject([
+        let group = eachFloorSeatList[i];
+        let asObject = group.toObject([
           "employee_id",
           "floor_id",
           "seatId",
@@ -1005,15 +1004,15 @@ export default {
               this.floorCanvas.add(eachFloorSeatList[i]);
             }
           }
-          myGroup.item(0).set("opacity", 0);
-          myGroup.item(0).set("stroke", "blue");
-          myGroup.item(0).set("strokeWidth", 5);
+          group.item(0).set("opacity", 0);
+          group.item(0).set("stroke", "blue");
+          group.item(0).set("strokeWidth", 5);
 
-          myGroup.item(0).animate("opacity", 1, {
+          group.item(0).animate("opacity", 1, {
             duration: 2000,
             onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
           });
-          myGroup.item(0).animate("fill", "red", {
+          group.item(0).animate("fill", "red", {
             onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
             duration: 2000,
             onComplete: getOrginItem,
@@ -1021,10 +1020,10 @@ export default {
 
           let color = this.getColor(asObject.employee_department);
           function getOrginItem() {
-            myGroup.item(0).set("opacity", 1);
-            myGroup.item(0).set("fill", color);
-            myGroup.item(0).set("stroke", null);
-            myGroup.item(0).set("strokeWidth", null);
+            group.item(0).set("opacity", 1);
+            group.item(0).set("fill", color);
+            group.item(0).set("stroke", null);
+            group.item(0).set("strokeWidth", null);
           }
         }
         //자리가 아직 없을때 예외처리 하기

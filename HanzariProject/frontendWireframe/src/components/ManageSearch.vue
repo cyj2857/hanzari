@@ -1,6 +1,5 @@
 <template>
   <v-card>
-    <v-btn @click="getAllEmployeeSeats()">Show</v-btn>
     <v-card-title>
       <v-text-field
         v-model="search"
@@ -58,10 +57,8 @@ export default {
       ],
     };
   },
-  mounted() {
-    // eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
-    //   this.allEmployeeSeatMap = eachEmployeeSeatMap;
-    // });
+  mounted(){
+    this.getAllEmployeeSeats();
   },
   methods: {
     getAllEmployeeSeats() {
@@ -72,10 +69,8 @@ export default {
         seats = this.allEmployeeSeatMap.get(keys[i]);
         for (let j = 0; j < seats.length; j++) {
           let newSeat = {};
-          //console.log(seats[j])
 
-          if (seats[j].employee_id != null) {
-            //공석 제외
+          if (seats[j].employee_id != null) { //공석 제외
             newSeat.seatid = seats[j].seatId;
             newSeat.employeeid = seats[j].employee_id;
             newSeat.name = seats[j].employee_name;
@@ -86,10 +81,8 @@ export default {
           }
         }
       }
-      console.log(this.allEmployeeSeat);
     },
     showSeatButtonClicked(item) {
-      console.log(item)
       eventBus.$emit("showSeat", item);
       eventBus.$emit("showSeatFloor", item.floorid);
     },
