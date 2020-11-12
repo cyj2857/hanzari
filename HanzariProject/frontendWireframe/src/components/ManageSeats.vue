@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-card
-      flat
-      color="transparent"
-      v-if="!mappingEmployeeComponentStatus"
-    >
+    <v-card flat color="transparent" v-if="!mappingEmployeeComponentStatus">
       <v-row>
         <v-col cols="12" sm="9">
           <v-card-title>Create Vacant Seats</v-card-title></v-col
@@ -83,12 +79,8 @@
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
-      v-if="
-        mappingEmployeeComponentStatus && 
-        employee
-      "
+      v-if="mappingEmployeeComponentStatus && employee"
     />
-    
   </div>
 </template>
 
@@ -119,9 +111,18 @@ export default {
     };
   },
   created() {
-    this.currentSelectedFloorId = this.allFloorList[
-      this.allFloorList.length - 1
-    ].floor_id;
+    if (this.copyfloorList.length) {
+      this.currentSelectedFloorId = this.allFloorList[
+        this.allFloorList.length - 1
+      ].floor_id;
+    } else {
+      this.currentSelectedFloorId = null;
+    }
+
+    eventBus.$on("allFloorList", (allFloors) => {
+      this.allFloorList = allFloors;
+      console.log(this.allFloorList);
+    });
 
     eventBus.$on("changeFloor", (floor) => {
       console.log(floor);

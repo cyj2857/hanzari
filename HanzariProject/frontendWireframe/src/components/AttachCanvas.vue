@@ -2,7 +2,12 @@
   <div>
     <v-toolbar color="black" dark>
       <v-toolbar-title>{{ currentSelectedFloorName }} Floor</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-spacer></v-spacer
+      ><v-toolbar-items class="hidden-sm-and-down"
+        ><v-btn text @click="clickDobuleCanvasMode"
+          >Dobule Canvas Mode</v-btn
+        ></v-toolbar-items
+      ><v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn @click="deleteAllBtn" text> Delete All </v-btn>
         <v-divider vertical></v-divider>
@@ -13,14 +18,16 @@
         <v-btn @click="clickPrintBtn" text> Print </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    <canvas
-      ref="canvas"
-      class="canvas"
-      id="canvas"
-      width="1150px"
-      height="800px"
-      style="text-align: center"
-    ></canvas>
+    
+      <canvas
+        ref="canvas"
+        class="canvas"
+        id="canvas"
+        width="1150px"
+        height="800px"
+        style="text-align: center"
+      ></canvas>
+      
     <v-menu
       v-model="contextMenuStatus"
       :position-x="contextMenuXLocation"
@@ -65,7 +72,11 @@ export default {
   ],
   data() {
     return {
+      doubleCanvasStatus: false,
+
       floorCanvas: null,
+      floorCanvas2: null,
+
       zoom: 1,
       fontSize: 25,
       clipboard: null,
@@ -155,12 +166,18 @@ export default {
       console.log(this.managerFloorList);
     });
     eventBus.$on("changeToVacant", (status) => {
-      if (status) {
+      if (status && this.floorCanvas.getActiveObject()) {
         this.changeToVacant();
+      } else {
+        alert("there is no selected object");
       }
     });
     eventBus.$on("inputSeatName", (seatName) => {
-      this.inputSeatName(seatName);
+      if (seatName && this.floorCanvas.getActiveObject()) {
+        this.inputSeatName(seatName);
+      } else {
+        alert("there is no selected object");
+      }
     });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
@@ -281,6 +298,10 @@ export default {
 
         this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
       }
+    },
+    clickDobuleCanvasMode() {
+      this.doubleCanvasStatus = !this.doubleCanvasStatus;
+      console.log(this.doubleCanvasStatus);
     },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
