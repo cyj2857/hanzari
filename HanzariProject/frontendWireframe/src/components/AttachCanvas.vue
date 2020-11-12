@@ -286,6 +286,7 @@ export default {
               "employee_id",
               "employee_name",
               "employee_department",
+              "employee_number"
             ]);
 
             this.showToolTip(
@@ -293,7 +294,8 @@ export default {
               posY,
               groupToObject.employee_id,
               groupToObject.employee_name,
-              groupToObject.employee_department
+              groupToObject.employee_department,
+              groupToObject.employee_number
             );
           } else {
             this.closeToolTip();
@@ -928,7 +930,8 @@ export default {
       clientY,
       employee_id,
       employee_name,
-      employee_department
+      employee_department,
+      employee_number
     ) {
       this.toolTipXLocation = clientX;
       this.toolTipYLocation = clientY;
@@ -943,7 +946,9 @@ export default {
           "<br>아이디 : " +
           employee_id +
           "<br>부서 : " +
-          employee_department;
+          employee_department+
+          "<br>내선번호 : " +
+          employee_number;
 
         this.toolTipColor = "pink lighten-2";
       }
