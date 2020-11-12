@@ -62,7 +62,7 @@ public class Floor {
 	@JsonManagedReference
 	private List<Seat> seats;
 
-	//현재까지 구현 상황에서는 DB의 floor와 floor_plan 테이블이 연결되지 않는다.(주된 이유는 클라이언트와 통신할 때 floor와 관련된 axios호출과 floorPlan(이미지)과 관련된 axios 호출을 나눠서 해주기 때문이다.)
+	//현재까지 구현 상황에서는 DB의 floor와 floor_plan 테이블이 연결되지 않는다.(주된 이유는 클라이언트와 통신할 때 floor와 관련된 axios 호출과 floorPlan(이미지)과 관련된 axios 호출을 나눠서 해주기 때문이다.)
 	//따라서 현재까지는 두 테이블이 연결될 필요가 없어 참조되는 필드를 사용하지 않지만 후에 연결하여 호출할 경우가 있을 수도 있기에 주석처리를 해두었다.
 	//@OneToOne(cascade = CascadeType.ALL, orphanRemoval = false)
 	//@JoinColumn(name="floor_plan_id")
