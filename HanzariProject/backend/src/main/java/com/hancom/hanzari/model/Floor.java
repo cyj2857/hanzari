@@ -53,17 +53,17 @@ public class Floor {
 	@Column(name = "floor_order", nullable = false)
 	private int floorOrder;
 
-	@Column(name = "floor_image_url", nullable = true)
-	private int floorImageUrl;
+	//@Column(name = "floor_image_url", nullable = true)
+	//private int floorImageUrl;
 
 	@OneToMany(mappedBy = "floor", cascade = CascadeType.ALL, orphanRemoval = false)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonManagedReference
 	private List<Seat> seats;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = false)
-	@JoinColumn(name="floor_plan_id")
-	private FloorPlan floorPlan;
+	//@OneToOne(cascade = CascadeType.ALL, orphanRemoval = false)
+	//@JoinColumn(name="floor_plan_id")
+	//private FloorPlan floorPlan;
 	
 	@PreRemove
 	public void preRemove() {
