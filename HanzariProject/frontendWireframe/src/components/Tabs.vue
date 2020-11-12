@@ -14,6 +14,8 @@
                 :copyEmployeeList="employees"
                 :copyfloorList="floors"
                 :eachEmployeeSeatMap="eachEmployeeSeatMap"
+                :copyCurrentFloorImage="mycurrentFloorImage"
+                :copyOtherFloorsImageList="myOtherFloorsImageList"
               ></component>
             </v-card-text>
           </v-card>
@@ -29,7 +31,7 @@ import ManageFloors from "@/components/ManageFloors.vue";
 import ManageSearch from "@/components/ManageSearch.vue";
 import { eventBus } from "../main";
 export default {
-  props: ["copyEmployee", "copyFloors"],
+  props: ["copyEmployee", "copyFloors","currentFloorImage","otherFloorsImageList"],
   components: {
     ManageSeats,
     ManageFloors,
@@ -40,6 +42,9 @@ export default {
       employees: this.copyEmployee,
       floors: this.copyFloors,
       eachEmployeeSeatMap: null,
+
+      mycurrentFloorImage:this.currentFloorImage,
+      myOtherFloorsImageList:this.otherFloorsImageList,
 
       tab: null,
       items: [
