@@ -125,6 +125,17 @@ export default {
         this.renderEachFloorSeatList(eachFloorSeatList);
       }
     });
+    eventBus.$on("showSeatFloor", (floorid) => {
+      let seatFloorId = floorid;
+      //console.log(seatFloorId + "가 넘어온 자리 층입니다");
+      //console.log(this.allFloorList)
+
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        if (seatFloorId == this.allFloorList[i].floor_id) {
+          this.clickFloor(this.allFloorList[i]);
+        }
+      }
+    });
   },
   methods: {
     changeImageFile(e) {

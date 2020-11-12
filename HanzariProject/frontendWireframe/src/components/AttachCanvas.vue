@@ -183,6 +183,10 @@ export default {
       this.allImageMap = allImageMap;
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
+    eventBus.$on("showSeat", (seat) => {
+      console.log(seat);
+      this.showSeat(seat);
+    });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
       this.allSeatMap.delete(floor_id);
       //managerAllSeatMap 에서 삭제되어도 되는 이유 :
@@ -953,6 +957,83 @@ export default {
     },
     closeToolTip() {
       this.toolTipStatus = false;
+    },
+    showSeat(seat) { //좌석 하이라이트
+      let seatFloor = null;
+
+      //seat의 층과 현재층이 같지 않다면
+      if (this.currentSelectedFloorId != seat.floorid) {
+        //탭 전환 코드
+        seatFloor = seat.floorid;
+      }
+      //seat의 층과 현재층이 같다면
+      else {
+        seatFloor = this.currentSelectedFloorId;
+      }
+      
+      let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
+      for (let i = 0; i < eachFloorSeatList.length; i++) {
+        let myGroup = eachFloorSeatList[i];
+        let asObject = myGroup.toObject([
+          "employee_id",
+          "floor_id",
+          "seatId",
+          "employee_department",
+        ]);
+
+        let objectSeatId = asObject.seatId;
+        if (seat.seatid == objectSeatId) {
+          this.floorCanvas
+            .getObjects()
+            .slice()
+            .forEach((obj) => {
+              this.floorCanvas.remove(obj);
+            });
+
+          //각 층의 저장된 도형 리스트 화면에 뿌려주기
+          //현재 층의 이미지가 저장되어있다면
+          if (this.allImageMap.get(seatFloor) != null) {
+            let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+            if (typeof typeCheck === "string") {
+              //url
+              this.loadImageUrl(
+                this.allImageMap.get(this.currentSelectedFloorId)
+              );
+            } else {
+              //file
+              this.loadImageFile(
+                this.allImageMap.get(this.currentSelectedFloorId)
+              );
+            }
+
+            for (let i = 0; i < eachFloorSeatList.length; i++) {
+              this.floorCanvas.add(eachFloorSeatList[i]);
+            }
+          }
+          myGroup.item(0).set("opacity", 0);
+          myGroup.item(0).set("stroke", "blue");
+          myGroup.item(0).set("strokeWidth", 5);
+
+          myGroup.item(0).animate("opacity", 1, {
+            duration: 2000,
+            onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
+          });
+          myGroup.item(0).animate("fill", "red", {
+            onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
+            duration: 2000,
+            onComplete: getOrginItem,
+          });
+
+          let color = this.getColor(asObject.employee_department);
+          function getOrginItem() {
+            myGroup.item(0).set("opacity", 1);
+            myGroup.item(0).set("fill", color);
+            myGroup.item(0).set("stroke", null);
+            myGroup.item(0).set("strokeWidth", null);
+          }
+        }
+        //자리가 아직 없을때 예외처리 하기
+      }
     },
     clickSaveBtn() {
       if (this.managerFloorList) {
