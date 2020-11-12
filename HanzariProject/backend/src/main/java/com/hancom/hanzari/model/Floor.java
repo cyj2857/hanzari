@@ -53,6 +53,7 @@ public class Floor {
 	@Column(name = "floor_order", nullable = false)
 	private int floorOrder;
 
+	//FloorImageUrl 정보를 Floor측에서 가지고있지 않아도 될 것이라 판단하여(이미지 관련 통신은 따로 axios 호출을 하여 FloorPlan과 통신함) 우선은 주석 처리를 해둠.
 	//@Column(name = "floor_image_url", nullable = true)
 	//private int floorImageUrl;
 
