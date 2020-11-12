@@ -174,6 +174,7 @@ export default {
     });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
+      
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
     eventBus.$on("showSeat", (seat) => {
@@ -1062,10 +1063,13 @@ export default {
         }
 
         //이미지 저장
+        console.log("-----------------------");
+        console.log(this.managerFloorList.length);
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let imgData = new FormData();
           let floorid = this.managerFloorList[i].floor_id;
           let file = this.allImageMap.get(floorid);
+          console.log(file);
           if (file != null) {
             imgData.append("imageFile", file);
             this.$emit("saveImages", "images", imgData, floorid);
@@ -1282,6 +1286,8 @@ export default {
         let imgurl = this.currentFloorImageFromDb[i].url;
         let floorid = this.currentFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
+        console.log("현재층 이미지");
+        console.log(this.allImageMap.get(floorid));
         //console.log(this.allImageMap.get(floorid));
         this.currentSelectedFloorId = floorid;
 
@@ -1341,6 +1347,9 @@ export default {
         let imgurl = this.otherFloorImageFromDb[i].url;
         let floorid = this.otherFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
+
+        console.log("다른층 이미지 ");
+        console.log(this.allImageMap.get(floorid));
       }
       //다른 층 자리 로드
       if (this.otherFloorSeatListFromDb) {

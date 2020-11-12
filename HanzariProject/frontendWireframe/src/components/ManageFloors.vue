@@ -79,7 +79,8 @@ import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 export default {
-  props: ["copyfloorList"],
+  props: ["copyfloorList", "copyCurrentFloorImage", "copyOtherFloorsImageList"],
+  components: {},
   data() {
     return {
       length: null,
@@ -116,6 +117,20 @@ export default {
 
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
+      for (let i = 0; i < this.copyCurrentFloorImage.length; i++) {
+        console.log(this.copyCurrentFloorImage);
+
+        let imgurl = this.copyCurrentFloorImage[i].url;
+        let floorid = this.copyCurrentFloorImage[i].floorid;
+        this.allImageMap.set(floorid, imgurl);
+      }
+
+      console.log(this.copyOtherFloorsImageList);
+      for (let i = 0; i < this.copyOtherFloorsImageList.length; i++) {
+        let imgurl = this.copyOtherFloorsImageList[i].url;
+        let floorid = this.copyOtherFloorsImageList[i].floorid;
+        this.allImageMap.set(floorid, imgurl);
+      }
     }
 
     eventBus.$on("allSeatMap", (allSeatMap) => {

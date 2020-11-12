@@ -5,9 +5,13 @@
     </v-toolbar>
     <div class="d1">
       <Tabs
-        v-if="employees && floors"
+        v-if="employees && floors && 
+          currentFloorImage &&
+          otherFloorsImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
+        v-bind:currentFloorImage="currentFloorImage"
+        v-bind:otherFloorsImageList="otherFloorsImage"
       />
     </div>
     <div class="d2">
