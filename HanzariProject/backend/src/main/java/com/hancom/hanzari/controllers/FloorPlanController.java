@@ -48,7 +48,7 @@ public class FloorPlanController {
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
-	private String bucketName = "hanzari";
+	private String bucketName = "hanzari-test";
 	
 	private UUID floorPlanId;
 	private FloorPlan latestFloorPlan;
@@ -60,10 +60,6 @@ public class FloorPlanController {
 	
 	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
 	private Date currentTime;
-	private LocalDate localDate;
-	private int year;
-	private int month;
-	private int day;
 	
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
@@ -74,10 +70,6 @@ public class FloorPlanController {
 		LOGGER.info("FloorPlanController.putImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
 		currentTime = new Date();
-		localDate = currentTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		year = localDate.getYear();
-		month = localDate.getMonthValue(); //getMonthValue 메소드를 사용하면 0을 포함하지 않고 1 ~ 12를 리턴한다.
-		day = localDate.getDayOfMonth();
 		
 		try {
 			//해당 층의 가장 최신으로 연결되어있는 floorPlan 레코드의 latest 컬럼을 false로 변경해준다.
@@ -92,25 +84,18 @@ public class FloorPlanController {
 		putFloorPlanFileName = new StringBuffer();
 		putFloorPlanFileName.append(floorId);
 		putFloorPlanFileName.append("-");
-		putFloorPlanFileName.append(Integer.toString(year));
-		putFloorPlanFileName.append("-");
-		putFloorPlanFileName.append(Integer.toString(month));
-		putFloorPlanFileName.append("-");
-		putFloorPlanFileName.append(Integer.toString(day));
+		putFloorPlanFileName.append(currentTime.toString());
 		floorPlanId = UUID.randomUUID();
 		LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName.toString());
-		//putFloorPlanFileName = new StringBuffer(floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day));
-		//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
 		putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
 		floorPlanService.save(putFloorPlan);
 		
 		InputStream imagePutInputStream = file.getInputStream();
 
-		//층 정보가 넘
 		try {
 			minioClient.putObject(
 				    PutObjectArgs.builder()
-				    .bucket(spareBucketName)
+				    .bucket(bucketName)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
 				    .object(putFloorPlanFileName.toString())
 					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
@@ -156,7 +141,7 @@ public class FloorPlanController {
 			//MinIO 서버 버킷에서 이미지 가져오기
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
-					 .bucket(spareBucketName)
+					 .bucket(bucketName)
 					 .object(getFloorPlanFileName.toString())
 					 .build());
 			response.addHeader("Content-disposition", getFloorPlanFileName.toString());
