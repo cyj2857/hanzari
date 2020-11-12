@@ -6,12 +6,13 @@ import java.net.URLConnection;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,13 +52,13 @@ public class FloorPlanController {
 	//테스트용 버킷
 	private String spareBucketName = "hanzari-spare";
 	
+	private UUID floorPlanId;
 	private FloorPlan latestFloorPlan;
 	private FloorPlan putFloorPlan;
 	private FloorPlan getFloorPlan;
 	//기존 문자열이 사용하였던 메모리 공간을 재활용하고 후에 멀티 쓰레드 환경 확장을 생각하여 StringBuffer를 사용함
 	private StringBuffer putFloorPlanFileName;
 	private StringBuffer getFloorPlanFileName;
-	
 	
 	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
 	private Date currentTime;
@@ -86,13 +87,23 @@ public class FloorPlanController {
 			latestFloorPlan.setLatest(false);
 			floorPlanService.save(latestFloorPlan);
 		} catch(Exception e) {
-			LOGGER.error("Can't find matched floorPlan record. Exception message : {}", e);
+			LOGGER.error("Can't find matched floorPlan record. Exception message : ", e);
 		}
 		
 		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
-		putFloorPlanFileName = new StringBuffer(floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day));
+		putFloorPlanFileName = new StringBuffer();
+		putFloorPlanFileName.append(floorId);
+		putFloorPlanFileName.append("-");
+		putFloorPlanFileName.append(Integer.toString(year));
+		putFloorPlanFileName.append("-");
+		putFloorPlanFileName.append(Integer.toString(month));
+		putFloorPlanFileName.append("-");
+		putFloorPlanFileName.append(Integer.toString(day));
+		floorPlanId = UUID.randomUUID();
+		LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName.toString());
+		//putFloorPlanFileName = new StringBuffer(floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day));
 		//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
-		putFloorPlan = FloorPlan.builder().floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
+		putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
 		floorPlanService.save(putFloorPlan);
 		
 		InputStream imagePutInputStream = file.getInputStream();
@@ -111,7 +122,7 @@ public class FloorPlanController {
 				    .contentType(file.getContentType())
 				    .build());
 		} catch (Exception e) {
-			LOGGER.error("Can't put object in the MinIO bucket. Exception message : {}", e);
+			LOGGER.error("Can't put object in the MinIO bucket. Exception message : ", e);
 		} finally {
 			//finally안에는 try안에서 리턴문에 의해 메소드가 종료될 경우 그 전에 해야할 작업들을 적어줄 수 있다.
 			//해당 finally문 안에는 후에 try문 안에 return문을 작성할 경우를 대비해 imagePutInputStream을 닫아주어야한다.
@@ -136,10 +147,11 @@ public class FloorPlanController {
 		try {
 			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
 		} catch (Exception e) {
-			LOGGER.error("Can't find FloorPlan record from database. Exception message : {}", e);
+			LOGGER.error("Can't find FloorPlan record from database. Exception message : ", e);
 		}
 		
-		getFloorPlanFileName = new StringBuffer(getFloorPlan.getFloorPlanFileName());
+		getFloorPlanFileName = new StringBuffer();
+		getFloorPlanFileName.append(getFloorPlan.getFloorPlanFileName());
 		InputStream imageGetInputStream = null;
 		
 		try {
@@ -153,7 +165,7 @@ public class FloorPlanController {
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch(Exception e) {
-			LOGGER.error("Can't get object from the MinIO bucket. Exception message : {}", e);
+			LOGGER.error("Can't get object from the MinIO bucket. Exception message : ", e);
 		} finally {
 			//TODO putImageFile 메소드 안의 finally문에 작성한 내용 참조
 			if(imageGetInputStream != null)

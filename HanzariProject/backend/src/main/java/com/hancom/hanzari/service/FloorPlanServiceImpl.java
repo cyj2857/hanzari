@@ -18,27 +18,9 @@ public class FloorPlanServiceImpl implements FloorPlanService {
 		floorPlanRepository.save(floorPlan);
 		return floorPlan;
 	}
-
-//	@Override
-//	public FloorPlan findByBuildingIdAndFloorId(String buildingId, String floorId) {
-//		FloorPlan floorPlan = floorPlanRepository.findByBuildingIdAndFloorId(buildingId, floorId);
-//		if(floorPlan != null)
-//			return floorPlan;
-//		else
-//			throw new ResourceNotFoundException("FloorPlan", "buildingId", buildingId);
-//	}
 	
 	@Override
-	public FloorPlan findByFloorPlanId(String floorPlanId) {
-		FloorPlan floorPlan = floorPlanRepository.findByFloorPlanId(floorPlanId);
-		if(floorPlan != null)
-			return floorPlan;
-		else
-			throw new ResourceNotFoundException("FloorPlanID", "floorPlanId", floorPlanId);
-	}
-	
-	@Override
-	public FloorPlan findByFloorIdAndLatest(String floorId, boolean latest) {
+	public FloorPlan findByFloorIdAndLatest(String floorId, Boolean latest) {
 		FloorPlan floorPlan = floorPlanRepository.findByFloorIdAndLatest(floorId, latest);
 		if(floorPlan != null)
 			return floorPlan;
