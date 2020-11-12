@@ -49,8 +49,6 @@ public class FloorPlanController {
 	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	private String bucketName = "hanzari";
-	//테스트용 버킷
-	private String spareBucketName = "hanzari-spare";
 	
 	private UUID floorPlanId;
 	private FloorPlan latestFloorPlan;
