@@ -100,7 +100,7 @@ public class FloorPlanController {
 		putFloorPlanFileName.append("-");
 		putFloorPlanFileName.append(Integer.toString(day));
 		floorPlanId = UUID.randomUUID();
-		LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName);
+		LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName.toString());
 		//putFloorPlanFileName = new StringBuffer(floorId + "-" + Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day));
 		//floor_plan_id 컬럼은 auto increment이기에 build할 때 안 적어주어도 된다.
 		putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
