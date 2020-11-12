@@ -1082,6 +1082,7 @@ export default {
             imgData.append("imageFile", file);
             this.$emit("saveImages", "images", imgData, floorid);
           }
+
         }
 
         //자리 저장
@@ -1288,10 +1289,12 @@ export default {
     },
     clickLoadCurrentFloor() {
       //현재 층 이미지 로드
+      console.log(this.currentFloorImageFromDb.length);
       for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
         let imgurl = this.currentFloorImageFromDb[i].url;
         let floorid = this.currentFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
+        console.log(this.allImageMap.get(floorid));
         this.currentSelectedFloorId = floorid;
 
         this.loadImageUrl(imgurl);
