@@ -155,9 +155,7 @@ export default {
       let currentFloorImage = new Array();
       try {
         let response = await axios.get(
-          "http://" +
-            host +
-            ":" +
+          "http://172.30.1.56:" +
             portNum +
             "/api/buildings/" +
             building_id +
@@ -182,9 +180,7 @@ export default {
       try {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
           let response = await axios.get(
-            "http://" +
-              host +
-              ":" +
+            "http://172.30.1.56:" +
               portNum +
               "/api/buildings/" +
               building_id +
