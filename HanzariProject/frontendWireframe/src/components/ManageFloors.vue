@@ -213,7 +213,7 @@ export default {
         if (this.length > 0) {
           this.clickIndexes = [];
           this.clickIndexes.push(this.currentSelectedFloor.floor_id);
-          console.log(this.length + " length");
+          //console.log(this.length + " length");
         }
       } else {
         alert("there are no seats to delete!");
@@ -259,7 +259,7 @@ export default {
       if (eachFloorSeatList.length != 0) {
         for (let i = 0; i < eachFloorSeatList.length; i++) {
           if (eachFloorSeatList[i].employee_id == null) {
-            console.log(eachFloorSeatList[i].seatId + "빈공석의 seatId입니다");
+            //console.log(eachFloorSeatList[i].seatId + "빈공석의 seatId입니다");
             this.currentFloorVacantSeatsLength++;
           }
 
@@ -276,7 +276,7 @@ export default {
 
           this.currentFloorSeatsLength = this.employees.length;
 
-          console.log(employee.number);
+          //console.log(employee.number);
         }
       } else {
         this.currentFloorSeatsLength = 0;

@@ -57,27 +57,30 @@ export default {
       ],
     };
   },
-  mounted(){
+  mounted() {
     this.getAllEmployeeSeats();
   },
   methods: {
     getAllEmployeeSeats() {
-      let keys = new Array();
-      keys = Array.from(this.allEmployeeSeatMap.keys());
-      for (let i = 0; i < keys.length; i++) {
-        let seats = new Array();
-        seats = this.allEmployeeSeatMap.get(keys[i]);
-        for (let j = 0; j < seats.length; j++) {
-          let newSeat = {};
+      if (this.allEmployeeSeatMap) {
+        let keys = new Array();
+        keys = Array.from(this.allEmployeeSeatMap.keys());
+        for (let i = 0; i < keys.length; i++) {
+          let seats = new Array();
+          seats = this.allEmployeeSeatMap.get(keys[i]);
+          for (let j = 0; j < seats.length; j++) {
+            let newSeat = {};
 
-          if (seats[j].employee_id != null) { //공석 제외
-            newSeat.seatid = seats[j].seatId;
-            newSeat.employeeid = seats[j].employee_id;
-            newSeat.name = seats[j].employee_name;
-            newSeat.department = seats[j].employee_department;
-            newSeat.floorid = seats[j].floor_id;
-            newSeat.number = seats[j].employee_number;
-            this.allEmployeeSeat.push(newSeat);
+            if (seats[j].employee_id != null) {
+              //공석 제외
+              newSeat.seatid = seats[j].seatId;
+              newSeat.employeeid = seats[j].employee_id;
+              newSeat.name = seats[j].employee_name;
+              newSeat.department = seats[j].employee_department;
+              newSeat.floorid = seats[j].floor_id;
+              newSeat.number = seats[j].employee_number;
+              this.allEmployeeSeat.push(newSeat);
+            }
           }
         }
       }

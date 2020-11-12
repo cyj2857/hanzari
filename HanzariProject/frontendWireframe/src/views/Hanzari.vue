@@ -186,9 +186,9 @@ export default {
 
       if (this.floorIdList.length > 0) {
         try {
-          console.log(this.floorIdList.length);
+          //console.log(this.floorIdList.length);
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
-            console.log(this.floorIdList[i]);
+            //console.log(this.floorIdList[i]);
             let response = await axios.get(
               "http://" +
                 "172.30.1.56" +
@@ -200,8 +200,6 @@ export default {
                 this.floorIdList[i] +
                 "/images"
             );
-
-            console.log("------------------");
 
             let newImage = {};
             newImage.url = response.config.url;
@@ -349,13 +347,13 @@ export default {
       console.log("saveTableName is");
       console.log(saveTableName);
 
-      for (var key of saveData.keys()) {
-        console.log(key);
-      }
+      //for (var key of saveData.keys()) {
+      //  console.log(key);
+      //}
 
-      for (var value of saveData.values()) {
-        console.log(value);
-      }
+      //for (var value of saveData.values()) {
+      //  console.log(value);
+      //}
 
       axios
         .post(
