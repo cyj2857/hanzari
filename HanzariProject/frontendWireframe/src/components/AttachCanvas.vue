@@ -18,7 +18,7 @@
       ref="canvas"
       class="canvas"
       id="canvas"
-      height="800px"
+      height="770px"
       style="text-align: center"
       width="1150px"
     ></canvas>
@@ -461,7 +461,7 @@ export default {
             img,
             this.floorCanvas.renderAll.bind(this.floorCanvas)
           );
-        });
+        },{ crossOrigin: "Anonymous" });
       };
       reader.readAsDataURL(file);
     },
@@ -475,7 +475,7 @@ export default {
           img,
           this.floorCanvas.renderAll.bind(this.floorCanvas)
         );
-      });
+      },{ crossOrigin: "Anonymous" });
     },
     //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
@@ -772,7 +772,7 @@ export default {
         let seatNameObject = new fabric.IText(obj.seatName, {
           left: obj.item(0).left,
           top: obj.item(0).top - 15,
-          fontSize: 13,
+          fontSize: this.fontSize/this.zoom,
           fill: "black",
         });
 
@@ -1451,23 +1451,24 @@ export default {
         }
       }
     },
-    clickPrintBtn() {
-      let url = document.getElementById("canvas").toDataURL();
-      console.log(url);
+     clickPrintBtn() {
+      var printWin = window.open("", "", "width=1500,height=800");
+      let dateUrl = document.getElementById("canvas").toDataURL();
+
       var windowContent = "<!DOCTYPE html>";
       windowContent += "<html>";
-      windowContent += "<head><title>Print</title>";
-      windowContent +=
-        "<style>@media print{.page-break{display:block; page-break-before:always;}}</style>";
+      windowContent += "<head><title>Hnazari</title>";
+      //windowContent += "<style> @media print{.myDivToPrint {background-color: white; height: 100%;width: 100%;position: fixed;top: 0;left: 0;margin: 0;padding: 15px;font-size: 14px;line-height: 18px;}</style>";
       windowContent += "</head>";
       windowContent += "<body>";
       windowContent +=
-        '<img src="' + url + '" onload=window.print();window.close();>';
+        '<img src="' + dateUrl + '" onload=window.print();window.close();>';
       windowContent += "</body>";
       windowContent += "</html>";
-      var printWin = window.open("", "", "width=1850,height=1100");
-      printWin.document.open();
+
       printWin.document.write(windowContent);
+      printWin.document.focus();
+
     },
   },
 };
