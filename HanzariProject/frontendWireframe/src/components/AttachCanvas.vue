@@ -450,32 +450,40 @@ export default {
     loadImageFile(file) {
       let reader = new FileReader();
       reader.onload = (e) => {
-        fabric.Image.fromURL(e.target.result, (img) => {
+        fabric.Image.fromURL(
+          e.target.result,
+          (img) => {
+            img.set({
+              scaleX: this.floorCanvas.width / img.width,
+              scaleY: this.floorCanvas.height / img.height,
+              centeredRotation: true,
+              centeredScaling: true,
+            });
+            this.floorCanvas.setBackgroundImage(
+              img,
+              this.floorCanvas.renderAll.bind(this.floorCanvas)
+            );
+          },
+          { crossOrigin: "Anonymous" }
+        );
+      };
+      reader.readAsDataURL(file);
+    },
+    loadImageUrl(imgurl) {
+      fabric.Image.fromURL(
+        imgurl,
+        (img) => {
           img.set({
             scaleX: this.floorCanvas.width / img.width,
             scaleY: this.floorCanvas.height / img.height,
-            centeredRotation: true,
-            centeredScaling: true,
           });
           this.floorCanvas.setBackgroundImage(
             img,
             this.floorCanvas.renderAll.bind(this.floorCanvas)
           );
-        },{ crossOrigin: "Anonymous" });
-      };
-      reader.readAsDataURL(file);
-    },
-    loadImageUrl(imgurl) {
-      fabric.Image.fromURL(imgurl, (img) => {
-        img.set({
-          scaleX: this.floorCanvas.width / img.width,
-          scaleY: this.floorCanvas.height / img.height,
-        });
-        this.floorCanvas.setBackgroundImage(
-          img,
-          this.floorCanvas.renderAll.bind(this.floorCanvas)
-        );
-      },{ crossOrigin: "Anonymous" });
+        },
+        { crossOrigin: "Anonymous" }
+      );
     },
     //각 층의 도형 리스트 반환하기
     getEachFloorSeatList: function (floor) {
@@ -772,7 +780,7 @@ export default {
         let seatNameObject = new fabric.IText(obj.seatName, {
           left: obj.item(0).left,
           top: obj.item(0).top - 15,
-          fontSize: this.fontSize/this.zoom,
+          fontSize: this.fontSize / this.zoom,
           fill: "black",
         });
 
@@ -1141,7 +1149,7 @@ export default {
           let floorid = this.managerFloorList[i].floor_id;
 
           let file = this.allImageMap.get(floorid);
-        
+
           if (file != null) {
             if (typeof file === "string") {
               //url
@@ -1380,19 +1388,24 @@ export default {
             let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
               this.currentFloorSeatListFromDb[i].floor
             );
-            let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-              this.currentFloorSeatListFromDb[i].employee_id
-            );
 
             let group = this.makeGroupInfo(this.currentFloorSeatListFromDb[i]);
 
             this.floorCanvas.add(group);
+
             eachFloorSeatList.push(group);
             managerEachFloorSeatList.push(group);
-            eachEmployeeSeatList.push(group);
 
             eventBus.$emit("allSeatMap", this.allSeatMap);
-            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+
+            if (this.currentFloorSeatListFromDb[i].employee_id != null) {
+              let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+                this.currentFloorSeatListFromDb[i].employee_id
+              );
+              eachEmployeeSeatList.push(group);
+              eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+            }
+
             //console.log(
             //  this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
             //);
@@ -1436,22 +1449,26 @@ export default {
             let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
               seats[j].floor
             );
-            let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-              seats[j].employee_id
-            );
 
             let group = this.makeGroupInfo(seats[j]);
+
             eachFloorSeatList.push(group);
             managerEachFloorSeatList.push(group);
-            eachEmployeeSeatList.push(group);
+
+            if (seats[j].employee_id != null) {
+              let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+                seats[j].employee_id
+              );
+              eachEmployeeSeatList.push(group);
+              eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+            }
 
             eventBus.$emit("allSeatMap", this.allSeatMap);
-            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
           }
         }
       }
     },
-     clickPrintBtn() {
+    clickPrintBtn() {
       var printWin = window.open("", "", "width=1500,height=800");
       let dateUrl = document.getElementById("canvas").toDataURL();
 
@@ -1468,7 +1485,6 @@ export default {
 
       printWin.document.write(windowContent);
       printWin.document.focus();
-
     },
   },
 };

@@ -41,8 +41,8 @@ export default {
   data() {
     return {
       employees: this.copyEmployeeList,
-      allEmployeeSeat: [],
-      allEmployeeSeatMap: this.eachEmployeeSeatMap,
+      allEmployeeSeat: [], //ê°€ì‹œì 
+      allEmployeeSeatMap: this.eachEmployeeSeatMap, //attach(db) -> employeeMap -> ì´ë²¤íŠ¸ë²„ìŠ¤ë¡œ ë¶ˆë ¤ì˜¨ê²ƒ
       search: "",
       headers: [
         {
@@ -59,8 +59,10 @@ export default {
   },
   created() {
     eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
-      this.eachEmployeeSeatMap = eachEmployeeSeatMap;
-      console.log(this.eachEmployeeSeatMap);
+      this.allEmployeeSeatMap = eachEmployeeSeatMap;
+      console.log(this.allEmployeeSeatMap);
+
+      this.getAllEmployeeSeats();
     });
   },
   mounted() {
@@ -69,6 +71,7 @@ export default {
   methods: {
     getAllEmployeeSeats() {
       if (this.allEmployeeSeatMap) {
+        this.allEmployeeSeat=[];
         let keys = new Array();
         keys = Array.from(this.allEmployeeSeatMap.keys());
         for (let i = 0; i < keys.length; i++) {
@@ -77,18 +80,32 @@ export default {
           for (let j = 0; j < seats.length; j++) {
             let newSeat = {};
 
-            if (seats[j].employee_id != null) {
-              //°ø¼® Á¦¿Ü
-              newSeat.seatid = seats[j].seatId;
-              newSeat.employeeid = seats[j].employee_id;
-              newSeat.name = seats[j].employee_name;
-              newSeat.department = seats[j].employee_department;
-              newSeat.floorid = seats[j].floor_id;
-              newSeat.number = seats[j].employee_number;
-              this.allEmployeeSeat.push(newSeat);
-            }
+            //if (this.findSeatFromAllEmployeeSeatBySeatId(seats[j]) == false) {
+              if (seats[j].employee_id != null) {
+                //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                newSeat.seatid = seats[j].seatId;
+                newSeat.employeeid = seats[j].employee_id;
+                newSeat.name = seats[j].employee_name;
+                newSeat.department = seats[j].employee_department;
+                newSeat.floorid = seats[j].floor_id;
+                newSeat.number = seats[j].employee_number;
+                this.allEmployeeSeat.push(newSeat);
+              }
+            //}
           }
         }
+      }
+    },
+    findSeatFromAllEmployeeSeatBySeatId(seatId) {
+      if (this.allEmployeeSeat.length > 0) {
+        for (let i = 0; i < this.allEmployeeSeat.length; i++) {
+          if (seatId == this.allEmployeeSeat[i].seatid) {
+            return true;
+          }
+          return false;
+        }
+      } else {
+        return false;
       }
     },
     showSeatButtonClicked(item) {
