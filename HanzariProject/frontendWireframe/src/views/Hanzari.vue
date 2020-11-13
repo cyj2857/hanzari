@@ -14,10 +14,10 @@
 
     <v-navigation-drawer v-model="drawer" app :width="500">
       <Tabs
-        v-if="employees && floors && currentFloorImage && otherFloorsImage"
+        v-if="employees && floors && latestFloorImage && otherFloorsImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
-        v-bind:currentFloorImage="currentFloorImage"
+        v-bind:currentFloorImage="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
       />
     </v-navigation-drawer>
@@ -26,16 +26,16 @@
         v-if="
           employees &&
           floors &&
-          currentFloorImage &&
+          latestFloorImage &&
           otherFloorsImage &&
-          currentFloorSeats &&
+          latestFloorSeats &&
           otherFloorsSeat
         "
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
-        v-bind:currentFloorImage="currentFloorImage"
+        v-bind:currentFloorImage="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
-        v-bind:currentFloorSeatsList="currentFloorSeats"
+        v-bind:currentFloorSeatsList="latestFloorSeats"
         v-bind:otherFloorsSeatsList="otherFloorsSeat"
         v-on:saveImages="saveImages"
         v-on:saveFloors="saveFloors"
@@ -74,10 +74,10 @@ export default {
       employees: null,
       floors: null,
 
-      currentFloorImage: null,
+      latestFloorImage: null,
       otherFloorsImage: null,
 
-      currentFloorSeats: null,
+      latestFloorSeats: null,
       otherFloorsSeat: null,
 
       floorIdList: [],
@@ -92,9 +92,9 @@ export default {
     //가장 floor_order가 큰 층의 floor_id를 가져오기 위함
     this.latestFloor = await this.getLatestFloor();
     // 현재 층 이미지 load
-    this.currentFloorImage = await this.getCurrentFloorImage();
+    this.latestFloorImage = await this.getLatestFloorImage();
     // 현재 층 자리 load
-    this.currentFloorSeats = await this.getCurrentFloorSeats();
+    this.latestFloorSeats = await this.getLatestFloorSeats();
     // 나머지 층 이미지 load
     this.otherFloorsImage = await this.loadOtherFloorsImage();
     // 나머지 층 자리 load
@@ -181,8 +181,8 @@ export default {
       return latestFloor;
     },
     //현재 층 이미지 가져오기
-    async getCurrentFloorImage() {
-      let currentFloorImage = new Array();
+    async getLatestFloorImage() {
+      let latestFloorImage = new Array();
       let latestFloorId = this.latestFloor.floor_id;
 
       if (latestFloorId != null) {
@@ -202,13 +202,13 @@ export default {
           let newImage = {};
           newImage.url = response.config.url;
           newImage.floorid = latestFloorId;
-          currentFloorImage.push(newImage);
+          latestFloorImage.push(newImage);
         } catch (error) {
           console.log(error);
         }
       }
 
-      return currentFloorImage;
+      return latestFloorImage;
     },
     //나머지 층 이미지 가져오기
     async loadOtherFloorsImage() {
@@ -245,8 +245,8 @@ export default {
       return this.otherFloorsImage;
     },
     //우선 현재 층의 자리만 가져옴
-    async getCurrentFloorSeats() {
-      let currentFloorSeatList = new Array();
+    async getLatestFloorSeats() {
+      let latestFloorSeatList = new Array();
       let latestFloorId = this.latestFloor.floor_id;
       try {
         let response = await axios.get(
@@ -279,12 +279,12 @@ export default {
           newSeat.delete = false;
           newSeat.modify = false;
 
-          currentFloorSeatList.push(newSeat);
+          latestFloorSeatList.push(newSeat);
         }
       } catch (error) {
         console.log(error);
       }
-      return currentFloorSeatList;
+      return latestFloorSeatList;
     },
     //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
     async loadOtherFloorSeats() {
