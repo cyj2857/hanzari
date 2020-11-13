@@ -104,9 +104,6 @@ public class FloorPlanController {
 				    따라서 해당 문제를 해결하기 위해서는 엄격히 업로드되는 contentType을 제한하거나(해당 인자를 "image/png"로 제한하는 등) 실제 데이터를 열어보아 어떤 contentType인지 알아내는 방법들을 사용해야한다.*/
 				    .contentType(file.getContentType())
 				    .build());
-			
-			System.out.println("되라 제발");
-			System.out.println(putFloorPlanFileName.toString());
 		} catch (Exception e) {
 			LOGGER.error("Can't put object in the MinIO bucket. Exception message : ", e);
 		} finally {
