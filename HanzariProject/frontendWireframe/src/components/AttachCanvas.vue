@@ -2,12 +2,7 @@
   <div>
     <v-toolbar color="black" dark>
       <v-toolbar-title>{{ currentSelectedFloorName }} Floor</v-toolbar-title>
-      <v-spacer></v-spacer
-      ><v-toolbar-items class="hidden-sm-and-down"
-        ><v-btn text @click="clickDobuleCanvasMode"
-          >Dobule Canvas Mode</v-btn
-        ></v-toolbar-items
-      ><v-spacer></v-spacer>
+      <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn @click="deleteAllBtn" text> Delete All </v-btn>
         <v-divider vertical></v-divider>
@@ -18,16 +13,19 @@
         <v-btn @click="clickPrintBtn" text> Print </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    
-      <canvas
-        ref="canvas"
-        class="canvas"
-        id="canvas"
-        width="1150px"
-        height="800px"
-        style="text-align: center"
-      ></canvas>
-      
+
+    <canvas
+      ref="canvas"
+      class="canvas"
+      id="canvas"
+      height="800px"
+      style="text-align: center"
+      width="1150px"
+      :style="{
+        marginLeft: this.canvasStatus ? '250px' : '50px',
+      }"
+    ></canvas>
+
     <v-menu
       v-model="contextMenuStatus"
       :position-x="contextMenuXLocation"
@@ -72,10 +70,8 @@ export default {
   ],
   data() {
     return {
-      doubleCanvasStatus: false,
-
       floorCanvas: null,
-      floorCanvas2: null,
+      canvasStatus: false,
 
       zoom: 1,
       fontSize: 25,
@@ -119,6 +115,10 @@ export default {
     };
   },
   created() {
+    eventBus.$on("canvasStatus", (isStatusOn) => {
+      console.log(isStatusOn);
+      this.canvasStatus = isStatusOn;
+    });
     if (this.allFloorList.length) {
       this.currentSelectedFloorName = this.allFloorList[
         this.allFloorList.length - 1
@@ -181,10 +181,11 @@ export default {
     });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
+
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
     eventBus.$on("showSeat", (seat) => {
-      console.log(seat);
+      //console.log(seat);
       this.showSeat(seat);
     });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
@@ -255,6 +256,81 @@ export default {
           opt.e.stopPropagation();
         });
 
+        this.floorCanvas.on("object:moving", function (e) {
+          var obj = e.target;
+          // if object is too big ignore
+          if (
+            obj.currentHeight > obj.canvas.height ||
+            obj.currentWidth > obj.canvas.width
+          ) {
+            return;
+          }
+          obj.setCoords();
+          // top-left  corner
+          if (obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0) {
+            obj.top = Math.max(obj.top, obj.top - obj.getBoundingRect().top);
+            obj.left = Math.max(
+              obj.left,
+              obj.left - obj.getBoundingRect().left
+            );
+          }
+          // bot-right corner
+          if (
+            obj.getBoundingRect().top + obj.getBoundingRect().height >
+              obj.canvas.height ||
+            obj.getBoundingRect().left + obj.getBoundingRect().width >
+              obj.canvas.width
+          ) {
+            obj.top = Math.min(
+              obj.top,
+              obj.canvas.height -
+                obj.getBoundingRect().height +
+                obj.top -
+                obj.getBoundingRect().top
+            );
+            obj.left = Math.min(
+              obj.left,
+              obj.canvas.width -
+                obj.getBoundingRect().width +
+                obj.left -
+                obj.getBoundingRect().left
+            );
+          }
+        });
+
+        var left1 = 0;
+        var top1 = 0;
+        var scale1x = 0;
+        var scale1y = 0;
+        var width1 = 0;
+        var height1 = 0;
+        this.floorCanvas.on("object:scaling", function (e) {
+          var obj = e.target;
+          obj.setCoords();
+          var brNew = obj.getBoundingRect();
+
+          if (
+            brNew.width + brNew.left >= obj.canvas.width ||
+            brNew.height + brNew.top >= obj.canvas.height ||
+            brNew.left < 0 ||
+            brNew.top < 0
+          ) {
+            obj.left = left1;
+            obj.top = top1;
+            obj.scaleX = scale1x;
+            obj.scaleY = scale1y;
+            obj.width = width1;
+            obj.height = height1;
+          } else {
+            left1 = obj.left;
+            top1 = obj.top;
+            scale1x = obj.scaleX;
+            scale1y = obj.scaleY;
+            width1 = obj.width;
+            height1 = obj.height;
+          }
+        });
+
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
@@ -271,6 +347,7 @@ export default {
             }
           }
         });
+
         this.floorCanvas.on("object:modified", (e) => {
           let modifyObject = e.target;
           modifyObject.set("modify", true);
@@ -286,6 +363,7 @@ export default {
               "employee_id",
               "employee_name",
               "employee_department",
+              "employee_number",
             ]);
 
             this.showToolTip(
@@ -293,7 +371,8 @@ export default {
               posY,
               groupToObject.employee_id,
               groupToObject.employee_name,
-              groupToObject.employee_department
+              groupToObject.employee_department,
+              groupToObject.employee_number
             );
           } else {
             this.closeToolTip();
@@ -302,10 +381,6 @@ export default {
 
         this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
       }
-    },
-    clickDobuleCanvasMode() {
-      this.doubleCanvasStatus = !this.doubleCanvasStatus;
-      console.log(this.doubleCanvasStatus);
     },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
@@ -362,7 +437,7 @@ export default {
           for (let i = 0; i < eachfloorSeatList.length; i++) {
             this.floorCanvas.add(eachfloorSeatList[i]);
           }
-          eventBus.$emit("eachFloorSeatList", eachfloorSeatList);
+          eventBus.$emit("allSeatMap", this.allSeatMap);
         }
       } else if (this.allImageMap.get(this.currentSelectedFloorId) == null) {
         //현재 층의 이미지가 저장되어있지 않다면 화면에 그려져있던 이미지와 도형 초기화
@@ -377,7 +452,7 @@ export default {
         this.floorCanvas.backgroundColor = "aliceblue";
         this.floorCanvas.renderAll();
 
-        eventBus.$emit("eachFloorSeatList", eachfloorSeatList);
+        eventBus.$emit("allSeatMap", this.allSeatMap);
       }
     },
     loadImageFile(file) {
@@ -387,6 +462,8 @@ export default {
           img.set({
             scaleX: this.floorCanvas.width / img.width,
             scaleY: this.floorCanvas.height / img.height,
+            centeredRotation: true,
+            centeredScaling: true,
           });
           this.floorCanvas.setBackgroundImage(
             img,
@@ -601,7 +678,7 @@ export default {
 
         //manageSeatInfo
         eventBus.$emit("dblClickedGroup", group);
-        console.log("불림");
+        //console.log("불림");
         //eventBus.$emit("manageSeatInfocomponentStatus", false); //manageSeats
       });
 
@@ -625,8 +702,7 @@ export default {
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);
       this.floorCanvas.renderAll();
-
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("allSeatMap", this.allSeatMap);
     },
     setMappingSeat(item) {
       // 공석 또는 사원이 매핑된 좌석에 사원 매핑
@@ -689,7 +765,7 @@ export default {
 
       eachEmployeeSeatList.push(activeObject);
 
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("allSeatMap", this.allSeatMap);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     addSeatNameInGroup() {},
@@ -720,7 +796,6 @@ export default {
         obj.add(seatNameObject);
       });
       this.floorCanvas.renderAll();
-
     },
     deleteAllBtn() {
       if (confirm("Are you sure?")) {
@@ -830,7 +905,8 @@ export default {
         activeObject.item(1).set("text", "");
         this.floorCanvas.renderAll();
       }
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+
+      eventBus.$emit("allSeatMap", this.allSeatMap);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     //복제하기 (컨텍스트 메뉴 내부)
@@ -902,7 +978,7 @@ export default {
         eachEmployeeSeatList.push(clonedObj);
       });
 
-      eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+      eventBus.$emit("allSeatMap", this.allSeatMap);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     showContextMenu(clientX, clientY) {
@@ -928,7 +1004,8 @@ export default {
       clientY,
       employee_id,
       employee_name,
-      employee_department
+      employee_department,
+      employee_number
     ) {
       this.toolTipXLocation = clientX;
       this.toolTipYLocation = clientY;
@@ -943,7 +1020,9 @@ export default {
           "<br>아이디 : " +
           employee_id +
           "<br>부서 : " +
-          employee_department;
+          employee_department +
+          "<br>내선번호 : " +
+          employee_number;
 
         this.toolTipColor = "pink lighten-2";
       }
@@ -953,9 +1032,9 @@ export default {
     closeToolTip() {
       this.toolTipStatus = false;
     },
-    showSeat(seat) { //좌석 하이라이트
+    showSeat(seat) {
+      //좌석 하이라이트
       let seatFloor = null;
-
       //seat의 층과 현재층이 같지 않다면
       if (this.currentSelectedFloorId != seat.floorid) {
         //탭 전환 코드
@@ -965,11 +1044,11 @@ export default {
       else {
         seatFloor = this.currentSelectedFloorId;
       }
-      
+
       let eachFloorSeatList = this.getEachFloorSeatList(seatFloor);
       for (let i = 0; i < eachFloorSeatList.length; i++) {
-        let myGroup = eachFloorSeatList[i];
-        let asObject = myGroup.toObject([
+        let group = eachFloorSeatList[i];
+        let asObject = group.toObject([
           "employee_id",
           "floor_id",
           "seatId",
@@ -1005,15 +1084,15 @@ export default {
               this.floorCanvas.add(eachFloorSeatList[i]);
             }
           }
-          myGroup.item(0).set("opacity", 0);
-          myGroup.item(0).set("stroke", "blue");
-          myGroup.item(0).set("strokeWidth", 5);
+          group.item(0).set("opacity", 0);
+          group.item(0).set("stroke", "blue");
+          group.item(0).set("strokeWidth", 5);
 
-          myGroup.item(0).animate("opacity", 1, {
+          group.item(0).animate("opacity", 1, {
             duration: 2000,
             onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
           });
-          myGroup.item(0).animate("fill", "red", {
+          group.item(0).animate("fill", "red", {
             onChange: this.floorCanvas.renderAll.bind(this.floorCanvas),
             duration: 2000,
             onComplete: getOrginItem,
@@ -1021,10 +1100,10 @@ export default {
 
           let color = this.getColor(asObject.employee_department);
           function getOrginItem() {
-            myGroup.item(0).set("opacity", 1);
-            myGroup.item(0).set("fill", color);
-            myGroup.item(0).set("stroke", null);
-            myGroup.item(0).set("strokeWidth", null);
+            group.item(0).set("opacity", 1);
+            group.item(0).set("fill", color);
+            group.item(0).set("stroke", null);
+            group.item(0).set("strokeWidth", null);
           }
         }
         //자리가 아직 없을때 예외처리 하기
@@ -1032,7 +1111,7 @@ export default {
     },
     clickSaveBtn() {
       if (this.managerFloorList) {
-        console.log(this.managerFloorList);
+        //console.log(this.managerFloorList);
         //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
@@ -1070,10 +1149,13 @@ export default {
         }
 
         //이미지 저장
+        console.log("-----------------------");
+        console.log(this.managerFloorList.length);
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let imgData = new FormData();
           let floorid = this.managerFloorList[i].floor_id;
           let file = this.allImageMap.get(floorid);
+          console.log(file);
           if (file != null) {
             imgData.append("imageFile", file);
             this.$emit("saveImages", "images", imgData, floorid);
@@ -1087,11 +1169,11 @@ export default {
           );
 
           if (managerEachFloorSeatList.length > 0) {
-            console.log(
-              managerEachFloorSeatList.length +
-                this.managerFloorList[i].floor_id +
-                "층의 자리 개수입니다."
-            );
+            //console.log(
+            //  managerEachFloorSeatList.length +
+            //    this.managerFloorList[i].floor_id +
+            //    "층의 자리 개수입니다."
+            //);
 
             for (let j = 0; j < managerEachFloorSeatList.length; j++) {
               let groupToObject = managerEachFloorSeatList[j].toObject([
@@ -1170,7 +1252,7 @@ export default {
                   seatData.degree = groupToObject.angle;
                   seatData.shape_id = "1";
 
-                  console.log(seatData);
+                  //console.log(seatData);
                   this.$emit("saveSeats", "seats", seatData, seatData.floor);
                 }
               }
@@ -1261,7 +1343,7 @@ export default {
         let group = e.target;
 
         eventBus.$emit("dblClickedGroup", group);
-        console.log("불림");
+        //console.log("불림");
       });
 
       this.floorCanvas.on("object:scaling", (e) => {
@@ -1284,20 +1366,24 @@ export default {
     },
     clickLoadCurrentFloor() {
       //현재 층 이미지 로드
+      //console.log(this.currentFloorImageFromDb.length);
       for (let i = 0; i < this.currentFloorImageFromDb.length; i++) {
         let imgurl = this.currentFloorImageFromDb[i].url;
         let floorid = this.currentFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
+        console.log("현재층 이미지");
+        console.log(this.allImageMap.get(floorid));
+        //console.log(this.allImageMap.get(floorid));
         this.currentSelectedFloorId = floorid;
 
         this.loadImageUrl(imgurl);
         // 현재층 자리 로드
         if (this.currentFloorSeatListFromDb.length) {
           for (let i = 0; i < this.currentFloorSeatListFromDb.length; i++) {
-            console.log(
-              "현재층의 자리 개수는 ------> " +
-                this.currentFloorSeatListFromDb.length
-            );
+            //console.log(
+            //  "현재층의 자리 개수는 ------> " +
+            //    this.currentFloorSeatListFromDb.length
+            //);
             this.currentSelectedFloorId = this.currentFloorSeatListFromDb[
               i
             ].floor;
@@ -1319,19 +1405,19 @@ export default {
             managerEachFloorSeatList.push(group);
             eachEmployeeSeatList.push(group);
 
-            eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
+            eventBus.$emit("allSeatMap", this.allSeatMap);
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-            console.log(
-              this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
-            );
-            console.log(
-              this.currentFloorSeatListFromDb[i].employee_id +
-                "의 자리 리스트 개수는 " +
-                this.getEachEmployeeSeatList(
-                  this.currentFloorSeatListFromDb[i].employee_id
-                ).length +
-                "입니다."
-            );
+            //console.log(
+            //  this.eachEmployeeSeatMap.size + "악시오스로 가지온 직원 수입니다."
+            //);
+            //console.log(
+            //  this.currentFloorSeatListFromDb[i].employee_id +
+            //    "의 자리 리스트 개수는 " +
+            //    this.getEachEmployeeSeatList(
+            //      this.currentFloorSeatListFromDb[i].employee_id
+            //    ).length +
+            //    "입니다."
+            //);
           }
         } else {
           //console.log(floorid);
@@ -1346,6 +1432,9 @@ export default {
         let imgurl = this.otherFloorImageFromDb[i].url;
         let floorid = this.otherFloorImageFromDb[i].floorid;
         this.allImageMap.set(floorid, imgurl);
+
+        console.log("다른층 이미지 ");
+        console.log(this.allImageMap.get(floorid));
       }
       //다른 층 자리 로드
       if (this.otherFloorSeatListFromDb) {
@@ -1375,6 +1464,7 @@ export default {
     },
     clickPrintBtn() {
       let url = document.getElementById("canvas").toDataURL();
+      console.log(url);
       var windowContent = "<!DOCTYPE html>";
       windowContent += "<html>";
       windowContent += "<head><title>Print</title>";

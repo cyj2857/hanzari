@@ -52,7 +52,7 @@ public class Seat {
 
 	@NotNull
 	@Column(name = "is_group", nullable = false)
-	private Boolean isGroup;
+	private boolean isGroup;
 
 	@Column(name = "group_id", nullable = true)
 	private String groupId;
