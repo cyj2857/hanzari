@@ -1,20 +1,20 @@
 <template>
   <div>
     <v-toolbar color="black" dark>
-      <v-toolbar-title>{{ currentSelectedFloorName }} Floor</v-toolbar-title>
+      <v-toolbar-title>{{ currentSelectedFloorName }} 층</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn @click="deleteAllBtn" text
-          ><v-icon>delete</v-icon> Delete All Seats</v-btn
+          ><v-icon>delete</v-icon>모든 좌석 삭제</v-btn
         >
         <v-divider vertical></v-divider>
         <v-btn @click="clickResetToRatio" text
-          ><v-icon>zoom_out</v-icon> Reset Ratio
+          ><v-icon>zoom_out</v-icon> 배율 초기화
         </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn @click="clickSaveBtn" text><v-icon>save</v-icon> Save </v-btn>
+        <v-btn @click="clickSaveBtn" text><v-icon>save</v-icon> 저장 </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn @click="clickPrintBtn" text> <v-icon>print</v-icon>Print </v-btn>
+        <v-btn @click="clickPrintBtn" text> <v-icon>print</v-icon>프린트 </v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
