@@ -5,6 +5,7 @@
         <v-spacer>
           <v-toolbar-items class="hidden-sm-and-down">
             <v-icon large dark @click="drawer = !drawer">menu</v-icon>
+           
           </v-toolbar-items></v-spacer
         >
         <v-toolbar-title>Hanzari</v-toolbar-title></v-toolbar
@@ -80,8 +81,7 @@ export default {
       otherFloorsSeat: null,
 
       floorIdList: [],
-      currentFloor: null,
-      currentFloorId: null,
+      latestFloor: null,
     };
   },
   async created() {
@@ -89,6 +89,8 @@ export default {
     this.employees = await this.getEmployees();
     // 층 load
     this.floors = await this.getFloors();
+    //가장 floor_order가 큰 층의 floor_id를 가져오기 위함
+    this.latestFloor = await this.getLatestFloor();
     // 현재 층 이미지 load
     this.currentFloorImage = await this.getCurrentFloorImage();
     // 현재 층 자리 load
@@ -155,19 +157,36 @@ export default {
         for (let i = 0; i < allFloorList.length; i++) {
           this.floorIdList.push(allFloorList[i].floor_id);
         }
-        this.currentFloorId = this.floorIdList.slice(-1)[0];
       } catch (error) {
         console.log(error);
       }
       return allFloorList;
     },
-
+    async getLatestFloor() {
+      let latestFloor = null;
+      try {
+        let response = await axios.get(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
+            building_id +
+            "/floors/get-latest-floor"
+        );
+        latestFloor = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+      return latestFloor;
+    },
     //현재 층 이미지 가져오기
     async getCurrentFloorImage() {
       let currentFloorImage = new Array();
-      if (this.currentFloorId != null) {
+      let latestFloorId = this.latestFloor.floor_id;
+
+      if (latestFloorId != null) {
         try {
-          console.log(this.currentFloorId); //undefined
           let response = await axios.get(
             "http://" +
               "172.30.1.56" +
@@ -176,13 +195,13 @@ export default {
               "/api/buildings/" +
               building_id +
               "/floors/" +
-              this.currentFloorId +
+              latestFloorId +
               "/images"
           );
 
           let newImage = {};
           newImage.url = response.config.url;
-          newImage.floorid = this.currentFloorId;
+          newImage.floorid = latestFloorId;
           currentFloorImage.push(newImage);
         } catch (error) {
           console.log(error);
@@ -198,9 +217,7 @@ export default {
 
       if (this.floorIdList.length > 0) {
         try {
-          //console.log(this.floorIdList.length);
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
-            //console.log(this.floorIdList[i]);
             let response = await axios.get(
               "http://" +
                 "172.30.1.56" +
@@ -230,6 +247,7 @@ export default {
     //우선 현재 층의 자리만 가져옴
     async getCurrentFloorSeats() {
       let currentFloorSeatList = new Array();
+      let latestFloorId = this.latestFloor.floor_id;
       try {
         let response = await axios.get(
           "http://" +
@@ -239,7 +257,7 @@ export default {
             "/api/buildings/" +
             building_id +
             "/floors/" +
-            this.currentFloorId +
+            latestFloorId +
             "/seats"
         );
         for (var i = 0; i < response.data.length; i++) {
