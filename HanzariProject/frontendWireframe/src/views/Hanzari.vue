@@ -1,17 +1,18 @@
 <template>
   <div class="hanzari" id="hanzari">
-    <v-toolbar color="black" dark  app>
+    <v-app-bar app dark>
+    <v-toolbar color="black" dark>
       <v-spacer>
         <v-toolbar-items class="hidden-sm-and-down">
           <V-btn
             ><v-icon large dark @click="drawer = !drawer"
-              >keyboard_arrow_right</v-icon
+              >menu</v-icon
             ></V-btn
           >
         </v-toolbar-items></v-spacer
       >
       <v-toolbar-title>Hanzari</v-toolbar-title></v-toolbar
-    >
+    ></v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app :width="500" >
       <Tabs
