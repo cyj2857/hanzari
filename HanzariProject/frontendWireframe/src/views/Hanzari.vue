@@ -10,12 +10,14 @@
       }"
     >
       <v-toolbar color="black" dark>
-        <v-toolbar-items class="hidden-sm-and-down">
-          <v-btn v-if="isStatusOn"
-            ><v-icon large dark @click="toggleOnOff"
-              >keyboard_arrow_right</v-icon
-            ></v-btn
-          ></v-toolbar-items
+        <v-spacer>
+          <v-toolbar-items class="hidden-sm-and-down">
+            <v-btn v-if="isStatusOn"
+              ><v-icon large dark @click="toggleOnOff"
+                >keyboard_arrow_right</v-icon
+              ></v-btn
+            ></v-toolbar-items
+          ></v-spacer
         >
         <v-toolbar-items
           ><v-btn v-if="!isStatusOn"
