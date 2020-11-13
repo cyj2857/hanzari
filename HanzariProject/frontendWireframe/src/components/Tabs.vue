@@ -3,7 +3,8 @@
     <v-toolbar color="black" dark> </v-toolbar>
     <v-card height="800px">
       <v-tabs v-model="tab" background-color="black" dark height="65">
-        <v-tab v-for="item in items" :key="item.index"> {{ item.title }}</v-tab>
+          <v-tabs-slider color="blue"></v-tabs-slider>
+        <v-tab  v-for="item in items" :key="item.index"><v-icon dark>{{ item.icon }}</v-icon>  {{item.title}} </v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab">
@@ -54,9 +55,9 @@ export default {
 
       tab: null,
       items: [
-        { title: "Floor", index: 0, content: "ManageFloors" },
-        { title: "Seat", index: 1, content: "ManageSeats" },
-        { title: "Search", index: 2, content: "ManageSearch" },
+        { icon: "stairs", title :"floor",index: 0, content: "ManageFloors" },
+        { icon: "event_seat",title :"seat", index: 1, content: "ManageSeats" },
+        { icon: "search", index: 2,title :"search", content: "ManageSearch" },
       ],
     };
   },

@@ -52,7 +52,7 @@
 
       <v-row>
         <v-col cols="12">
-          <v-card-title>Get Image From Your PC</v-card-title>
+          <v-card-title><v-icon>image</v-icon>도면 설정하기</v-card-title>
           <v-card-text>
             <input
               v-show="false"

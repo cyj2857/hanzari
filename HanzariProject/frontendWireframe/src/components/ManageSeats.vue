@@ -3,7 +3,7 @@
     <v-card flat color="transparent" v-if="!mappingEmployeeComponentStatus">
       <v-row>
         <v-col cols="12" sm="9">
-          <v-card-title>Create Vacant Seats</v-card-title></v-col
+          <v-card-title><v-icon>event_seat</v-icon>공석 만들기</v-card-title></v-col
         >
         <v-col cols="12" sm="3">
           <v-switch
@@ -31,7 +31,7 @@
 
       <v-row>
         <v-col cols="12">
-          <v-card-title>Mapping With Structure</v-card-title>
+          <v-card-title><v-icon>perm_identity</v-icon>사원 매핑하기</v-card-title>
           <v-card-text>
             <v-btn @click="getMappingEmployeeComponent"
               >Mapping Employee</v-btn
