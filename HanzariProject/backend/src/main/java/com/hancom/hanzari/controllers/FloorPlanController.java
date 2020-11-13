@@ -46,6 +46,7 @@ public class FloorPlanController {
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
+	//TODO hanzari로 버킷명 변경하기
 	private String bucketName = "hanzari-test";
 	
 	private UUID floorPlanId;
