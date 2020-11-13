@@ -20,7 +20,7 @@ public class FloorPlanServiceImpl implements FloorPlanService {
 	}
 	
 	@Override
-	public FloorPlan findByFloorIdAndLatest(String floorId, Boolean latest) {
+	public FloorPlan findByFloorIdAndLatest(String floorId, boolean latest) {
 		FloorPlan floorPlan = floorPlanRepository.findByFloorIdAndLatest(floorId, latest);
 		if(floorPlan != null)
 			return floorPlan;
