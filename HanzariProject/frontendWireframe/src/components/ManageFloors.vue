@@ -271,10 +271,17 @@ export default {
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
 
-          eventBus.$emit("changeFloor", this.allFloorList[idx - 1]);
+          let nextIdx = null;
+          if (idx == 0) {
+            nextIdx = idx;
+          } else {
+            nextIdx = idx - 1;
+          }
+
+          eventBus.$emit("changeFloor", this.allFloorList[nextIdx]);
           eventBus.$emit(
             "currentSelectedFloorToManageSeats",
-            this.allFloorList[idx - 1]
+            this.allFloorList[nextIdx]
           );
           let allFloors = this.allFloorList.slice();
           eventBus.$emit("allFloorList", allFloors);
@@ -282,7 +289,7 @@ export default {
           let managerFloors = this.managerFloorList.slice();
           eventBus.$emit("managerFloorList", managerFloors);
 
-          this.currentSelectedFloor = this.allFloorList[idx - 1];
+          this.currentSelectedFloor = this.allFloorList[nextIdx];
         }
 
         this.length--;
@@ -290,7 +297,6 @@ export default {
         if (this.length > 0) {
           this.clickIndexes = [];
           this.clickIndexes.push(this.currentSelectedFloor.floor_id);
-          //console.log(this.length + " length");
         }
       } else {
         alert("there are no seats to delete!");
