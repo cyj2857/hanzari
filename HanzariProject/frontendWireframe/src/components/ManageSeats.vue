@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12" sm="9">
           <v-card-title
-            ><v-icon>event_seat</v-icon>공석 만들기</v-card-title
+            ><v-icon large >event_seat</v-icon>공석 만들기</v-card-title
           ></v-col
         >
         <v-col cols="12" sm="3">
@@ -34,7 +34,7 @@
       <v-row>
         <v-col cols="12">
           <v-card-title
-            ><v-icon>perm_identity</v-icon>사원 매핑하기</v-card-title
+            ><v-icon large >perm_identity</v-icon>사원 매핑하기</v-card-title
           >
           <v-card-text>
             <v-btn @click="getMappingEmployeeComponent"
@@ -45,7 +45,7 @@
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
-      <v-card-title><v-icon>event_seat</v-icon>좌석 번호 부여하기</v-card-title>
+      <v-card-title><v-icon large >event_seat</v-icon>좌석 번호 부여하기</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"
           ><v-text-field
@@ -55,12 +55,12 @@
           ></v-text-field
         ></v-col>
         <v-col cols="12" sm="3">
-          <v-icon large @click="inputSeatName">check</v-icon></v-col
+          <v-icon large @click="inputSeatName">edit</v-icon></v-col
         >
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
-      <v-card-title><v-icon></v-icon>층간 이동하기</v-card-title
+      <v-card-title><v-icon large>stairs</v-icon>층간 이동하기</v-card-title
       ><v-row
         ><v-col cols="12" sm="9"
           ><v-text-field
@@ -70,7 +70,7 @@
           ></v-text-field
         ></v-col>
         <v-col cols="12" sm="3">
-          <v-icon large @click="clickChangeFloor">check</v-icon></v-col
+          <v-icon large @click="clickChangeFloor">edit</v-icon></v-col
         >
       </v-row>
     </v-card>

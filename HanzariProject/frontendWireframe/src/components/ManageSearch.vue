@@ -22,7 +22,7 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-icon id="showSeatButton" @click="showSeatButtonClicked(row.item)"
+            <v-icon large id="showSeatButton" @click="showSeatButtonClicked(row.item)"
               >event_seat</v-icon
             >
           </td>
