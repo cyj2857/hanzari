@@ -48,13 +48,6 @@ public class FloorPlanController {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 	
-	private FloorPlan latestFloorPlan;
-	private FloorPlan putFloorPlan;
-	private FloorPlan getFloorPlan;
-	//기존 문자열이 사용하였던 메모리 공간을 재활용하고 후에 멀티 쓰레드 환경 확장을 생각하여 StringBuffer를 사용함
-	private StringBuffer putFloorPlanFileName;
-	private StringBuffer getFloorPlanFileName;
-		
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
 	//axios 요청 횟수와 메소드가 실행되는 것은 synchronized 되어있지 않다.(요청에 따라 메소드가 동시에 실행되고 그에 따라 동시에 변수에 접근하여 데이터 일관성이 깨지는 문제가 발생한다.)
@@ -64,7 +57,11 @@ public class FloorPlanController {
 	public synchronized void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		
 		LOGGER.info("FloorPlanController.putImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
-				
+		
+		FloorPlan latestFloorPlan;
+		FloorPlan putFloorPlan;
+		StringBuffer putFloorPlanFileName;
+		
 		try {
 			//해당 층의 가장 최신으로 연결되어있는 floorPlan 레코드의 latest 컬럼을 false로 변경해준다.
 			latestFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
@@ -126,6 +123,7 @@ public class FloorPlanController {
 		
 		LOGGER.info("FloorPlanController.getImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
+		StringBuffer getFloorPlanFileName;
 		InputStream imageGetInputStream = null;
 		
 		//클라이언트에서 요청을 할 때 잘못된 요청(floorId가 undefined가 오는 등)이 오더라도 try catch문을 두개로 나눠두었기에 이전 getFloorPlanFileName에 저장되어있던 이전 이미지 파일을 가져오게 된다.
