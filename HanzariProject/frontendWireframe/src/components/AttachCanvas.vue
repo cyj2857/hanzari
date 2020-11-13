@@ -945,6 +945,7 @@ export default {
     },
     //paste하기 (ctrl+v)
     pasteSelectedSeat() {
+      if (!this.floorCanvas.getActiveObject()) return;
       let activeObject = this.floorCanvas.getActiveObject();
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
