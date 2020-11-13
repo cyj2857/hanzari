@@ -136,6 +136,10 @@ export default {
     );
   },
   methods: {
+    //editSeatName() {
+    //  console.log(this.seatName);
+    //  eventBus.$emit("inputSeatName", this.seatName);
+    //},
     inputSeatName() {
       if (this.seatName) {
         eventBus.$emit("inputSeatName", this.seatName);

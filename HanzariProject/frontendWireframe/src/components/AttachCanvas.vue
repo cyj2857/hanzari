@@ -111,6 +111,9 @@ export default {
 
       ableAddVacant: false,
       seatLength: null,
+
+      inputSeatNameText: null,
+      seatNumber: 0
     };
   },
   created() {
@@ -168,10 +171,16 @@ export default {
       }
     });
     eventBus.$on("inputSeatName", (seatName) => {
+      if (seatName == "") {
+        this.inputSeatNameText = null;
+        console.log(this.inputSeatNameText);
+      } else {
+        this.inputSeatNameText = seatName;
+        console.log(this.inputSeatNameText);
+      }
+      
       if (seatName && this.floorCanvas.getActiveObject()) {
         this.inputSeatName(seatName);
-      } else {
-        alert("there is no selected object");
       }
     });
     eventBus.$on("allImageMap", (allImageMap) => {
@@ -675,6 +684,23 @@ export default {
         modify: false, //변경
         delete: false, //삭제
       });
+
+      
+      if (this.inputSeatNameText != null) {
+        if (group.item(2)) {
+          group.remove(group.item(2));
+        }
+
+        this.seatNumber++;
+        group.seatName = this.inputSeatNameText + this.seatNumber;
+        let seatNameObject = new fabric.IText(group.seatName, {
+          left: group.item(0).left,
+          top: group.item(0).top - 15,
+          fontSize: this.fontSize / this.zoom,
+          fill: "black",
+        });
+        group.add(seatNameObject);
+      }
 
       this.floorCanvas.on("object:scaling", (e) => {
         let scaledObject = e.target;
