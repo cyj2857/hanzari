@@ -35,8 +35,11 @@ import io.minio.PutObjectArgs;
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/images")
 //TODO 현재 전송된 이미지 이름을 건물과 층 id를 조합하여 유니크하게 주고 있지만(따라서 같은 층에 도면을 다시 올릴 경우 덮어쓰기가 된다.) 만약 스냅샷 형태로 매달 자리배치도를 관리하게 된다면 매달 이미지 관리를 따로해주어야 한다. 따라서 이미지 이름에 날짜에 대한 정보도 추가해야한다.
 //TODO GetMapping에서 데이터베이스에 floor_plan에 대한 레코드가 없다면(층 정보로 생성된 레코드가 없다면) get 요청이 실패했다는 정보 넘겨주기
-public class FloorPlanController {
-	
+public class FloorPlanController {	
+	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
+	//TODO hanzari로 버킷명 변경하기
+	private String BUCKET_NAME = "hanzari-test";
+
 	@Autowired
 	private FloorPlanService floorPlanService;
 	
@@ -45,21 +48,13 @@ public class FloorPlanController {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 	
-	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
-	//TODO hanzari로 버킷명 변경하기
-	private String bucketName = "hanzari-test";
-	
-	private UUID floorPlanId;
 	private FloorPlan latestFloorPlan;
 	private FloorPlan putFloorPlan;
 	private FloorPlan getFloorPlan;
 	//기존 문자열이 사용하였던 메모리 공간을 재활용하고 후에 멀티 쓰레드 환경 확장을 생각하여 StringBuffer를 사용함
 	private StringBuffer putFloorPlanFileName;
 	private StringBuffer getFloorPlanFileName;
-	
-	//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
-	private Date currentTime;
-	
+		
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
 	//axios 요청 횟수와 메소드가 실행되는 것은 synchronized 되어있지 않다.(요청에 따라 메소드가 동시에 실행되고 그에 따라 동시에 변수에 접근하여 데이터 일관성이 깨지는 문제가 발생한다.)
@@ -69,9 +64,7 @@ public class FloorPlanController {
 	public synchronized void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		
 		LOGGER.info("FloorPlanController.putImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
-		
-		currentTime = new Date();
-		
+				
 		try {
 			//해당 층의 가장 최신으로 연결되어있는 floorPlan 레코드의 latest 컬럼을 false로 변경해준다.
 			latestFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
@@ -85,17 +78,20 @@ public class FloorPlanController {
 		putFloorPlanFileName = new StringBuffer();
 		
 		try {
+			//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
+			Date currentTime = new Date();
+			
 			putFloorPlanFileName.append(floorId);
 			putFloorPlanFileName.append("-");
 			putFloorPlanFileName.append(currentTime.toString());
-			floorPlanId = UUID.randomUUID();
+			UUID floorPlanId = UUID.randomUUID();
 			LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName.toString());
 			putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
 			floorPlanService.save(putFloorPlan);
 			
 			minioClient.putObject(
 				    PutObjectArgs.builder()
-				    .bucket(bucketName)
+				    .bucket(BUCKET_NAME)
 					//object 속성이 MinIO 버킷에 저장되는 파일 이름이 된다.
 				    .object(putFloorPlanFileName.toString())
 					//stream 속성은 이미지 사이즈 크기 만큼 메모리를 사용하여 파일을 전송한다.
@@ -143,7 +139,7 @@ public class FloorPlanController {
 			//MinIO 서버 버킷에서 이미지 가져오기
 			imageGetInputStream = minioClient.getObject(
 					 GetObjectArgs.builder()
-					 .bucket(bucketName)
+					 .bucket(BUCKET_NAME)
 					 .object(getFloorPlanFileName.toString())
 					 .build());
 			response.addHeader("Content-disposition", getFloorPlanFileName.toString());
