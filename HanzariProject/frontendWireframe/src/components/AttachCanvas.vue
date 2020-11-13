@@ -772,7 +772,7 @@ export default {
         let seatNameObject = new fabric.IText(obj.seatName, {
           left: obj.item(0).left,
           top: obj.item(0).top - 15,
-          fontSize: 13,
+          fontSize: this.fontSize/this.zoom,
           fill: "black",
         });
 
