@@ -16,7 +16,7 @@
                 :copyEmployeeList="employees"
                 :copyfloorList="floors"
                 :eachEmployeeSeatMap="eachEmployeeSeatMap"
-                :copyCurrentFloorImage="mycurrentFloorImage"
+                :copyCurrentFloorImage="myLatestFloorImage"
                 :copyOtherFloorsImageList="myOtherFloorsImageList"
               ></component>
             </v-card-text>
@@ -36,7 +36,7 @@ export default {
   props: [
     "copyEmployee",
     "copyFloors",
-    "currentFloorImage",
+    "latestFloorImage",
     "otherFloorsImageList",
   ],
   components: {
@@ -50,7 +50,7 @@ export default {
       floors: this.copyFloors,
       eachEmployeeSeatMap: null,
 
-      mycurrentFloorImage: this.currentFloorImage,
+      myLatestFloorImage: this.latestFloorImage,
       myOtherFloorsImageList: this.otherFloorsImageList,
 
       tab: null,

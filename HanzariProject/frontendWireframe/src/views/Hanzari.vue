@@ -17,7 +17,7 @@
         v-if="employees && floors && latestFloorImage && otherFloorsImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
-        v-bind:currentFloorImage="latestFloorImage"
+        v-bind:latestFloorImage="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
       />
     </v-navigation-drawer>
