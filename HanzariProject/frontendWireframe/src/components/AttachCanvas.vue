@@ -4,9 +4,13 @@
       <v-toolbar-title>{{ currentSelectedFloorName }} Floor</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn @click="deleteAllBtn" text><v-icon>delete</v-icon> Delete All Seats</v-btn>
+        <v-btn @click="deleteAllBtn" text
+          ><v-icon>delete</v-icon> Delete All Seats</v-btn
+        >
         <v-divider vertical></v-divider>
-        <v-btn @click="clickResetToRatio" text><v-icon>zoom_out</v-icon> Reset Ratio </v-btn>
+        <v-btn @click="clickResetToRatio" text
+          ><v-icon>zoom_out</v-icon> Reset Ratio
+        </v-btn>
         <v-divider vertical></v-divider>
         <v-btn @click="clickSaveBtn" text><v-icon>save</v-icon> Save </v-btn>
         <v-divider vertical></v-divider>
@@ -341,8 +345,9 @@ export default {
         });
 
         this.floorCanvas.on("object:modified", (e) => {
-          let modifyObject = e.target;
-          modifyObject.set("modify", true);
+          this.floorCanvas.getObjects().forEach((obj) => {
+            obj.set("modify", true);
+          });
         });
 
         this.floorCanvas.on("mouse:over", (event) => {
