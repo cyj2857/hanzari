@@ -80,7 +80,7 @@ import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 export default {
-  props: ["copyfloorList", "copyCurrentFloorImage", "copyOtherFloorsImageList"],
+  props: ["copyfloorList", "copyLatestFloorImage", "copyOtherFloorsImageList"],
   components: {},
   data() {
     return {
@@ -118,11 +118,11 @@ export default {
 
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
-      for (let i = 0; i < this.copyCurrentFloorImage.length; i++) {
-        console.log(this.copyCurrentFloorImage);
+      for (let i = 0; i < this.copyLatestFloorImage.length; i++) {
+        console.log(this.copyLatestFloorImage);
 
-        let imgurl = this.copyCurrentFloorImage[i].url;
-        let floorid = this.copyCurrentFloorImage[i].floorid;
+        let imgurl = this.copyLatestFloorImage[i].url;
+        let floorid = this.copyLatestFloorImage[i].floorid;
         this.allImageMap.set(floorid, imgurl);
       }
 

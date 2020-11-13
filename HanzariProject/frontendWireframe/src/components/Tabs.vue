@@ -16,7 +16,7 @@
                 :copyEmployeeList="employees"
                 :copyfloorList="floors"
                 :eachEmployeeSeatMap="eachEmployeeSeatMap"
-                :copyCurrentFloorImage="myLatestFloorImage"
+                :copyLatestFloorImage="myLatestFloorImage"
                 :copyOtherFloorsImageList="myOtherFloorsImageList"
               ></component>
             </v-card-text>
