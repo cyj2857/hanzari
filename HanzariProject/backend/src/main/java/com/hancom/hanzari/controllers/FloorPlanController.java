@@ -3,8 +3,6 @@ package com.hancom.hanzari.controllers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
@@ -93,7 +91,6 @@ public class FloorPlanController {
 			LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName.toString());
 			putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
 			floorPlanService.save(putFloorPlan);
-			
 			
 			minioClient.putObject(
 				    PutObjectArgs.builder()

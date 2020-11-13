@@ -33,7 +33,7 @@ public class FloorPlan {
 	//최신의 도면이면 true, 이전 도면들은 false
 	@NotNull
 	@Column(name = "latest")
-	private Boolean latest;
+	private boolean latest;
 	
 	//MinIO 버킷에 들어갈 이미지 파일 이름과 연결된 필드
 	@NotNull
