@@ -53,9 +53,6 @@ dependencies {
     // swagger 추가
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2' 
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-	
-	//MinIO 추가(MinioService 라이브러리 사용시 필요한 implementation)
-	//implementation 'com.jlefebure:spring-boot-starter-minio:1.4'
 }
 
 test {
