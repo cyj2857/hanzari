@@ -60,7 +60,7 @@ public class FloorPlanController {
 		
 		FloorPlan latestFloorPlan;
 		FloorPlan putFloorPlan;
-		StringBuffer putFloorPlanFileName;
+		StringBuilder putFloorPlanFileName;
 		
 		try {
 			//해당 층의 가장 최신으로 연결되어있는 floorPlan 레코드의 latest 컬럼을 false로 변경해준다.
@@ -72,7 +72,7 @@ public class FloorPlanController {
 		}
 
 		InputStream imagePutInputStream = file.getInputStream();
-		putFloorPlanFileName = new StringBuffer();
+		putFloorPlanFileName = new StringBuilder();
 		
 		try {
 			//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
@@ -124,7 +124,7 @@ public class FloorPlanController {
 		LOGGER.info("FloorPlanController.getImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
 		FloorPlan getFloorPlan;
-		StringBuffer getFloorPlanFileName;
+		StringBuilder getFloorPlanFileName;
 		InputStream imageGetInputStream = null;
 		
 		//클라이언트에서 요청을 할 때 잘못된 요청(floorId가 undefined가 오는 등)이 오더라도 try catch문을 두개로 나눠두었기에 이전 getFloorPlanFileName에 저장되어있던 이전 이미지 파일을 가져오게 된다.
@@ -132,7 +132,7 @@ public class FloorPlanController {
 		try {
 			//DB에서 요청한 층 정보와 연결된 레코드를 찾아 이미지 이름 찾기
 			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
-			getFloorPlanFileName = new StringBuffer();
+			getFloorPlanFileName = new StringBuilder();
 			getFloorPlanFileName.append(getFloorPlan.getFloorPlanFileName());
 			
 			//MinIO 서버 버킷에서 이미지 가져오기
