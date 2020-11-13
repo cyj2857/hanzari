@@ -1,5 +1,5 @@
 <template>
-  <v-card flat>
+  <v-card flat color="transparent">
     <v-card-title>
       <v-text-field
         v-model="search"
@@ -22,8 +22,8 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-btn id="showSeatButton" @click="showSeatButtonClicked(row.item)"
-              >Show</v-btn
+            <v-icon id="showSeatButton" @click="showSeatButtonClicked(row.item)"
+              >event_seat</v-icon
             >
           </td>
         </tr>

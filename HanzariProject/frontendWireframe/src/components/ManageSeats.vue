@@ -3,7 +3,9 @@
     <v-card flat color="transparent" v-if="!mappingEmployeeComponentStatus">
       <v-row>
         <v-col cols="12" sm="9">
-          <v-card-title><v-icon>event_seat</v-icon>공석 만들기</v-card-title></v-col
+          <v-card-title
+            ><v-icon>event_seat</v-icon>공석 만들기</v-card-title
+          ></v-col
         >
         <v-col cols="12" sm="3">
           <v-switch
@@ -31,31 +33,31 @@
 
       <v-row>
         <v-col cols="12">
-          <v-card-title><v-icon>perm_identity</v-icon>사원 매핑하기</v-card-title>
+          <v-card-title
+            ><v-icon>perm_identity</v-icon>사원 매핑하기</v-card-title
+          >
           <v-card-text>
             <v-btn @click="getMappingEmployeeComponent"
-              >Mapping Employee</v-btn
+              >사원 매핑하기</v-btn
             ></v-card-text
           ></v-col
         >
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
-
-      <v-card-title>SeatName</v-card-title>
+      <v-card-title><v-icon>event_seat</v-icon>좌석 번호 부여하기</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"
           ><v-text-field
             v-model="seatName"
-            label="seatName을 입력하세요."
+            label="좌석 번호를 입력하세요."
             solo
           ></v-text-field
         ></v-col>
         <v-col cols="12" sm="3">
-          <v-btn @click="inputSeatName">Enter</v-btn></v-col
+          <v-icon large @click="inputSeatName">check</v-icon></v-col
         >
       </v-row>
-      
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
@@ -82,10 +84,9 @@ export default {
       slider: 25,
       mappingEmployeeComponentStatus: false,
 
-
       currentSelectedFloorId: null,
       allFloorList: this.copyfloorList,
-      seatName:null,
+      seatName: null,
     };
   },
   created() {
@@ -117,8 +118,6 @@ export default {
         this.mappingEmployeeComponentStatus = mappingEmployeeComponentStatus;
       }
     );
-
-  
   },
   methods: {
     inputSeatName() {
