@@ -38,7 +38,7 @@ import io.minio.PutObjectArgs;
 public class FloorPlanController {	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	//TODO hanzari로 버킷명 변경하기
-	private String BUCKET_NAME = "hanzari-test";
+	private static final String BUCKET_NAME = "hanzari-test";
 
 	@Autowired
 	private FloorPlanService floorPlanService;
