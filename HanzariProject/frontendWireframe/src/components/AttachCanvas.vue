@@ -8,9 +8,9 @@
         <v-divider vertical></v-divider>
         <v-btn @click="clickResetToRatio" text> Reset Ratio </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn @click="clickSaveBtn" text> Save </v-btn>
+        <v-btn @click="clickSaveBtn" text><v-icon>save</v-icon> Save </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn @click="clickPrintBtn" text> Print </v-btn>
+        <v-btn @click="clickPrintBtn" text> <v-icon>print</v-icon>Print </v-btn>
       </v-toolbar-items>
     </v-toolbar>
 

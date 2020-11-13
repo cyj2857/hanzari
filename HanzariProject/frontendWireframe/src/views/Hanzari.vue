@@ -1,27 +1,19 @@
 <template>
   <div class="hanzari" id="hanzari">
     <v-app-bar app dark>
-    <v-toolbar color="black" dark>
-      <v-spacer>
-        <v-toolbar-items class="hidden-sm-and-down">
-          <V-btn
-            ><v-icon large dark @click="drawer = !drawer"
-              >menu</v-icon
-            ></V-btn
-          >
-        </v-toolbar-items></v-spacer
-      >
-      <v-toolbar-title>Hanzari</v-toolbar-title></v-toolbar
-    ></v-app-bar>
+      <v-toolbar color="black" dark>
+        <v-spacer>
+          <v-toolbar-items class="hidden-sm-and-down">
+            <v-icon large dark @click="drawer = !drawer">menu</v-icon>
+          </v-toolbar-items></v-spacer
+        >
+        <v-toolbar-title>Hanzari</v-toolbar-title></v-toolbar
+      ></v-app-bar
+    >
 
-    <v-navigation-drawer v-model="drawer" app :width="500" >
+    <v-navigation-drawer v-model="drawer" app :width="500">
       <Tabs
-        v-if="
-          employees &&
-          floors &&
-          currentFloorImage &&
-          otherFloorsImage
-        "
+        v-if="employees && floors && currentFloorImage && otherFloorsImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
         v-bind:currentFloorImage="currentFloorImage"
