@@ -58,6 +58,21 @@
           <v-icon large @click="inputSeatName">check</v-icon></v-col
         >
       </v-row>
+      <v-divider class="mx-4"></v-divider>
+
+      <v-card-title><v-icon></v-icon>층간 이동하기</v-card-title
+      ><v-row
+        ><v-col cols="12" sm="9"
+          ><v-text-field
+            v-model="changeFloor"
+            label="이동할 층을 입력하세요."
+            solo
+          ></v-text-field
+        ></v-col>
+        <v-col cols="12" sm="3">
+          <v-icon large @click="clickChangeFloor">check</v-icon></v-col
+        >
+      </v-row>
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
@@ -87,6 +102,7 @@ export default {
       currentSelectedFloorId: null,
       allFloorList: this.copyfloorList,
       seatName: null,
+      changeFloor: null,
     };
   },
   created() {
@@ -123,6 +139,11 @@ export default {
     inputSeatName() {
       if (this.seatName) {
         eventBus.$emit("inputSeatName", this.seatName);
+      }
+    },
+    clickChangeFloor() {
+      if (this.changeFloor) {
+        eventBus.$emit("clickChangeFloor", this.changeFloor);
       }
     },
     getMappingEmployeeComponent() {
