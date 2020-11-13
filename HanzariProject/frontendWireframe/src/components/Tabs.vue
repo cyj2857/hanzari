@@ -14,6 +14,8 @@
                 :copyEmployeeList="employees"
                 :copyfloorList="floors"
                 :eachEmployeeSeatMap="eachEmployeeSeatMap"
+                :copyCurrentFloorImage="mycurrentFloorImage"
+                :copyOtherFloorsImageList="myOtherFloorsImageList"
               ></component>
             </v-card-text>
           </v-card>
@@ -27,15 +29,13 @@
 import ManageSeats from "@/components/ManageSeats.vue";
 import ManageFloors from "@/components/ManageFloors.vue";
 import ManageSearch from "@/components/ManageSearch.vue";
-import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 import { eventBus } from "../main";
 export default {
-  props: ["copyEmployee", "copyFloors"],
+  props: ["copyEmployee", "copyFloors","currentFloorImage","otherFloorsImageList"],
   components: {
     ManageSeats,
     ManageFloors,
-    ManageSearch,
-    ManageSeatInfo,
+    ManageSearch
   },
   data() {
     return {
@@ -43,12 +43,14 @@ export default {
       floors: this.copyFloors,
       eachEmployeeSeatMap: null,
 
+      mycurrentFloorImage:this.currentFloorImage,
+      myOtherFloorsImageList:this.otherFloorsImageList,
+
       tab: null,
       items: [
         { title: "Floor", index: 0, content: "ManageFloors" },
         { title: "Seat", index: 1, content: "ManageSeats" },
-        { title: "Search", index: 2, content: "ManageSearch" },
-        { title: "OneSeat", index: 3, content: "ManageSeatInfo" },
+        { title: "Search", index: 2, content: "ManageSearch" }
       ],
     };
   },

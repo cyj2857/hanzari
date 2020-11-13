@@ -18,17 +18,23 @@
           :key="floor.floor_id"
           class="d-flex child-flex"
           cols="4"
-        >
-          <v-btn
-            large
-            @click="clickFloor(floor)"
-            :style="{
-              border: clickIndexes.includes(floor.floor_id)
-                ? 'thick solid black'
-                : '',
-            }"
-            >{{ floor.floor_name }}</v-btn
-          >
+          ><v-tooltip bottom
+            ><template v-slot:activator="{ on }">
+              <v-btn
+                v-on="on"
+                large
+                @click="clickFloor(floor)"
+                @mouseover="showToolTip(floor)"
+                :style="{
+                  border: clickIndexes.includes(floor.floor_id)
+                    ? 'thick solid black'
+                    : '',
+                }"
+                >{{ floor.floor_name }}</v-btn
+              ></template
+            >
+            <span v-html="toolTipText"> </span>
+          </v-tooltip>
         </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
@@ -43,10 +49,6 @@
         ></v-text-field
       ></v-row>
       <v-divider class="mx-4"></v-divider>
-      <v-card-title>
-        Vacant Seats {{ currentFloorVacantSeatsLength }}
-      </v-card-title>
-      <v-card-title> All Seats {{ currentFloorSeatsLength }} </v-card-title>
 
       <v-row>
         <v-col cols="12">
@@ -77,7 +79,7 @@ import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 export default {
-  props: ["copyfloorList"],
+  props: ["copyfloorList", "copyCurrentFloorImage", "copyOtherFloorsImageList"],
   components: {},
   data() {
     return {
@@ -92,15 +94,13 @@ export default {
 
       currentSelectedFloor: null,
 
-      currentFloorSeatsLength: 0,
-      currentFloorVacantSeatsLength: 0,
-
-      employees: [],
-
       clickIndexes: null,
 
       allImageMap: null,
       currentFloorImage: null,
+
+      allSeatMap: null,
+      toolTipText: null,
     };
   },
   created() {
@@ -117,19 +117,27 @@ export default {
 
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
-    }
-    eventBus.$on("eachFloorSeatList", (eachFloorSeatList) => {
-      if (eachFloorSeatList == undefined) {
-        return;
-      } else {
-        this.renderEachFloorSeatList(eachFloorSeatList);
+      for (let i = 0; i < this.copyCurrentFloorImage.length; i++) {
+        console.log(this.copyCurrentFloorImage);
+
+        let imgurl = this.copyCurrentFloorImage[i].url;
+        let floorid = this.copyCurrentFloorImage[i].floorid;
+        this.allImageMap.set(floorid, imgurl);
       }
+
+      console.log(this.copyOtherFloorsImageList);
+      for (let i = 0; i < this.copyOtherFloorsImageList.length; i++) {
+        let imgurl = this.copyOtherFloorsImageList[i].url;
+        let floorid = this.copyOtherFloorsImageList[i].floorid;
+        this.allImageMap.set(floorid, imgurl);
+      }
+    }
+
+    eventBus.$on("allSeatMap", (allSeatMap) => {
+      this.allSeatMap = allSeatMap;
     });
     eventBus.$on("showSeatFloor", (floorid) => {
       let seatFloorId = floorid;
-      //console.log(seatFloorId + "가 넘어온 자리 층입니다");
-      //console.log(this.allFloorList)
-
       for (let i = 0; i < this.allFloorList.length; i++) {
         if (seatFloorId == this.allFloorList[i].floor_id) {
           this.clickFloor(this.allFloorList[i]);
@@ -138,6 +146,72 @@ export default {
     });
   },
   methods: {
+    showToolTip(floor) {
+      if (this.allSeatMap) {
+        if (this.allSeatMap.get(floor.floor_id)) {
+          if (this.allSeatMap.get(floor.floor_id).length) {
+            let eachFloorSeatList = this.allSeatMap.get(floor.floor_id);
+            let department = new Array();
+
+            let currentFloorSeatsLength = eachFloorSeatList.length;
+            let currentFloorVacantSeatsLength = null;
+            let employeeDepartmentMap = new Map();
+
+            if (currentFloorSeatsLength) {
+              for (let i = 0; i < eachFloorSeatList.length; i++) {
+                if (eachFloorSeatList[i].employee_id == null) {
+                  currentFloorVacantSeatsLength++;
+                } else {
+                  if (
+                    !employeeDepartmentMap.get(
+                      eachFloorSeatList[i].employee_department
+                    )
+                  ) {
+                    let employees = new Array();
+                    employeeDepartmentMap.set(
+                      eachFloorSeatList[i].employee_department,
+                      employees
+                    );
+                  }
+
+                  employeeDepartmentMap
+                    .get(eachFloorSeatList[i].employee_department)
+                    .push(eachFloorSeatList[i].employee_id);
+                }
+              }
+
+              let keys = new Array();
+              keys = Array.from(employeeDepartmentMap.keys());
+              let text = "<br>";
+              for (let i = 0; i < keys.length; i++) {
+                console.log(keys[i] + employeeDepartmentMap.get(keys[i]));
+                text +=
+                  keys[i] +
+                  " : " +
+                  employeeDepartmentMap.get(keys[i]).length +
+                  "<br>";
+              }
+
+              this.toolTipText =
+                floor.floor_name +
+                "층 <br>" +
+                "전체 좌석 : " +
+                currentFloorSeatsLength +
+                "<br> 공석 : " +
+                currentFloorVacantSeatsLength +
+                text;
+            }
+          } else {
+            this.toolTipText =
+              floor.floor_name + "층 <br>" + "좌석이 없습니다.";
+          }
+        } else {
+          this.toolTipText = floor.floor_name + "층 <br>" + "좌석이 없습니다.";
+        }
+      } else {
+        this.toolTipText = floor.floor_name + "층 <br>" + "좌석이 없습니다.";
+      }
+    },
     changeImageFile(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
@@ -197,10 +271,17 @@ export default {
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
 
-          eventBus.$emit("changeFloor", this.allFloorList[idx - 1]);
+          let nextIdx = null;
+          if (idx == 0) {
+            nextIdx = idx;
+          } else {
+            nextIdx = idx - 1;
+          }
+
+          eventBus.$emit("changeFloor", this.allFloorList[nextIdx]);
           eventBus.$emit(
             "currentSelectedFloorToManageSeats",
-            this.allFloorList[idx - 1]
+            this.allFloorList[nextIdx]
           );
           let allFloors = this.allFloorList.slice();
           eventBus.$emit("allFloorList", allFloors);
@@ -208,7 +289,7 @@ export default {
           let managerFloors = this.managerFloorList.slice();
           eventBus.$emit("managerFloorList", managerFloors);
 
-          this.currentSelectedFloor = this.allFloorList[idx - 1];
+          this.currentSelectedFloor = this.allFloorList[nextIdx];
         }
 
         this.length--;
@@ -216,7 +297,6 @@ export default {
         if (this.length > 0) {
           this.clickIndexes = [];
           this.clickIndexes.push(this.currentSelectedFloor.floor_id);
-          console.log(this.length + " length");
         }
       } else {
         alert("there are no seats to delete!");
@@ -253,37 +333,6 @@ export default {
 
       let managerFloors = this.managerFloorList.slice();
       eventBus.$emit("managerFloorList", managerFloors);
-    },
-    renderEachFloorSeatList(eachFloorSeatList) {
-      //리스트 초기화
-      this.employees = [];
-      this.currentFloorVacantSeatsLength = 0;
-
-      if (eachFloorSeatList.length != 0) {
-        for (let i = 0; i < eachFloorSeatList.length; i++) {
-          if (eachFloorSeatList[i].employee_id == null) {
-            console.log(eachFloorSeatList[i].seatId + "빈공석의 seatId입니다");
-            this.currentFloorVacantSeatsLength++;
-          }
-
-          let employee = {};
-          employee.name = eachFloorSeatList[i].employee_name;
-          employee.department = eachFloorSeatList[i].employee_department;
-          employee.number = eachFloorSeatList[i].employee_number;
-
-          this.employees.push({
-            name: employee.name,
-            department: employee.department,
-            number: employee.number,
-          });
-
-          this.currentFloorSeatsLength = this.employees.length;
-
-          console.log(employee.number);
-        }
-      } else {
-        this.currentFloorSeatsLength = 0;
-      }
     },
   },
 };
