@@ -4,9 +4,8 @@
       <v-toolbar color="black" dark>
         <v-spacer>
           <v-toolbar-items class="hidden-sm-and-down">
-            <V-btn
-              ><v-icon large dark @click="drawer = !drawer">menu</v-icon></V-btn
-            >
+            <v-icon large dark @click="drawer = !drawer">menu</v-icon>
+           
           </v-toolbar-items></v-spacer
         >
         <v-toolbar-title>Hanzari</v-toolbar-title></v-toolbar
