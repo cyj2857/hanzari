@@ -1067,8 +1067,10 @@ export default {
           //각 층의 저장된 도형 리스트 화면에 뿌려주기
           //현재 층의 이미지가 저장되어있다면
           if (this.allImageMap.get(seatFloor) != null) {
-            let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
-            if (typeof typeCheck === "string") {
+            let getImageTypeForTypeCheck = this.allImageMap.get(
+              this.currentSelectedFloorId
+            );
+            if (typeof getImageTypeForTypeCheck === "string") {
               //url
               this.loadImageUrl(
                 this.allImageMap.get(this.currentSelectedFloorId)
@@ -1154,11 +1156,19 @@ export default {
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let imgData = new FormData();
           let floorid = this.managerFloorList[i].floor_id;
+
           let file = this.allImageMap.get(floorid);
-          console.log(file);
+        
           if (file != null) {
-            imgData.append("imageFile", file);
-            this.$emit("saveImages", "images", imgData, floorid);
+            if (typeof file === "string") {
+              //url
+              console.log(file);
+            } else {
+              //file
+              console.log(file);
+              imgData.append("imageFile", file);
+              this.$emit("saveImages", "images", imgData, floorid);
+            }
           }
         }
 
