@@ -71,6 +71,7 @@ export default {
   methods: {
     getAllEmployeeSeats() {
       if (this.allEmployeeSeatMap) {
+        this.allEmployeeSeat=[];
         let keys = new Array();
         keys = Array.from(this.allEmployeeSeatMap.keys());
         for (let i = 0; i < keys.length; i++) {
@@ -79,7 +80,7 @@ export default {
           for (let j = 0; j < seats.length; j++) {
             let newSeat = {};
 
-            if (this.findSeatFromAllEmployeeSeatBySeatId(seats[j]) == false) {
+            //if (this.findSeatFromAllEmployeeSeatBySeatId(seats[j]) == false) {
               if (seats[j].employee_id != null) {
                 //���� ����
                 newSeat.seatid = seats[j].seatId;
@@ -90,7 +91,7 @@ export default {
                 newSeat.number = seats[j].employee_number;
                 this.allEmployeeSeat.push(newSeat);
               }
-            }
+            //}
           }
         }
       }
