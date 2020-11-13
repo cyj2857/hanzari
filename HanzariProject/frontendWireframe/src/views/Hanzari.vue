@@ -3,9 +3,9 @@
     <v-app-bar app dark>
       <v-toolbar color="black" dark>
         <v-spacer>
-          <v-toolbar-items class="hidden-sm-and-down">
-            <v-icon large dark @click="drawer = !drawer">menu</v-icon>
-           
+          <v-toolbar-items>
+            <v-icon large dark @click="drawer = !drawer" v-if="drawer">keyboard_arrow_left</v-icon>
+            <v-icon large dark @click="drawer = !drawer" v-if="!drawer">keyboard_arrow_right</v-icon>
           </v-toolbar-items></v-spacer
         >
         <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
