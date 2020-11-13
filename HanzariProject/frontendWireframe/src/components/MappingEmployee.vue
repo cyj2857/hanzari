@@ -1,6 +1,6 @@
 <template>
   <v-card flat color="transparent">
-    <v-btn style="float: right" @click="changeBackPage">X</v-btn>
+    <v-icon large style="float: right" @click="changeBackPage">clear</v-icon>
     <v-card-title>
       <v-text-field
         v-model="search"
@@ -22,11 +22,11 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-btn
+            <v-icon
               id="MappingSeatButton"
               draggable="true"
               @click="MappingSeatButtonClicked(row.item)"
-              >Mapping</v-btn
+              >add_box</v-icon
             >
           </td>
         </tr>

@@ -2,7 +2,7 @@
   <div>
     <v-card flat color="transparent">
       <v-row>
-        <v-col cols="12" sm="8"> <v-card-title>Floor</v-card-title></v-col
+        <v-col cols="12" sm="8"> <v-card-title><v-icon>stairs</v-icon>층 설정</v-card-title></v-col
         ><v-col cols="12" sm="4">
           <v-btn small
             ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
@@ -38,7 +38,7 @@
         </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
-      <v-card-title>FloorName</v-card-title>
+      <v-card-title><v-icon>stairs</v-icon>층 이름 편집</v-card-title>
       <v-row>
         <v-text-field
           v-if="currentSelectedFloor"
@@ -47,12 +47,13 @@
           label="Enter FloorName"
           solo
         ></v-text-field
-      ></v-row>
+      >
+      </v-row>
       <v-divider class="mx-4"></v-divider>
 
       <v-row>
         <v-col cols="12">
-          <v-card-title><v-icon>image</v-icon>도면 설정하기</v-card-title>
+          <v-card-title><v-icon>image</v-icon>배경화면 설정</v-card-title>
           <v-card-text>
             <input
               v-show="false"
@@ -61,7 +62,7 @@
               @change="changeImageFile"
             />
             <v-btn @click="$refs.Upload.click()"
-              >Background Image Setting</v-btn
+              >배경화면 이미지 설정하기</v-btn
             >
             <v-card>
               <v-card-text>{{ currentFloorImage }}</v-card-text>
