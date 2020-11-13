@@ -1,8 +1,6 @@
 <template>
   <div>
-    <v-card
-      flat   
-    >
+    <v-card flat>
       <v-card-title>SeatName</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"
@@ -28,10 +26,7 @@ export default {
   data() {
     return {
       seatName: null,
-      employeeFloor: null,
-      makingOtherEmployeeStatus: false,
 
-      selectMenuStatus: true,
       list: [
         { id: 1, name: "One" },
         { id: 2, name: "Two" },
@@ -41,31 +36,18 @@ export default {
       ],
     };
   },
-  created() {
-    eventBus.$on("dblClickedGroup", (dblClickedGroup) => {
-      console.log(dblClickedGroup);
-      let groupToObject = dblClickedGroup.toObject([
-        "employee_id",
-        "employee_name",
-        "employee_department",
-      ]);
-    });
-  },
+
   methods: {
     inputSeatName() {
       if (this.seatName) {
         eventBus.$emit("inputSeatName", this.seatName);
       }
     },
-    mappingOtherEmployee() {
-      this.makingOtherEmployeeStatus = true;
-    },
     setSeatFloorMovement() {
       this.seatFloorMovementStatus = true;
     },
     changeToVacant() {
       eventBus.$emit("changeToVacant", true);
-
     },
   },
 };

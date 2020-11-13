@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card flat>
     <v-card-title>
       <v-text-field
         v-model="search"
@@ -56,6 +56,12 @@ export default {
         { text: "", value: "showSeatButton" },
       ],
     };
+  },
+  created() {
+    eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
+      this.eachEmployeeSeatMap = eachEmployeeSeatMap;
+      console.log(this.eachEmployeeSeatMap);
+    });
   },
   mounted() {
     this.getAllEmployeeSeats();
