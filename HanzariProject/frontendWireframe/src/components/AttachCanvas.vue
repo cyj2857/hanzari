@@ -21,9 +21,6 @@
       height="800px"
       style="text-align: center"
       width="1150px"
-      :style="{
-        marginLeft: this.canvasStatus ? '250px' : '50px',
-      }"
     ></canvas>
 
     <v-menu
@@ -71,7 +68,6 @@ export default {
   data() {
     return {
       floorCanvas: null,
-      canvasStatus: false,
 
       zoom: 1,
       fontSize: 25,
@@ -115,10 +111,6 @@ export default {
     };
   },
   created() {
-    eventBus.$on("canvasStatus", (isStatusOn) => {
-      console.log(isStatusOn);
-      this.canvasStatus = isStatusOn;
-    });
     if (this.allFloorList.length) {
       this.currentSelectedFloorName = this.allFloorList[
         this.allFloorList.length - 1
@@ -671,15 +663,6 @@ export default {
         create: true, //생성
         modify: false, //변경
         delete: false, //삭제
-      });
-
-      group.on("mousedblclick", (e) => {
-        let group = e.target;
-
-        //manageSeatInfo
-        eventBus.$emit("dblClickedGroup", group);
-        //console.log("불림");
-        //eventBus.$emit("manageSeatInfocomponentStatus", false); //manageSeats
       });
 
       this.floorCanvas.on("object:scaling", (e) => {
@@ -1349,13 +1332,6 @@ export default {
         group.add(seatNameObject);
       }
 
-      group.on("mousedblclick", (e) => {
-        let group = e.target;
-
-        eventBus.$emit("dblClickedGroup", group);
-        //console.log("불림");
-      });
-
       this.floorCanvas.on("object:scaling", (e) => {
         let scaledObject = e.target;
         let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
@@ -1468,6 +1444,9 @@ export default {
             eachFloorSeatList.push(group);
             managerEachFloorSeatList.push(group);
             eachEmployeeSeatList.push(group);
+
+            eventBus.$emit("allSeatMap", this.allSeatMap);
+            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
           }
         }
       }

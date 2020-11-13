@@ -1,37 +1,23 @@
 <template>
   <div class="hanzari" id="hanzari">
-    <v-toolbar color="black" dark>
-      <v-toolbar-title>Hanzari</v-toolbar-title>
-    </v-toolbar>
-    <div
-      class="d1"
-      :style="{
-        width: isStatusOn ? '10%' : '25%',
-      }"
+    <v-toolbar color="black" dark  app>
+      <v-spacer>
+        <v-toolbar-items class="hidden-sm-and-down">
+          <V-btn
+            ><v-icon large dark @click="drawer = !drawer"
+              >keyboard_arrow_right</v-icon
+            ></V-btn
+          >
+        </v-toolbar-items></v-spacer
+      >
+      <v-toolbar-title>Hanzari</v-toolbar-title></v-toolbar
     >
-      <v-toolbar color="black" dark>
-        <v-spacer>
-          <v-toolbar-items class="hidden-sm-and-down">
-            <v-btn v-if="isStatusOn"
-              ><v-icon large dark @click="toggleOnOff"
-                >keyboard_arrow_right</v-icon
-              ></v-btn
-            ></v-toolbar-items
-          ></v-spacer
-        >
-        <v-toolbar-items
-          ><v-btn v-if="!isStatusOn"
-            ><v-icon large dark @click="toggleOnOff"
-              >keyboard_arrow_left</v-icon
-            ></v-btn
-          ></v-toolbar-items
-        >
-      </v-toolbar>
+
+    <v-navigation-drawer v-model="drawer" app :width="500" >
       <Tabs
         v-if="
           employees &&
           floors &&
-          !isStatusOn &&
           currentFloorImage &&
           otherFloorsImage
         "
@@ -40,13 +26,8 @@
         v-bind:currentFloorImage="currentFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
       />
-    </div>
-    <div
-      class="d2"
-      :style="{
-        width: isStatusOn ? '90%' : '75%',
-      }"
-    >
+    </v-navigation-drawer>
+    <v-main>
       <AttachCanvas
         v-if="
           employees &&
@@ -68,7 +49,7 @@
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       />
-    </div>
+    </v-main>
   </div>
 </template>
 
@@ -95,6 +76,7 @@ export default {
   },
   data() {
     return {
+      drawer: null,
       employees: null,
       floors: null,
 
@@ -107,7 +89,6 @@ export default {
       floorIdList: [],
       currentFloor: null,
       currentFloorId: null,
-      isStatusOn: false,
     };
   },
   async created() {
@@ -125,15 +106,6 @@ export default {
     this.otherFloorsSeat = await this.loadOtherFloorSeats();
   },
   methods: {
-    toggleOnOff() {
-      this.isStatusOn = !this.isStatusOn;
-
-      this.statusIndex = [];
-      this.statusIndex.push(this.isStatusOn);
-
-      eventBus.$emit("canvasStatus", this.isStatusOn);
-    },
-
     async getEmployees() {
       let initEmployeeList = new Array();
       try {
@@ -512,17 +484,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.d1 {
-  float: left;
-  width: 25%;
-  height: 100%;
-}
-.d2 {
-  float: left;
-  width: 75%;
-  height: 100%;
-  text-align: center;
-}
-</style>
