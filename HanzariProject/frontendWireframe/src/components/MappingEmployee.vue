@@ -22,7 +22,7 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-icon
+            <v-icon large
               id="MappingSeatButton"
               draggable="true"
               @click="MappingSeatButtonClicked(row.item)"

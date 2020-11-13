@@ -4,7 +4,7 @@
     <v-card height="800px">
       <v-tabs v-model="tab" background-color="black" dark height="65">
           <v-tabs-slider color="blue"></v-tabs-slider>
-        <v-tab  v-for="item in items" :key="item.index"><v-icon dark>{{ item.icon }}</v-icon>  {{item.title}} </v-tab>
+        <v-tab  v-for="item in items" :key="item.index"><v-icon large dark>{{ item.icon }}</v-icon>  {{item.title}} </v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab">
@@ -16,7 +16,7 @@
                 :copyEmployeeList="employees"
                 :copyfloorList="floors"
                 :eachEmployeeSeatMap="eachEmployeeSeatMap"
-                :copyCurrentFloorImage="mycurrentFloorImage"
+                :copyLatestFloorImage="myLatestFloorImage"
                 :copyOtherFloorsImageList="myOtherFloorsImageList"
               ></component>
             </v-card-text>
@@ -36,7 +36,7 @@ export default {
   props: [
     "copyEmployee",
     "copyFloors",
-    "currentFloorImage",
+    "latestFloorImage",
     "otherFloorsImageList",
   ],
   components: {
@@ -50,7 +50,7 @@ export default {
       floors: this.copyFloors,
       eachEmployeeSeatMap: null,
 
-      mycurrentFloorImage: this.currentFloorImage,
+      myLatestFloorImage: this.latestFloorImage,
       myOtherFloorsImageList: this.otherFloorsImageList,
 
       tab: null,

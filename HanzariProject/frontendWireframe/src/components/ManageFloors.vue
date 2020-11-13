@@ -2,13 +2,13 @@
   <div>
     <v-card flat color="transparent">
       <v-row>
-        <v-col cols="12" sm="8"> <v-card-title><v-icon>stairs</v-icon>층 설정</v-card-title></v-col
+        <v-col cols="12" sm="8"> <v-card-title><v-icon large >stairs</v-icon>층 설정</v-card-title></v-col
         ><v-col cols="12" sm="4">
           <v-btn small
-            ><v-icon dark @click="removeFloor">remove_circle</v-icon></v-btn
+            ><v-icon medium dark @click="removeFloor">remove_circle</v-icon></v-btn
           >
           <v-btn small
-            ><v-icon dark @click="addFloor">add_circle</v-icon></v-btn
+            ><v-icon medium dark @click="addFloor">add_circle</v-icon></v-btn
           ></v-col
         ></v-row
       >
@@ -38,7 +38,7 @@
         </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
-      <v-card-title><v-icon>stairs</v-icon>층 이름 편집</v-card-title>
+      <v-card-title><v-icon large >stairs</v-icon>층 이름 편집</v-card-title>
       <v-row>
         <v-text-field
           v-if="currentSelectedFloor"
@@ -53,7 +53,7 @@
 
       <v-row>
         <v-col cols="12">
-          <v-card-title><v-icon>image</v-icon>배경화면 설정</v-card-title>
+          <v-card-title><v-icon large >image</v-icon>배경화면 설정</v-card-title>
           <v-card-text>
             <input
               v-show="false"
@@ -80,7 +80,7 @@ import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 export default {
-  props: ["copyfloorList", "copyCurrentFloorImage", "copyOtherFloorsImageList"],
+  props: ["copyfloorList", "copyLatestFloorImage", "copyOtherFloorsImageList"],
   components: {},
   data() {
     return {
@@ -118,11 +118,11 @@ export default {
 
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
-      for (let i = 0; i < this.copyCurrentFloorImage.length; i++) {
-        console.log(this.copyCurrentFloorImage);
+      for (let i = 0; i < this.copyLatestFloorImage.length; i++) {
+        console.log(this.copyLatestFloorImage);
 
-        let imgurl = this.copyCurrentFloorImage[i].url;
-        let floorid = this.copyCurrentFloorImage[i].floorid;
+        let imgurl = this.copyLatestFloorImage[i].url;
+        let floorid = this.copyLatestFloorImage[i].floorid;
         this.allImageMap.set(floorid, imgurl);
       }
 
