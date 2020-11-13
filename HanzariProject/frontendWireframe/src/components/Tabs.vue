@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-card>
+    <v-toolbar color="black" dark> </v-toolbar>
+    <v-card height="800px">
       <v-tabs v-model="tab" background-color="black" dark height="65">
         <v-tab v-for="item in items" :key="item.index"> {{ item.title }}</v-tab>
       </v-tabs>
@@ -31,11 +32,16 @@ import ManageFloors from "@/components/ManageFloors.vue";
 import ManageSearch from "@/components/ManageSearch.vue";
 import { eventBus } from "../main";
 export default {
-  props: ["copyEmployee", "copyFloors","currentFloorImage","otherFloorsImageList"],
+  props: [
+    "copyEmployee",
+    "copyFloors",
+    "currentFloorImage",
+    "otherFloorsImageList",
+  ],
   components: {
     ManageSeats,
     ManageFloors,
-    ManageSearch
+    ManageSearch,
   },
   data() {
     return {
@@ -43,20 +49,21 @@ export default {
       floors: this.copyFloors,
       eachEmployeeSeatMap: null,
 
-      mycurrentFloorImage:this.currentFloorImage,
-      myOtherFloorsImageList:this.otherFloorsImageList,
+      mycurrentFloorImage: this.currentFloorImage,
+      myOtherFloorsImageList: this.otherFloorsImageList,
 
       tab: null,
       items: [
         { title: "Floor", index: 0, content: "ManageFloors" },
         { title: "Seat", index: 1, content: "ManageSeats" },
-        { title: "Search", index: 2, content: "ManageSearch" }
+        { title: "Search", index: 2, content: "ManageSearch" },
       ],
     };
   },
   created() {
     eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.eachEmployeeSeatMap = eachEmployeeSeatMap;
+      console.log(this.eachEmployeeSeatMap);
     });
   },
 };
