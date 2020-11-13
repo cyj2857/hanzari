@@ -54,7 +54,7 @@ public class FloorPlanController {
 	//따라서 하나의 요청이 끝난 후에 다른 요청이 메소드에 진입할 수 있도록 synchronized 키워드를 사용해주었다.
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
-	public synchronized void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
+	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		
 		LOGGER.info("FloorPlanController.putImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
@@ -119,10 +119,11 @@ public class FloorPlanController {
 	//따라서 하나의 요청이 끝난 후에 다른 요청이 메소드에 진입할 수 있도록 synchronized 키워드를 사용해주었다.
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
-	public synchronized void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
+	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		
 		LOGGER.info("FloorPlanController.getImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
+		FloorPlan getFloorPlan;
 		StringBuffer getFloorPlanFileName;
 		InputStream imageGetInputStream = null;
 		
