@@ -5,10 +5,10 @@
         <v-col cols="12" sm="8"> <v-card-title><v-icon large >stairs</v-icon>층 설정</v-card-title></v-col
         ><v-col cols="12" sm="4">
           <v-btn small
-            ><v-icon large dark @click="removeFloor">remove_circle</v-icon></v-btn
+            ><v-icon medium dark @click="removeFloor">remove_circle</v-icon></v-btn
           >
           <v-btn small
-            ><v-icon large dark @click="addFloor">add_circle</v-icon></v-btn
+            ><v-icon medium dark @click="addFloor">add_circle</v-icon></v-btn
           ></v-col
         ></v-row
       >
