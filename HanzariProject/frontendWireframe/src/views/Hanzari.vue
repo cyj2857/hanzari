@@ -8,7 +8,7 @@
            
           </v-toolbar-items></v-spacer
         >
-        <v-toolbar-title>Hanzari</v-toolbar-title></v-toolbar
+        <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
       ></v-app-bar
     >
 
