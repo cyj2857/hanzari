@@ -63,9 +63,11 @@ public class FloorPlanController {
 	
 	//이미지 파일 MinIO 서버에 업로드
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
+	//axios 요청 횟수와 메소드가 실행되는 것은 synchronized 되어있지 않다.(요청에 따라 메소드가 동시에 실행되고 그에 따라 동시에 변수에 접근하여 데이터 일관성이 깨지는 문제가 발생한다.)
+	//따라서 하나의 요청이 끝난 후에 다른 요청이 메소드에 진입할 수 있도록 synchronized 키워드를 사용해주었다.
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
-	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
+	public synchronized void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		
 		LOGGER.info("FloorPlanController.putImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
@@ -79,20 +81,20 @@ public class FloorPlanController {
 		} catch(Exception e) {
 			LOGGER.error("Can't find matched floorPlan record. Exception message : ", e);
 		}
-		
-		//이미지 도면 파일 이름은 floorId + 연/월/일로 변경해주었다. 일별로 이미지 도면 파일을 구분해주기 위해 해당 방법을 사용하였고 동일한 날에 동일한 층의 이미지 도면 파일을 업데이트하면 덮어쓰기가 된다.
-		putFloorPlanFileName = new StringBuffer();
-		putFloorPlanFileName.append(floorId);
-		putFloorPlanFileName.append("-");
-		putFloorPlanFileName.append(currentTime.toString());
-		floorPlanId = UUID.randomUUID();
-		LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName.toString());
-		putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
-		floorPlanService.save(putFloorPlan);
-		
-		InputStream imagePutInputStream = file.getInputStream();
 
+		InputStream imagePutInputStream = file.getInputStream();
+		putFloorPlanFileName = new StringBuffer();
+		
 		try {
+			putFloorPlanFileName.append(floorId);
+			putFloorPlanFileName.append("-");
+			putFloorPlanFileName.append(currentTime.toString());
+			floorPlanId = UUID.randomUUID();
+			LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName.toString());
+			putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
+			floorPlanService.save(putFloorPlan);
+			
+			
 			minioClient.putObject(
 				    PutObjectArgs.builder()
 				    .bucket(bucketName)
@@ -105,6 +107,9 @@ public class FloorPlanController {
 				    따라서 해당 문제를 해결하기 위해서는 엄격히 업로드되는 contentType을 제한하거나(해당 인자를 "image/png"로 제한하는 등) 실제 데이터를 열어보아 어떤 contentType인지 알아내는 방법들을 사용해야한다.*/
 				    .contentType(file.getContentType())
 				    .build());
+			
+			System.out.println("되라 제발");
+			System.out.println(putFloorPlanFileName.toString());
 		} catch (Exception e) {
 			LOGGER.error("Can't put object in the MinIO bucket. Exception message : ", e);
 		} finally {
@@ -122,9 +127,11 @@ public class FloorPlanController {
 	//이미지 파일 MinIO 서버에서 다운로드
 	//MinIO에 저장된 각 파일의 object명으로 찾아야한다.
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
+	//axios 요청 횟수와 메소드가 실행되는 것은 synchronized 되어있지 않다.(요청에 따라 메소드가 동시에 실행되고 그에 따라 동시에 변수에 접근하여 데이터 일관성이 깨지는 문제가 발생한다.)
+	//따라서 하나의 요청이 끝난 후에 다른 요청이 메소드에 진입할 수 있도록 synchronized 키워드를 사용해주었다.
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
-	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
+	public synchronized void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		
 		LOGGER.info("FloorPlanController.getImageFile called. (building_id : {}, floor_id : {})", buildingId, floorId);
 		
