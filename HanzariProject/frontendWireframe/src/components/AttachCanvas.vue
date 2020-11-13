@@ -16,8 +16,7 @@
         <v-divider vertical></v-divider>
         <v-btn @click="clickPrintBtn" text> <v-icon>print</v-icon>프린트 </v-btn>
       </v-toolbar-items>
-    </v-toolbar>
-
+    </v-toolbar>    
     <canvas
       ref="canvas"
       class="canvas"
@@ -123,11 +122,6 @@ export default {
         this.allFloorList.length - 1
       ].floor_id;
     }
-
-    eventBus.$on("clickChangeFloor", (changeFloor) => {
-      console.log(changeFloor);
-      this.changeSeatFloor(changeFloor);
-    });
 
     eventBus.$on("changeFloor", (floor) => {
       if (floor) {
@@ -350,9 +344,8 @@ export default {
         });
 
         this.floorCanvas.on("object:modified", (e) => {
-          this.floorCanvas.getObjects().forEach((obj) => {
-            obj.set("modify", true);
-          });
+          let modifyObject = e.target;
+          modifyObject.set("modify", true);
         });
 
         this.floorCanvas.on("mouse:over", (event) => {
@@ -386,56 +379,6 @@ export default {
     },
     clickResetToRatio() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-    },
-    changeSeatFloor(changeFloor) {
-      if (!this.floorCanvas.getActiveObject()) {
-        return;
-      }
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
-      let managerEachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
-
-      let activeObject = this.floorCanvas.getActiveObject();
-      for (let i = 0; i < this.allFloorList.length; i++) {
-        // 이후에 combobox로 만들던가 해서 불필요한 로직 줄일것.
-        if (changeFloor == this.allFloorList[i].floor_name) {
-          activeObject.floor_id = this.allFloorList[i].floor_id;
-          activeObject.floor_name = this.allFloorList[i].floor_name;
-          activeObject.left = 100;
-          activeObject.top = 100;
-          activeObject.modify = true;
-
-          let changeFloorSeatList = this.getEachFloorSeatList(
-            this.allFloorList[i].floor_id //input floor's floor_id
-          );
-          let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
-            this.allFloorList[i].floor_id
-          );
-
-          changeFloorSeatList.push(activeObject);
-          changeManagerFloorSeatList.push(activeObject);
-
-          //이동 후에 원래 list에서 삭제
-          for (let j = 0; j < eachFloorSeatList.length; j++) {
-            if (eachFloorSeatList[j].seatId == activeObject.seatId) {
-              eachFloorSeatList.splice(j, 1);
-            }
-          }
-          for (let j = 0; j < managerEachFloorSeatList.length; j++) {
-            if (managerEachFloorSeatList[j].seatId == activeObject.seatId) {
-              managerEachFloorSeatList[j].set("delete", true);
-            }
-          }
-
-          eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
-          eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
-
-          this.floorCanvas.renderAll();
-        }
-      }
     },
     checkZoom() {
       // text, fontSize 관련
@@ -819,7 +762,6 @@ export default {
       eventBus.$emit("allSeatMap", this.allSeatMap);
       eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    addSeatNameInGroup() {},
     inputSeatName(seatName) {
       let activeObject = null;
       var seatNumber = 0;
