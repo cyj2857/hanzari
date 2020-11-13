@@ -4,7 +4,7 @@
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
-        label="Search"
+        label="이름/부서/내선번호 중 입력하세요. 예) 마효리, 부서1, 111-0001"
         single-line
         hide-details
       ></v-text-field>
@@ -46,13 +46,13 @@ export default {
       search: "",
       headers: [
         {
-          text: "Name",
+          text: "이름",
           align: "start",
           sortable: true,
           value: "name",
         },
-        { text: "Department", value: "department" },
-        { text: "Number", value: "number" },
+        { text: "부서", value: "department" },
+        { text: "내선번호", value: "number" },
         { text: "", value: "showSeatButton" },
       ],
     };

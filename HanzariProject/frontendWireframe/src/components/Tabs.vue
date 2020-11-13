@@ -55,9 +55,9 @@ export default {
 
       tab: null,
       items: [
-        { icon: "stairs", title :"floor",index: 0, content: "ManageFloors" },
-        { icon: "event_seat",title :"seat", index: 1, content: "ManageSeats" },
-        { icon: "search", index: 2,title :"search", content: "ManageSearch" },
+        { icon: "stairs", title :"층설정",index: 0, content: "ManageFloors" },
+        { icon: "event_seat",title :"좌석설정", index: 1, content: "ManageSeats" },
+        { icon: "search", index: 2,title :"검색", content: "ManageSearch" },
       ],
     };
   },
