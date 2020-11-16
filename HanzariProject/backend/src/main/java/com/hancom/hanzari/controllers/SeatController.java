@@ -175,35 +175,32 @@ public class SeatController {
 	}
 
 	@PostMapping(value = "/update-by-file", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Seat>> updateByFile(@RequestParam("file") MultipartFile file) throws Exception {
+	public ResponseEntity<List<SeatDto>> updateByFile(@RequestParam("file") MultipartFile file) throws Exception {
 
 		LOGGER.info("SeatController.updateByFile called.");
 		HttpStatus status = null;
 
-		// TODO CSVHelper로부터 데이터를 읽어서 Entity 객체로 만든 뒤, 저장하는 로직을 담아야 되는 부분
 		String message = "";
 		if (CSVHelper.hasCSVFormat(file)) {
 			try {
-				seatService.save(file);
-				CONSOLE.info("List<Seats>다음");
+				List<Seat> seats = seatService.save(file);
+				List<SeatDto> result = new ArrayList<SeatDto>();
+				seats.forEach(e -> result.add(e.toDto()));
 				status = HttpStatus.OK;
 				message = "Uploaded the file successfully: " + file.getOriginalFilename();
 				LOGGER.error("{}", message);
-				CONSOLE.error("{}", message);
-				return new ResponseEntity<List<Seat>>(status);
+				return new ResponseEntity<List<SeatDto>>(result, status);
 			} catch (Exception e) {
 				status = HttpStatus.EXPECTATION_FAILED;
 				message = "Could not upload the file: " + file.getOriginalFilename() + "!";
 				LOGGER.error("{}", message);
-				CONSOLE.error("{}", message);
-				return new ResponseEntity<List<Seat>>(status);
+				return new ResponseEntity<List<SeatDto>>(status);
 			}
 		}
 		status = HttpStatus.BAD_REQUEST;
 		message = "Please upload a csv file!";
 		LOGGER.error("{}", message);
-		CONSOLE.error("{}", message);
-		return new ResponseEntity<List<Seat>>(status);
+		return new ResponseEntity<List<SeatDto>>(status);
 	}
 
 }
