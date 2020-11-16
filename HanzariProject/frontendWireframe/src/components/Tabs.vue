@@ -4,7 +4,7 @@
     <v-card height="800px">
       <v-tabs v-model="tab" background-color="black" dark height="65">
           <v-tabs-slider color="blue"></v-tabs-slider>
-        <v-tab  v-for="item in items" :key="item.index"><v-icon large dark>{{ item.icon }}</v-icon>  {{item.title}} </v-tab>
+        <v-tab  v-for="item in items" :key="item.index"><v-icon large dark>{{ item.icon }}</v-icon>{{item.title}} </v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab">
