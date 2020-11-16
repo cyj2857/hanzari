@@ -151,9 +151,8 @@ export default {
       console.log(switchValue);
       this.ableAddVacant = switchValue;
     });
-    eventBus.$on("changeslider", (sliderValue) => {
-      console.log(sliderValue);
-      this.seatLength = sliderValue;
+    eventBus.$on("setSeatSize", (seatSize) => {
+      this.seatLength = seatSize;
     });
     eventBus.$on("MappingSeat", (item) => {
       this.setMappingSeat(item);
@@ -337,7 +336,7 @@ export default {
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
-            if (this.ableAddVacant) {
+            if (this.ableAddVacant && this.seatLength) {
               var pointer = this.floorCanvas.getPointer(event.e);
               var posX = pointer.x;
               var posY = pointer.y;
@@ -378,9 +377,11 @@ export default {
               groupToObject.employee_department,
               groupToObject.employee_number
             );
-          } else {
-            this.closeToolTip();
           }
+        });
+
+        this.floorCanvas.on("mouse:out", (event) => {
+           this.toolTipStatus = false;
         });
 
         this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
@@ -1055,9 +1056,6 @@ export default {
 
       this.toolTipStatus = true;
     },
-    closeToolTip() {
-      this.toolTipStatus = false;
-    },
     showSeat(seat) {
       //좌석 하이라이트
       let seatFloor = null;
@@ -1184,8 +1182,10 @@ export default {
           let file = this.allImageMap.get(floorid);
 
           if (file != null) {
-            if (typeof file === "string") {//url
-            } else {//file
+            if (typeof file === "string") {
+              //url
+            } else {
+              //file
               imgData.append("imageFile", file);
               this.$emit("saveImages", "images", imgData, floorid);
             }
@@ -1394,8 +1394,7 @@ export default {
           let imgurl = this.latestFloorImageFromDb[i].url;
           let floorid = this.latestFloorImageFromDb[i].floorid;
           this.allImageMap.set(floorid, imgurl);
-          console.log("현재층 이미지");
-          console.log(this.allImageMap.get(floorid));
+          //console.log("현재층 이미지");
           //console.log(this.allImageMap.get(floorid));
           this.currentSelectedFloorId = floorid;
 
@@ -1447,8 +1446,8 @@ export default {
           let floorid = this.otherFloorImageFromDb[i].floorid;
           this.allImageMap.set(floorid, imgurl);
 
-          console.log("다른층 이미지 ");
-          console.log(this.allImageMap.get(floorid));
+          //console.log("다른층 이미지 ");
+          //console.log(this.allImageMap.get(floorid));
         }
         //다른 층 자리 로드
         if (this.otherFloorSeatListFromDb) {

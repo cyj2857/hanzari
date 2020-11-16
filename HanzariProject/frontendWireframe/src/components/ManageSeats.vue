@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12" sm="9">
           <v-card-title
-            ><v-icon large >event_seat</v-icon>공석 만들기</v-card-title
+            ><v-icon large>event_seat</v-icon>공석 만들기</v-card-title
           ></v-col
         >
         <v-col cols="12" sm="3">
@@ -14,27 +14,38 @@
             @change="changeSwitchStatus"
           ></v-switch
         ></v-col>
-        <v-col cols="12"
-          ><v-slider
-            v-if="addVacantSwitch"
-            v-model="slider"
-            class="align-center"
-            thumb-label="always"
-            :max="max"
-            :min="min"
-            hide-details
-            @change="changeSliderValue"
-          >
-          </v-slider
-        ></v-col>
-      </v-row>
 
+        <v-col class="d-flex child-flex" cols="4"
+          ><v-btn tile :disabled="!addVacantSwitch" @click="clickBtn1"
+            >20</v-btn
+          ></v-col
+        >
+        <v-col class="d-flex child-flex" cols="4"
+          ><v-btn tile :disabled="!addVacantSwitch" @click="clickBtn2"
+            >30</v-btn
+          ></v-col
+        >
+        <v-col class="d-flex child-flex" cols="4"
+          ><v-btn tile :disabled="!addVacantSwitch" @click="clickBtn3"
+            >40</v-btn
+          ></v-col
+        ><v-col
+          ><v-btn
+            text
+            style="float: right"
+            @click="getSeatSizeSetting"
+            :disabled="!addVacantSwitch"
+          >
+            세부 설정
+          </v-btn></v-col
+        >
+      </v-row>
       <v-divider class="mx-4"></v-divider>
 
       <v-row>
         <v-col cols="12">
           <v-card-title
-            ><v-icon large >perm_identity</v-icon>사원 매핑하기</v-card-title
+            ><v-icon large>perm_identity</v-icon>사원 매핑하기</v-card-title
           >
           <v-card-text>
             <v-btn @click="getMappingEmployeeComponent"
@@ -78,31 +89,39 @@
       :copyEmployeeListTwo="employee"
       v-if="mappingEmployeeComponentStatus && employee"
     />
+    <SeatSizeSettingDialog
+      :dialogStatus="this.seatSizeSettingDialogStatus"
+      @close="closeSeatSizeSettingDialog"
+    />
   </div>
 </template>
 
 <script>
 import MappingEmployee from "@/components/MappingEmployee.vue";
+import SeatSizeSettingDialog from "@/components/SeatSizeSettingDialog.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
   props: ["copyEmployeeList", "copyfloorList"],
   components: {
     MappingEmployee,
+    SeatSizeSettingDialog,
   },
   data() {
     return {
       employee: this.copyEmployeeList,
       addVacantSwitch: false, // ���� ����� ���� ����ġ ����
-      min: 1,
-      max: 50,
-      slider: 25,
       mappingEmployeeComponentStatus: false,
 
       currentSelectedFloorId: null,
       allFloorList: this.copyfloorList,
       //seatName: null,
       changeFloor: null,
+
+      seatSizeSettingDialogStatus: false,
+
+      clickedSize: null,
+      clickIndexes: null,
     };
   },
   created() {
@@ -116,11 +135,9 @@ export default {
 
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      //console.log(this.allFloorList);
     });
 
     eventBus.$on("changeFloor", (floor) => {
-      //console.log(floor);
       if (floor) {
         // null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
@@ -155,10 +172,32 @@ export default {
     },
     changeSwitchStatus() {
       eventBus.$emit("changeAddVacantSwitch", this.addVacantSwitch);
-      eventBus.$emit("changeslider", this.slider);
     },
-    changeSliderValue() {
-      eventBus.$emit("changeslider", this.slider);
+    getSeatSizeSetting() {
+      eventBus.$emit("initSeatSizeSettingDialog", this.clickedSize);
+      this.seatSizeSettingDialogStatus = true;
+    },
+    closeSeatSizeSettingDialog() {
+      this.seatSizeSettingDialogStatus = false;
+    },
+    clickBtn1() {
+      this.clickedSize = 20;
+
+      this.clickIndexes = [];
+      this.clickIndexes.push();
+      eventBus.$emit("setSeatSize", this.clickedSize);
+    },
+    clickBtn2() {
+      this.clickedSize = 30;
+      this.clickIndexes = [];
+      this.clickIndexes.push();
+      eventBus.$emit("setSeatSize", this.clickedSize);
+    },
+    clickBtn3() {
+      this.clickedSize = 40;
+      this.clickIndexes = [];
+      this.clickIndexes.push();
+      eventBus.$emit("setSeatSize", this.clickedSize);
     },
   },
 };
