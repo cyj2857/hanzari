@@ -2,10 +2,15 @@
   <div>
     <v-card flat color="transparent">
       <v-row>
-        <v-col cols="12" sm="8"> <v-card-title><v-icon large >stairs</v-icon>층 설정</v-card-title></v-col
+        <v-col cols="12" sm="8">
+          <v-card-title
+            ><v-icon large>stairs</v-icon>층 설정</v-card-title
+          ></v-col
         ><v-col cols="12" sm="4">
           <v-btn small
-            ><v-icon medium dark @click="removeFloor">remove_circle</v-icon></v-btn
+            ><v-icon medium dark @click="removeFloor"
+              >remove_circle</v-icon
+            ></v-btn
           >
           <v-btn small
             ><v-icon medium dark @click="addFloor">add_circle</v-icon></v-btn
@@ -38,7 +43,7 @@
         </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
-      <v-card-title><v-icon large >stairs</v-icon>층 이름 편집</v-card-title>
+      <v-card-title><v-icon large>stairs</v-icon>층 이름 편집</v-card-title>
       <v-row>
         <v-text-field
           v-if="currentSelectedFloor"
@@ -46,14 +51,13 @@
           @keyup="editFloorName"
           label="Enter FloorName"
           solo
-        ></v-text-field
-      >
+        ></v-text-field>
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
       <v-row>
         <v-col cols="12">
-          <v-card-title><v-icon large >image</v-icon>배경화면 설정</v-card-title>
+          <v-card-title><v-icon large>image</v-icon>배경화면 설정</v-card-title>
           <v-card-text>
             <input
               v-show="false"
@@ -105,7 +109,7 @@ export default {
     };
   },
   created() {
-    if (this.copyfloorList.length) {
+    if (this.copyfloorList && this.copyfloorList.length) {
       this.currentSelectedFloor = this.copyfloorList[
         this.copyfloorList.length - 1
       ];
@@ -118,19 +122,20 @@ export default {
 
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
-      for (let i = 0; i < this.copyLatestFloorImage.length; i++) {
-        console.log(this.copyLatestFloorImage);
-
-        let imgurl = this.copyLatestFloorImage[i].url;
-        let floorid = this.copyLatestFloorImage[i].floorid;
-        this.allImageMap.set(floorid, imgurl);
+      if (this.copyLatestFloorImage) {
+        for (let i = 0; i < this.copyLatestFloorImage.length; i++) {
+          let imgurl = this.copyLatestFloorImage[i].url;
+          let floorid = this.copyLatestFloorImage[i].floorid;
+          this.allImageMap.set(floorid, imgurl);
+        }
       }
 
-      console.log(this.copyOtherFloorsImageList);
-      for (let i = 0; i < this.copyOtherFloorsImageList.length; i++) {
-        let imgurl = this.copyOtherFloorsImageList[i].url;
-        let floorid = this.copyOtherFloorsImageList[i].floorid;
-        this.allImageMap.set(floorid, imgurl);
+      if (this.copyOtherFloorsImageList) {
+        for (let i = 0; i < this.copyOtherFloorsImageList.length; i++) {
+          let imgurl = this.copyOtherFloorsImageList[i].url;
+          let floorid = this.copyOtherFloorsImageList[i].floorid;
+          this.allImageMap.set(floorid, imgurl);
+        }
       }
     }
 
