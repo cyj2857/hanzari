@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlacementVo {
+	String floor;
 	String seatId;
 	String employeeId;
 }
