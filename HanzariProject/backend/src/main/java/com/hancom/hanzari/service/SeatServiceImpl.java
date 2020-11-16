@@ -38,6 +38,15 @@ public class SeatServiceImpl implements SeatService {
 	}
 
 	@Override
+	public Seat findBySeatName(String seatName) throws Exception {
+		Seat seat = seatRepository.findBySeatName(seatName);
+		if (seat != null)
+			return seat;
+		else
+			throw new ResourceNotFoundException("Seat", "seatName", seatName);
+	}
+
+	@Override
 	public Seat findByIdNullable(String seatId) {
 		Optional<Seat> seat = seatRepository.findById(seatId);
 		if (!seat.isPresent()) {

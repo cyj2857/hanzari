@@ -10,6 +10,8 @@ public interface SeatService {
 	public List<Seat> findAll();
 
 	public Seat findById(String seatId) throws Exception;
+	
+	public Seat findBySeatName(String seatName) throws Exception;
 
 	public Seat findByIdNullable(String seatId);
 
