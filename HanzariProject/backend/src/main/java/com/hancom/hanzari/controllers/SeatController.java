@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hancom.hanzari.dto.SeatDto;
 import com.hancom.hanzari.exception.ResourceNotFoundException;
@@ -33,6 +35,7 @@ import com.hancom.hanzari.service.EmployeeService;
 import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
 import com.hancom.hanzari.service.ShapeService;
+import com.hancom.hanzari.util.CSVHelper;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -52,6 +55,7 @@ public class SeatController {
 
 	// Logger
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
+	private final Logger CONSOLE = LoggerFactory.getLogger("ConsoleLogger");
 
 	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -171,43 +175,35 @@ public class SeatController {
 	}
 
 	@PostMapping(value = "/update-by-file", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<SeatDto>> updateByFile(@PathVariable("building_id") String buildingId,
-			@PathVariable("floor_id") String floorId, @PathVariable("employee_id") String employeeId) throws Exception {
+	public ResponseEntity<List<Seat>> updateByFile(@RequestParam("file") MultipartFile file) throws Exception {
 
-		LOGGER.info("SeatController.updateByFile called. (building_id : {}, floor_id)", buildingId, floorId);
-		// TODO CSVHelper로부터 데이터를 읽어서 Entity 객체로 만든 뒤, 저장하는 로직을 담아야 되는 부분
-		/*
+		LOGGER.info("SeatController.updateByFile called.");
 		HttpStatus status = null;
-		Building building = buildingService.findByIdNullable(buildingId);
-		if (building == null) {
-			throw new ResourceNotFoundException("Building", "building_id", buildingId);
-		}
-		Floor floor = floorService.findByIdNullable(floorId);
-		if (floor == null) {
-			throw new ResourceNotFoundException("Floor", "floor_id", floorId);
-		}
-		Employee employee = null;
-		if (seatDto.getEmployee_id() != null) {
-			employee = employeeService.findById(seatDto.getEmployee_id());
-			if (employee == null) {
-				throw new ResourceNotFoundException("Employee", "employee_id", floorId);
+
+		// TODO CSVHelper로부터 데이터를 읽어서 Entity 객체로 만든 뒤, 저장하는 로직을 담아야 되는 부분
+		String message = "";
+		if (CSVHelper.hasCSVFormat(file)) {
+			try {
+				seatService.save(file);
+				CONSOLE.info("List<Seats>다음");
+				status = HttpStatus.OK;
+				message = "Uploaded the file successfully: " + file.getOriginalFilename();
+				LOGGER.error("{}", message);
+				CONSOLE.error("{}", message);
+				return new ResponseEntity<List<Seat>>(status);
+			} catch (Exception e) {
+				status = HttpStatus.EXPECTATION_FAILED;
+				message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+				LOGGER.error("{}", message);
+				CONSOLE.error("{}", message);
+				return new ResponseEntity<List<Seat>>(status);
 			}
 		}
-		Seat seat = seatService.findByIdNullable(seatDto.getSeat_id());
-		if (seat != null) {
-			status = HttpStatus.OK;
-		} else {
-			status = HttpStatus.CREATED;
-		}
-		Shape shape = shapeService.findById(seatDto.getShape_id()); // ShapeRepository에서 seatDto의 shape_id를 통해 해당 Shape을
-		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
-				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
-		seat = Seat.builder().seatId(seatDto.getSeat_id()).seatName(seatDto.getSeat_name()).floor(floor)
-				.x(seatDto.getX()).y(seatDto.getY()).isGroup(seatDto.getIs_group()).groupId(seatDto.getGroup_id())
-				.employee(employee).figure(figure).build(); // Create Or Update
- 		*/
-		return null;
-
+		status = HttpStatus.BAD_REQUEST;
+		message = "Please upload a csv file!";
+		LOGGER.error("{}", message);
+		CONSOLE.error("{}", message);
+		return new ResponseEntity<List<Seat>>(status);
 	}
 
 }
