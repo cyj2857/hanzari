@@ -9,12 +9,16 @@
         >
         <v-divider vertical></v-divider>
         <v-btn @click="clickResetToRatio" text
-          ><v-icon large >zoom_out</v-icon> 배율 초기화
+          ><v-icon large>zoom_out</v-icon> 배율 초기화
         </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn @click="clickSaveBtn" text><v-icon large >save</v-icon> 저장 </v-btn>
+        <v-btn @click="clickSaveBtn" text
+          ><v-icon large>save</v-icon> 저장
+        </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn @click="clickPrintBtn" text> <v-icon large>print</v-icon>프린트 </v-btn>
+        <v-btn @click="clickPrintBtn" text>
+          <v-icon large>print</v-icon>프린트
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <canvas
@@ -113,7 +117,7 @@ export default {
       seatLength: null,
 
       inputSeatNameText: null,
-      seatNumber: 0
+      seatNumber: 0,
     };
   },
   created() {
@@ -178,7 +182,7 @@ export default {
         this.inputSeatNameText = seatName;
         console.log(this.inputSeatNameText);
       }
-      
+
       if (seatName && this.floorCanvas.getActiveObject()) {
         this.inputSeatName(seatName);
       }
@@ -353,8 +357,9 @@ export default {
         });
 
         this.floorCanvas.on("object:modified", (e) => {
-          let modifyObject = e.target;
-          modifyObject.set("modify", true);
+          this.floorCanvas.getObjects().forEach((obj) => {
+            obj.set("modify", true);
+          });
         });
 
         this.floorCanvas.on("mouse:over", (event) => {
@@ -685,7 +690,6 @@ export default {
         delete: false, //삭제
       });
 
-      
       if (this.inputSeatNameText != null) {
         if (group.item(2)) {
           group.remove(group.item(2));
@@ -736,57 +740,61 @@ export default {
 
       let activeObject = this.floorCanvas.getActiveObject(); //group 객체
 
-      //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
-      if (
-        activeObject.employee_id != null &&
-        activeObject.employee_id != item.employee_id
-      ) {
+      if (activeObject != null) {
+        //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
         if (
-          confirm(
-            activeObject.employee_name +
-              "사원의 자리를 " +
-              item.name +
-              "자리로 변경하시겠습니까?"
-          )
+          activeObject.employee_id != null &&
+          activeObject.employee_id != item.employee_id
         ) {
-          let groupToObject = activeObject.toObject([
-            "seatId",
-            "employee_id",
-            "floor_id",
-          ]);
-          activeObject.set("modify", true);
-          this.deleteEachEmployeeSeatList(groupToObject);
-        } else {
+          if (
+            confirm(
+              activeObject.employee_name +
+                "사원의 자리를 " +
+                item.name +
+                "자리로 변경하시겠습니까?"
+            )
+          ) {
+            let groupToObject = activeObject.toObject([
+              "seatId",
+              "employee_id",
+              "floor_id",
+            ]);
+            activeObject.set("modify", true);
+            this.deleteEachEmployeeSeatList(groupToObject);
+          } else {
+            return;
+          }
+        }
+        //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
+        else if (
+          activeObject.employee_id != null &&
+          activeObject.employee_id == item.employee_id
+        ) {
+          alert("이 자리는 이미 " + item.name + "의 자리입니다.");
           return;
         }
+
+        //해당 자리가 공석이라면 바로 매핑 가능
+        activeObject.employee_name = item.name;
+        activeObject.employee_department = item.department;
+        activeObject.employee_number = item.number;
+        activeObject.employee_id = item.employee_id;
+        activeObject
+          .item(0)
+          .set("fill", this.getColor(activeObject.employee_department));
+        //activeObject.item(1).set("text", item.name);
+        activeObject.set("modify", true);
+        this.checkZoom();
+
+        this.floorCanvas.renderAll();
+
+        eachEmployeeSeatList.push(activeObject);
+
+        eventBus.$emit("allSeatMap", this.allSeatMap);
+        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      } else {
+        alert("사원을 매핑하고자 하는 좌석을 선택을 먼저 하세요.");
       }
-      //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
-      else if (
-        activeObject.employee_id != null &&
-        activeObject.employee_id == item.employee_id
-      ) {
-        alert("이 자리는 이미 " + item.name + "의 자리입니다.");
-        return;
-      }
-
-      //해당 자리가 공석이라면 바로 매핑 가능
-      activeObject.employee_name = item.name;
-      activeObject.employee_department = item.department;
-      activeObject.employee_number = item.number;
-      activeObject.employee_id = item.employee_id;
-      activeObject
-        .item(0)
-        .set("fill", this.getColor(activeObject.employee_department));
-      //activeObject.item(1).set("text", item.name);
-      activeObject.set("modify", true);
-      this.checkZoom();
-
-      this.floorCanvas.renderAll();
-
-      eachEmployeeSeatList.push(activeObject);
-
-      eventBus.$emit("allSeatMap", this.allSeatMap);
-      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     inputSeatName(seatName) {
       let activeObject = null;
