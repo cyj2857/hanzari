@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PlacementVo {
 	String floor;
-	String seatId;
+	String seatName;
 	String employeeId;
 }
