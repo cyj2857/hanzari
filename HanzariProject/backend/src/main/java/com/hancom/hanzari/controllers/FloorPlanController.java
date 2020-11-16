@@ -37,8 +37,7 @@ import io.minio.PutObjectArgs;
 //TODO GetMapping에서 데이터베이스에 floor_plan에 대한 레코드가 없다면(층 정보로 생성된 레코드가 없다면) get 요청이 실패했다는 정보 넘겨주기
 public class FloorPlanController {	
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
-	//TODO hanzari로 버킷명 변경하기
-	private static final String BUCKET_NAME = "hanzari-test";
+	private static final String BUCKET_NAME = "hanzari";
 
 	@Autowired
 	private FloorPlanService floorPlanService;

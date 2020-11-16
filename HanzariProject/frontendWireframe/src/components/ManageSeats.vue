@@ -56,9 +56,7 @@
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
-      <v-card-title
-        ><v-icon large>event_seat</v-icon>좌석 번호 부여하기</v-card-title
-      >
+      <!-- <v-card-title><v-icon large >event_seat</v-icon>좌석 번호 부여하기</v-card-title>
       <v-row
         ><v-col cols="12" sm="9"
           ><v-text-field
@@ -71,7 +69,7 @@
           <v-icon large @click="inputSeatName">edit</v-icon></v-col
         >
       </v-row>
-      <v-divider class="mx-4"></v-divider>
+      <v-divider class="mx-4"></v-divider> -->
 
       <v-card-title><v-icon large>stairs</v-icon>층간 이동하기</v-card-title
       ><v-row
@@ -117,7 +115,7 @@ export default {
 
       currentSelectedFloorId: null,
       allFloorList: this.copyfloorList,
-      seatName: null,
+      //seatName: null,
       changeFloor: null,
 
       seatSizeSettingDialogStatus: false,
@@ -155,11 +153,15 @@ export default {
     );
   },
   methods: {
-    inputSeatName() {
-      if (this.seatName) {
-        eventBus.$emit("inputSeatName", this.seatName);
-      }
-    },
+    //editSeatName() {
+    //  console.log(this.seatName);
+    //  eventBus.$emit("inputSeatName", this.seatName);
+    //},
+    // inputSeatName() {
+    //   if (this.seatName) {
+    //     eventBus.$emit("inputSeatName", this.seatName);
+    //   }
+    // },
     clickChangeFloor() {
       if (this.changeFloor) {
         eventBus.$emit("clickChangeFloor", this.changeFloor);
