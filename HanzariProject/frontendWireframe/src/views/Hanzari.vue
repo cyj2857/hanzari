@@ -5,24 +5,29 @@
         <v-spacer>
           <v-toolbar-items>
             <v-icon large dark @click="drawer = !drawer" v-if="drawer">keyboard_arrow_left</v-icon>
-            <v-icon large dark @click="drawer = !drawer" v-if="!drawer" >keyboard_arrow_right</v-icon>
-          </v-toolbar-items></v-spacer>
-        <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
-      ></v-app-bar
-    >
+            <v-icon large dark @click="drawer = !drawer" v-if="!drawer">keyboard_arrow_right</v-icon>
+          </v-toolbar-items>
+        </v-spacer>
+        <v-toolbar-title>한자리</v-toolbar-title></v-toolbar>
+      </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app :width="500">
       <Tabs
-        v-if="employees && floors && latestFloorImage && otherFloorsImage"
+        v-if ="
+        employees && 
+        floors &&
+        latestFloorImage &&
+        otherFloorsImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
         v-bind:latestFloorImage="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
       />
+      <Tabs v-else-if ="!floors && employees"/>
     </v-navigation-drawer>
     <v-main>
       <AssignSeats
-        v-if="
+        v-if ="
           employees &&
           floors &&
           latestFloorImage &&
@@ -32,7 +37,7 @@
         "
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
-        v-bind:latestFloorImage="latestFloorImage"
+        v-bind:latestFloorImage ="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
         v-bind:latestFloorSeatsList="latestFloorSeats"
         v-bind:otherFloorsSeatsList="otherFloorsSeat"
@@ -42,18 +47,19 @@
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       />
+      <AssignSeats v-else-if ="!floors && employees" />
     </v-main>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { eventBus } from "../main";
 
 import Tabs from "@/components/Tabs.vue";
 import AssignSeats from "@/components/AssignSeats.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
 import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
-import { eventBus } from "../main";
 
 const portNum = 8081;
 const host = "172.30.1.53";
@@ -182,38 +188,37 @@ export default {
     //현재 층 이미지 가져오기
     async getLatestFloorImage() {
       let latestFloorImage = new Array();
-      let latestFloorId = this.latestFloor.floor_id;
+      if (this.latestFloor) {
+        let latestFloorId = this.latestFloor.floor_id;
+        if (latestFloorId != null) {
+          try {
+            let response = await axios.get(
+              "http://" +
+                host +
+                ":" +
+                portNum +
+                "/api/buildings/" +
+                building_id +
+                "/floors/" +
+                latestFloorId +
+                "/images"
+            );
 
-      if (latestFloorId != null) {
-        try {
-          let response = await axios.get(
-            "http://" +
-              host +
-              ":" +
-              portNum +
-              "/api/buildings/" +
-              building_id +
-              "/floors/" +
-              latestFloorId +
-              "/images"
-          );
-
-          let newImage = {};
-          newImage.url = response.config.url;
-          newImage.floorid = latestFloorId;
-          latestFloorImage.push(newImage);
-        } catch (error) {
-          console.log(error);
+            let newImage = {};
+            newImage.url = response.config.url;
+            newImage.floorid = latestFloorId;
+            latestFloorImage.push(newImage);
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
-
       return latestFloorImage;
     },
     //나머지 층 이미지 가져오기
     async loadOtherFloorsImage() {
       let otherFloorImageList = new Array();
       let responseList = null;
-
       if (this.floorIdList.length > 0) {
         try {
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
@@ -246,42 +251,44 @@ export default {
     //우선 현재 층의 자리만 가져옴
     async getLatestFloorSeats() {
       let latestFloorSeatList = new Array();
-      let latestFloorId = this.latestFloor.floor_id;
-      try {
-        let response = await axios.get(
-          "http://" +
-            host +
-            ":" +
-            portNum +
-            "/api/buildings/" +
-            building_id +
-            "/floors/" +
-            latestFloorId +
-            "/seats"
-        );
-        for (var i = 0; i < response.data.length; i++) {
-          let newSeat = {};
+      if (this.latestFloor) {
+        let latestFloorId = this.latestFloor.floor_id;
+        try {
+          let response = await axios.get(
+            "http://" +
+              host +
+              ":" +
+              portNum +
+              "/api/buildings/" +
+              building_id +
+              "/floors/" +
+              latestFloorId +
+              "/seats"
+          );
+          for (var i = 0; i < response.data.length; i++) {
+            let newSeat = {};
 
-          newSeat.seat_id = response.data[i].seat_id;
-          newSeat.seat_name = response.data[i].seat_name;
-          newSeat.floor = response.data[i].floor; // floor_id
-          newSeat.x = response.data[i].x;
-          newSeat.y = response.data[i].y;
-          newSeat.is_group = response.data[i].is_group;
-          newSeat.building_id = response.data[i].building_id;
-          newSeat.employee_id = response.data[i].employee_id;
-          newSeat.width = response.data[i].width;
-          newSeat.height = response.data[i].height;
-          newSeat.degree = response.data[i].degree;
-          newSeat.shape_id = response.data[i].shape_id;
-          newSeat.create = false;
-          newSeat.delete = false;
-          newSeat.modify = false;
+            newSeat.seat_id = response.data[i].seat_id;
+            newSeat.seat_name = response.data[i].seat_name;
+            newSeat.floor = response.data[i].floor; // floor_id
+            newSeat.x = response.data[i].x;
+            newSeat.y = response.data[i].y;
+            newSeat.is_group = response.data[i].is_group;
+            newSeat.building_id = response.data[i].building_id;
+            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.width = response.data[i].width;
+            newSeat.height = response.data[i].height;
+            newSeat.degree = response.data[i].degree;
+            newSeat.shape_id = response.data[i].shape_id;
+            newSeat.create = false;
+            newSeat.delete = false;
+            newSeat.modify = false;
 
-          latestFloorSeatList.push(newSeat);
+            latestFloorSeatList.push(newSeat);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
       return latestFloorSeatList;
     },
@@ -375,14 +382,6 @@ export default {
       console.log("------------");
       console.log("saveTableName is");
       console.log(saveTableName);
-
-      //for (var key of saveData.keys()) {
-      //  console.log(key);
-      //}
-
-      //for (var value of saveData.values()) {
-      //  console.log(value);
-      //}
 
       axios
         .post(
