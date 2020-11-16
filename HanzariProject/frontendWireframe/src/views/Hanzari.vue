@@ -59,7 +59,6 @@ import { eventBus } from "../main";
 import Tabs from "@/components/Tabs.vue";
 import AssignSeats from "@/components/AssignSeats.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
-import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 
 const portNum = 8081;
 const host = "172.30.1.53";
@@ -71,7 +70,6 @@ export default {
     Tabs,
     AssignSeats,
     MappingEmployee,
-    ManageSeatInfo,
   },
   data() {
     return {
