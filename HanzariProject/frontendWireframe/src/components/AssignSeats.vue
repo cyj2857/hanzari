@@ -357,8 +357,9 @@ export default {
         });
 
         this.floorCanvas.on("object:modified", (e) => {
-          let modifyObject = e.target;
-          modifyObject.set("modify", true);
+          this.floorCanvas.getObjects().forEach((obj) => {
+            obj.set("modify", true);
+          });
         });
 
         this.floorCanvas.on("mouse:over", (event) => {
@@ -791,8 +792,7 @@ export default {
 
         eventBus.$emit("allSeatMap", this.allSeatMap);
         eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-      }
-      else{
+      } else {
         alert("사원을 매핑하고자 하는 좌석을 선택을 먼저 하세요.");
       }
     },
