@@ -381,7 +381,7 @@ export default {
         });
 
         this.floorCanvas.on("mouse:out", (event) => {
-           this.toolTipStatus = false;
+          this.toolTipStatus = false;
         });
 
         this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
@@ -690,9 +690,13 @@ export default {
         if (group.item(2)) {
           group.remove(group.item(2));
         }
-        
-        this.seatNumber = this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length;
-        console.log(this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length);
+
+        this.seatNumber = this.getManagerEachFloorSeatList(
+          this.currentSelectedFloorId
+        ).length;
+        console.log(
+          this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length
+        );
 
         this.seatNumber++;
         group.seatName = this.currentSelectedFloorName + "-" + this.seatNumber;
@@ -1186,6 +1190,30 @@ export default {
               //file
               imgData.append("imageFile", file);
               this.$emit("saveImages", "images", imgData, floorid);
+            }
+          }
+        }
+
+        //csv  저장 //seatName, employeeid, floorid
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+            this.managerFloorList[i].floor_id
+          );
+
+          if (managerEachFloorSeatList.length > 0) {
+            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+              let groupToObject = managerEachFloorSeatList[j].toObject([
+                "seatName",
+                "floor_id",
+                "employee_id",
+              ]);
+
+              var formData = new FormData();
+              formData.append("seatName", groupToObject.seatName);
+              formData.append("employeeId", groupToObject.employee_id);
+              formData.append("floor_id", groupToObject.floor_id);
+
+              this.$emit("saveCSVFile", formData, groupToObject.floor_id);
             }
           }
         }
