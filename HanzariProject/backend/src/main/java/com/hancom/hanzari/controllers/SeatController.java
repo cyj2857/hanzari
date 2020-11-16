@@ -168,6 +168,46 @@ public class SeatController {
 		LOGGER.info("SeatController.DeleteSeat called. (seat_id : {})", seat_id);
 		seatService.deleteById(seat_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	}
+
+	@PostMapping(value = "/update-by-file", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<SeatDto>> updateByFile(@PathVariable("building_id") String buildingId,
+			@PathVariable("floor_id") String floorId, @PathVariable("employee_id") String employeeId) throws Exception {
+
+		LOGGER.info("SeatController.updateByFile called. (building_id : {}, floor_id)", buildingId, floorId);
+		// TODO CSVHelper로부터 데이터를 읽어서 Entity 객체로 만든 뒤, 저장하는 로직을 담아야 되는 부분
+		/*
+		HttpStatus status = null;
+		Building building = buildingService.findByIdNullable(buildingId);
+		if (building == null) {
+			throw new ResourceNotFoundException("Building", "building_id", buildingId);
+		}
+		Floor floor = floorService.findByIdNullable(floorId);
+		if (floor == null) {
+			throw new ResourceNotFoundException("Floor", "floor_id", floorId);
+		}
+		Employee employee = null;
+		if (seatDto.getEmployee_id() != null) {
+			employee = employeeService.findById(seatDto.getEmployee_id());
+			if (employee == null) {
+				throw new ResourceNotFoundException("Employee", "employee_id", floorId);
+			}
+		}
+		Seat seat = seatService.findByIdNullable(seatDto.getSeat_id());
+		if (seat != null) {
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.CREATED;
+		}
+		Shape shape = shapeService.findById(seatDto.getShape_id()); // ShapeRepository에서 seatDto의 shape_id를 통해 해당 Shape을
+		Figure figure = Figure.builder().figureId(seatDto.getSeat_id()).shape(shape).width(seatDto.getWidth())
+				.height(seatDto.getHeight()).degree(seatDto.getDegree()).build();
+		seat = Seat.builder().seatId(seatDto.getSeat_id()).seatName(seatDto.getSeat_name()).floor(floor)
+				.x(seatDto.getX()).y(seatDto.getY()).isGroup(seatDto.getIs_group()).groupId(seatDto.getGroup_id())
+				.employee(employee).figure(figure).build(); // Create Or Update
+ 		*/
+		return null;
 
 	}
+
 }
