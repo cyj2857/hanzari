@@ -116,7 +116,7 @@ export default {
       ableAddVacant: false,
       seatLength: null,
 
-      inputSeatNameText: null,
+      //inputSeatNameText: null,
       seatNumber: 0,
     };
   },
@@ -174,19 +174,19 @@ export default {
         alert("there is no selected object");
       }
     });
-    eventBus.$on("inputSeatName", (seatName) => {
-      if (seatName == "") {
-        this.inputSeatNameText = null;
-        console.log(this.inputSeatNameText);
-      } else {
-        this.inputSeatNameText = seatName;
-        console.log(this.inputSeatNameText);
-      }
+    // eventBus.$on("inputSeatName", (seatName) => {
+    //   if (seatName == "") {
+    //     this.inputSeatNameText = null;
+    //     console.log(this.inputSeatNameText);
+    //   } else {
+    //     this.inputSeatNameText = seatName;
+    //     console.log(this.inputSeatNameText);
+    //   }
 
-      if (seatName && this.floorCanvas.getActiveObject()) {
-        this.inputSeatName(seatName);
-      }
-    });
+    //   if (seatName && this.floorCanvas.getActiveObject()) {
+    //     this.inputSeatName(seatName);
+    //   }
+    // });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
 
@@ -694,6 +694,9 @@ export default {
         if (group.item(2)) {
           group.remove(group.item(2));
         }
+        
+        this.seatNumber = this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length;
+        console.log(this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length);
 
         this.seatNumber++;
         group.seatName = this.currentSelectedFloorName + "-" + this.seatNumber;
@@ -796,34 +799,34 @@ export default {
         alert("사원을 매핑하고자 하는 좌석을 선택을 먼저 하세요.");
       }
     },
-    inputSeatName(seatName) {
-      let activeObject = null;
-      var seatNumber = 0;
+    // inputSeatName(seatName) {
+    //   let activeObject = null;
+    //   var seatNumber = 0;
 
-      if (!this.floorCanvas.getActiveObject()) {
-        return;
-      }
+    //   if (!this.floorCanvas.getActiveObject()) {
+    //     return;
+    //   }
 
-      this.floorCanvas.getActiveObjects().forEach((obj) => {
-        if (obj.item(2)) {
-          obj.remove(obj.item(2));
-        }
+    //   this.floorCanvas.getActiveObjects().forEach((obj) => {
+    //     if (obj.item(2)) {
+    //       obj.remove(obj.item(2));
+    //     }
 
-        seatNumber++;
-        obj.set("modify", true);
-        obj.seatName = seatName + seatNumber;
+    //     seatNumber++;
+    //     obj.set("modify", true);
+    //     obj.seatName = seatName + seatNumber;
 
-        let seatNameObject = new fabric.IText(obj.seatName, {
-          left: obj.item(0).left,
-          top: obj.item(0).top - 15,
-          fontSize: this.fontSize / this.zoom,
-          fill: "black",
-        });
+    //     let seatNameObject = new fabric.IText(obj.seatName, {
+    //       left: obj.item(0).left,
+    //       top: obj.item(0).top - 15,
+    //       fontSize: this.fontSize / this.zoom,
+    //       fill: "black",
+    //     });
 
-        obj.add(seatNameObject);
-      });
-      this.floorCanvas.renderAll();
-    },
+    //     obj.add(seatNameObject);
+    //   });
+    //   this.floorCanvas.renderAll();
+    // },
     deleteAllBtn() {
       if (confirm("Are you sure?")) {
         this.floorCanvas
