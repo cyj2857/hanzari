@@ -1201,6 +1201,30 @@ export default {
           }
         }
 
+        //csv  저장 //seatName, employeeid, floorid
+        for (let i = 0; i < this.managerFloorList.length; i++) {
+          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+            this.managerFloorList[i].floor_id
+          );
+
+          if (managerEachFloorSeatList.length > 0) {
+            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+              let groupToObject = managerEachFloorSeatList[j].toObject([
+                "seatName",
+                "floor_id",
+                "employee_id",
+              ]);
+
+              var formData = new FormData();
+              formData.append("seatName", groupToObject.seatName);
+              formData.append("employeeId", groupToObject.employee_id);
+              formData.append("floor_id", groupToObject.floor_id);
+
+              this.$emit("saveCSVFile", formData, groupToObject.floor_id);
+            }
+          }
+        }
+
         //자리 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
