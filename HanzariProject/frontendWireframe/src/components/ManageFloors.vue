@@ -226,7 +226,8 @@ export default {
     saveImageFile(file) {
       this.currentFloorImage = file.name;
       this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
-      eventBus.$emit("allImageMap", this.allImageMap);
+      console.log(this.allImageMap)
+      eventBus.$emit("allImageMap", this.allImageMap, this.currentSelectedFloor.floor_id);
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {

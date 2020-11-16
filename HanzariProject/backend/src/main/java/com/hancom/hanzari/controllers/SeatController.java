@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hancom.hanzari.dto.SeatDto;
 import com.hancom.hanzari.exception.ResourceNotFoundException;
@@ -33,6 +35,7 @@ import com.hancom.hanzari.service.EmployeeService;
 import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
 import com.hancom.hanzari.service.ShapeService;
+import com.hancom.hanzari.util.CSVHelper;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -168,6 +171,35 @@ public class SeatController {
 		LOGGER.info("SeatController.DeleteSeat called. (seat_id : {})", seat_id);
 		seatService.deleteById(seat_id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-
 	}
+
+	@PostMapping(value = "/update-by-file", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<SeatDto>> updateByFile(@RequestParam("file") MultipartFile file) throws Exception {
+
+		LOGGER.info("SeatController.updateByFile called.");
+		HttpStatus status = null;
+
+		String message = "";
+		if (CSVHelper.hasCSVFormat(file)) {
+			try {
+				List<Seat> seats = seatService.save(file);
+				List<SeatDto> result = new ArrayList<SeatDto>();
+				seats.forEach(e -> result.add(e.toDto()));
+				status = HttpStatus.OK;
+				message = "Uploaded the file successfully: " + file.getOriginalFilename();
+				LOGGER.error("{}", message);
+				return new ResponseEntity<List<SeatDto>>(result, status);
+			} catch (Exception e) {
+				status = HttpStatus.EXPECTATION_FAILED;
+				message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+				LOGGER.error("{}", message);
+				return new ResponseEntity<List<SeatDto>>(status);
+			}
+		}
+		status = HttpStatus.BAD_REQUEST;
+		message = "Please upload a csv file!";
+		LOGGER.error("{}", message);
+		return new ResponseEntity<List<SeatDto>>(status);
+	}
+
 }
