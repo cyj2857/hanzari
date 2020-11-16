@@ -4,30 +4,31 @@
       <v-toolbar color="black" dark>
         <v-spacer>
           <v-toolbar-items>
-            <v-icon large dark @click="drawer = !drawer" v-if="drawer">keyboard_arrow_left</v-icon>
-            <v-icon large dark @click="drawer = !drawer" v-if="!drawer">keyboard_arrow_right</v-icon>
+            <v-icon large dark @click="drawer = !drawer" v-if="drawer"
+              >keyboard_arrow_left</v-icon
+            >
+            <v-icon large dark @click="drawer = !drawer" v-if="!drawer"
+              >keyboard_arrow_right</v-icon
+            >
           </v-toolbar-items>
         </v-spacer>
-        <v-toolbar-title>한자리</v-toolbar-title></v-toolbar>
-      </v-app-bar>
+        <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
+      >
+    </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app :width="500">
       <Tabs
-        v-if ="
-        employees && 
-        floors &&
-        latestFloorImage &&
-        otherFloorsImage"
+        v-if="employees && floors && latestFloorImage && otherFloorsImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
         v-bind:latestFloorImage="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
       />
-      <Tabs v-else-if ="!floors && employees"/>
+      <Tabs v-else-if="!floors && employees" />
     </v-navigation-drawer>
     <v-main>
       <AssignSeats
-        v-if ="
+        v-if="
           employees &&
           floors &&
           latestFloorImage &&
@@ -37,7 +38,7 @@
         "
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
-        v-bind:latestFloorImage ="latestFloorImage"
+        v-bind:latestFloorImage="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
         v-bind:latestFloorSeatsList="latestFloorSeats"
         v-bind:otherFloorsSeatsList="otherFloorsSeat"
@@ -47,7 +48,7 @@
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       />
-      <AssignSeats v-else-if ="!floors && employees" />
+      <AssignSeats v-else-if="!floors && employees" />
     </v-main>
   </div>
 </template>
@@ -487,6 +488,67 @@ export default {
           // handle error
           console.log(error);
         });
+    },
+    saveCSVFile(data, floor_id) {
+      let saveData = data;
+      console.log(saveData);
+
+      axios
+        .post(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/seats/update-by-file",
+
+          saveData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+
+    //csv File
+    async getCSVFile() {
+      let latestFloorImage = new Array();
+      if (this.latestFloor) {
+        let latestFloorId = this.latestFloor.floor_id;
+        if (latestFloorId != null) {
+          try {
+            let response = await axios.get(
+              "http://" +
+                host +
+                ":" +
+                portNum +
+                "/api/buildings/" +
+                building_id +
+                "/floors/" +
+                latestFloorId +
+                "/images"
+            );
+
+            let newImage = {};
+            newImage.url = response.config.url;
+            newImage.floorid = latestFloorId;
+            latestFloorImage.push(newImage);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+      return latestFloorImage;
     },
   },
 };
