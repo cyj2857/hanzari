@@ -13,5 +13,9 @@ import com.hancom.hanzari.model.Seat;
 public interface SeatRepository extends JpaRepository<Seat, String> {
 	List<Seat> findByFloor(Floor floor);
 
+	Seat findBySeatName(String seatName);
+
+	Seat findBySeatNameAndFloor(String seatName, Floor floor);
+
 	List<Seat> findByEmployee(Employee employee);
 }
