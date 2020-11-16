@@ -121,7 +121,7 @@ export default {
     };
   },
   created() {
-    if (this.allFloorList.length) {
+    if (this.allFloorList && this.allFloorList.length) {
       this.currentSelectedFloorName = this.allFloorList[
         this.allFloorList.length - 1
       ].floor_name;
@@ -189,11 +189,9 @@ export default {
     });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
-
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
     eventBus.$on("showSeat", (seat) => {
-      //console.log(seat);
       this.showSeat(seat);
     });
     eventBus.$on("deleteSeatListKey", (floor_id) => {
@@ -202,9 +200,6 @@ export default {
       //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것.
       //그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함
       this.managerAllSeatMap.delete(floor_id);
-
-      if (this.allFloorList.length == 0) {
-      }
     });
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
@@ -1179,8 +1174,6 @@ export default {
         }
 
         //이미지 저장
-        console.log("-----------------------");
-        console.log(this.managerFloorList.length);
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let imgData = new FormData();
           let floorid = this.managerFloorList[i].floor_id;
@@ -1188,12 +1181,8 @@ export default {
           let file = this.allImageMap.get(floorid);
 
           if (file != null) {
-            if (typeof file === "string") {
-              //url
-              console.log(file);
-            } else {
-              //file
-              console.log(file);
+            if (typeof file === "string") {//url
+            } else {//file
               imgData.append("imageFile", file);
               this.$emit("saveImages", "images", imgData, floorid);
             }
@@ -1397,93 +1386,97 @@ export default {
     },
     loadLatestFloor() {
       //현재 층 이미지 로드
-      for (let i = 0; i < this.latestFloorImageFromDb.length; i++) {
-        let imgurl = this.latestFloorImageFromDb[i].url;
-        let floorid = this.latestFloorImageFromDb[i].floorid;
-        this.allImageMap.set(floorid, imgurl);
-        console.log("현재층 이미지");
-        console.log(this.allImageMap.get(floorid));
-        //console.log(this.allImageMap.get(floorid));
-        this.currentSelectedFloorId = floorid;
-
-        this.loadImageUrl(imgurl);
-        // 현재층 자리 로드
-
-        if (this.latestFloorSeatListFromDb.length) {
-          for (let i = 0; i < this.latestFloorSeatListFromDb.length; i++) {
-            this.currentSelectedFloorId = this.latestFloorSeatListFromDb[
-              i
-            ].floor;
-
-            let eachFloorSeatList = this.getEachFloorSeatList(
-              this.latestFloorSeatListFromDb[i].floor
-            );
-            let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-              this.latestFloorSeatListFromDb[i].floor
-            );
-
-            let group = this.makeGroupInfo(this.latestFloorSeatListFromDb[i]);
-
-            this.floorCanvas.add(group);
-
-            eachFloorSeatList.push(group);
-            managerEachFloorSeatList.push(group);
-
-            eventBus.$emit("allSeatMap", this.allSeatMap);
-
-            if (this.latestFloorSeatListFromDb[i].employee_id != null) {
-              let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-                this.latestFloorSeatListFromDb[i].employee_id
-              );
-              eachEmployeeSeatList.push(group);
-              eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-            }
-          }
-        } else {
+      if (this.latestFloorImageFromDb) {
+        for (let i = 0; i < this.latestFloorImageFromDb.length; i++) {
+          let imgurl = this.latestFloorImageFromDb[i].url;
+          let floorid = this.latestFloorImageFromDb[i].floorid;
+          this.allImageMap.set(floorid, imgurl);
+          console.log("현재층 이미지");
+          console.log(this.allImageMap.get(floorid));
+          //console.log(this.allImageMap.get(floorid));
           this.currentSelectedFloorId = floorid;
+
+          this.loadImageUrl(imgurl);
+          // 현재층 자리 로드
+
+          if (this.latestFloorSeatListFromDb.length) {
+            for (let i = 0; i < this.latestFloorSeatListFromDb.length; i++) {
+              this.currentSelectedFloorId = this.latestFloorSeatListFromDb[
+                i
+              ].floor;
+
+              let eachFloorSeatList = this.getEachFloorSeatList(
+                this.latestFloorSeatListFromDb[i].floor
+              );
+              let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+                this.latestFloorSeatListFromDb[i].floor
+              );
+
+              let group = this.makeGroupInfo(this.latestFloorSeatListFromDb[i]);
+
+              this.floorCanvas.add(group);
+
+              eachFloorSeatList.push(group);
+              managerEachFloorSeatList.push(group);
+
+              eventBus.$emit("allSeatMap", this.allSeatMap);
+
+              if (this.latestFloorSeatListFromDb[i].employee_id != null) {
+                let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+                  this.latestFloorSeatListFromDb[i].employee_id
+                );
+                eachEmployeeSeatList.push(group);
+                eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+              }
+            }
+          } else {
+            this.currentSelectedFloorId = floorid;
+          }
         }
+        this.clickLoadOtherFloors();
       }
-      this.clickLoadOtherFloors();
     },
     clickLoadOtherFloors() {
-      //다른 층 이미지 로드
-      for (let i = 0; i < this.otherFloorImageFromDb.length; i++) {
-        let imgurl = this.otherFloorImageFromDb[i].url;
-        let floorid = this.otherFloorImageFromDb[i].floorid;
-        this.allImageMap.set(floorid, imgurl);
-
-        console.log("다른층 이미지 ");
-        console.log(this.allImageMap.get(floorid));
-      }
-      //다른 층 자리 로드
       if (this.otherFloorSeatListFromDb) {
-        let keys = new Array();
-        keys = Array.from(this.otherFloorSeatListFromDb.keys());
+        //다른 층 이미지 로드
+        for (let i = 0; i < this.otherFloorImageFromDb.length; i++) {
+          let imgurl = this.otherFloorImageFromDb[i].url;
+          let floorid = this.otherFloorImageFromDb[i].floorid;
+          this.allImageMap.set(floorid, imgurl);
 
-        for (let i = 0; i < keys.length; i++) {
-          let seats = new Array();
-          seats = this.otherFloorSeatListFromDb.get(keys[i]);
+          console.log("다른층 이미지 ");
+          console.log(this.allImageMap.get(floorid));
+        }
+        //다른 층 자리 로드
+        if (this.otherFloorSeatListFromDb) {
+          let keys = new Array();
+          keys = Array.from(this.otherFloorSeatListFromDb.keys());
 
-          for (let j = 0; j < seats.length; j++) {
-            let eachFloorSeatList = this.getEachFloorSeatList(seats[j].floor);
-            let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-              seats[j].floor
-            );
+          for (let i = 0; i < keys.length; i++) {
+            let seats = new Array();
+            seats = this.otherFloorSeatListFromDb.get(keys[i]);
 
-            let group = this.makeGroupInfo(seats[j]);
-
-            eachFloorSeatList.push(group);
-            managerEachFloorSeatList.push(group);
-
-            if (seats[j].employee_id != null) {
-              let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-                seats[j].employee_id
+            for (let j = 0; j < seats.length; j++) {
+              let eachFloorSeatList = this.getEachFloorSeatList(seats[j].floor);
+              let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
+                seats[j].floor
               );
-              eachEmployeeSeatList.push(group);
-              eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-            }
 
-            eventBus.$emit("allSeatMap", this.allSeatMap);
+              let group = this.makeGroupInfo(seats[j]);
+
+              eachFloorSeatList.push(group);
+              managerEachFloorSeatList.push(group);
+
+              if (seats[j].employee_id != null) {
+                let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+                  seats[j].employee_id
+                );
+                eachEmployeeSeatList.push(group);
+                eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+              }
+
+              eventBus.$emit("allSeatMap", this.allSeatMap);
+            }
           }
         }
       }
