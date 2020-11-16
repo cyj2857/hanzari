@@ -336,7 +336,11 @@ export default {
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
-            if (this.ableAddVacant && this.seatLength) {
+            if (this.ableAddVacant) {
+              if (!this.seatLength) {
+                alert("공석 크기를 선택해야 합니다.");
+                return;
+              }
               var pointer = this.floorCanvas.getPointer(event.e);
               var posX = pointer.x;
               var posY = pointer.y;
@@ -381,7 +385,7 @@ export default {
         });
 
         this.floorCanvas.on("mouse:out", (event) => {
-           this.toolTipStatus = false;
+          this.toolTipStatus = false;
         });
 
         this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
@@ -690,9 +694,13 @@ export default {
         if (group.item(2)) {
           group.remove(group.item(2));
         }
-        
-        this.seatNumber = this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length;
-        console.log(this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length);
+
+        this.seatNumber = this.getManagerEachFloorSeatList(
+          this.currentSelectedFloorId
+        ).length;
+        console.log(
+          this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length
+        );
 
         this.seatNumber++;
         group.seatName = this.currentSelectedFloorName + "-" + this.seatNumber;
