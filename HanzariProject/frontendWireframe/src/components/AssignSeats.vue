@@ -151,9 +151,8 @@ export default {
       console.log(switchValue);
       this.ableAddVacant = switchValue;
     });
-    eventBus.$on("changeslider", (sliderValue) => {
-      console.log(sliderValue);
-      this.seatLength = sliderValue;
+    eventBus.$on("setSeatSize", (seatSize) => {
+      this.seatLength = seatSize;
     });
     eventBus.$on("MappingSeat", (item) => {
       this.setMappingSeat(item);
@@ -342,7 +341,7 @@ export default {
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
-            if (this.ableAddVacant) {
+            if (this.ableAddVacant && this.seatLength) {
               var pointer = this.floorCanvas.getPointer(event.e);
               var posX = pointer.x;
               var posY = pointer.y;
