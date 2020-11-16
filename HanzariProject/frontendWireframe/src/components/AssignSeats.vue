@@ -189,11 +189,9 @@ export default {
     //     this.inputSeatName(seatName);
     //   }
     // });
-    eventBus.$on("allImageMap", (allImageMap) => {
-      this.allImageMap = allImageMap;
-      console.log(this.currentSelectedFloorId);
-      console.log(this.allImageMap);
-      this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+    eventBus.$on("allImageMap", (allImageMap, floor_id) => {
+      this.allImageMap = allImageMap;console.log(this.allImageMap)
+      this.loadImageFile(this.allImageMap.get(floor_id));
     });
     eventBus.$on("showSeat", (seat) => {
       this.showSeat(seat);
