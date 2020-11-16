@@ -22,7 +22,7 @@
       />
     </v-navigation-drawer>
     <v-main>
-      <AttachCanvas
+      <AssignSeats
         v-if="
           employees &&
           floors &&
@@ -51,7 +51,7 @@
 import axios from "axios";
 
 import Tabs from "@/components/Tabs.vue";
-import AttachCanvas from "@/components/AttachCanvas.vue";
+import AssignSeats from "@/components/AssignSeats.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
 import ManageSeatInfo from "@/components/ManageSeatInfo.vue";
 import { eventBus } from "../main";
@@ -64,7 +64,7 @@ export default {
   name: "Hanzari",
   components: {
     Tabs,
-    AttachCanvas,
+    AssignSeats,
     MappingEmployee,
     ManageSeatInfo,
   },
