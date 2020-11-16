@@ -15,5 +15,7 @@ public interface SeatRepository extends JpaRepository<Seat, String> {
 
 	Seat findBySeatName(String seatName);
 
+	Seat findBySeatNameAndFloor(String seatName, Floor floor);
+
 	List<Seat> findByEmployee(Employee employee);
 }
