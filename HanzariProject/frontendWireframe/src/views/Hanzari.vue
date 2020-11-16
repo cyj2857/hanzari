@@ -5,9 +5,8 @@
         <v-spacer>
           <v-toolbar-items>
             <v-icon large dark @click="drawer = !drawer" v-if="drawer">keyboard_arrow_left</v-icon>
-            <v-icon large dark @click="drawer = !drawer" v-if="!drawer">keyboard_arrow_right</v-icon>
-          </v-toolbar-items></v-spacer
-        >
+            <v-icon large dark @click="drawer = !drawer" v-if="!drawer" >keyboard_arrow_right</v-icon>
+          </v-toolbar-items></v-spacer>
         <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
       ></v-app-bar
     >
@@ -189,7 +188,7 @@ export default {
         try {
           let response = await axios.get(
             "http://" +
-              "172.30.1.56" +
+              host +
               ":" +
               portNum +
               "/api/buildings/" +
@@ -220,7 +219,7 @@ export default {
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
             let response = await axios.get(
               "http://" +
-                "172.30.1.56" +
+                host +
                 ":" +
                 portNum +
                 "/api/buildings/" +
@@ -388,7 +387,7 @@ export default {
       axios
         .post(
           "http://" +
-            "172.30.1.56" +
+            host +
             ":" +
             portNum +
             "/api/buildings/" +
