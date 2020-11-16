@@ -55,7 +55,6 @@ public class SeatController {
 
 	// Logger
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
-	private final Logger CONSOLE = LoggerFactory.getLogger("ConsoleLogger");
 
 	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
