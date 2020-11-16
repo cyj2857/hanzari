@@ -690,13 +690,13 @@ export default {
         delete: false, //삭제
       });
 
-      if (this.inputSeatNameText != null) {
+      if (this.currentSelectedFloorName != null) {
         if (group.item(2)) {
           group.remove(group.item(2));
         }
 
         this.seatNumber++;
-        group.seatName = this.inputSeatNameText + this.seatNumber;
+        group.seatName = this.currentSelectedFloorName + "-" + this.seatNumber;
         let seatNameObject = new fabric.IText(group.seatName, {
           left: group.item(0).left,
           top: group.item(0).top - 15,
