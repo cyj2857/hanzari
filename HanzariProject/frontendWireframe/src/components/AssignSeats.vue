@@ -804,8 +804,6 @@ export default {
 
         eventBus.$emit("allSeatMap", this.allSeatMap);
         eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-      } else {
-        alert("사원을 매핑하고자 하는 좌석을 선택을 먼저 하세요.");
       }
     },
     // inputSeatName(seatName) {
