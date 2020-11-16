@@ -114,7 +114,9 @@ export default {
       toolTipText: null,
 
       ableAddVacant: false,
-      seatLength: null,
+
+      seatWidth: null,
+      seatHeight: null,
 
       //inputSeatNameText: null,
       seatNumber: 0,
@@ -151,8 +153,9 @@ export default {
       console.log(switchValue);
       this.ableAddVacant = switchValue;
     });
-    eventBus.$on("setSeatSize", (seatSize) => {
-      this.seatLength = seatSize;
+    eventBus.$on("setSeatSizeDialog", (seatSize) => {
+      this.seatWidth = seatSize.width;
+      this.seatHeight = seatSize.height;
     });
     eventBus.$on("MappingSeat", (item) => {
       this.setMappingSeat(item);
@@ -188,6 +191,8 @@ export default {
     // });
     eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
+      console.log(this.currentSelectedFloorId);
+      console.log(this.allImageMap);
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
     eventBus.$on("showSeat", (seat) => {
@@ -337,7 +342,7 @@ export default {
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
             if (this.ableAddVacant) {
-              if (!this.seatLength) {
+              if (!this.seatWidth) {
                 alert("공석 크기를 선택해야 합니다.");
                 return;
               }
@@ -662,8 +667,8 @@ export default {
       );
 
       let rectangle = new fabric.Rect({
-        width: this.seatLength,
-        height: this.seatLength,
+        width: this.seatWidth,
+        height: this.seatHeight,
         fill: this.getColor(null),
         opacity: 1,
       });

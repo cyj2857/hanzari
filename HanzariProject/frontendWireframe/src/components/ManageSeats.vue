@@ -34,7 +34,7 @@
             text
             style="float: right"
             @click="getSeatSizeSetting"
-            :disabled="!addVacantSwitch"
+            :disabled="!addVacantSwitch || !clickedSize"
           >
             세부 설정
           </v-btn></v-col
@@ -151,6 +151,11 @@ export default {
         this.mappingEmployeeComponentStatus = mappingEmployeeComponentStatus;
       }
     );
+
+    eventBus.$on("changeSlider", (seatSize) => {
+      console.log(seatSize);
+      this.confirmSeatSizeSettingDialog(seatSize);
+    });
   },
   methods: {
     //editSeatName() {
@@ -180,24 +185,38 @@ export default {
     closeSeatSizeSettingDialog() {
       this.seatSizeSettingDialogStatus = false;
     },
+    confirmSeatSizeSettingDialog(seatSize) {
+      this.seatSizeSettingDialogStatus = false;
+
+      eventBus.$emit("setSeatSizeDialog", seatSize);
+    },
     clickBtn1() {
       this.clickedSize = 20;
 
-      this.clickIndexes = [];
-      this.clickIndexes.push();
-      eventBus.$emit("setSeatSize", this.clickedSize);
+      let seatSize = {};
+
+      seatSize.width = this.clickedSize;
+      seatSize.height = this.clickedSize;
+
+      eventBus.$emit("setSeatSizeDialog", seatSize);
     },
     clickBtn2() {
       this.clickedSize = 30;
-      this.clickIndexes = [];
-      this.clickIndexes.push();
-      eventBus.$emit("setSeatSize", this.clickedSize);
+
+      let seatSize = {};
+
+      seatSize.width = this.clickedSize;
+      seatSize.height = this.clickedSize;
+      eventBus.$emit("setSeatSizeDialog", seatSize);
     },
     clickBtn3() {
       this.clickedSize = 40;
-      this.clickIndexes = [];
-      this.clickIndexes.push();
-      eventBus.$emit("setSeatSize", this.clickedSize);
+
+      let seatSize = {};
+
+      seatSize.width = this.clickedSize;
+      seatSize.height = this.clickedSize;
+      eventBus.$emit("setSeatSizeDialog", seatSize);
     },
   },
 };

@@ -79,7 +79,12 @@ export default {
   },
   methods: {
     confirm() {
-      eventBus.$emit("changeSlider");
+      let slider = {};
+
+      slider.width = this.sliderWidth;
+      slider.height = this.sliderHeight;
+
+      eventBus.$emit("changeSlider", slider);
     },
     changeWidthSlider() {
       this.sliderWidth = this.sliderWidth;
