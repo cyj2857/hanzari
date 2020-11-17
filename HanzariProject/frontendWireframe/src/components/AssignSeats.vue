@@ -1166,7 +1166,7 @@ export default {
             // front에서 생성
             if (this.managerFloorList[i].delete) {
               //101 111 nothing
-              return;
+              continue;
             } else {
               //100 110 그 id에 대하여 post
               let floorData = {};
@@ -1292,7 +1292,7 @@ export default {
                 // front에서 생성
                 if (groupToObject.delete) {
                   //101 111 nothing
-                  return;
+                  continue;
                 } else {
                   //100 110 그 id에 대하여 post
                   let seatData = {};
