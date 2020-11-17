@@ -19,6 +19,10 @@
         <v-btn @click="clickPrintBtn" text>
           <v-icon large>print</v-icon>프린트
         </v-btn>
+        <v-divider vertical></v-divider>
+        <v-btn @click="clickGetCSVBtn" text>
+          <v-icon large>save</v-icon> csv로 받아오기
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <canvas
@@ -544,7 +548,7 @@ export default {
         this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
         return this.eachEmployeeSeatMap.get(employee_id);
       } else {
-      return this.eachEmployeeSeatMap.get(employee_id);
+        return this.eachEmployeeSeatMap.get(employee_id);
       }
     },
     // 해당 층의 도형 리스트의 Delete field 전체 true 만들기
@@ -1141,6 +1145,13 @@ export default {
         //자리가 아직 없을때 예외처리 하기
       }
     },
+    clickGetCSVBtn() {
+      //csv  저장 //seatName, employeeid, floorid
+      for (let i = 0; i < this.managerFloorList.length; i++) {
+        let floorid = this.managerFloorList[i].floor_id;
+        this.$emit("getCSVFile", floorid);
+      }
+    },
     clickSaveBtn() {
       if (this.managerFloorList) {
         //console.log(this.managerFloorList);
@@ -1194,30 +1205,6 @@ export default {
               //file
               imgData.append("imageFile", file);
               this.$emit("saveImages", "images", imgData, floorid);
-            }
-          }
-        }
-
-        //csv  저장 //seatName, employeeid, floorid
-        for (let i = 0; i < this.managerFloorList.length; i++) {
-          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-            this.managerFloorList[i].floor_id
-          );
-
-          if (managerEachFloorSeatList.length > 0) {
-            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
-              let groupToObject = managerEachFloorSeatList[j].toObject([
-                "seatName",
-                "floor_id",
-                "employee_id",
-              ]);
-
-              var formData = new FormData();
-              formData.append("seatName", groupToObject.seatName);
-              formData.append("employeeId", groupToObject.employee_id);
-              formData.append("floor_id", groupToObject.floor_id);
-
-              this.$emit("saveCSVFile", formData, groupToObject.floor_id);
             }
           }
         }
