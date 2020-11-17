@@ -173,6 +173,7 @@ public class SeatController {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
+	@Transactional
 	@PostMapping(value = "/update-by-file", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> updateByFile(@RequestParam("file") MultipartFile file) throws Exception {
 
