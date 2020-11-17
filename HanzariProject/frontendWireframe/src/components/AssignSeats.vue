@@ -1083,10 +1083,10 @@ export default {
                 managerEachFloorSeatList[j].set("delete", true);
               }
             }
+
+            eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
+            eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
           });
-          
-          eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
-          eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
 
           this.floorCanvas.renderAll();
         }
