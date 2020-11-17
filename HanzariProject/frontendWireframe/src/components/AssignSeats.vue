@@ -870,42 +870,26 @@ export default {
       }
     },
     changeToVacant() {
-      let activeObject = null;
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
+      if (confirm("자리를 비우시겠습니까?")) {
+        this.floorCanvas.getActiveObjects().forEach((obj) => {
+          let groupToObject = obj.toObject(["seatId", "employee_id"]);
+          this.deleteEachEmployeeSeatList(groupToObject);
+          obj.set("modify", true);
+          obj.set("employee_name", null);
+          obj.set("employee_department", null);
+          obj.set("employee_number", null);
+          obj.set("employee_id", null);
+          obj.item(0).set("fill", this.getColor(obj.employee_department));
+          this.floorCanvas.remove(obj.item(1)); // delete textObject
+          obj.item(1).set("text", "");
+        });
 
-      if (!this.floorCanvas.getActiveObject()) {
+        this.floorCanvas.renderAll();
+        eventBus.$emit("allSeatMap", this.allSeatMap);
+        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      } else {
         return;
       }
-      if (this.floorCanvas.getActiveObject().type == "group") {
-        activeObject = this.floorCanvas.getActiveObject(); // 선택 객체 가져오기
-
-        activeObject.set("modify", true);
-
-        activeObject.employee_name = null;
-        activeObject.employee_department = null;
-        activeObject.employee_number = null;
-
-        let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
-        //console.log(groupToObject.seatId + "비우고자하는 자리의 SeatId입니다.");
-        //console.log(
-        //  groupToObject.employee_id + "비우고자하는 자리의 employee_id입니다."
-        //);
-        this.deleteEachEmployeeSeatList(groupToObject);
-
-        activeObject.employee_id = null; // delete employee information in group
-
-        activeObject
-          .item(0)
-          .set("fill", this.getColor(activeObject.employee_department));
-        this.floorCanvas.remove(activeObject.item(1)); // delete textObject
-        activeObject.item(1).set("text", "");
-        this.floorCanvas.renderAll();
-      }
-
-      eventBus.$emit("allSeatMap", this.allSeatMap);
-      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     //복제하기 (컨텍스트 메뉴 내부)
     cloneSeat() {
