@@ -182,6 +182,7 @@ export default {
       } catch (error) {
         console.log(error);
       }
+      console.log(latestFloor.floor_id);
       return latestFloor;
     },
     //현재 층 이미지 가져오기
@@ -489,7 +490,30 @@ export default {
           console.log(error);
         });
     },
-    saveCSVFile(data, floor_id) {
+
+    //download csv File
+    async getCSVFile(floor_id) {
+      if (floor_id != null) {
+        try {
+          let response = await axios.get(
+            "http://" +
+              host +
+              ":" +
+              portNum +
+              "/api/buildings/" +
+              building_id +
+              "/floors/" +
+              floor_id +
+              "/seats/get-csv-file"
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+
+    //save information from CSV to DB
+    saveFromCSVFile(data, floor_id) {
       let saveData = data;
       console.log(saveData);
 
@@ -520,36 +544,7 @@ export default {
         });
     },
 
-    //csv File
-    async getCSVFile() {
-      let latestFloorImage = new Array();
-      if (this.latestFloor) {
-        let latestFloorId = this.latestFloor.floor_id;
-        if (latestFloorId != null) {
-          try {
-            let response = await axios.get(
-              "http://" +
-                host +
-                ":" +
-                portNum +
-                "/api/buildings/" +
-                building_id +
-                "/floors/" +
-                latestFloorId +
-                "/images"
-            );
-
-            let newImage = {};
-            newImage.url = response.config.url;
-            newImage.floorid = latestFloorId;
-            latestFloorImage.push(newImage);
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }
-      return latestFloorImage;
-    },
+    
   },
 };
 </script>
