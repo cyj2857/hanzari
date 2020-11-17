@@ -62,30 +62,18 @@
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
-      <!-- <v-card-title><v-icon large >event_seat</v-icon>좌석 번호 부여하기</v-card-title>
-      <v-row
-        ><v-col cols="12" sm="9"
-          ><v-text-field
-            v-model="seatName"
-            label="좌석 번호를 입력하세요."
-            solo
-          ></v-text-field
-        ></v-col>
-        <v-col cols="12" sm="3">
-          <v-icon large @click="inputSeatName">edit</v-icon></v-col
-        >
-      </v-row>
-      <v-divider class="mx-4"></v-divider> -->
-
-      <v-card-title><v-icon large>stairs</v-icon>층간 이동하기</v-card-title
-      ><v-row
-        ><v-col cols="12" sm="9"
-          ><v-text-field
-            v-model="changeFloor"
-            label="이동할 층을 입력하세요."
-            solo
-          ></v-text-field
-        ></v-col>
+      <v-card-title><v-icon large>stairs</v-icon>층간 이동하기</v-card-title>
+      <v-row>
+        <v-col cols="9">
+          <v-combobox
+            v-model="selectedFloorItems"
+            :items="floorItems"
+            label="층을 선택하세요"
+            single-line
+            outlined
+            dense
+          ></v-combobox>
+        </v-col>
         <v-col cols="12" sm="3">
           <v-icon large @click="clickChangeFloor">edit</v-icon></v-col
         >
@@ -120,6 +108,8 @@ export default {
         { index: 1, src: "../assets/rect2.png", size: 30 },
         { index: 2, src: "../assets/rect3.png", size: 40 },
       ],
+      floorItems: [],
+      selectedFloorItems : null,
 
       employee: this.copyEmployeeList,
       addVacantSwitch: false,
@@ -128,7 +118,7 @@ export default {
       currentSelectedFloorId: null,
       allFloorList: this.copyfloorList,
       //seatName: null,
-      changeFloor: null,
+      //changeFloor: null,
 
       seatSizeSettingDialogStatus: false,
 
@@ -137,6 +127,11 @@ export default {
     };
   },
   created() {
+    for (let i = 0; i < this.copyfloorList.length; i++) {
+      let floor_name = this.copyfloorList[i].floor_name;
+      this.floorItems.push(floor_name)
+    }
+
     if (this.copyfloorList.length) {
       this.currentSelectedFloorId = this.allFloorList[
         this.allFloorList.length - 1
@@ -147,16 +142,19 @@ export default {
 
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
+      console.log(this.FloorItems);
+      this.FloorItems.push(this.allFloorList);
+      console.log(this.FloorItems);
     });
 
-    eventBus.$on("changeFloor", (floor) => {
+    /*eventBus.$on("changeFloor", (floor) => {
       if (floor) {
         // null 이 아닐때
         this.currentSelectedFloorId = floor.floor_id;
       } else {
         this.currentSelectedFloorId = null;
       }
-    });
+    });*/
     eventBus.$on(
       "mappingEmployeeComponentStatus",
       (mappingEmployeeComponentStatus) => {
@@ -182,8 +180,8 @@ export default {
     //   }
     // },
     clickChangeFloor() {
-      if (this.changeFloor) {
-        eventBus.$emit("clickChangeFloor", this.changeFloor);
+      if (this.selectedFloorItems) {
+        eventBus.$emit("clickChangeFloor", this.selectedFloorItems);
       }
     },
     getMappingEmployeeComponent() {

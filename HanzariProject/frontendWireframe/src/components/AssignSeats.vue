@@ -131,6 +131,10 @@ export default {
         this.allFloorList.length - 1
       ].floor_id;
     }
+    //층간 이동
+    eventBus.$on("clickChangeFloor",(floor_name)=>{
+      this.changeFloorSeat(floor_name);
+    });
 
     eventBus.$on("changeFloor", (floor) => {
       if (floor) {
@@ -544,7 +548,7 @@ export default {
         this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
         return this.eachEmployeeSeatMap.get(employee_id);
       } else {
-      return this.eachEmployeeSeatMap.get(employee_id);
+        return this.eachEmployeeSeatMap.get(employee_id);
       }
     },
     // 해당 층의 도형 리스트의 Delete field 전체 true 만들기
@@ -1061,6 +1065,57 @@ export default {
       }
 
       this.toolTipStatus = true;
+    },
+    // 층간이동
+    changeFloorSeat(floor_name) {
+      if (!this.floorCanvas.getActiveObject()) {
+        return;
+      }
+      console.log(this.currentSelectedFloorId)
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+      let managerEachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
+
+      let activeObject = this.floorCanvas.getActiveObject();
+
+      for (let i = 0; i < this.allFloorList.length; i++) {
+
+        if (floor_name == this.allFloorList[i].floor_name) {
+          activeObject.floor_id = this.allFloorList[i].floor_id;
+          activeObject.floor_name = this.allFloorList[i].floor_name;
+          activeObject.modify = true;
+
+          let changeFloorSeatList = this.getEachFloorSeatList(
+            this.allFloorList[i].floor_id //input floor's floor_id
+          );
+          let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
+            this.allFloorList[i].floor_id
+          );
+
+          changeFloorSeatList.push(activeObject);
+          changeManagerFloorSeatList.push(activeObject);
+
+          //이동 후에 원래 list에서 삭제
+          for (let j = 0; j < eachFloorSeatList.length; j++) {
+            if (eachFloorSeatList[j].seatId == activeObject.seatId) {
+              eachFloorSeatList.splice(j, 1);
+            }
+          }
+          for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+            if (managerEachFloorSeatList[j].seatId == activeObject.seatId) {
+              managerEachFloorSeatList[j].set("delete", true);
+            }
+          }
+
+          eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
+          eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
+
+          this.floorCanvas.renderAll();
+        }
+      }
     },
     showSeat(seat) {
       //좌석 하이라이트
