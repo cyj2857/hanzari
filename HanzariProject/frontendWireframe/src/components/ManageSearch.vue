@@ -60,7 +60,7 @@ export default {
   created() {
     eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
-      //console.log(this.allEmployeeSeatMap);
+      console.log(this.allEmployeeSeatMap);
 
       this.getAllEmployeeSeats();
     });
