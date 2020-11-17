@@ -852,49 +852,21 @@ export default {
       let activeObject = null;
       let shapearray = new Array();
 
+      let eachFloorSeatList = this.getEachFloorSeatList(
+        this.currentSelectedFloorId
+      );
       if (confirm("Are you sure?")) {
-        if (this.floorCanvas.getActiveObjects().length == 1) {
-          // 단일객체
-          activeObject = this.floorCanvas.getActiveObject();
-          activeObject.set("delete", true);
+        this.floorCanvas.getActiveObjects().forEach((obj) => {
+          obj.set("delete", true);
+          this.deleteEachEmployeeSeatList(obj);
 
-          let groupToObject = activeObject.toObject(["seatId", "employee_id"]);
-          this.deleteEachEmployeeSeatList(groupToObject);
-        } else {
-          // 복수객체
-          this.floorCanvas.getActiveObjects().forEach((obj) => {
-            obj.set("delete", true);
-            this.deleteEachEmployeeSeatList(obj);
-          });
-          activeObject = this.floorCanvas.getActiveObject().toGroup();
-        }
+          let index = eachFloorSeatList.indexOf(obj);
+          eachFloorSeatList.splice(index, 1);
+          this.floorCanvas.remove(obj);
 
-        this.floorCanvas
-          .getObjects()
-          .slice()
-          .forEach((obj) => {
-            shapearray.push(obj);
-          });
-
-        if (activeObject) {
-          //층의 자리 리스트에서 제거하기
-          shapearray.slice().forEach((obj) => {
-            if (obj == activeObject) {
-              let groupToObject = activeObject.toObject(["seatId"]);
-              let index = shapearray.indexOf(activeObject);
-              shapearray.splice(index, 1);
-            }
-          });
-          this.floorCanvas.remove(activeObject);
-          this.getEachFloorSeatList(this.currentSelectedFloorId).length = 0;
-          this.allSeatMap.set(this.currentSelectedFloorId, shapearray);
-
-          eventBus.$emit(
-            "eachFloorSeatList",
-            this.getEachFloorSeatList(this.currentSelectedFloorId)
-          );
+          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
           eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
-        }
+        });
       } else {
         return;
       }
