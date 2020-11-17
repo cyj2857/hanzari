@@ -78,6 +78,7 @@ public class TestEmployeeUpdateJobConfiguration {
 				tokenUrl = new URL(stringTokenUrl + "?" + stringTokenUrlParameter);
 				tokenCreatedConnection = (HttpsURLConnection)tokenUrl.openConnection();
 				tokenCreatedConnection.setRequestMethod("POST");
+				//아래 설정들은 입출력 가능상태로 만들기 위한 것
 				tokenCreatedConnection.setDoInput(true);
 				tokenCreatedConnection.setDoOutput(true);
 				tokenCreatedConnection.setInstanceFollowRedirects(false);
@@ -118,18 +119,15 @@ public class TestEmployeeUpdateJobConfiguration {
 			BufferedReader allEmployeeListReader;
 			final String stringTokenUrl = "https://infosys-gateway.hancom.com/gw/organization/v1/employees";
 			final String stringCmpIdParameter = String.format("cmpId=%s",URLEncoder.encode("C100171030", "UTF-8"));	
-			String line;
-			String result = "";
-
+			
 			try {
 				allEmployeeListUrl = new URL(stringTokenUrl + "?" + stringCmpIdParameter);
 				allEmployeeListGetConnection = (HttpsURLConnection)allEmployeeListUrl.openConnection();
 				allEmployeeListGetConnection.setRequestMethod("GET");
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
 				allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
-				while((line = allEmployeeListReader.readLine()) != null)
-					result += line + "/n";
-				//System.out.println(result);
+
+				System.out.println(allEmployeeListReader.readLine());
 				allEmployeeListReader.close();
 			} catch(IOException e) {
 				LOGGER.error("IOException in StepB", e);
