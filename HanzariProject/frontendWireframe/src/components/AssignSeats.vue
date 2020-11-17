@@ -715,7 +715,9 @@ export default {
       });
 
       if (this.currentSelectedFloorName != null) {
-        if (this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length) {
+        if (
+          this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length
+        ) {
           let seatNumberArray = new Array();
           this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
             (seat) => {
@@ -947,9 +949,15 @@ export default {
           evented: true,
         });
 
-        this.seatNumber = this.getManagerEachFloorSeatList(
-          this.currentSelectedFloorId
-        ).length;
+        let seatNumberArray = new Array();
+        this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
+          (seat) => {
+            seatNumberArray.push(seat.seatName.split("-")[1]);
+          }
+        );
+
+        this.seatNumber = Math.max.apply(null, seatNumberArray);
+        
         this.seatNumber++;
 
         clonedObj.seatName =
