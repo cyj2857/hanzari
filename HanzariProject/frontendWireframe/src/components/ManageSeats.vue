@@ -156,9 +156,7 @@ export default {
 
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      console.log(this.FloorItems);
-      this.FloorItems.push(this.allFloorList);
-      console.log(this.FloorItems);
+      this.floorItems.push(this.allFloorList);
     });
 
     /*eventBus.$on("changeFloor", (floor) => {

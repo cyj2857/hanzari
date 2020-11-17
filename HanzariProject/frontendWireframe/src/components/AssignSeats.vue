@@ -1040,47 +1040,46 @@ export default {
       if (!this.floorCanvas.getActiveObject()) {
         return;
       }
-      console.log(this.currentSelectedFloorId);
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
+
       let managerEachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
 
-      let activeObject = this.floorCanvas.getActiveObject();
-
       for (let i = 0; i < this.allFloorList.length; i++) {
         if (floor_name == this.allFloorList[i].floor_name) {
-          activeObject.floor_id = this.allFloorList[i].floor_id;
-          activeObject.floor_name = this.allFloorList[i].floor_name;
-          activeObject.modify = true;
+          this.floorCanvas.getActiveObjects().forEach((obj) => {
+            obj.set("floor_id", this.allFloorList[i].floor_id);
+            obj.set("floor_name", this.allFloorList[i].floor_name);
+            obj.set("modify", true);
 
-          let changeFloorSeatList = this.getEachFloorSeatList(
-            this.allFloorList[i].floor_id //input floor's floor_id
-          );
-          let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
-            this.allFloorList[i].floor_id
-          );
+            let changeFloorSeatList = this.getEachFloorSeatList(
+              this.allFloorList[i].floor_id
+            );
 
-          changeFloorSeatList.push(activeObject);
-          changeManagerFloorSeatList.push(activeObject);
+            let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
+              this.allFloorList[i].floor_id
+            );
 
-          //이동 후에 원래 list에서 삭제
-          for (let j = 0; j < eachFloorSeatList.length; j++) {
-            if (eachFloorSeatList[j].seatId == activeObject.seatId) {
-              eachFloorSeatList.splice(j, 1);
+            changeFloorSeatList.push(obj);
+            changeManagerFloorSeatList.push(obj);
+
+            //이동 후에 원래 list에서 삭제
+            for (let j = 0; j < eachFloorSeatList.length; j++) {
+              if (eachFloorSeatList[j].seatId == obj.seatId) {
+                eachFloorSeatList.splice(j, 1);
+              }
             }
-          }
-          for (let j = 0; j < managerEachFloorSeatList.length; j++) {
-            if (managerEachFloorSeatList[j].seatId == activeObject.seatId) {
-              managerEachFloorSeatList[j].set("delete", true);
+            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+              if (managerEachFloorSeatList[j].seatId == obj.seatId) {
+                managerEachFloorSeatList[j].set("delete", true);
+              }
             }
-          }
-
-          eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
-          eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
-
+            eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
+            eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
+          });
           this.floorCanvas.renderAll();
         }
       }
