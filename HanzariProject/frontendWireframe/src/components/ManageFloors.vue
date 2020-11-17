@@ -25,7 +25,7 @@
           cols="4"
           ><v-tooltip bottom
             ><template v-slot:activator="{ on }">
-              {{floor.floor_name}}
+              {{ floor.floor_name }}
               <v-btn
                 v-on="on"
                 large
@@ -38,8 +38,8 @@
                     : '',
                 }"
                 ><span v-html="imageHtml"> </span
-              ></v-btn> </template
-            >
+              ></v-btn>
+            </template>
             <span v-html="toolTipText"> </span>
           </v-tooltip>
         </v-col>
@@ -230,8 +230,10 @@ export default {
       this.saveImageFile(files[0]);
     },
     saveImageFile(file) {
-      this.currentFloorImage = file.name;
       this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
+      this.currentFloorImage = this.allImageMap.get(
+        this.currentSelectedFloor.floor_id
+      ).name;
       console.log(this.allImageMap);
       eventBus.$emit(
         "allImageMap",
@@ -267,6 +269,10 @@ export default {
     clickFloor(floor) {
       this.clickIndexes = [];
       this.clickIndexes.push(floor.floor_id);
+
+      if (this.allImageMap.get(floor.floor_id)) {
+        this.currentFloorImage = this.allImageMap.get(floor.floor_id).name;
+      }
 
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
