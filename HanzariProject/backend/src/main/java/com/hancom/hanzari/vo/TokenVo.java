@@ -26,5 +26,5 @@ public class TokenVo {
 	@JsonProperty("access_token")
 	String accessToken;
 	@JsonProperty("expires_in")
-	String expiresIn;
+	int expiresIn;
 }
