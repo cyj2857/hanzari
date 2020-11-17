@@ -434,6 +434,8 @@ export default {
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
         this.currentSelectedFloorId
       );
+      this.seatNumber = 0;
+
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
         if (typeof typeCheck === "string") {
@@ -713,17 +715,21 @@ export default {
       });
 
       if (this.currentSelectedFloorName != null) {
-        if (group.item(2)) {
-          group.remove(group.item(2));
-        }
-
-        this.seatNumber = this.getManagerEachFloorSeatList(
-          this.currentSelectedFloorId
-        ).length;
-        console.log(
+        if (
           this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length
-        );
+        ) {
+          let seatNumberArray = new Array();
+          this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
+            (seat) => {
+              console.log(seat.seatName);
+              console.log(seat.seatName.split("-"));
+              seatNumberArray.push(seat.seatName.split("-")[1]);
+            }
+          );
 
+          //max
+          this.seatNumber = Math.max.apply(null, seatNumberArray);
+        }
         this.seatNumber++;
         group.seatName = this.currentSelectedFloorName + "-" + this.seatNumber;
         let seatNameObject = new fabric.IText(group.seatName, {
@@ -732,6 +738,7 @@ export default {
           fontSize: this.fontSize / this.zoom,
           fill: "black",
         });
+        group.remove(group.item(2));
         group.add(seatNameObject);
       }
 
@@ -942,9 +949,15 @@ export default {
           evented: true,
         });
 
-        this.seatNumber = this.getManagerEachFloorSeatList(
-          this.currentSelectedFloorId
-        ).length;
+        let seatNumberArray = new Array();
+        this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
+          (seat) => {
+            seatNumberArray.push(seat.seatName.split("-")[1]);
+          }
+        );
+
+        this.seatNumber = Math.max.apply(null, seatNumberArray);
+        
         this.seatNumber++;
 
         clonedObj.seatName =
@@ -1038,22 +1051,10 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
+
       let managerEachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
-
-      this.floorCanvas.getActiveObjects().forEach((obj) => {
-        let groupToObject = obj.toObject(["seatId", "employee_id"]);
-        this.deleteEachEmployeeSeatList(groupToObject);
-        obj.set("modify", true);
-        obj.set("employee_name", null);
-        obj.set("employee_department", null);
-        obj.set("employee_number", null);
-        obj.set("employee_id", null);
-        obj.item(0).set("fill", this.getColor(obj.employee_department));
-        this.floorCanvas.remove(obj.item(1)); // delete textObject
-        obj.item(1).set("text", "");
-      });
 
       for (let i = 0; i < this.allFloorList.length; i++) {
         if (floor_name == this.allFloorList[i].floor_name) {
@@ -1063,8 +1064,9 @@ export default {
             obj.set("modify", true);
 
             let changeFloorSeatList = this.getEachFloorSeatList(
-              this.allFloorList[i].floor_id //input floor's floor_id
+              this.allFloorList[i].floor_id
             );
+
             let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
               this.allFloorList[i].floor_id
             );
@@ -1083,11 +1085,9 @@ export default {
                 managerEachFloorSeatList[j].set("delete", true);
               }
             }
-
             eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
             eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
           });
-
           this.floorCanvas.renderAll();
         }
       }
