@@ -1,7 +1,12 @@
 package com.hancom.hanzari.configuration;
 
-import java.net.HttpURLConnection;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -63,30 +68,40 @@ public class TestEmployeeUpdateJobConfiguration {
 		return stepBuilderFactory.get("stepA").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> This is StepA");
 			
-			//URL 설정
-			URL tokenUrl = new URL("https://infosys-gateway.hancom.com/common/oauth2/token");
-			//HttpURLConnection 설정
-			HttpsURLConnection tokenCreatedConnection = (HttpsURLConnection)tokenUrl.openConnection();
-			tokenCreatedConnection.setRequestMethod("GET");
-			tokenCreatedConnection.setRequestProperty("client_id", "8SqT9fPgDyNS2d4mn3PBFsaeD65dVvg2");
-			tokenCreatedConnection.setRequestProperty("client_secret", "ypseY19GpZIXcA8wSi4TS7WU7XVknXEs");
-			tokenCreatedConnection.setRequestProperty("grant_type", "client_credentials");
-			
-			tokenCreatedConnection.connect();
-			
-			int responseCode = tokenCreatedConnection.getResponseCode();
-			if(responseCode != 200) {
-				LOGGER.error("HttpsResponseCode : ", responseCode);
+			URL tokenUrl;
+			HttpsURLConnection tokenCreatedConnection;
+			BufferedReader tokenbufferedReader;
+			BufferedWriter tokenBufferedWriter;
+			String tokenJsonEachLine;
+			String tokenJson = "";
+			//URL String으로 설정
+			final String stringTokenUrl = "https://infosys-gateway.hancom.com/common/oauth2/token";
+			//URL뒤에 들어갈 Parameter들 설정
+			final String stringTokenUrlParameter = String.format("client_id=%s&client_secret=%s&grant_type=%s", 
+					URLEncoder.encode("8SqT9fPgDyNS2d4mn3PBFsaeD65dVvg2", "UTF-8"), URLEncoder.encode("ypseY19GpZIXcA8wSi4TS7WU7XVknXEs", "UTF-8"), URLEncoder.encode("client_credentials", "UTF-8"));
+			try {
+				tokenUrl = new URL(stringTokenUrl + "?" + stringTokenUrlParameter);
+				tokenCreatedConnection = (HttpsURLConnection)tokenUrl.openConnection();
+				tokenCreatedConnection.setRequestMethod("POST");
+				tokenCreatedConnection.setDoInput(true);
+				tokenCreatedConnection.setDoOutput(true);
+				tokenCreatedConnection.setInstanceFollowRedirects(false);
+				
+				//Parameter를 HttpsURLConnection에 설정
+				tokenBufferedWriter = new BufferedWriter(new OutputStreamWriter(tokenCreatedConnection.getOutputStream(), "UTF-8"));
+				tokenBufferedWriter.write(stringTokenUrlParameter);
+				
+				tokenbufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream(), "UTF-8"));
+				while((tokenJsonEachLine = tokenbufferedReader.readLine()) != null)
+					tokenJson += tokenJsonEachLine + "\n";
+				tokenbufferedReader.close();
+			} catch(IOException e) {
+				LOGGER.error("IOException in StepA", e);
+			} catch(Exception e) {
+				LOGGER.error("Exception in StepA", e);
 			}
-			else {
-				Scanner scanner = new Scanner(tokenUrl.openStream());
-				String inline = "";
-				while(scanner.hasNext()) {
-					inline += scanner.nextLine();
-				}
-				scanner.close();
-				tokenVo = new ObjectMapper().readValue(inline,TokenVo.class);
-			}
+			tokenVo = new ObjectMapper().readValue(tokenJson,TokenVo.class);
+					
 			System.out.println(tokenVo.getAccessToken());
 			/**
 			 * ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다.
