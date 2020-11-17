@@ -61,7 +61,7 @@
         >
       </v-row>
       <v-divider class="mx-4"></v-divider>
-
+      
       <v-card-title><v-icon large>stairs</v-icon>층간 이동하기</v-card-title>
       <v-row>
         <v-col cols="9">
@@ -78,6 +78,20 @@
           <v-icon large @click="clickChangeFloor">edit</v-icon></v-col
         >
       </v-row>
+      <v-divider class="mx-4"></v-divider>
+
+      <v-row>
+        <v-col cols="12">
+          <v-card-title
+            ><v-icon large>person_add_disabled</v-icon>자리 비우기
+            <v-card-text>
+              <v-btn @click="clickChangeToVacant"
+                >자리 비우기</v-btn
+              ></v-card-text
+            ></v-card-title
+          ></v-col
+        ></v-row
+      >
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"
@@ -170,15 +184,6 @@ export default {
     });
   },
   methods: {
-    //editSeatName() {
-    //  console.log(this.seatName);
-    //  eventBus.$emit("inputSeatName", this.seatName);
-    //},
-    // inputSeatName() {
-    //   if (this.seatName) {
-    //     eventBus.$emit("inputSeatName", this.seatName);
-    //   }
-    // },
     clickChangeFloor() {
       if (this.selectedFloorItems) {
         eventBus.$emit("clickChangeFloor", this.selectedFloorItems);
@@ -203,8 +208,6 @@ export default {
       eventBus.$emit("setSeatSizeDialog", seatSize);
     },
     clickSizeBtn(size) {
-      //this.clickedSize = size;
-
       let seatSize = {};
 
       seatSize.width = size;
@@ -212,6 +215,9 @@ export default {
       this.clickedSize = seatSize;
 
       eventBus.$emit("setSeatSizeDialog", seatSize);
+    },
+    clickChangeToVacant() {
+      eventBus.$emit("changeToVacant", true);
     },
   },
 };
