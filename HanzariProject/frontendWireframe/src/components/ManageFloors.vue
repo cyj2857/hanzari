@@ -25,9 +25,11 @@
           cols="4"
           ><v-tooltip bottom
             ><template v-slot:activator="{ on }">
+              {{floor.floor_name}}
               <v-btn
                 v-on="on"
                 large
+                background-image="https://randomuser.me/api/portraits/men/1.jpg"
                 @click="clickFloor(floor)"
                 @mouseover="showToolTip(floor)"
                 :style="{
@@ -35,8 +37,8 @@
                     ? 'thick solid black'
                     : '',
                 }"
-                >{{ floor.floor_name }}</v-btn
-              ></template
+                ><span v-html="imageHtml"> </span
+              ></v-btn> </template
             >
             <span v-html="toolTipText"> </span>
           </v-tooltip>
@@ -108,6 +110,8 @@ export default {
 
       allSeatMap: null,
       toolTipText: null,
+
+      imageHtml: null,
     };
   },
   created() {
@@ -334,6 +338,11 @@ export default {
       this.clickIndexes.push(this.currentSelectedFloor.floor_id);
 
       this.length++;
+
+      this.imageHtml =
+        "<v-avatar> <img src=" +
+        "https://randomuser.me/api/portraits/men/1.jpg" +
+        " /> </v-avatar>";
 
       eventBus.$emit("changeFloor", this.currentSelectedFloor);
       eventBus.$emit(

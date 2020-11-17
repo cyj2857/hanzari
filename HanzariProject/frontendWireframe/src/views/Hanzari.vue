@@ -24,7 +24,7 @@
         v-bind:latestFloorImage="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
       />
-      <Tabs v-else-if="!floors && employees" />
+      <!-- <Tabs v-else-if="!floors && employees" /> -->
     </v-navigation-drawer>
     <v-main>
       <AssignSeats
@@ -48,7 +48,7 @@
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
       />
-      <AssignSeats v-else-if="!floors && employees" />
+      <!-- <AssignSeats v-else-if="!floors && employees" /> -->
     </v-main>
   </div>
 </template>
