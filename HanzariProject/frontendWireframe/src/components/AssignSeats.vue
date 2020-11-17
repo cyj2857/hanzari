@@ -190,7 +190,8 @@ export default {
     //   }
     // });
     eventBus.$on("allImageMap", (allImageMap, floor_id) => {
-      this.allImageMap = allImageMap;console.log(this.allImageMap)
+      this.allImageMap = allImageMap;
+      console.log(this.allImageMap);
       this.loadImageFile(this.allImageMap.get(floor_id));
     });
     eventBus.$on("showSeat", (seat) => {
@@ -543,7 +544,7 @@ export default {
         this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
         return this.eachEmployeeSeatMap.get(employee_id);
       } else {
-        return this.eachEmployeeSeatMap.get(employee_id);
+      return this.eachEmployeeSeatMap.get(employee_id);
       }
     },
     // 해당 층의 도형 리스트의 Delete field 전체 true 만들기
@@ -556,12 +557,17 @@ export default {
     },
     //사원의 자리리스트에서 삭제된 자리를 삭제하기
     deleteEachEmployeeSeatList: function (groupToObject) {
-      let oneEmployeeSeatList = this.getEachEmployeeSeatList(
-        groupToObject.employee_id
-      );
-      for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-        if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
-          oneEmployeeSeatList.splice(i, 1);
+      if (groupToObject.employee_id != null) {
+        let oneEmployeeSeatList = this.getEachEmployeeSeatList(
+          groupToObject.employee_id
+        );
+
+        if (oneEmployeeSeatList) {
+          for (let i = 0; i < oneEmployeeSeatList.length; i++) {
+            if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
+              oneEmployeeSeatList.splice(i, 1);
+            }
+          }
         }
       }
       //console.log(
@@ -865,10 +871,14 @@ export default {
       if (confirm("Are you sure?")) {
         this.floorCanvas.getActiveObjects().forEach((obj) => {
           obj.set("delete", true);
-          this.deleteEachEmployeeSeatList(obj);
+          let groupToObject = obj.toObject(["seatId", "employee_id"]);
+          this.deleteEachEmployeeSeatList(groupToObject);
+          console.log(this.eachEmployeeSeatMap);
+          console.log(eachFloorSeatList);
 
           let index = eachFloorSeatList.indexOf(obj);
           eachFloorSeatList.splice(index, 1);
+          console.log(eachFloorSeatList);
           this.floorCanvas.remove(obj);
 
           eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
