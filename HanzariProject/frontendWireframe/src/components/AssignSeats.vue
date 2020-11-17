@@ -114,7 +114,9 @@ export default {
       toolTipText: null,
 
       ableAddVacant: false,
-      seatLength: null,
+
+      seatWidth: null,
+      seatHeight: null,
 
       //inputSeatNameText: null,
       seatNumber: 0,
@@ -151,8 +153,9 @@ export default {
       console.log(switchValue);
       this.ableAddVacant = switchValue;
     });
-    eventBus.$on("setSeatSize", (seatSize) => {
-      this.seatLength = seatSize;
+    eventBus.$on("setSeatSizeDialog", (seatSize) => {
+      this.seatWidth = seatSize.width;
+      this.seatHeight = seatSize.height;
     });
     eventBus.$on("MappingSeat", (item) => {
       this.setMappingSeat(item);
@@ -186,9 +189,9 @@ export default {
     //     this.inputSeatName(seatName);
     //   }
     // });
-    eventBus.$on("allImageMap", (allImageMap) => {
-      this.allImageMap = allImageMap;
-      this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+    eventBus.$on("allImageMap", (allImageMap, floor_id) => {
+      this.allImageMap = allImageMap;console.log(this.allImageMap)
+      this.loadImageFile(this.allImageMap.get(floor_id));
     });
     eventBus.$on("showSeat", (seat) => {
       this.showSeat(seat);
@@ -336,7 +339,11 @@ export default {
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
-            if (this.ableAddVacant && this.seatLength) {
+            if (this.ableAddVacant) {
+              if (!this.seatWidth) {
+                alert("공석 크기를 선택해야 합니다.");
+                return;
+              }
               var pointer = this.floorCanvas.getPointer(event.e);
               var posX = pointer.x;
               var posY = pointer.y;
@@ -658,8 +665,8 @@ export default {
       );
 
       let rectangle = new fabric.Rect({
-        width: this.seatLength,
-        height: this.seatLength,
+        width: this.seatWidth,
+        height: this.seatHeight,
         fill: this.getColor(null),
         opacity: 1,
       });
@@ -1497,7 +1504,6 @@ export default {
       windowContent += "</html>";
 
       printWin.document.write(windowContent);
-      printWin.document.focus();
     },
   },
 };
