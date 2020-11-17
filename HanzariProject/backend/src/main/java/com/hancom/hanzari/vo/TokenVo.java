@@ -22,9 +22,9 @@ import lombok.NoArgsConstructor;
 @JsonPropertyOrder({"tokenType","accessToken","expiresIn"})
 public class TokenVo {
 	@JsonProperty("token_type")
-	String tokenType;;
+	private String tokenType;;
 	@JsonProperty("access_token")
-	String accessToken;
+	private String accessToken;
 	@JsonProperty("expires_in")
-	int expiresIn;
+	private int expiresIn;
 }

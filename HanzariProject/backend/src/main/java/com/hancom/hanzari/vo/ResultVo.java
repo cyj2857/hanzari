@@ -19,5 +19,5 @@ public class ResultVo {
 	@JsonProperty("resultDesc")
 	String resultDesc;
 
-	List<EmployeeVo> allEmployeeListVo;
+	List<EmployeesVo> allEmployeeListVo;
 }

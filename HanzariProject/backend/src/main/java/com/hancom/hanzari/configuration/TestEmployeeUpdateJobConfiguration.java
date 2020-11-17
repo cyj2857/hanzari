@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -27,7 +26,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hancom.hanzari.vo.EmployeeVo;
+import com.hancom.hanzari.vo.EmployeesVo;
+import com.hancom.hanzari.vo.ResultVo;
 import com.hancom.hanzari.vo.TokenVo;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +42,8 @@ public class TestEmployeeUpdateJobConfiguration {
 	
 	//발행될 토큰을 넣어둘 Vo
 	private TokenVo tokenVo;
+	
+	private ResultVo resultVo;
 
 	@Bean
 	public Job conditionalStepJob(Step stepA, Step stepB, Step stepC) {
@@ -128,12 +130,15 @@ public class TestEmployeeUpdateJobConfiguration {
 				allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
 
 				System.out.println(allEmployeeListReader.readLine());
+				resultVo = new ObjectMapper().readValue(allEmployeeListReader.readLine(), ResultVo.class);
 				allEmployeeListReader.close();
 			} catch(IOException e) {
 				LOGGER.error("IOException in StepB", e);
 			} catch (Exception e) {
 				LOGGER.error("Exception in StepB", e);
 			}
+			
+			System.out.println(resultVo.getResultDesc());
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
@@ -166,8 +171,8 @@ public class TestEmployeeUpdateJobConfiguration {
 	}
 
 	// JSON 객체를 읽어오는 Reader
-	public JsonItemReader<EmployeeVo> jsonItemReader() {
-		return new JsonItemReaderBuilder<EmployeeVo>().jsonObjectReader(new JacksonJsonObjectReader<>(EmployeeVo.class))
+	public JsonItemReader<EmployeesVo> jsonItemReader() {
+		return new JsonItemReaderBuilder<EmployeesVo>().jsonObjectReader(new JacksonJsonObjectReader<>(EmployeesVo.class))
 				.resource(new ClassPathResource("/testdata/test-employee-data.json")).name("jsonItemReader").build();
 	}
 
