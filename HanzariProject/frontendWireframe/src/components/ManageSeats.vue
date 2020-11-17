@@ -15,19 +15,25 @@
           ></v-switch
         ></v-col>
 
-        <v-col class="d-flex child-flex" cols="4"
-          ><v-btn tile :disabled="!addVacantSwitch" @click="clickBtn1"
-            >20</v-btn
+        <v-col
+          v-for="size of this.sizeItems"
+          :key="size.index"
+          class="d-flex child-flex"
+          cols="4"
+        >
+          <v-btn
+            large
+            :disabled="!addVacantSwitch"
+            tile
+            @click="clickSizeBtn(size.size)"
+            >{{ size.size }}</v-btn
           ></v-col
         >
-        <v-col class="d-flex child-flex" cols="4"
-          ><v-btn tile :disabled="!addVacantSwitch" @click="clickBtn2"
-            >30</v-btn
-          ></v-col
-        >
-        <v-col class="d-flex child-flex" cols="4"
-          ><v-btn tile :disabled="!addVacantSwitch" @click="clickBtn3"
-            >40</v-btn
+        <v-col>
+          <v-card-text
+            >현재 가로 길이 : {{ this.clickedSize.width }}</v-card-text
+          ><v-card-text
+            >현재 세로 길이 : {{ this.clickedSize.height }}</v-card-text
           ></v-col
         ><v-col
           ><v-btn
@@ -109,8 +115,14 @@ export default {
   },
   data() {
     return {
+      sizeItems: [
+        { index: 0, src: "../assets/rect1.png", size: 20 },
+        { index: 1, src: "../assets/rect2.png", size: 30 },
+        { index: 2, src: "../assets/rect3.png", size: 40 },
+      ],
+
       employee: this.copyEmployeeList,
-      addVacantSwitch: false, // ���� ����� ���� ����ġ ����
+      addVacantSwitch: false,
       mappingEmployeeComponentStatus: false,
 
       currentSelectedFloorId: null,
@@ -120,7 +132,7 @@ export default {
 
       seatSizeSettingDialogStatus: false,
 
-      clickedSize: null,
+      clickedSize: { width: 0, height: 0 },
       clickIndexes: null,
     };
   },
@@ -153,7 +165,9 @@ export default {
     );
 
     eventBus.$on("changeSlider", (seatSize) => {
-      console.log(seatSize);
+      this.clickedSize.width = seatSize.width;
+      this.clickedSize.height = seatSize.height;
+
       this.confirmSeatSizeSettingDialog(seatSize);
     });
   },
@@ -190,32 +204,15 @@ export default {
 
       eventBus.$emit("setSeatSizeDialog", seatSize);
     },
-    clickBtn1() {
-      this.clickedSize = 20;
+    clickSizeBtn(size) {
+      //this.clickedSize = size;
 
       let seatSize = {};
 
-      seatSize.width = this.clickedSize;
-      seatSize.height = this.clickedSize;
+      seatSize.width = size;
+      seatSize.height = size;
+      this.clickedSize = seatSize;
 
-      eventBus.$emit("setSeatSizeDialog", seatSize);
-    },
-    clickBtn2() {
-      this.clickedSize = 30;
-
-      let seatSize = {};
-
-      seatSize.width = this.clickedSize;
-      seatSize.height = this.clickedSize;
-      eventBus.$emit("setSeatSizeDialog", seatSize);
-    },
-    clickBtn3() {
-      this.clickedSize = 40;
-
-      let seatSize = {};
-
-      seatSize.width = this.clickedSize;
-      seatSize.height = this.clickedSize;
       eventBus.$emit("setSeatSizeDialog", seatSize);
     },
   },

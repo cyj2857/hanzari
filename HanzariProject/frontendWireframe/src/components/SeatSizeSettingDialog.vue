@@ -68,8 +68,8 @@ export default {
   created() {
     eventBus.$on("initSeatSizeSettingDialog", (size) => {
       console.log(size);
-      this.sliderWidth = size;
-      this.sliderHeight = size;
+      this.sliderWidth = size.width;
+      this.sliderHeight = size.height;
     });
   },
   computed: {
