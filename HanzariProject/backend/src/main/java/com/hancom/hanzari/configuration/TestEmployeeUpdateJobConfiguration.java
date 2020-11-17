@@ -68,8 +68,6 @@ public class TestEmployeeUpdateJobConfiguration {
 			HttpsURLConnection tokenCreatedConnection;
 			BufferedReader tokenbufferedReader;
 			BufferedWriter tokenBufferedWriter;
-			String tokenJsonEachLine;
-			String tokenJson = "";
 			//URL String으로 설정
 			final String stringTokenUrl = "https://infosys-gateway.hancom.com/common/oauth2/token";
 			//URL뒤에 들어갈 Parameter들 설정
@@ -89,16 +87,15 @@ public class TestEmployeeUpdateJobConfiguration {
 				tokenBufferedWriter.write(stringTokenUrlParameter);
 				
 				tokenbufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream(), "UTF-8"));
-				while((tokenJsonEachLine = tokenbufferedReader.readLine()) != null)
-					tokenJson += tokenJsonEachLine + "\n";
+				
+				//jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
+				tokenVo = new ObjectMapper().readValue(tokenbufferedReader.readLine(),TokenVo.class);
 				tokenbufferedReader.close();
 			} catch(IOException e) {
 				LOGGER.error("IOException in StepA", e);
 			} catch(Exception e) {
 				LOGGER.error("Exception in StepA", e);
 			}
-			//jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
-			tokenVo = new ObjectMapper().readValue(tokenJson,TokenVo.class);
 			
 			System.out.println("토큰 타입 : " + tokenVo.getTokenType());
 			System.out.println("토큰 : " + tokenVo.getAccessToken());
@@ -132,7 +129,7 @@ public class TestEmployeeUpdateJobConfiguration {
 				allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
 				while((line = allEmployeeListReader.readLine()) != null)
 					result += line + "/n";
-				System.out.println(result);
+				//System.out.println(result);
 				allEmployeeListReader.close();
 			} catch(IOException e) {
 				LOGGER.error("IOException in StepB", e);
