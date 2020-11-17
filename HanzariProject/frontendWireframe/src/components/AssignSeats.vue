@@ -139,7 +139,7 @@ export default {
       ].floor_id;
     }
     //층간 이동
-    eventBus.$on("clickChangeFloor",(floor_name)=>{
+    eventBus.$on("clickChangeFloor", (floor_name) => {
       this.changeFloorSeat(floor_name);
     });
 
@@ -1035,7 +1035,6 @@ export default {
       if (!this.floorCanvas.getActiveObject()) {
         return;
       }
-      console.log(this.currentSelectedFloorId)
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
@@ -1043,37 +1042,49 @@ export default {
         this.currentSelectedFloorId
       );
 
-      let activeObject = this.floorCanvas.getActiveObject();
+      this.floorCanvas.getActiveObjects().forEach((obj) => {
+        let groupToObject = obj.toObject(["seatId", "employee_id"]);
+        this.deleteEachEmployeeSeatList(groupToObject);
+        obj.set("modify", true);
+        obj.set("employee_name", null);
+        obj.set("employee_department", null);
+        obj.set("employee_number", null);
+        obj.set("employee_id", null);
+        obj.item(0).set("fill", this.getColor(obj.employee_department));
+        this.floorCanvas.remove(obj.item(1)); // delete textObject
+        obj.item(1).set("text", "");
+      });
 
       for (let i = 0; i < this.allFloorList.length; i++) {
-
         if (floor_name == this.allFloorList[i].floor_name) {
-          activeObject.floor_id = this.allFloorList[i].floor_id;
-          activeObject.floor_name = this.allFloorList[i].floor_name;
-          activeObject.modify = true;
+          this.floorCanvas.getActiveObjects().forEach((obj) => {
+            obj.set("floor_id", this.allFloorList[i].floor_id);
+            obj.set("floor_name", this.allFloorList[i].floor_name);
+            obj.set("modify", true);
 
-          let changeFloorSeatList = this.getEachFloorSeatList(
-            this.allFloorList[i].floor_id //input floor's floor_id
-          );
-          let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
-            this.allFloorList[i].floor_id
-          );
+            let changeFloorSeatList = this.getEachFloorSeatList(
+              this.allFloorList[i].floor_id //input floor's floor_id
+            );
+            let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
+              this.allFloorList[i].floor_id
+            );
 
-          changeFloorSeatList.push(activeObject);
-          changeManagerFloorSeatList.push(activeObject);
+            changeFloorSeatList.push(obj);
+            changeManagerFloorSeatList.push(obj);
 
-          //이동 후에 원래 list에서 삭제
-          for (let j = 0; j < eachFloorSeatList.length; j++) {
-            if (eachFloorSeatList[j].seatId == activeObject.seatId) {
-              eachFloorSeatList.splice(j, 1);
+            //이동 후에 원래 list에서 삭제
+            for (let j = 0; j < eachFloorSeatList.length; j++) {
+              if (eachFloorSeatList[j].seatId == obj.seatId) {
+                eachFloorSeatList.splice(j, 1);
+              }
             }
-          }
-          for (let j = 0; j < managerEachFloorSeatList.length; j++) {
-            if (managerEachFloorSeatList[j].seatId == activeObject.seatId) {
-              managerEachFloorSeatList[j].set("delete", true);
+            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
+              if (managerEachFloorSeatList[j].seatId == obj.seatId) {
+                managerEachFloorSeatList[j].set("delete", true);
+              }
             }
-          }
-
+          });
+          
           eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
           eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
 
