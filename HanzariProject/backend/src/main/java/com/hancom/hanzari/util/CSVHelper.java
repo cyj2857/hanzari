@@ -36,9 +36,8 @@ public class CSVHelper {
 			Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
 			for (CSVRecord csvRecord : csvRecords) {
-				PlacementVo placementVo = new PlacementVo(csvRecord.get("Floor"), csvRecord.get("SeatName"),
-						csvRecord.get("EmployeeId"));
-				placementVos.add(placementVo);
+				placementVos.add(PlacementVo.builder().floor(csvRecord.get("Floor")).seatName(csvRecord.get("SeatName"))
+						.employeeId(csvRecord.get("EmployeeId")).build());
 			}
 
 			return placementVos;

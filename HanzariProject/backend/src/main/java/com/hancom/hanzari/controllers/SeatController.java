@@ -232,11 +232,14 @@ public class SeatController {
 		List<PlacementVo> placementVos = new ArrayList<PlacementVo>();
 
 		seat.forEach(e -> {
-			if (e.getEmployee() != null)
-				placementVos.add(
-						new PlacementVo(e.getFloor().getFloorId(), e.getSeatName(), e.getEmployee().getEmployeeId()));
-			else
-				placementVos.add(new PlacementVo(e.getFloor().getFloorId(), e.getSeatName(), null));
+			if (e.getEmployee() != null) {
+				placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId()).seatName(e.getSeatName())
+						.employeeId(e.getEmployee().getEmployeeId()).build());
+
+			} else {
+				placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId()).seatName(e.getSeatName())
+						.employeeId(null).build());
+			}
 		});
 
 		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
