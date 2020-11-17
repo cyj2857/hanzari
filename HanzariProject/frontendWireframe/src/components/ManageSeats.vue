@@ -61,7 +61,7 @@
         >
       </v-row>
       <v-divider class="mx-4"></v-divider>
-      
+
       <v-card-title><v-icon large>stairs</v-icon>층간 이동하기</v-card-title>
       <v-row>
         <v-col cols="9">
@@ -123,7 +123,7 @@ export default {
         { index: 2, src: "../assets/rect3.png", size: 40 },
       ],
       floorItems: [],
-      selectedFloorItems : null,
+      selectedFloorItems: null,
 
       employee: this.copyEmployeeList,
       addVacantSwitch: false,
@@ -143,7 +143,7 @@ export default {
   created() {
     for (let i = 0; i < this.copyfloorList.length; i++) {
       let floor_name = this.copyfloorList[i].floor_name;
-      this.floorItems.push(floor_name)
+      this.floorItems.push(floor_name);
     }
 
     if (this.copyfloorList.length) {
@@ -156,7 +156,11 @@ export default {
 
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      this.floorItems.push(this.allFloorList);
+      this.floorItems = [];
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        let floor_name = this.allFloorList[i].floor_name;
+        this.floorItems.push(floor_name);
+      }
     });
 
     /*eventBus.$on("changeFloor", (floor) => {
@@ -184,6 +188,7 @@ export default {
   methods: {
     clickChangeFloor() {
       if (this.selectedFloorItems) {
+        //console.log(this.selectedFloorItems)
         eventBus.$emit("clickChangeFloor", this.selectedFloorItems);
       }
     },

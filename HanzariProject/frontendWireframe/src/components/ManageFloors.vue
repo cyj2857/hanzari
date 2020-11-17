@@ -361,6 +361,7 @@ export default {
 
       let managerFloors = this.managerFloorList.slice();
       eventBus.$emit("managerFloorList", managerFloors);
+     
     },
   },
 };
