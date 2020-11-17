@@ -20,8 +20,12 @@
           <v-icon large>print</v-icon>프린트
         </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn @click="clickGetCSVBtn" text>
-          <v-icon large>save</v-icon> csv로 받아오기
+        <v-btn @click="clickExportToCSVBtn" text>
+          <v-icon large>cloud_download</v-icon> CSV 내려받기
+        </v-btn>
+        <v-divider vertical></v-divider>
+        <v-btn @click="clickSaveFromCSVBtn" text>
+          <v-icon large>cloud_upload</v-icon> CSV 내용 db 업데이트하기
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
@@ -1145,13 +1149,21 @@ export default {
         //자리가 아직 없을때 예외처리 하기
       }
     },
-    clickGetCSVBtn() {
-      //csv  저장 //seatName, employeeid, floorid
+    clickExportToCSVBtn() {
+      //csv 내려받기 //seatName, employeeid, floorid
       for (let i = 0; i < this.managerFloorList.length; i++) {
         let floorid = this.managerFloorList[i].floor_id;
         this.$emit("getCSVFile", floorid);
       }
     },
+    clickSaveFromCSVBtn() {
+      //csv 수정했을시에 db로 정보 save하기
+      for (let i = 0; i < this.managerFloorList.length; i++) {
+        let floorid = this.managerFloorList[i].floor_id;
+        this.$emit("saveFromCSVFile", floorid);
+      }
+    },
+
     clickSaveBtn() {
       if (this.managerFloorList) {
         //console.log(this.managerFloorList);
