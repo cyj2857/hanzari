@@ -45,13 +45,15 @@
       <v-divider class="mx-4"></v-divider>
       <v-card-title><v-icon large>stairs</v-icon>층 이름 편집</v-card-title>
       <v-row>
-        <v-text-field
-          v-if="currentSelectedFloor"
-          v-model="currentSelectedFloor.floor_name"
-          @keyup="editFloorName"
-          label="Enter FloorName"
-          solo
-        ></v-text-field>
+        <v-col>
+          <v-text-field
+            v-if="currentSelectedFloor"
+            v-model="currentSelectedFloor.floor_name"
+            @keyup="editFloorName"
+            label="층 이름을 입력하세요"
+            solo
+          ></v-text-field>
+        </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
@@ -226,8 +228,12 @@ export default {
     saveImageFile(file) {
       this.currentFloorImage = file.name;
       this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
-      console.log(this.allImageMap)
-      eventBus.$emit("allImageMap", this.allImageMap, this.currentSelectedFloor.floor_id);
+      console.log(this.allImageMap);
+      eventBus.$emit(
+        "allImageMap",
+        this.allImageMap,
+        this.currentSelectedFloor.floor_id
+      );
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
