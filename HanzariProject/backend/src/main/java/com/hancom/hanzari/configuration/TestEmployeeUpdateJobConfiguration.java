@@ -96,6 +96,7 @@ public class TestEmployeeUpdateJobConfiguration {
 			} catch(Exception e) {
 				LOGGER.error("Exception in StepA", e);
 			}
+			//jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
 			tokenVo = new ObjectMapper().readValue(tokenJson,TokenVo.class);
 					
 			System.out.println(tokenVo.getAccessToken());
