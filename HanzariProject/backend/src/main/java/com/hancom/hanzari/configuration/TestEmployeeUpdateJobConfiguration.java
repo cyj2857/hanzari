@@ -75,6 +75,7 @@ public class TestEmployeeUpdateJobConfiguration {
 			//URL뒤에 들어갈 Parameter들 설정
 			final String stringTokenUrlParameter = String.format("client_id=%s&client_secret=%s&grant_type=%s", 
 					URLEncoder.encode("8SqT9fPgDyNS2d4mn3PBFsaeD65dVvg2", "UTF-8"), URLEncoder.encode("ypseY19GpZIXcA8wSi4TS7WU7XVknXEs", "UTF-8"), URLEncoder.encode("client_credentials", "UTF-8"));
+			
 			try {
 				tokenUrl = new URL(stringTokenUrl + "?" + stringTokenUrlParameter);
 				tokenCreatedConnection = (HttpsURLConnection)tokenUrl.openConnection();
@@ -98,8 +99,10 @@ public class TestEmployeeUpdateJobConfiguration {
 			}
 			//jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
 			tokenVo = new ObjectMapper().readValue(tokenJson,TokenVo.class);
-					
-			System.out.println(tokenVo.getAccessToken());
+			
+			System.out.println("토큰 타입 : " + tokenVo.getTokenType());
+			System.out.println("토큰 : " + tokenVo.getAccessToken());
+			System.out.println("유효시간 : " + tokenVo.getExpiresIn());
 			/**
 			 * ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다.
 			 **/
@@ -113,6 +116,29 @@ public class TestEmployeeUpdateJobConfiguration {
 	public Step stepB() {
 		return stepBuilderFactory.get("stepB").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> This is StepB");
+			URL allEmployeeListUrl;
+			HttpsURLConnection allEmployeeListGetConnection;
+			BufferedReader allEmployeeListReader;
+			final String stringTokenUrl = "https://infosys-gateway.hancom.com/gw/organization/v1/employees";
+			final String stringCmpIdParameter = String.format("cmpId=%s",URLEncoder.encode("C100171030", "UTF-8"));	
+			String line;
+			String result = "";
+
+			try {
+				allEmployeeListUrl = new URL(stringTokenUrl + "?" + stringCmpIdParameter);
+				allEmployeeListGetConnection = (HttpsURLConnection)allEmployeeListUrl.openConnection();
+				allEmployeeListGetConnection.setRequestMethod("GET");
+				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
+				allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
+				while((line = allEmployeeListReader.readLine()) != null)
+					result += line + "/n";
+				System.out.println(result);
+				allEmployeeListReader.close();
+			} catch(IOException e) {
+				LOGGER.error("IOException in StepB", e);
+			} catch (Exception e) {
+				LOGGER.error("Exception in StepB", e);
+			}
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
