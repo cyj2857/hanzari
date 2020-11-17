@@ -434,6 +434,8 @@ export default {
       let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
         this.currentSelectedFloorId
       );
+      this.seatNumber = 0;
+
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
         if (typeof typeCheck === "string") {
@@ -713,17 +715,19 @@ export default {
       });
 
       if (this.currentSelectedFloorName != null) {
-        if (group.item(2)) {
-          group.remove(group.item(2));
+        if (this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length) {
+          let seatNumberArray = new Array();
+          this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
+            (seat) => {
+              console.log(seat.seatName);
+              console.log(seat.seatName.split("-"));
+              seatNumberArray.push(seat.seatName.split("-")[1]);
+            }
+          );
+
+          //max
+          this.seatNumber = Math.max.apply(null, seatNumberArray);
         }
-
-        this.seatNumber = this.getManagerEachFloorSeatList(
-          this.currentSelectedFloorId
-        ).length;
-        console.log(
-          this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length
-        );
-
         this.seatNumber++;
         group.seatName = this.currentSelectedFloorName + "-" + this.seatNumber;
         let seatNameObject = new fabric.IText(group.seatName, {
@@ -732,6 +736,7 @@ export default {
           fontSize: this.fontSize / this.zoom,
           fill: "black",
         });
+        group.remove(group.item(2));
         group.add(seatNameObject);
       }
 
