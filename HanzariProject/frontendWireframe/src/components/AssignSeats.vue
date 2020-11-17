@@ -575,17 +575,13 @@ export default {
       //);
     },
     manageKeyboard() {
-      let activeObject = null;
-      let groupToObject = null;
-
+      let ctrlDown = false;
       document.addEventListener("keydown", (event) => {
         var key = window.event ? window.event.keyCode : event.keyCode;
         switch (key) {
-          case 17 && 67: //ctrl+c
-            this.copySelectedSeat();
-            break;
-          case 17 && 86: //ctrl+v
-            this.pasteSelectedSeat();
+          case 17:
+            ctrlDown = true;
+            console.log("ctrl true");
             break;
           case 37: // left
             if (this.floorCanvas.getActiveObject()) {
@@ -626,6 +622,25 @@ export default {
           case 110:
           case 46: // delete
             this.deleteBtn();
+            break;
+        }
+        if (ctrlDown) {
+          switch (key) {
+            case 67:
+              this.copySelectedSeat();
+              break;
+            case 86:
+              this.pasteSelectedSeat();
+              break;
+          }
+        }
+      });
+      document.addEventListener("keyup", (event) => {
+        var key = window.event ? window.event.keyCode : event.keyCode;
+        switch (key) {
+          case 17:
+            ctrlDown = false;
+            console.log("ctrl false");
             break;
         }
       });
