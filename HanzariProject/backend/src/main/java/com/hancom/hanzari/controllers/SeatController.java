@@ -77,7 +77,7 @@ public class SeatController {
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
 		}
-		Floor floor = floorService.findById(floorId);
+		Floor floor = floorService.findByIdNullable(floorId);
 		if (floor == null) {
 			throw new ResourceNotFoundException("Floor", "floor_id", floorId);
 		}
@@ -229,7 +229,6 @@ public class SeatController {
 			throw new ResourceNotFoundException("Floor", "floor_id", floorId);
 		}
 		List<Seat> seat = seatService.findByFloor(floor);
-
 		List<PlacementVo> placementVos = new ArrayList<PlacementVo>();
 
 		seat.forEach(e -> {
