@@ -1,8 +1,13 @@
 package com.hancom.hanzari.controllers;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -21,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import com.hancom.hanzari.dto.SeatDto;
 import com.hancom.hanzari.exception.ResourceNotFoundException;
@@ -36,6 +44,7 @@ import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
 import com.hancom.hanzari.service.ShapeService;
 import com.hancom.hanzari.util.CSVHelper;
+import com.hancom.hanzari.vo.PlacementVo;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -68,7 +77,7 @@ public class SeatController {
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
 		}
-		Floor floor = floorService.findById(floorId);
+		Floor floor = floorService.findByIdNullable(floorId);
 		if (floor == null) {
 			throw new ResourceNotFoundException("Floor", "floor_id", floorId);
 		}
@@ -173,6 +182,7 @@ public class SeatController {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
+	@Transactional
 	@PostMapping(value = "/update-by-file", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> updateByFile(@RequestParam("file") MultipartFile file) throws Exception {
 
@@ -197,9 +207,51 @@ public class SeatController {
 			}
 		}
 		status = HttpStatus.BAD_REQUEST;
-		message = "Please upload a csv file!";
+		message = "TYPE ERROR(Not CSV File)!";
 		LOGGER.error("{}", message);
 		return new ResponseEntity<List<SeatDto>>(status);
+	}
+
+	@Transactional
+	@GetMapping(value = "/get-csv-file")
+	public void exportCsvFile(@PathVariable("floor_id") String floorId, HttpServletResponse response) throws Exception {
+
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+		String currentDateTime = dateFormatter.format(new Date());
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment; filename=placements_" + currentDateTime + ".csv"; // 파일명을 정해주는 부분. 앞에 attachment; 가 붙는 경우 뒤에오는 filename으로 해당 data를 다운로드 받게 하는 옵션이다.
+
+		response.setContentType("text/csv"); // response contentType을 text/csv로 지정
+		response.setHeader(headerKey, headerValue); // header에 
+
+		Floor floor = floorService.findByIdNullable(floorId);
+		if (floor == null) {
+			throw new ResourceNotFoundException("Floor", "floor_id", floorId);
+		}
+		List<Seat> seat = seatService.findByFloor(floor);
+		List<PlacementVo> placementVos = new ArrayList<PlacementVo>();
+
+		seat.forEach(e -> {
+			if (e.getEmployee() != null) {
+				placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId()).seatName(e.getSeatName())
+						.employeeId(e.getEmployee().getEmployeeId()).build());
+
+			} else {
+				placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId()).seatName(e.getSeatName())
+						.employeeId(null).build());
+			}
+		});
+
+		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+		String[] csvHeader = CSVHelper.HEADERs;
+		String[] nameMapping = { "floor", "seatName", "employeeId" };
+
+		csvWriter.writeHeader(csvHeader);
+		for (PlacementVo placementVo : placementVos) {
+			csvWriter.write(placementVo, nameMapping);
+		}
+		csvWriter.close();
+
 	}
 
 }

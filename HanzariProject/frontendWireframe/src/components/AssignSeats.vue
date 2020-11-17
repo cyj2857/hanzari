@@ -126,7 +126,6 @@ export default {
       seatWidth: null,
       seatHeight: null,
 
-      //inputSeatNameText: null,
       seatNumber: 0,
     };
   },
@@ -184,19 +183,6 @@ export default {
         alert("there is no selected object");
       }
     });
-    // eventBus.$on("inputSeatName", (seatName) => {
-    //   if (seatName == "") {
-    //     this.inputSeatNameText = null;
-    //     console.log(this.inputSeatNameText);
-    //   } else {
-    //     this.inputSeatNameText = seatName;
-    //     console.log(this.inputSeatNameText);
-    //   }
-
-    //   if (seatName && this.floorCanvas.getActiveObject()) {
-    //     this.inputSeatName(seatName);
-    //   }
-    // });
     eventBus.$on("allImageMap", (allImageMap, floor_id) => {
       this.allImageMap = allImageMap;
       console.log(this.allImageMap);
@@ -833,34 +819,6 @@ export default {
         eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       }
     },
-    // inputSeatName(seatName) {
-    //   let activeObject = null;
-    //   var seatNumber = 0;
-
-    //   if (!this.floorCanvas.getActiveObject()) {
-    //     return;
-    //   }
-
-    //   this.floorCanvas.getActiveObjects().forEach((obj) => {
-    //     if (obj.item(2)) {
-    //       obj.remove(obj.item(2));
-    //     }
-
-    //     seatNumber++;
-    //     obj.set("modify", true);
-    //     obj.seatName = seatName + seatNumber;
-
-    //     let seatNameObject = new fabric.IText(obj.seatName, {
-    //       left: obj.item(0).left,
-    //       top: obj.item(0).top - 15,
-    //       fontSize: this.fontSize / this.zoom,
-    //       fill: "black",
-    //     });
-
-    //     obj.add(seatNameObject);
-    //   });
-    //   this.floorCanvas.renderAll();
-    // },
     deleteAllBtn() {
       if (confirm("Are you sure?")) {
         this.floorCanvas
@@ -961,6 +919,8 @@ export default {
       this.floorCanvas.getActiveObject().clone((cloned) => {
         this.clipboard = cloned;
       });
+
+      this.clipboard.remove(this.clipboard.item(2));
     },
     //paste하기 (ctrl+v)
     pasteSelectedSeat() {
@@ -994,9 +954,21 @@ export default {
           evented: true,
         });
 
-        if (activeObject.seatName) {
-          clonedObj.set({ seatName: activeObject.seatName });
-        }
+        this.seatNumber = this.getManagerEachFloorSeatList(
+          this.currentSelectedFloorId
+        ).length;
+        this.seatNumber++;
+
+        clonedObj.seatName =
+          this.currentSelectedFloorName + "-" + this.seatNumber;
+
+        let seatNameObject = new fabric.IText(clonedObj.seatName, {
+          left: clonedObj.item(0).left,
+          top: clonedObj.item(0).top - 15,
+          fontSize: this.fontSize / this.zoom,
+          fill: "black",
+        });
+        clonedObj.add(seatNameObject);
 
         if (clonedObj.type === "activeSelection") {
           clonedObj.canvas = this.floorCanvas;
@@ -1189,7 +1161,7 @@ export default {
             // front에서 생성
             if (this.managerFloorList[i].delete) {
               //101 111 nothing
-              return;
+              continue;
             } else {
               //100 110 그 id에 대하여 post
               let floorData = {};
@@ -1270,9 +1242,7 @@ export default {
                   //010 그 id에 대하여 post
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
-                  if (groupToObject.seatName) {
-                    seatData.seat_name = groupToObject.seatName;
-                  }
+                  seatData.seat_name = groupToObject.seatName;
                   seatData.floor = groupToObject.floor_id;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
@@ -1291,14 +1261,12 @@ export default {
                 // front에서 생성
                 if (groupToObject.delete) {
                   //101 111 nothing
-                  return;
+                  continue;
                 } else {
                   //100 110 그 id에 대하여 post
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
-                  if (groupToObject.seatName) {
-                    seatData.seat_name = groupToObject.seatName;
-                  }
+                  seatData.seat_name = groupToObject.seatName;
                   seatData.floor = groupToObject.floor_id;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
@@ -1385,18 +1353,15 @@ export default {
         delete: seat.delete,
       });
 
-      if (seat.seat_name != null) {
-        // seat_name is not null
-        let seatNameObject = new fabric.IText(seat.seat_name, {
-          left: rectangle.left,
-          top: rectangle.top - 15,
-          fontSize: this.fontSize / this.zoom,
-          fill: "black",
-        });
+      let seatNameObject = new fabric.IText(seat.seat_name, {
+        left: rectangle.left,
+        top: rectangle.top - 15,
+        fontSize: this.fontSize / this.zoom,
+        fill: "black",
+      });
 
-        group.seatName = seat.seat_name;
-        group.add(seatNameObject);
-      }
+      group.seatName = seat.seat_name;
+      group.add(seatNameObject);
 
       this.floorCanvas.on("object:scaling", (e) => {
         let scaledObject = e.target;
