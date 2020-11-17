@@ -197,7 +197,7 @@ public class SeatController {
 			}
 		}
 		status = HttpStatus.BAD_REQUEST;
-		message = "Please upload a csv file!";
+		message = "TYPE ERROR(Not CSV File)!";
 		LOGGER.error("{}", message);
 		return new ResponseEntity<List<SeatDto>>(status);
 	}
