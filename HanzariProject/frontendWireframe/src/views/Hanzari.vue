@@ -47,7 +47,8 @@
         v-on:saveSeats="saveSeats"
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
-        v-on:getCSVFile="getCSVFile"
+        v-on:downloadCSVFile="downloadCSVFile"
+        v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
       />
       <!-- <AssignSeats v-else-if="!floors && employees" /> -->
     </v-main>
@@ -501,9 +502,8 @@ export default {
       return link;
     },
 
-    //download csv File
-    async getCSVFile(floor_id) {
-      console.log("hello");
+    //get CSV File from DB and download CSV file 
+    async downloadCSVFile(floor_id) {
       try {
         let response = await axios.get(
           "http://" +
@@ -519,7 +519,6 @@ export default {
             headers: { responseType: "arraybuffer" },
           }
         );
-        console.log(response.data);
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
@@ -543,7 +542,7 @@ export default {
     },
 
     //save information from CSV to DB
-    saveFromCSVFile(data, floor_id) {
+    saveFromCSVFileToDB(data, floor_id) {
       let saveData = data;
       console.log(saveData);
 
