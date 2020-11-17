@@ -1532,7 +1532,6 @@ export default {
       windowContent += "</html>";
 
       printWin.document.write(windowContent);
-      printWin.document.focus();
     },
   },
 };
