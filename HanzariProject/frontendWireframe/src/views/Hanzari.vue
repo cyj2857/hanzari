@@ -502,10 +502,10 @@ export default {
       return link;
     },
 
-    //get CSV File from DB and download CSV file 
+    //get CSV File from DB and download CSV file
     async downloadCSVFile(floor_id) {
       try {
-        let response = await axios.get(
+        const response = await axios.get(
           "http://" +
             host +
             ":" +
@@ -516,14 +516,19 @@ export default {
             floor_id +
             "/seats/get-csv-file",
           {
-            headers: { responseType: "arraybuffer" },
+            headers: {
+              responseType: "text/csv"
+            },
           }
         );
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
-        const contentDisposition = response.headers['Content-Disposition']; // 파일 이름
-        let filename = "unknown";
+        console.log(response.headers);//undefined
+        const contentDisposition = response.headers["content-disposition"]; // 파일 이름 //cors
+        
+        console.log(contentDisposition);//undefined
+        let filename = null;
         if (contentDisposition) {
           const [fileNameMatch] = contentDisposition
             .split(";")
@@ -531,7 +536,7 @@ export default {
           if (fileNameMatch) [, filename] = fileNameMatch.split("=");
         }
         link.href = url;
-        link.setAttribute("download", `${filename}.csv`);
+        link.setAttribute("download", `${filename}`);
         link.style.cssText = "display:none";
         document.body.appendChild(link);
         link.click();
