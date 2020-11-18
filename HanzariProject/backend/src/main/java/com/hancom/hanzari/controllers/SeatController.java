@@ -45,7 +45,7 @@ import com.hancom.hanzari.service.ShapeService;
 import com.hancom.hanzari.util.CSVHelper;
 import com.hancom.hanzari.vo.PlacementVo;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"}, maxAge = 3600)
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/seats")
 public class SeatController {
