@@ -276,7 +276,7 @@ export default {
       this.allFloorList[idx].modify = true;
       this.managerFloorList[idx].modify = true;
 
-      eventBus.$emit("changeFloorName", this.currentSelectedFloor);
+      eventBus.$emit("changeFloorName", this.currentSelectedFloor.floor_name);
 
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
