@@ -1060,10 +1060,7 @@ export default {
 
       for (let i = 0; i < this.allFloorList.length; i++) {
         if (floor_name == this.allFloorList[i].floor_name) {
-          if (this.allImageMap.get(this.allFloorList[i].floorid) == null) {
-            alert("도면 이미지가 없습니다.");
-            return;
-          }
+          
           this.floorCanvas.getActiveObjects().forEach((obj) => {
             obj.set("floor_id", this.allFloorList[i].floor_id);
             obj.set("floor_name", this.allFloorList[i].floor_name);
