@@ -224,12 +224,6 @@ export default {
 
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
-
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
-
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
     },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
@@ -330,8 +324,10 @@ export default {
     },
     saveImageFile(file) {
       this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
-      this.currentFloorImageName = this.allImageMap.get(this.currentSelectedFloor.floor_id).name;
-      eventBus.$emit("allImageMap",this.allImageMap);
+      this.currentFloorImageName = this.allImageMap.get(
+        this.currentSelectedFloor.floor_id
+      ).name;
+      eventBus.$emit("allImageMap", this.allImageMap);
     },
   },
 };
