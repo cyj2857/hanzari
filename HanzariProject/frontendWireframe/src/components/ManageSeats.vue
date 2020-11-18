@@ -74,7 +74,9 @@
             dense
           ></v-combobox>
         </v-col>
-        <v-col cols="12" sm="3"> <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col>
+        <v-col cols="12" sm="3">
+          <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col
+        >
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
@@ -128,7 +130,7 @@ export default {
       mappingEmployeeComponentStatus: false,
 
       allFloorList: this.copyfloorList,
-      currentSelectedFloorId: null,
+      currentSelectedFloor: null,
 
       seatSizeSettingDialogStatus: false,
 
@@ -143,10 +145,10 @@ export default {
 
       for (let i = 0; i < this.copyfloorList.length; i++) {
         if (
-          this.currentSelectedFloor.floor_name ==
-          this.copyfloorList[i].floor_name
-        )
+          this.currentSelectedFloor.floor_id == this.copyfloorList[i].floor_id
+        ) {
           continue;
+        }
 
         this.floorItems.push(this.copyfloorList[i].floor_name);
       }
@@ -157,13 +159,16 @@ export default {
       this.floorItems = [];
       for (let i = 0; i < this.allFloorList.length; i++) {
         if (
-          this.currentSelectedFloor.floor_name ==
-          this.allFloorList[i].floor_name
-        )
+          this.currentSelectedFloor.floor_id == this.allFloorList[i].floor_id
+        ) {
           continue;
-
+        }
         this.floorItems.push(this.allFloorList[i].floor_name);
       }
+    });
+
+    eventBus.$on("changeFloor", (floor) => {
+      this.currentSelectedFloor = floor;
     });
 
     eventBus.$on(
