@@ -2,46 +2,46 @@ package com.hancom.hanzari.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@RequiredArgsConstructor
+@ToString
 public class EmployeesVo {
 	@JsonProperty("cmpName")
-	String cmpName;
+	private String cmpName;
 	@JsonProperty("deptName")
-	String deptName;
+	private String deptName;
 	@JsonProperty("deptName1")
-	String deptName1;
+	private String deptName1;
 	@JsonProperty("deptName2")
-	String deptName2;
+	private String deptName2;
 	@JsonProperty("deptName3")
-	String deptName3;
+	private String deptName3;
 	@JsonProperty("deptName4")
-	String deptName4;
+	private String deptName4;
 	@JsonProperty("deptName5")
-	String deptName5;
+	private String deptName5;
 	@JsonProperty("userName")
-	String userName;
+	private String userName;
 	@JsonProperty("posName")
-	String posName;
+	private String posName;
 	@JsonProperty("cellPhone")
-	String cellPhone;
+	private String cellPhone;
 	@JsonProperty("cmpPhone")
-	String cmpPhone;
+	private String cmpPhone;
 	@JsonProperty("cmpEmail")
-	String cmpEmail;
+	private String cmpEmail;
 	@JsonProperty("cmpId")
-	String cmpId;
+	private String cmpId;
 	@JsonProperty("deptId")
-	String deptId;
+	private String deptId;
 	@JsonProperty("upDeptId")
-	String upDeptId;
+	private String upDeptId;
 	@JsonProperty("empId")
-	String empId;
+	private String empId;
 	@JsonProperty("userId")
-	String userId;
+	private String userId;
 }
