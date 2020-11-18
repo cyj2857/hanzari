@@ -37,20 +37,15 @@ import { eventBus } from "../main.js";
 
 export default {
   name: "ManageSearch",
-  props: ["eachEmployeeSeatMap", "copyEmployeeList"],
+  props: ["eachEmployeeSeatMap"],
   data() {
     return {
-      employees: this.copyEmployeeList,
-      allEmployeeSeat: [], //가시적
+      allEmployeeSeat: [],
       allEmployeeSeatMap: this.eachEmployeeSeatMap, //attach(db) -> employeeMap -> 이벤트버스로 불려온것
+     
       search: "",
       headers: [
-        {
-          text: "이름",
-          align: "start",
-          sortable: true,
-          value: "name",
-        },
+        { text: "이름",align: "start", sortable: true, value: "name",},
         { text: "부서", value: "department" },
         { text: "내선번호", value: "number" },
         { text: "", value: "showSeatButton" },
@@ -60,8 +55,6 @@ export default {
   created() {
     eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
-      console.log(this.allEmployeeSeatMap);
-
       this.getAllEmployeeSeats();
     });
   },
@@ -71,18 +64,18 @@ export default {
   methods: {
     getAllEmployeeSeats() {
       if (this.allEmployeeSeatMap) {
-        this.allEmployeeSeat=[];
+        this.allEmployeeSeat = [];
+
         let keys = new Array();
         keys = Array.from(this.allEmployeeSeatMap.keys());
+
         for (let i = 0; i < keys.length; i++) {
           let seats = new Array();
           seats = this.allEmployeeSeatMap.get(keys[i]);
           for (let j = 0; j < seats.length; j++) {
             let newSeat = {};
 
-            //if (this.findSeatFromAllEmployeeSeatBySeatId(seats[j]) == false) {
-              if (seats[j].employee_id != null) {
-                //���� ����
+              if (seats[j].employee_id != null) { //공석 제외
                 newSeat.seatid = seats[j].seatId;
                 newSeat.employeeid = seats[j].employee_id;
                 newSeat.name = seats[j].employee_name;
@@ -91,26 +84,13 @@ export default {
                 newSeat.number = seats[j].employee_number;
                 this.allEmployeeSeat.push(newSeat);
               }
-            //}
           }
         }
-      }
-    },
-    findSeatFromAllEmployeeSeatBySeatId(seatId) {
-      if (this.allEmployeeSeat.length > 0) {
-        for (let i = 0; i < this.allEmployeeSeat.length; i++) {
-          if (seatId == this.allEmployeeSeat[i].seatid) {
-            return true;
-          }
-          return false;
-        }
-      } else {
-        return false;
       }
     },
     showSeatButtonClicked(item) {
-      eventBus.$emit("showSeat", item);
-      eventBus.$emit("showSeatFloor", item.floorid);
+      eventBus.$emit("showSeat", item); //좌석 하이라이트
+      eventBus.$emit("showSeatFloor", item.floorid); //층 이동
     },
   },
 };
