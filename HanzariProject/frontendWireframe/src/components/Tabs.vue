@@ -36,8 +36,8 @@ export default {
   props: [
     "copyEmployee",
     "copyFloors",
-    "latestFloorImage",
-    "otherFloorsImageList",
+    "copyLatestFloorImage",
+    "copyOtherFloorsImageList",
   ],
   components: {
     ManageSeats,
@@ -53,8 +53,8 @@ export default {
 
       eachEmployeeSeatMap: null,
 
-      latestFloorImage: this.latestFloorImage,
-      otherFloorsImageList: this.otherFloorsImageList,
+      latestFloorImage: this.copyLatestFloorImage,
+      otherFloorsImageList: this.copyOtherFloorsImageList,
 
       items: [
         { icon: "stairs", title :"층 설정",index: 0, content: "ManageFloors" },
@@ -64,6 +64,8 @@ export default {
     };
   },
   created() {
+    console.log(this.latestFloorImagetwo)
+    console.log(this.otherFloorsImageListtwo)
     eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.eachEmployeeSeatMap = eachEmployeeSeatMap;
     });
