@@ -2,22 +2,26 @@ package com.hancom.hanzari.vo;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+//@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResultVo {
-	@JsonProperty("resultCode")
-	String resultCode;
-	@JsonProperty("resultMessage")
-	String resultMessage;
-	@JsonProperty("resultDesc")
-	String resultDesc;
+	//@JsonProperty("resultCode")
+	private String resultCode;
+	//@JsonProperty("resultMessage")
+	private String resultMessage;
+	//@JsonProperty("resultDesc")
+	private String resultDesc;
 
 	List<EmployeesVo> allEmployeeListVo;
+	
+	@JsonSetter("result.resultCode")
+	public void setResultCode(String resultCode) { this.resultCode = resultCode; }
+	
+	public String getResultCode() { return this.resultCode; }
 }

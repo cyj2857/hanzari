@@ -131,7 +131,10 @@ public class TestEmployeeUpdateJobConfiguration {
 				//현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
 				//우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
 				JsonNode originalJsonNode = new ObjectMapper().readTree(allEmployeeListReader.readLine());
-				System.out.println();
+				System.out.println(originalJsonNode.get("result").get("resultCode").textValue());
+				System.out.println(originalJsonNode.get("result").get("resultMessage").textValue());
+				System.out.println(originalJsonNode.get("result").get("resultDesc").textValue());
+
 				resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
 				//resultVo.setResultMessage(originalJsonNode.get("resultMessage").textValue());
 				//resultVo.setResultMessage(originalJsonNode.get("resultDesc").textValue());
