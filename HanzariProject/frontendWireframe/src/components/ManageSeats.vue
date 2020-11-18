@@ -74,9 +74,7 @@
             dense
           ></v-combobox>
         </v-col>
-        <v-col cols="12" sm="3">
-          <v-icon large @click="clickChangeFloor">edit</v-icon></v-col
-        >
+        <v-col cols="12" sm="3"> <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
@@ -129,10 +127,8 @@ export default {
       addVacantSwitch: false,
       mappingEmployeeComponentStatus: false,
 
-      currentSelectedFloorId: null,
       allFloorList: this.copyfloorList,
-      //seatName: null,
-      //changeFloor: null,
+      currentSelectedFloorId: null,
 
       seatSizeSettingDialogStatus: false,
 
@@ -163,14 +159,6 @@ export default {
       }
     });
 
-    /*eventBus.$on("changeFloor", (floor) => {
-      if (floor) {
-        // null 이 아닐때
-        this.currentSelectedFloorId = floor.floor_id;
-      } else {
-        this.currentSelectedFloorId = null;
-      }
-    });*/
     eventBus.$on(
       "mappingEmployeeComponentStatus",
       (mappingEmployeeComponentStatus) => {
@@ -186,10 +174,9 @@ export default {
     });
   },
   methods: {
-    clickChangeFloor() {
+    clickChangeFloorSeat() {
       if (this.selectedFloorItems) {
-        //console.log(this.selectedFloorItems)
-        eventBus.$emit("clickChangeFloor", this.selectedFloorItems);
+        eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItems);
       }
     },
     getMappingEmployeeComponent() {
