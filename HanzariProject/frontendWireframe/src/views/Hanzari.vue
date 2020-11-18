@@ -24,7 +24,7 @@
         v-bind:latestFloorImage="latestFloorImage"
         v-bind:otherFloorsImageList="otherFloorsImage"
       />
-      <Tabs v-else-if="!floors && employees" />
+      <!-- <Tabs v-else-if="!floors && employees" /> -->
     </v-navigation-drawer>
     <v-main>
       <AssignSeats
@@ -47,8 +47,9 @@
         v-on:saveSeats="saveSeats"
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
+        v-on:getCSVFile="getCSVFile"
       />
-      <AssignSeats v-else-if="!floors && employees" />
+      <!-- <AssignSeats v-else-if="!floors && employees" /> -->
     </v-main>
   </div>
 </template>
@@ -182,6 +183,7 @@ export default {
       } catch (error) {
         console.log(error);
       }
+      console.log(latestFloor.floor_id);
       return latestFloor;
     },
     //현재 층 이미지 가져오기
@@ -489,7 +491,59 @@ export default {
           console.log(error);
         });
     },
-    saveCSVFile(data, floor_id) {
+
+    makeCSVfILE(csvContent) {
+      var encodeUri = encodeURI(response.data);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "mycsv.csv");
+      document.body.appendChild(link);
+      return link;
+    },
+
+    //download csv File
+    async getCSVFile(floor_id) {
+      console.log("hello");
+      try {
+        let response = await axios.get(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/seats/get-csv-file",
+          {
+            headers: { responseType: "arraybuffer" },
+          }
+        );
+        console.log(response.data);
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        const contentDisposition = response.headers['Content-Disposition']; // 파일 이름
+        let filename = "unknown";
+        if (contentDisposition) {
+          const [fileNameMatch] = contentDisposition
+            .split(";")
+            .filter((str) => str.includes("filename"));
+          if (fileNameMatch) [, filename] = fileNameMatch.split("=");
+        }
+        link.href = url;
+        link.setAttribute("download", `${filename}.csv`);
+        link.style.cssText = "display:none";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    //save information from CSV to DB
+    saveFromCSVFile(data, floor_id) {
       let saveData = data;
       console.log(saveData);
 
@@ -518,37 +572,6 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
-    },
-
-    //csv File
-    async getCSVFile() {
-      let latestFloorImage = new Array();
-      if (this.latestFloor) {
-        let latestFloorId = this.latestFloor.floor_id;
-        if (latestFloorId != null) {
-          try {
-            let response = await axios.get(
-              "http://" +
-                host +
-                ":" +
-                portNum +
-                "/api/buildings/" +
-                building_id +
-                "/floors/" +
-                latestFloorId +
-                "/images"
-            );
-
-            let newImage = {};
-            newImage.url = response.config.url;
-            newImage.floorid = latestFloorId;
-            latestFloorImage.push(newImage);
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }
-      return latestFloorImage;
     },
   },
 };

@@ -25,9 +25,11 @@
           cols="4"
           ><v-tooltip bottom
             ><template v-slot:activator="{ on }">
+              {{ floor.floor_name }}
               <v-btn
                 v-on="on"
                 large
+                background-image="https://randomuser.me/api/portraits/men/1.jpg"
                 @click="clickFloor(floor)"
                 @mouseover="showToolTip(floor)"
                 :style="{
@@ -35,9 +37,9 @@
                     ? 'thick solid black'
                     : '',
                 }"
-                >{{ floor.floor_name }}</v-btn
-              ></template
-            >
+                ><span v-html="imageHtml"> </span
+              ></v-btn>
+            </template>
             <span v-html="toolTipText"> </span>
           </v-tooltip>
         </v-col>
@@ -45,13 +47,15 @@
       <v-divider class="mx-4"></v-divider>
       <v-card-title><v-icon large>stairs</v-icon>층 이름 편집</v-card-title>
       <v-row>
-        <v-text-field
-          v-if="currentSelectedFloor"
-          v-model="currentSelectedFloor.floor_name"
-          @keyup="editFloorName"
-          label="Enter FloorName"
-          solo
-        ></v-text-field>
+        <v-col>
+          <v-text-field
+            v-if="currentSelectedFloor"
+            v-model="currentSelectedFloor.floor_name"
+            @keyup="editFloorName"
+            label="층 이름을 입력하세요"
+            solo
+          ></v-text-field>
+        </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
@@ -106,6 +110,8 @@ export default {
 
       allSeatMap: null,
       toolTipText: null,
+
+      imageHtml: null,
     };
   },
   created() {
@@ -224,10 +230,16 @@ export default {
       this.saveImageFile(files[0]);
     },
     saveImageFile(file) {
-      this.currentFloorImage = file.name;
       this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
-      console.log(this.allImageMap)
-      eventBus.$emit("allImageMap", this.allImageMap, this.currentSelectedFloor.floor_id);
+      this.currentFloorImage = this.allImageMap.get(
+        this.currentSelectedFloor.floor_id
+      ).name;
+      console.log(this.allImageMap);
+      eventBus.$emit(
+        "allImageMap",
+        this.allImageMap,
+        this.currentSelectedFloor.floor_id
+      );
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
@@ -257,6 +269,10 @@ export default {
     clickFloor(floor) {
       this.clickIndexes = [];
       this.clickIndexes.push(floor.floor_id);
+
+      if (this.allImageMap.get(floor.floor_id)) {
+        this.currentFloorImage = this.allImageMap.get(floor.floor_id).name;
+      }
 
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
@@ -329,6 +345,11 @@ export default {
 
       this.length++;
 
+      this.imageHtml =
+        "<v-avatar> <img src=" +
+        "https://randomuser.me/api/portraits/men/1.jpg" +
+        " /> </v-avatar>";
+
       eventBus.$emit("changeFloor", this.currentSelectedFloor);
       eventBus.$emit(
         "currentSelectedFloorToManageSeats",
@@ -340,6 +361,7 @@ export default {
 
       let managerFloors = this.managerFloorList.slice();
       eventBus.$emit("managerFloorList", managerFloors);
+     
     },
   },
 };
