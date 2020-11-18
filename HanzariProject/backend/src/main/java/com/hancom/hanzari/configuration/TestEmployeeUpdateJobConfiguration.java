@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hancom.hanzari.vo.EmployeesVo;
 import com.hancom.hanzari.vo.ResultVo;
@@ -40,9 +41,9 @@ public class TestEmployeeUpdateJobConfiguration {
 
 	private final Logger LOGGER = LoggerFactory.getLogger("ConsoleLogger");
 	
-	//발행될 토큰을 넣어둘 Vo
+	//발행 될 토큰과 토큰 정보들을 넣어둘 VO
 	private TokenVo tokenVo;
-	
+	//요청에 대한 응답 정보와 임직원 전체 목록을 리스트로 가지고 있을 VO
 	private ResultVo resultVo;
 
 	@Bean
@@ -103,9 +104,8 @@ public class TestEmployeeUpdateJobConfiguration {
 			System.out.println("토큰 타입 : " + tokenVo.getTokenType());
 			System.out.println("토큰 : " + tokenVo.getAccessToken());
 			System.out.println("유효시간 : " + tokenVo.getExpiresIn());
-			/**
-			 * ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다.
-			 **/
+			
+			//ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다.
 			//contribution.setExitStatus(ExitStatus.FAILED);
 
 			return RepeatStatus.FINISHED;
@@ -128,17 +128,23 @@ public class TestEmployeeUpdateJobConfiguration {
 				allEmployeeListGetConnection.setRequestMethod("GET");
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
 				allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
-
-				System.out.println(allEmployeeListReader.readLine());
-				resultVo = new ObjectMapper().readValue(allEmployeeListReader.readLine(), ResultVo.class);
+				//현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
+				//우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
+				JsonNode originalJsonNode = new ObjectMapper().readTree(allEmployeeListReader.readLine());
+				System.out.println();
+				resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
+				//resultVo.setResultMessage(originalJsonNode.get("resultMessage").textValue());
+				//resultVo.setResultMessage(originalJsonNode.get("resultDesc").textValue());
+				
 				allEmployeeListReader.close();
 			} catch(IOException e) {
 				LOGGER.error("IOException in StepB", e);
 			} catch (Exception e) {
 				LOGGER.error("Exception in StepB", e);
 			}
-			
-			System.out.println(resultVo.getResultDesc());
+			System.out.println(resultVo.getResultCode());
+			//System.out.println(resultVo.getResultMessage());
+			//System.out.println(resultVo.getResultDesc());
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
