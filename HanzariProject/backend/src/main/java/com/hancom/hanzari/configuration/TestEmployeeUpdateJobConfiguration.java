@@ -142,11 +142,10 @@ public class TestEmployeeUpdateJobConfiguration {
 				});
 				
 				//응답받은 Json의 메타정보들과 모든 임직원 리스트를 저장해두기 위한 resultVo 객체 생성
-				resultVo = new ResultVo();
-				resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
-				resultVo.setResultMessage(originalJsonNode.get("result").get("resultMessage").textValue());
-				resultVo.setResultDesc(originalJsonNode.get("result").get("resultDesc").textValue());
-				resultVo.setAllEmployeeListVo(listEmployeesVo);
+				resultVo = new ResultVo(originalJsonNode.get("result").get("resultCode").textValue(), 
+						originalJsonNode.get("result").get("resultMessage").textValue(), 
+						originalJsonNode.get("result").get("resultDesc").textValue(),
+						listEmployeesVo);
 				
 				LOGGER.info("임직원 리스트({})", new Date());
 				resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
