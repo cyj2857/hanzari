@@ -51,7 +51,8 @@
         v-on:saveSeats="saveSeats"
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
-        v-on:getCSVFile="getCSVFile"
+        v-on:downloadCSVFile="downloadCSVFile"
+        v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
       />
       <!-- <AssignSeats v-else-if="!floors && employees" /> -->
     </v-main>
@@ -491,11 +492,10 @@ export default {
       return link;
     },
 
-    //download csv File
-    async getCSVFile(floor_id) {
-      console.log("hello");
+    //get CSV File from DB and download CSV file
+    async downloadCSVFile(floor_id) {
       try {
-        let response = await axios.get(
+        const response = await axios.get(
           "http://" +
             host +
             ":" +
@@ -506,15 +506,19 @@ export default {
             floor_id +
             "/seats/get-csv-file",
           {
-            headers: { responseType: "arraybuffer" },
+            headers: {
+              responseType: "text/csv"
+            },
           }
         );
-        console.log(response.data);
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
-        const contentDisposition = response.headers['Content-Disposition']; // 파일 이름
-        let filename = "unknown";
+        console.log(response.headers);//undefined
+        const contentDisposition = response.headers["content-disposition"]; // 파일 이름 //cors
+        
+        console.log(contentDisposition);//undefined
+        let filename = null;
         if (contentDisposition) {
           const [fileNameMatch] = contentDisposition
             .split(";")
@@ -522,7 +526,7 @@ export default {
           if (fileNameMatch) [, filename] = fileNameMatch.split("=");
         }
         link.href = url;
-        link.setAttribute("download", `${filename}.csv`);
+        link.setAttribute("download", `${filename}`);
         link.style.cssText = "display:none";
         document.body.appendChild(link);
         link.click();
@@ -533,7 +537,7 @@ export default {
     },
 
     //save information from CSV to DB
-    saveFromCSVFile(data, floor_id) {
+    saveFromCSVFileToDB(data, floor_id) {
       let saveData = data;
       console.log(saveData);
 

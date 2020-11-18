@@ -1181,14 +1181,14 @@ export default {
       //csv 내려받기 //seatName, employeeid, floorid
       for (let i = 0; i < this.managerFloorList.length; i++) {
         let floorid = this.managerFloorList[i].floor_id;
-        this.$emit("getCSVFile", floorid);
+        this.$emit("downloadCSVFile", floorid);
       }
     },
     clickSaveFromCSVBtn() {
       //csv 수정했을시에 db로 정보 save하기
       for (let i = 0; i < this.managerFloorList.length; i++) {
         let floorid = this.managerFloorList[i].floor_id;
-        this.$emit("saveFromCSVFile", floorid);
+        this.$emit("saveFromCSVFileToDB", floorid);
       }
     },
 
