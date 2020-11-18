@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -136,8 +138,18 @@ public class TestEmployeeUpdateJobConfiguration {
 				resultVo = new ResultVo();
 				resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
 				resultVo.setResultMessage(originalJsonNode.get("result").get("resultMessage").textValue());
-				resultVo.setResultMessage(originalJsonNode.get("result").get("resultDesc").textValue());
+				resultVo.setResultDesc(originalJsonNode.get("result").get("resultDesc").textValue());
 				
+				//forEach문을 돌며 각각의 임직원 정보를 EmployeesVo 객체에 넣어준다.
+				List<EmployeesVo> listEmployeesVo = new ArrayList<>();
+				originalJsonNode.get("result").get("employees").forEach(e -> {
+					//e가 JsonNode 형식이라 readValue()가 아닌 convertValue() 메소드를 사용해야한다.
+					EmployeesVo employeesVo = new ObjectMapper().convertValue(e, EmployeesVo.class);
+					listEmployeesVo.add(employeesVo);
+				});
+				resultVo.setAllEmployeeListVo(listEmployeesVo);
+				
+				resultVo.getAllEmployeeListVo().forEach(e -> System.out.println(e));
 				allEmployeeListReader.close();
 			} catch(IOException e) {
 				LOGGER.error("IOException in StepB", e);
