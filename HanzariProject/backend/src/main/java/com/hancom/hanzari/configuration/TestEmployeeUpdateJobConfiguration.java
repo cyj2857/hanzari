@@ -135,6 +135,8 @@ public class TestEmployeeUpdateJobConfiguration {
 				System.out.println(originalJsonNode.get("result").get("resultMessage").textValue());
 				System.out.println(originalJsonNode.get("result").get("resultDesc").textValue());
 
+				//resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
+				resultVo = new ResultVo();
 				resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
 				//resultVo.setResultMessage(originalJsonNode.get("resultMessage").textValue());
 				//resultVo.setResultMessage(originalJsonNode.get("resultDesc").textValue());
@@ -146,8 +148,8 @@ public class TestEmployeeUpdateJobConfiguration {
 				LOGGER.error("Exception in StepB", e);
 			}
 			System.out.println(resultVo.getResultCode());
-			//System.out.println(resultVo.getResultMessage());
-			//System.out.println(resultVo.getResultDesc());
+			System.out.println(resultVo.getResultMessage());
+			System.out.println(resultVo.getResultDesc());
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
