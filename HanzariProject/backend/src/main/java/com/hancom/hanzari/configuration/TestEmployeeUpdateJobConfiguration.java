@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -103,12 +104,9 @@ public class TestEmployeeUpdateJobConfiguration {
 				LOGGER.error("Exception in StepA", e);
 			}
 			
-			System.out.println("토큰 타입 : " + tokenVo.getTokenType());
-			System.out.println("토큰 : " + tokenVo.getAccessToken());
-			System.out.println("유효시간 : " + tokenVo.getExpiresIn());
-			
-			//ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다.
-			//contribution.setExitStatus(ExitStatus.FAILED);
+			LOGGER.info("토큰 타입 : " + tokenVo.getTokenType());
+			LOGGER.info("토큰 : " + tokenVo.getAccessToken());
+			LOGGER.info("유효시간 : " + tokenVo.getExpiresIn());
 
 			return RepeatStatus.FINISHED;
 		}).build();
@@ -134,7 +132,6 @@ public class TestEmployeeUpdateJobConfiguration {
 				//우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
 				JsonNode originalJsonNode = new ObjectMapper().readTree(allEmployeeListReader.readLine());
 
-				//resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
 				resultVo = new ResultVo();
 				resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
 				resultVo.setResultMessage(originalJsonNode.get("result").get("resultMessage").textValue());
@@ -149,16 +146,15 @@ public class TestEmployeeUpdateJobConfiguration {
 				});
 				resultVo.setAllEmployeeListVo(listEmployeesVo);
 				
-				resultVo.getAllEmployeeListVo().forEach(e -> System.out.println(e));
+				LOGGER.info("임직원 리스트({})", new Date());
+				resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
 				allEmployeeListReader.close();
 			} catch(IOException e) {
 				LOGGER.error("IOException in StepB", e);
 			} catch (Exception e) {
 				LOGGER.error("Exception in StepB", e);
 			}
-			System.out.println(resultVo.getResultCode());
-			System.out.println(resultVo.getResultMessage());
-			System.out.println(resultVo.getResultDesc());
+			
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
