@@ -157,11 +157,14 @@ export default {
         this.floorCanvas.getObjects().forEach((obj) => {
           this.floorCanvas.remove(obj);
         });
-        this.floorCanvas.renderAll();
       }
     });
+
+    eventBus.$on("changeFloorName", (changeFloorName) => {
+      this.currentSelectedFloorName = changeFloorName;
+    });
+
     eventBus.$on("changeAddVacantSwitch", (switchValue) => {
-      console.log(switchValue);
       this.ableAddVacant = switchValue;
     });
     eventBus.$on("setSeatSizeDialog", (seatSize) => {
@@ -957,7 +960,7 @@ export default {
         );
 
         this.seatNumber = Math.max.apply(null, seatNumberArray);
-        
+
         this.seatNumber++;
 
         clonedObj.seatName =
