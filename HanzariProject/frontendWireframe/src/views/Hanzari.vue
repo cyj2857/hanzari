@@ -47,6 +47,7 @@
         v-on:saveSeats="saveSeats"
         v-on:deleteFloorWithKey="deleteFloorWtihKey"
         v-on:deleteSeatWithKey="deleteSeatWithKey"
+        v-on:getCSVFile="getCSVFile"
       />
       <!-- <AssignSeats v-else-if="!floors && employees" /> -->
     </v-main>
@@ -491,24 +492,53 @@ export default {
         });
     },
 
+    makeCSVfILE(csvContent) {
+      var encodeUri = encodeURI(response.data);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "mycsv.csv");
+      document.body.appendChild(link);
+      return link;
+    },
+
     //download csv File
     async getCSVFile(floor_id) {
-      if (floor_id != null) {
-        try {
-          let response = await axios.get(
-            "http://" +
-              host +
-              ":" +
-              portNum +
-              "/api/buildings/" +
-              building_id +
-              "/floors/" +
-              floor_id +
-              "/seats/get-csv-file"
-          );
-        } catch (error) {
-          console.log(error);
+      console.log("hello");
+      try {
+        let response = await axios.get(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/seats/get-csv-file",
+          {
+            headers: { responseType: "arraybuffer" },
+          }
+        );
+        console.log(response.data);
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        const contentDisposition = response.headers['Content-Disposition']; // 파일 이름
+        let filename = "unknown";
+        if (contentDisposition) {
+          const [fileNameMatch] = contentDisposition
+            .split(";")
+            .filter((str) => str.includes("filename"));
+          if (fileNameMatch) [, filename] = fileNameMatch.split("=");
         }
+        link.href = url;
+        link.setAttribute("download", `${filename}.csv`);
+        link.style.cssText = "display:none";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (error) {
+        console.log(error);
       }
     },
 
@@ -543,8 +573,6 @@ export default {
           console.log(error);
         });
     },
-
-    
   },
 };
 </script>
