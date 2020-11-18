@@ -236,12 +236,6 @@ export default {
 
       this.currentSelectedFloor = floor;
       eventBus.$emit("changeFloor", floor);
-
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
-
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
     },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
