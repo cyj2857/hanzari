@@ -111,6 +111,9 @@ export default {
   },
   data() {
     return {
+      employee: this.copyEmployeeList,
+      mappingEmployeeComponentStatus: false,
+
       sizeItems: [
         { index: 0, src: "../assets/rect1.png", size: 20 },
         { index: 1, src: "../assets/rect2.png", size: 30 },
@@ -119,9 +122,9 @@ export default {
       floorItems: [],
       selectedFloorItems: null,
 
-      employee: this.copyEmployeeList,
+      
       addVacantSwitch: false,
-      mappingEmployeeComponentStatus: false,
+      
 
       allFloorList: this.copyfloorList,
       currentSelectedFloor: null,

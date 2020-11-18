@@ -24,7 +24,7 @@
           <td>
             <v-icon large
               id="MappingSeatButton"
-              @click="ClickMappingSeat(row.item)"
+              @click="clickMappingSeat(row.item)"
               >add_box</v-icon
             >
           </td>
@@ -58,8 +58,8 @@ export default {
     });
   },
   methods: {
-    ClickMappingSeat(item) {
-      eventBus.$emit("MappingSeat", item);
+    clickMappingSeat(item) {
+      eventBus.$emit("mappingSeat", item);
     },
     changeBackPage() {
       eventBus.$emit("mappingEmployeeComponentStatus", false);
