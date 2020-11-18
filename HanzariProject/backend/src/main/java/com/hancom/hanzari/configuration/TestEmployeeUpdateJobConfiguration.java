@@ -132,18 +132,20 @@ public class TestEmployeeUpdateJobConfiguration {
 				//우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
 				JsonNode originalJsonNode = new ObjectMapper().readTree(allEmployeeListReader.readLine());
 
-				resultVo = new ResultVo();
-				resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
-				resultVo.setResultMessage(originalJsonNode.get("result").get("resultMessage").textValue());
-				resultVo.setResultDesc(originalJsonNode.get("result").get("resultDesc").textValue());
-				
 				//forEach문을 돌며 각각의 임직원 정보를 EmployeesVo 객체에 넣어준다.
 				List<EmployeesVo> listEmployeesVo = new ArrayList<>();
 				originalJsonNode.get("result").get("employees").forEach(e -> {
 					//e가 JsonNode 형식이라 readValue()가 아닌 convertValue() 메소드를 사용해야한다.
+					//내부 로직적으로 setter가 필요하기에 VO 클래스에 @Data 어노테이션을 사용하였다.
 					EmployeesVo employeesVo = new ObjectMapper().convertValue(e, EmployeesVo.class);
 					listEmployeesVo.add(employeesVo);
 				});
+				
+				//응답받은 Json의 메타정보들과 모든 임직원 리스트를 저장해두기 위한 resultVo 객체 생성
+				resultVo = new ResultVo();
+				resultVo.setResultCode(originalJsonNode.get("result").get("resultCode").textValue());
+				resultVo.setResultMessage(originalJsonNode.get("result").get("resultMessage").textValue());
+				resultVo.setResultDesc(originalJsonNode.get("result").get("resultDesc").textValue());
 				resultVo.setAllEmployeeListVo(listEmployeesVo);
 				
 				LOGGER.info("임직원 리스트({})", new Date());
