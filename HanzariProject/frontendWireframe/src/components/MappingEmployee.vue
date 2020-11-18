@@ -24,8 +24,7 @@
           <td>
             <v-icon large
               id="MappingSeatButton"
-              draggable="true"
-              @click="MappingSeatButtonClicked(row.item)"
+              @click="ClickMappingSeat(row.item)"
               >add_box</v-icon
             >
           </td>
@@ -45,15 +44,10 @@ export default {
       employees: this.copyEmployeeListTwo,
       search: "",
       headers: [
-        {
-          text: "이름",
-          align: "start",
-          sortable: true,
-          value: "name",
-        },
+        { text: "이름", align: "start", sortable: true, value: "name",},
         { text: "부서", value: "department" },
         { text: "내선번호", value: "number" },
-        { text: "", value: "mapSeatButton" },
+        { text: "", value: "MappingSeatButton" },
       ],
       allEmployeeSeatMap: null,
     };
@@ -64,7 +58,7 @@ export default {
     });
   },
   methods: {
-    MappingSeatButtonClicked(item) {
+    ClickMappingSeat(item) {
       eventBus.$emit("MappingSeat", item);
     },
     changeBackPage() {

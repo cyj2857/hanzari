@@ -71,7 +71,7 @@
               >배경화면 이미지 설정하기</v-btn
             >
             <v-card>
-              <v-card-text>{{ currentFloorImage }}</v-card-text>
+              <v-card-text>{{ currentFloorImageName }}</v-card-text>
             </v-card>
           </v-card-text>
         </v-col>
@@ -99,7 +99,7 @@ export default {
       clickFloorIndexes: null,
 
       allImageMap: null,
-      currentFloorImage: null,
+      currentFloorImageName: null,
 
       allSeatMap: null,
       toolTipText: null,
@@ -219,7 +219,7 @@ export default {
       this.clickFloorIndexes.push(floor.floor_id);
 
       if (this.allImageMap.get(floor.floor_id)) {
-        this.currentFloorImage = this.allImageMap.get(floor.floor_id).name;
+        this.currentFloorImageName = this.allImageMap.get(floor.floor_id).name;
       }
 
       this.currentSelectedFloor = floor;
@@ -330,15 +330,8 @@ export default {
     },
     saveImageFile(file) {
       this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
-      this.currentFloorImage = this.allImageMap.get(
-        this.currentSelectedFloor.floor_id
-      ).name;
-      console.log(this.allImageMap);
-      eventBus.$emit(
-        "allImageMap",
-        this.allImageMap,
-        this.currentSelectedFloor.floor_id
-      );
+      this.currentFloorImageName = this.allImageMap.get(this.currentSelectedFloor.floor_id).name;
+      eventBus.$emit("allImageMap",this.allImageMap);
     },
   },
 };
