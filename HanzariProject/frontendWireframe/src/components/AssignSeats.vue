@@ -171,7 +171,7 @@ export default {
       this.seatWidth = seatSize.width;
       this.seatHeight = seatSize.height;
     });
-    eventBus.$on("MappingSeat", (item) => {
+    eventBus.$on("mappingSeat", (item) => {
       this.setMappingSeat(item);
     });
     eventBus.$on("allFloorList", (allFloors) => {
@@ -473,22 +473,7 @@ export default {
     loadImageFile(file) {
       let reader = new FileReader();
       reader.onload = (e) => {
-        fabric.Image.fromURL(
-          e.target.result,
-          (img) => {
-            img.set({
-              scaleX: this.floorCanvas.width / img.width,
-              scaleY: this.floorCanvas.height / img.height,
-              centeredRotation: true,
-              centeredScaling: true,
-            });
-            this.floorCanvas.setBackgroundImage(
-              img,
-              this.floorCanvas.renderAll.bind(this.floorCanvas)
-            );
-          },
-          { crossOrigin: "Anonymous" }
-        );
+        this.loadImageUrl(e.target.result);
       };
       reader.readAsDataURL(file);
     },
