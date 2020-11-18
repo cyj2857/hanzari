@@ -29,15 +29,13 @@
               <v-btn
                 v-on="on"
                 large
-                background-image="https://randomuser.me/api/portraits/men/1.jpg"
                 @click="clickFloor(floor)"
                 @mouseover="showToolTip(floor)"
                 :style="{
-                  border: clickIndexes.includes(floor.floor_id)
+                  border: clickFloorIndexes.includes(floor.floor_id)
                     ? 'thick solid black'
                     : '',
                 }"
-                ><span v-html="imageHtml"> </span
               ></v-btn>
             </template>
             <span v-html="toolTipText"> </span>
@@ -103,15 +101,13 @@ export default {
 
       currentSelectedFloor: null,
 
-      clickIndexes: null,
+      clickFloorIndexes: null,
 
       allImageMap: null,
       currentFloorImage: null,
 
       allSeatMap: null,
       toolTipText: null,
-
-      imageHtml: null,
     };
   },
   created() {
@@ -122,8 +118,7 @@ export default {
       this.allFloorList = this.copyfloorList;
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyfloorList.length;
-      this.clickIndexes = this.currentSelectedFloor.floor_id;
-    } else {
+      this.clickFloorIndexes = this.currentSelectedFloor.floor_id;
     }
 
     if (this.allImageMap == null) {
@@ -267,8 +262,8 @@ export default {
       });
     },
     clickFloor(floor) {
-      this.clickIndexes = [];
-      this.clickIndexes.push(floor.floor_id);
+      this.clickFloorIndexes = [];
+      this.clickFloorIndexes.push(floor.floor_id);
 
       if (this.allImageMap.get(floor.floor_id)) {
         this.currentFloorImage = this.allImageMap.get(floor.floor_id).name;
@@ -302,10 +297,7 @@ export default {
           }
 
           eventBus.$emit("changeFloor", this.allFloorList[nextIdx]);
-          eventBus.$emit(
-            "currentSelectedFloorToManageSeats",
-            this.allFloorList[nextIdx]
-          );
+
           let allFloors = this.allFloorList.slice();
           eventBus.$emit("allFloorList", allFloors);
 
@@ -318,8 +310,8 @@ export default {
         this.length--;
 
         if (this.length > 0) {
-          this.clickIndexes = [];
-          this.clickIndexes.push(this.currentSelectedFloor.floor_id);
+          this.clickFloorIndexes = [];
+          this.clickFloorIndexes.push(this.currentSelectedFloor.floor_id);
         }
       } else {
         alert("there are no seats to delete!");
@@ -340,28 +332,18 @@ export default {
 
       this.currentSelectedFloor = newFloor;
 
-      this.clickIndexes = [];
-      this.clickIndexes.push(this.currentSelectedFloor.floor_id);
+      this.clickFloorIndexes = [];
+      this.clickFloorIndexes.push(this.currentSelectedFloor.floor_id);
 
       this.length++;
 
-      this.imageHtml =
-        "<v-avatar> <img src=" +
-        "https://randomuser.me/api/portraits/men/1.jpg" +
-        " /> </v-avatar>";
-
       eventBus.$emit("changeFloor", this.currentSelectedFloor);
-      eventBus.$emit(
-        "currentSelectedFloorToManageSeats",
-        this.currentSelectedFloor
-      );
 
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
 
       let managerFloors = this.managerFloorList.slice();
       eventBus.$emit("managerFloorList", managerFloors);
-     
     },
   },
 };
