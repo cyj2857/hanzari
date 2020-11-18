@@ -4,7 +4,8 @@
       <v-row>
         <v-col cols="12" sm="9">
           <v-card-title
-            ><v-icon large>event_seat</v-icon>공석 만들기</v-card-title
+            ><v-icon large>event_seat</v-icon>
+            <h3>공석 만들기</h3></v-card-title
           ></v-col
         >
         <v-col cols="12" sm="3">
@@ -42,27 +43,34 @@
             @click="getSeatSizeSetting"
             :disabled="!addVacantSwitch || !clickedSize"
           >
-            세부 설정
+            <p class="font-italic">세부 설정</p>
           </v-btn></v-col
         >
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
       <v-row>
-        <v-col cols="12">
-          <v-card-title
-            ><v-icon large>perm_identity</v-icon>사원 매핑하기</v-card-title
-          >
+        <v-col cols="10" sm="6">
           <v-card-text>
-            <v-btn @click="getMappingEmployeeComponent"
-              >사원 매핑하기</v-btn
+            <v-btn color="blue lighten-3" @click="getMappingEmployeeComponent"
+              ><h4><v-icon large>perm_identity</v-icon>사원 매핑하기</h4></v-btn
             ></v-card-text
-          ></v-col
-        >
+          >
+        </v-col>
+        <v-col cols="10" sm="4">
+          <v-card-text>
+            <v-btn color="pink lighten-3" @click="clickChangeToVacant"
+              ><h4><v-icon large>person_add_disabled</v-icon>자리 비우기</h4></v-btn
+            ></v-card-text
+          >
+        </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
-      <v-card-title><v-icon large>stairs</v-icon>층간 이동하기</v-card-title>
+      <v-card-title
+        ><v-icon large>stairs</v-icon>
+        <h3>층간 이동하기</h3></v-card-title
+      >
       <v-row>
         <v-col cols="9">
           <v-combobox
@@ -78,20 +86,6 @@
           <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col
         >
       </v-row>
-      <v-divider class="mx-4"></v-divider>
-
-      <v-row>
-        <v-col cols="12">
-          <v-card-title
-            ><v-icon large>person_add_disabled</v-icon>자리 비우기
-            <v-card-text>
-              <v-btn @click="clickChangeToVacant"
-                >자리 비우기</v-btn
-              ></v-card-text
-            ></v-card-title
-          ></v-col
-        ></v-row
-      >
     </v-card>
     <MappingEmployee
       :copyEmployeeListTwo="employee"

@@ -64,8 +64,6 @@ export default {
     };
   },
   created() {
-    console.log(this.latestFloorImagetwo)
-    console.log(this.otherFloorsImageListtwo)
     eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.eachEmployeeSeatMap = eachEmployeeSeatMap;
     });

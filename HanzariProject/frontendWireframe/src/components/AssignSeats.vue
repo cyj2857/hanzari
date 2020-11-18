@@ -190,7 +190,7 @@ export default {
         alert("there is no selected object");
       }
     });
-    eventBus.$on("allImageMap", allImageMap => {
+    eventBus.$on("allImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
@@ -1060,10 +1060,6 @@ export default {
 
       for (let i = 0; i < this.allFloorList.length; i++) {
         if (floor_name == this.allFloorList[i].floor_name) {
-          if (this.allImageMap.get(this.allFloorList[i].floorid) == null) {
-            alert("도면 이미지가 없습니다.");
-            return;
-          }
           this.floorCanvas.getActiveObjects().forEach((obj) => {
             obj.set("floor_id", this.allFloorList[i].floor_id);
             obj.set("floor_name", this.allFloorList[i].floor_name);
@@ -1093,6 +1089,8 @@ export default {
             }
             eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
             eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
+
+            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
           });
           this.floorCanvas.renderAll();
         }

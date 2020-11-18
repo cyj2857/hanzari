@@ -514,10 +514,8 @@ export default {
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
-        console.log(response.headers);//undefined
         const contentDisposition = response.headers["content-disposition"]; // 파일 이름 //cors
-        
-        console.log(contentDisposition);//undefined
+
         let filename = null;
         if (contentDisposition) {
           const [fileNameMatch] = contentDisposition

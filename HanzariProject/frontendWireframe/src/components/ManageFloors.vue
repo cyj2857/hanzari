@@ -4,7 +4,8 @@
       <v-row>
         <v-col cols="12" sm="8">
           <v-card-title
-            ><v-icon large>stairs</v-icon>층 설정</v-card-title
+            ><v-icon large>stairs</v-icon>
+            <h3>층 설정</h3></v-card-title
           ></v-col
         ><v-col cols="12" sm="4">
           <v-btn small
@@ -25,7 +26,6 @@
           cols="4"
           ><v-tooltip bottom
             ><template v-slot:activator="{ on }">
-              {{ floor.floor_name }}
               <v-btn
                 v-on="on"
                 large
@@ -36,30 +36,44 @@
                     ? 'thick solid black'
                     : '',
                 }"
-              ></v-btn>
+                ><h3>{{ floor.floor_name }}</h3></v-btn
+              >
             </template>
             <span v-html="toolTipText"> </span>
           </v-tooltip>
         </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
-      <v-card-title><v-icon large>stairs</v-icon>층 이름 편집</v-card-title>
-      <v-row>
-        <v-col>
+      <v-card-title
+        ><v-icon large>stairs</v-icon>
+        <h3>층 이름 편집</h3></v-card-title
+      >
+      <v-row v-if="currentSelectedFloor">
+        <v-col cols="12" sm="9">
           <v-text-field
-            v-if="currentSelectedFloor"
             v-model="currentSelectedFloor.floor_name"
             @keyup="editFloorName"
             label="층 이름을 입력하세요"
             solo
           ></v-text-field>
         </v-col>
+        <v-col cols="12" sm="3">
+          <v-card-text><h2>층</h2></v-card-text>
+        </v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
+      <v-card-title
+        ><v-icon large>image</v-icon>
+        <h3>배경화면 설정</h3></v-card-title
+      >
       <v-row>
-        <v-col cols="12">
-          <v-card-title><v-icon large>image</v-icon>배경화면 설정</v-card-title>
+        <v-col cols="12" sm="9">
+          <v-card>
+            <v-card-text>{{ currentFloorImageName }}</v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="3">
           <v-card-text>
             <input
               v-show="false"
@@ -67,16 +81,12 @@
               type="file"
               @change="changeImageFile"
             />
-            <v-btn @click="$refs.Upload.click()"
-              >배경화면 이미지 설정하기</v-btn
+            <v-btn color="blue-grey lighten-2" @click="$refs.Upload.click()"
+              ><h4>업로드</h4></v-btn
             >
-            <v-card>
-              <v-card-text>{{ currentFloorImageName }}</v-card-text>
-            </v-card>
           </v-card-text>
         </v-col>
       </v-row>
-      <v-divider class="mx-4"></v-divider>
     </v-card>
   </div>
 </template>
@@ -99,7 +109,7 @@ export default {
       clickFloorIndexes: null,
 
       allImageMap: null,
-      currentFloorImageName: null,
+      currentFloorImageName: "이미지를 업로드하세요",
 
       allSeatMap: null,
       toolTipText: null,
@@ -220,6 +230,8 @@ export default {
 
       if (this.allImageMap.get(floor.floor_id)) {
         this.currentFloorImageName = this.allImageMap.get(floor.floor_id).name;
+      } else {
+        this.currentFloorImageName = "이미지를 업로드하세요";
       }
 
       this.currentSelectedFloor = floor;
@@ -330,8 +342,10 @@ export default {
     },
     saveImageFile(file) {
       this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
-      this.currentFloorImageName = this.allImageMap.get(this.currentSelectedFloor.floor_id).name;
-      eventBus.$emit("allImageMap",this.allImageMap);
+      this.currentFloorImageName = this.allImageMap.get(
+        this.currentSelectedFloor.floor_id
+      ).name;
+      eventBus.$emit("allImageMap", this.allImageMap);
     },
   },
 };
