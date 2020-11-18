@@ -4,11 +4,11 @@
       <v-toolbar-title>{{ currentSelectedFloorName }} 층</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn @click="deleteAllBtn" text
+        <v-btn @click="clickdeleteAllBtn" text
           ><v-icon large>delete</v-icon>모든 좌석 삭제</v-btn
         >
         <v-divider vertical></v-divider>
-        <v-btn @click="clickResetToRatio" text
+        <v-btn @click="clickResetToRatioBtn" text
           ><v-icon large>zoom_out</v-icon> 배율 초기화
         </v-btn>
         <v-divider vertical></v-divider>
@@ -34,8 +34,8 @@
       class="canvas"
       id="canvas"
       height="770px"
-      style="text-align: center"
       width="1150px"
+      style="text-align: center"
     ></canvas>
 
     <v-menu
@@ -139,7 +139,7 @@ export default {
       ].floor_id;
     }
     //층간 이동
-    eventBus.$on("clickChangeFloor", (floor_name) => {
+    eventBus.$on("clickChangeFloorSeat", (floor_name) => {
       this.changeFloorSeat(floor_name);
     });
 
@@ -157,11 +157,14 @@ export default {
         this.floorCanvas.getObjects().forEach((obj) => {
           this.floorCanvas.remove(obj);
         });
-        this.floorCanvas.renderAll();
       }
     });
+
+    eventBus.$on("changeFloorName", (changeFloorName) => {
+      this.currentSelectedFloorName = changeFloorName;
+    });
+
     eventBus.$on("changeAddVacantSwitch", (switchValue) => {
-      console.log(switchValue);
       this.ableAddVacant = switchValue;
     });
     eventBus.$on("setSeatSizeDialog", (seatSize) => {
@@ -187,10 +190,9 @@ export default {
         alert("there is no selected object");
       }
     });
-    eventBus.$on("allImageMap", (allImageMap, floor_id) => {
+    eventBus.$on("allImageMap", allImageMap => {
       this.allImageMap = allImageMap;
-      console.log(this.allImageMap);
-      this.loadImageFile(this.allImageMap.get(floor_id));
+      this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
     eventBus.$on("showSeat", (seat) => {
       this.showSeat(seat);
@@ -393,7 +395,7 @@ export default {
         this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
       }
     },
-    clickResetToRatio() {
+    clickResetToRatioBtn() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     },
     checkZoom() {
@@ -830,7 +832,7 @@ export default {
         eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       }
     },
-    deleteAllBtn() {
+    clickdeleteAllBtn() {
       if (confirm("Are you sure?")) {
         this.floorCanvas
           .getObjects()
@@ -957,7 +959,7 @@ export default {
         );
 
         this.seatNumber = Math.max.apply(null, seatNumberArray);
-        
+
         this.seatNumber++;
 
         clonedObj.seatName =
@@ -1058,6 +1060,10 @@ export default {
 
       for (let i = 0; i < this.allFloorList.length; i++) {
         if (floor_name == this.allFloorList[i].floor_name) {
+          if (this.allImageMap.get(this.allFloorList[i].floorid) == null) {
+            alert("도면 이미지가 없습니다.");
+            return;
+          }
           this.floorCanvas.getActiveObjects().forEach((obj) => {
             obj.set("floor_id", this.allFloorList[i].floor_id);
             obj.set("floor_name", this.allFloorList[i].floor_name);

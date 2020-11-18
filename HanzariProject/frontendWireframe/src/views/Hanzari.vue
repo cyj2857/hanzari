@@ -18,11 +18,15 @@
 
     <v-navigation-drawer v-model="drawer" app :width="500">
       <Tabs
-        v-if="employees && floors && latestFloorImage && otherFloorsImage"
+        v-if="
+        employees &&
+        floors && 
+        latestFloorImage &&
+        otherFloorsImage"
         v-bind:copyEmployee="employees"
         v-bind:copyFloors="floors"
-        v-bind:latestFloorImage="latestFloorImage"
-        v-bind:otherFloorsImageList="otherFloorsImage"
+        v-bind:copyLatestFloorImage="latestFloorImage"
+        v-bind:CopyOtherFloorsImageList="otherFloorsImage"
       />
       <!-- <Tabs v-else-if="!floors && employees" /> -->
     </v-navigation-drawer>
@@ -108,7 +112,7 @@ export default {
   },
   methods: {
     async getEmployees() {
-      let initEmployeeList = new Array();
+      let allEmployeeList = new Array();
       try {
         let response = await axios.get(
           "http://" + host + ":" + portNum + "/api/employee"
@@ -120,12 +124,13 @@ export default {
           newEmployee.number = response.data[i].extension_number;
           newEmployee.employee_id = response.data[i].employee_id;
           newEmployee.seatIdList = response.data[i].seatList;
-          initEmployeeList.push(newEmployee);
+          
+          allEmployeeList.push(newEmployee);
         }
       } catch (error) {
         console.log(error);
       }
-      return initEmployeeList;
+      return allEmployeeList;
     },
     async getFloors() {
       let allFloorList = new Array();
@@ -184,10 +189,8 @@ export default {
       } catch (error) {
         console.log(error);
       }
-      console.log(latestFloor.floor_id);
       return latestFloor;
     },
-    //현재 층 이미지 가져오기
     async getLatestFloorImage() {
       let latestFloorImage = new Array();
       if (this.latestFloor) {
@@ -209,6 +212,7 @@ export default {
             let newImage = {};
             newImage.url = response.config.url;
             newImage.floorid = latestFloorId;
+
             latestFloorImage.push(newImage);
           } catch (error) {
             console.log(error);
@@ -246,11 +250,9 @@ export default {
           console.error(error);
         }
       }
-
-      this.otherFloorsImage = otherFloorImageList;
-      return this.otherFloorsImage;
+      return otherFloorImageList;
     },
-    //우선 현재 층의 자리만 가져옴
+    //우선 최신 층의 자리만 가져옴
     async getLatestFloorSeats() {
       let latestFloorSeatList = new Array();
       if (this.latestFloor) {
@@ -272,7 +274,7 @@ export default {
 
             newSeat.seat_id = response.data[i].seat_id;
             newSeat.seat_name = response.data[i].seat_name;
-            newSeat.floor = response.data[i].floor; // floor_id
+            newSeat.floor = response.data[i].floor; 
             newSeat.x = response.data[i].x;
             newSeat.y = response.data[i].y;
             newSeat.is_group = response.data[i].is_group;
@@ -294,12 +296,11 @@ export default {
       }
       return latestFloorSeatList;
     },
-    //현재 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
+    //최신 층을 제외한 다른 층의 자리들을 가져와서 백그라운드 리스트에 가지고 있기
     async loadOtherFloorSeats() {
       let otherFloorSeatMap = new Map();
       try {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
-          // 층만큼 돈다
           let response = await axios.get(
             "http://" +
               host +
@@ -311,7 +312,6 @@ export default {
               this.floorIdList[i] +
               "/seats"
           );
-
           let responseList = new Array();
           // 그 층에 자리가 없다면
           if (response.data.length == 0) {
@@ -322,7 +322,7 @@ export default {
               let newSeat = {};
               newSeat.seat_id = response.data[j].seat_id;
               newSeat.seat_name = response.data[j].seat_name;
-              newSeat.floor = response.data[j].floor; // floor_id
+              newSeat.floor = response.data[j].floor; 
               newSeat.x = response.data[j].x;
               newSeat.y = response.data[j].y;
               newSeat.is_group = response.data[j].is_group;
@@ -347,8 +347,7 @@ export default {
       } catch (error) {
         console.error(error);
       }
-      this.otherFloorsSeat = otherFloorSeatMap;
-      return this.otherFloorsSeat;
+      return otherFloorSeatMap;
     },
     saveFloors(tableName, data) {
       let saveData = data;
@@ -357,8 +356,7 @@ export default {
       console.log(saveData);
       console.log("saveTableName is");
       console.log(saveTableName);
-      axios
-        .post(
+      axios.post(
           "http://" +
             host +
             ":" +
@@ -385,19 +383,18 @@ export default {
       console.log("saveTableName is");
       console.log(saveTableName);
 
-      axios
-        .post(
-          "http://" +
-            host +
-            ":" +
-            portNum +
-            "/api/buildings/" +
-            building_id +
-            "/floors/" +
-            floor_id +
-            "/" +
-            tableName,
-          saveData,
+      axios.post(
+        "http://" +
+         host +
+         ":" +
+         portNum +
+         "/api/buildings/" +
+         building_id +
+         "/floors/" +
+         floor_id +
+         "/" +
+         tableName,
+         saveData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -419,18 +416,17 @@ export default {
       console.log("------------");
       console.log("saveTableName is");
       console.log(saveTableName);
-      axios
-        .post(
-          "http://" +
-            host +
-            ":" +
-            portNum +
-            "/api/buildings/" +
-            building_id +
-            "/floors/" +
-            floor_id +
-            "/" +
-            saveTableName,
+      axios.post(
+        "http://" +
+          host +
+          ":" +
+          portNum +
+          "/api/buildings/" + 
+          building_id +
+          "/floors/" +
+          floor_id +
+          "/" +
+          saveTableName,
           JSON.stringify(saveData),
           {
             headers: { "Content-Type": `application/json` },
@@ -443,8 +439,7 @@ export default {
     deleteFloorWtihKey(tableName, key) {
       let deleteTableName = tableName;
       let deleteKey = key;
-      axios
-        .delete(
+      axios.delete(
           "http://" +
             host +
             ":" +
@@ -457,19 +452,16 @@ export default {
             deleteKey
         )
         .then(function (response) {
-          // handle success
           console.log(response);
         })
         .catch(function (error) {
-          // handle error
           console.log(error);
         });
     },
     deleteSeatWithKey(tableName, seatId, floor_id) {
       let deleteTableName = tableName;
       let deleteKey = seatId;
-      axios
-        .delete(
+      axios.delete(
           "http://" +
             host +
             ":" +
@@ -484,11 +476,9 @@ export default {
             deleteKey
         )
         .then(function (response) {
-          // handle success
           console.log(response);
         })
         .catch(function (error) {
-          // handle error
           console.log(error);
         });
     },

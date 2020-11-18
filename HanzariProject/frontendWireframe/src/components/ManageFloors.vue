@@ -29,15 +29,13 @@
               <v-btn
                 v-on="on"
                 large
-                background-image="https://randomuser.me/api/portraits/men/1.jpg"
                 @click="clickFloor(floor)"
                 @mouseover="showToolTip(floor)"
                 :style="{
-                  border: clickIndexes.includes(floor.floor_id)
+                  border: clickFloorIndexes.includes(floor.floor_id)
                     ? 'thick solid black'
                     : '',
                 }"
-                ><span v-html="imageHtml"> </span
               ></v-btn>
             </template>
             <span v-html="toolTipText"> </span>
@@ -73,7 +71,7 @@
               >배경화면 이미지 설정하기</v-btn
             >
             <v-card>
-              <v-card-text>{{ currentFloorImage }}</v-card-text>
+              <v-card-text>{{ currentFloorImageName }}</v-card-text>
             </v-card>
           </v-card-text>
         </v-col>
@@ -89,29 +87,22 @@ import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 export default {
   props: ["copyfloorList", "copyLatestFloorImage", "copyOtherFloorsImageList"],
-  components: {},
   data() {
     return {
       length: null,
-      firstLoadWatch: null,
-      floorName: null,
-
-      changeBackgroundColor: false,
 
       allFloorList: [],
       managerFloorList: [],
 
       currentSelectedFloor: null,
 
-      clickIndexes: null,
+      clickFloorIndexes: null,
 
       allImageMap: null,
-      currentFloorImage: null,
+      currentFloorImageName: null,
 
       allSeatMap: null,
       toolTipText: null,
-
-      imageHtml: null,
     };
   },
   created() {
@@ -122,8 +113,7 @@ export default {
       this.allFloorList = this.copyfloorList;
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyfloorList.length;
-      this.clickIndexes = this.currentSelectedFloor.floor_id;
-    } else {
+      this.clickFloorIndexes = this.currentSelectedFloor.floor_id;
     }
 
     if (this.allImageMap == null) {
@@ -148,10 +138,10 @@ export default {
     eventBus.$on("allSeatMap", (allSeatMap) => {
       this.allSeatMap = allSeatMap;
     });
+
     eventBus.$on("showSeatFloor", (floorid) => {
-      let seatFloorId = floorid;
       for (let i = 0; i < this.allFloorList.length; i++) {
-        if (seatFloorId == this.allFloorList[i].floor_id) {
+        if (floorid == this.allFloorList[i].floor_id) {
           this.clickFloor(this.allFloorList[i]);
         }
       }
@@ -224,32 +214,16 @@ export default {
         this.toolTipText = floor.floor_name + "층 <br>" + "좌석이 없습니다.";
       }
     },
-    changeImageFile(e) {
-      let files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.saveImageFile(files[0]);
-    },
-    saveImageFile(file) {
-      this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
-      this.currentFloorImage = this.allImageMap.get(
-        this.currentSelectedFloor.floor_id
-      ).name;
-      console.log(this.allImageMap);
-      eventBus.$emit(
-        "allImageMap",
-        this.allImageMap,
-        this.currentSelectedFloor.floor_id
-      );
-    },
-    editFloorName() {
-      const idx = this.allFloorList.findIndex((item) => {
-        return item.floor_id == this.currentSelectedFloor.floor_id;
-      });
+    clickFloor(floor) {
+      this.clickFloorIndexes = [];
+      this.clickFloorIndexes.push(floor.floor_id);
 
-      this.allFloorList[idx].modify = true;
-      this.managerFloorList[idx].modify = true;
+      if (this.allImageMap.get(floor.floor_id)) {
+        this.currentFloorImageName = this.allImageMap.get(floor.floor_id).name;
+      }
 
-      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      this.currentSelectedFloor = floor;
+      eventBus.$emit("changeFloor", floor);
 
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
@@ -266,16 +240,43 @@ export default {
         return v.toString(16);
       });
     },
-    clickFloor(floor) {
-      this.clickIndexes = [];
-      this.clickIndexes.push(floor.floor_id);
+    addFloor() {
+      let newFloor = {};
+      newFloor.floor_id = this.createFloorUUID();
+      newFloor.floor_name = "";
+      newFloor.building_id = "HANCOM01";
+      newFloor.floor_order = this.allFloorList.length;
+      newFloor.create = true;
+      newFloor.modify = false;
+      newFloor.delete = false;
 
-      if (this.allImageMap.get(floor.floor_id)) {
-        this.currentFloorImage = this.allImageMap.get(floor.floor_id).name;
-      }
+      this.allFloorList.push(newFloor);
+      this.managerFloorList.push(newFloor);
 
-      this.currentSelectedFloor = floor;
-      eventBus.$emit("changeFloor", floor);
+      this.currentSelectedFloor = newFloor;
+
+      this.clickFloorIndexes = [];
+      this.clickFloorIndexes.push(this.currentSelectedFloor.floor_id);
+
+      this.length++;
+
+      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+
+      let allFloors = this.allFloorList.slice();
+      eventBus.$emit("allFloorList", allFloors);
+
+      let managerFloors = this.managerFloorList.slice();
+      eventBus.$emit("managerFloorList", managerFloors);
+    },
+    editFloorName() {
+      const idx = this.allFloorList.findIndex((item) => {
+        return item.floor_id == this.currentSelectedFloor.floor_id;
+      });
+
+      this.allFloorList[idx].modify = true;
+      this.managerFloorList[idx].modify = true;
+
+      eventBus.$emit("changeFloorName", this.currentSelectedFloor.floor_name);
 
       let allFloors = this.allFloorList.slice();
       eventBus.$emit("allFloorList", allFloors);
@@ -302,10 +303,7 @@ export default {
           }
 
           eventBus.$emit("changeFloor", this.allFloorList[nextIdx]);
-          eventBus.$emit(
-            "currentSelectedFloorToManageSeats",
-            this.allFloorList[nextIdx]
-          );
+
           let allFloors = this.allFloorList.slice();
           eventBus.$emit("allFloorList", allFloors);
 
@@ -318,50 +316,22 @@ export default {
         this.length--;
 
         if (this.length > 0) {
-          this.clickIndexes = [];
-          this.clickIndexes.push(this.currentSelectedFloor.floor_id);
+          this.clickFloorIndexes = [];
+          this.clickFloorIndexes.push(this.currentSelectedFloor.floor_id);
         }
       } else {
         alert("there are no seats to delete!");
       }
     },
-    addFloor() {
-      let newFloor = {};
-      newFloor.floor_id = this.createFloorUUID();
-      newFloor.floor_name = "";
-      newFloor.building_id = "HANCOM01";
-      newFloor.floor_order = this.allFloorList.length;
-      newFloor.create = true;
-      newFloor.modify = false;
-      newFloor.delete = false;
-
-      this.allFloorList.push(newFloor);
-      this.managerFloorList.push(newFloor);
-
-      this.currentSelectedFloor = newFloor;
-
-      this.clickIndexes = [];
-      this.clickIndexes.push(this.currentSelectedFloor.floor_id);
-
-      this.length++;
-
-      this.imageHtml =
-        "<v-avatar> <img src=" +
-        "https://randomuser.me/api/portraits/men/1.jpg" +
-        " /> </v-avatar>";
-
-      eventBus.$emit("changeFloor", this.currentSelectedFloor);
-      eventBus.$emit(
-        "currentSelectedFloorToManageSeats",
-        this.currentSelectedFloor
-      );
-
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
-
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
-     
+    changeImageFile(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.saveImageFile(files[0]);
+    },
+    saveImageFile(file) {
+      this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
+      this.currentFloorImageName = this.allImageMap.get(this.currentSelectedFloor.floor_id).name;
+      eventBus.$emit("allImageMap",this.allImageMap);
     },
   },
 };

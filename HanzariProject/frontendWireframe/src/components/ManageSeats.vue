@@ -74,9 +74,7 @@
             dense
           ></v-combobox>
         </v-col>
-        <v-col cols="12" sm="3">
-          <v-icon large @click="clickChangeFloor">edit</v-icon></v-col
-        >
+        <v-col cols="12" sm="3"> <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col>
       </v-row>
       <v-divider class="mx-4"></v-divider>
 
@@ -129,48 +127,45 @@ export default {
       addVacantSwitch: false,
       mappingEmployeeComponentStatus: false,
 
-      currentSelectedFloorId: null,
       allFloorList: this.copyfloorList,
-      //seatName: null,
-      //changeFloor: null,
+      currentSelectedFloorId: null,
 
       seatSizeSettingDialogStatus: false,
 
       clickedSize: { width: 0, height: 0 },
-      clickIndexes: null,
     };
   },
   created() {
-    for (let i = 0; i < this.copyfloorList.length; i++) {
-      let floor_name = this.copyfloorList[i].floor_name;
-      this.floorItems.push(floor_name);
-    }
-
-    if (this.copyfloorList.length) {
-      this.currentSelectedFloorId = this.allFloorList[
+    if (this.copyfloorList && this.copyfloorList.length) {
+      this.currentSelectedFloor = this.allFloorList[
         this.allFloorList.length - 1
-      ].floor_id;
-    } else {
-      this.currentSelectedFloorId = null;
+      ];
+
+      for (let i = 0; i < this.copyfloorList.length; i++) {
+        if (
+          this.currentSelectedFloor.floor_name ==
+          this.copyfloorList[i].floor_name
+        )
+          continue;
+
+        this.floorItems.push(this.copyfloorList[i].floor_name);
+      }
     }
 
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
       this.floorItems = [];
       for (let i = 0; i < this.allFloorList.length; i++) {
-        let floor_name = this.allFloorList[i].floor_name;
-        this.floorItems.push(floor_name);
+        if (
+          this.currentSelectedFloor.floor_name ==
+          this.allFloorList[i].floor_name
+        )
+          continue;
+
+        this.floorItems.push(this.allFloorList[i].floor_name);
       }
     });
 
-    /*eventBus.$on("changeFloor", (floor) => {
-      if (floor) {
-        // null 이 아닐때
-        this.currentSelectedFloorId = floor.floor_id;
-      } else {
-        this.currentSelectedFloorId = null;
-      }
-    });*/
     eventBus.$on(
       "mappingEmployeeComponentStatus",
       (mappingEmployeeComponentStatus) => {
@@ -186,10 +181,9 @@ export default {
     });
   },
   methods: {
-    clickChangeFloor() {
+    clickChangeFloorSeat() {
       if (this.selectedFloorItems) {
-        //console.log(this.selectedFloorItems)
-        eventBus.$emit("clickChangeFloor", this.selectedFloorItems);
+        eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItems);
       }
     },
     getMappingEmployeeComponent() {
