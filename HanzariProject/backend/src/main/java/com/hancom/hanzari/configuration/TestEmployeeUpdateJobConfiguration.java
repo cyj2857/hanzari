@@ -174,10 +174,9 @@ public class TestEmployeeUpdateJobConfiguration {
 		return stepBuilderFactory.get("stepC").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> This is StepC");
 			resultVo.getAllEmployeeListVo().forEach(e -> {
-				//현재 Json으로부터 내선번호 null값이 오는 경우도 있기에 우선 핸드폰 번호로 테스트 진행
 				employeeService.save(employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer")
 				.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId()).employeeName(e.getUserName()).status("재직")
-						.extensionNumber(e.getCellPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build()));
+						.extensionNumber(e.getCmpPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build()));
 			});
 			return RepeatStatus.FINISHED;
 		}).build();
