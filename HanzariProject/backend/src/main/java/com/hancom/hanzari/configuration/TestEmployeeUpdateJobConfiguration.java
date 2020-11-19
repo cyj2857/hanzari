@@ -24,12 +24,16 @@ import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
 import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hancom.hanzari.model.Employee;
+import com.hancom.hanzari.model.EmployeeAdditionalInfo;
+import com.hancom.hanzari.service.EmployeeService;
 import com.hancom.hanzari.vo.EmployeesVo;
 import com.hancom.hanzari.vo.ResultVo;
 import com.hancom.hanzari.vo.TokenVo;
@@ -48,6 +52,9 @@ public class TestEmployeeUpdateJobConfiguration {
 	private TokenVo tokenVo;
 	//요청에 대한 응답 정보와 임직원 전체 목록을 리스트로 가지고 있을 VO
 	private ResultVo resultVo;
+	
+	@Autowired
+	EmployeeService employeeService;
 
 	@Bean
 	public Job conditionalStepJob(Step stepA, Step stepB, Step stepC) {
@@ -66,6 +73,7 @@ public class TestEmployeeUpdateJobConfiguration {
 	}
 
 	@Bean
+	//토큰 발행 step
 	public Step stepA() {
 		return stepBuilderFactory.get("stepA").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> This is StepA");
@@ -113,6 +121,7 @@ public class TestEmployeeUpdateJobConfiguration {
 	}
 
 	@Bean
+	//임직원 리스트 받아온 후 프로젝트단 VO 객체에 매핑
 	public Step stepB() {
 		return stepBuilderFactory.get("stepB").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> This is StepB");
@@ -164,20 +173,25 @@ public class TestEmployeeUpdateJobConfiguration {
 	public Step stepC() {
 		return stepBuilderFactory.get("stepC").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> This is StepC");
+			resultVo.getAllEmployeeListVo().forEach(e -> {
+				//현재 Json으로부터 내선번호 null값이 오는 경우도 있기에 우선 핸드폰 번호로 테스트 진행
+				employeeService.save(employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer")
+				.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId()).employeeName(e.getUserName()).status("재직")
+						.extensionNumber(e.getCellPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build()));
+			});
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
 	
-	// 여기다 작성하면 될 듯
 	@Bean
 	public Job simpleJob() {
-		return jobBuilderFactory.get("simpleJob").start(simpleStep1()).build();
+		return jobBuilderFactory.get("simpleJob").start(simpleStepD()).build();
 	}
 	
 	// simpleJob에 물려있는 step.
 	@Bean
-	public Step simpleStep1() {
-		return stepBuilderFactory.get("simpleStep1").tasklet((contribution, chunkContext) -> {
+	public Step simpleStepD() {
+		return stepBuilderFactory.get("simpleStepD").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> This is Step1"); // 테스트를 위한 코드 
 			// TODO 1. JSON파일의 "employees" 부분을 List<EmployeeVo> 리스트로 받아온다.
 			// TODO 2. empVo.forEach()에서 각각의 empVo에 해당하는 employee와 employee_additional_info 객체를 만들어준다. (toEntity())
