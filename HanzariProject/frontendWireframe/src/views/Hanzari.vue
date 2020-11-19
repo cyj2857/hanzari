@@ -477,15 +477,6 @@ export default {
       }
     },
 
-    makeCSVfILE(csvContent) {
-      var encodeUri = encodeURI(response.data);
-      var link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "mycsv.csv");
-      document.body.appendChild(link);
-      return link;
-    },
-
     //get CSV File from DB and download CSV file
     async downloadCSVFile(floor_id) {
       try {
@@ -501,7 +492,7 @@ export default {
             "/seats/get-csv-file",
           {
             headers: {
-              responseType: "text/csv",
+              "Content-Type": "text/csv"
             },
           }
         );
@@ -529,10 +520,7 @@ export default {
     },
 
     //save information from CSV to DB
-    saveFromCSVFileToDB(data, floor_id) {
-      let saveData = data;
-      console.log(saveData);
-
+    saveFromCSVFileToDB(saveData, floor_id) {
       axios
         .post(
           "http://" +
@@ -544,8 +532,7 @@ export default {
             "/floors/" +
             floor_id +
             "/seats/update-by-file",
-
-          saveData,
+            saveData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
