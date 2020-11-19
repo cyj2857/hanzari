@@ -118,11 +118,9 @@ public class SeatServiceImpl implements SeatService {
 				}
 				Seat seat = seatRepository.findBySeatNameAndFloor(placement.getSeatName(), floor.get());
 				// TODO Seat이 안찾아지는 경우도 생각해봐야할 듯 
-				Optional<Employee> employee = null;
-				employee = employeeRepository.findById(placement.getEmployeeId());
+				Optional<Employee> employee = employeeRepository.findById(placement.getEmployeeId());
 				if (!employee.isPresent()) {
 					// TODO 실패 처리
-					System.out.println("################### employee not found ###################");
 					seat.setEmployee(null);
 				} else {
 					seat.setEmployee(employee.get());
