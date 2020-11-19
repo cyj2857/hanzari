@@ -80,12 +80,12 @@ import { eventBus } from "../main.js";
 export default {
   name: "AttachCanvas",
   props: [
-    "copyEmployee",
-    "copyFloors",
-    "latestFloorImage",
-    "otherFloorsImageList",
-    "latestFloorSeatsList",
-    "otherFloorsSeatsList",
+    "copyEmployeeList",
+    "copyFloorList",
+    "copyLatestFloorImage",
+    "copyOtherFloorsImageList",
+    "copyLatestFloorSeatList",
+    "copyOtherFloorsSeatMap",
   ],
   data() {
     return {
@@ -98,21 +98,21 @@ export default {
       currentSelectedFloorName: null,
       currentSelectedFloorId: null,
 
-      latestFloorImageFromDb: this.latestFloorImage,
-      otherFloorImageFromDb: this.otherFloorsImageList,
+      latestFloorImageFromDb: this.copyLatestFloorImage,
+      otherFloorImageFromDb: this.copyOtherFloorsImageList,
       allImageMap: null, //모든 이미지 저장과 로드(floorid / file or url)
 
-      latestFloorSeatListFromDb: this.latestFloorSeatsList,
-      otherFloorSeatListFromDb: this.otherFloorsSeatsList,
+      latestFloorSeatListFromDb: this.copyLatestFloorSeatList,
+      otherFloorSeatListFromDb: this.copyOtherFloorsSeatMap,
       //자리 Map <층이름, 자리리스트>
       allSeatMap: null, //가시적 자리 map
       managerAllSeatMap: null, //DB 관리 자리 map
 
-      employees: this.copyEmployee,
+      employees: this.copyEmployeeList,
       eachEmployeeSeatMap: null, //each Employee's seats map
 
-      allFloorList: this.copyFloors, // 가시적 층 리스트
-      managerFloorList: this.copyFloors, // DB 관리 층 리스트
+      allFloorList: this.copyFloorList, // 가시적 층 리스트
+      managerFloorList: this.copyFloorList, // DB 관리 층 리스트
 
       contextMenuStatus: false,
       contextMenuXLocation: 100,
