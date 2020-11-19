@@ -13,11 +13,11 @@
             <v-card-text>
               <component
                 v-bind:is="item.content"
-                :copyEmployeeList="employees"
-                :copyfloorList="floors"
+                :copyFromTabsEmployeeList="employees"
+                :copyFromTabsFloorList="floors"
                 :eachEmployeeSeatMap="eachEmployeeSeatMap"
-                :copyLatestFloorImage="latestFloorImage"
-                :copyOtherFloorsImageList="otherFloorsImageList"
+                :copyFromTabsLatestFloorImage="latestFloorImage"
+                :copyFromTabsOtherFloorsImageList="otherFloorsImageList"
               ></component>
             </v-card-text>
           </v-card>
@@ -34,8 +34,8 @@ import ManageSearch from "@/components/ManageSearch.vue";
 
 export default {
   props: [
-    "copyEmployee",
-    "copyFloors",
+      "copyEmployeeList",
+    "copyFloorList",
     "copyLatestFloorImage",
     "copyOtherFloorsImageList",
   ],
@@ -48,8 +48,8 @@ export default {
     return {
       tab: null,
 
-      employees: this.copyEmployee,
-      floors: this.copyFloors,
+      employees: this.copyEmployeeList,
+      floors: this.copyFloorList,
 
       eachEmployeeSeatMap: null,
 
