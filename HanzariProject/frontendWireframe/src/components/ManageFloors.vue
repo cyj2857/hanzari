@@ -163,7 +163,7 @@ export default {
         if (this.allSeatMap.get(floor.floor_id)) {
           if (this.allSeatMap.get(floor.floor_id).length) {
             let eachFloorSeatList = this.allSeatMap.get(floor.floor_id);
-            let department = new Array();
+            let department = [];
 
             let currentFloorSeatsLength = eachFloorSeatList.length;
             let currentFloorVacantSeatsLength = null;
@@ -179,7 +179,7 @@ export default {
                       eachFloorSeatList[i].employee_department
                     )
                   ) {
-                    let employees = new Array();
+                    let employees = [];
                     employeeDepartmentMap.set(
                       eachFloorSeatList[i].employee_department,
                       employees
@@ -192,7 +192,7 @@ export default {
                 }
               }
 
-              let keys = new Array();
+              let keys = [];
               keys = Array.from(employeeDepartmentMap.keys());
               let text = "<br>";
               for (let i = 0; i < keys.length; i++) {

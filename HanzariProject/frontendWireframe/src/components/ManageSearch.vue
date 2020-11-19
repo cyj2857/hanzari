@@ -22,7 +22,10 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-icon large id="showSeatButton" @click="showSeatButtonClicked(row.item)"
+            <v-icon
+              large
+              id="showSeatButton"
+              @click="showSeatButtonClicked(row.item)"
               >event_seat</v-icon
             >
           </td>
@@ -42,10 +45,10 @@ export default {
     return {
       allEmployeeSeat: [],
       allEmployeeSeatMap: this.eachEmployeeSeatMap, //attach(db) -> employeeMap -> 이벤트버스로 불려온것
-     
+
       search: "",
       headers: [
-        { text: "이름",align: "start", sortable: true, value: "name",},
+        { text: "이름", align: "start", sortable: true, value: "name" },
         { text: "부서", value: "department" },
         { text: "내선번호", value: "number" },
         { text: "", value: "showSeatButton" },
@@ -66,24 +69,25 @@ export default {
       if (this.allEmployeeSeatMap) {
         this.allEmployeeSeat = [];
 
-        let keys = new Array();
+        let keys = [];
         keys = Array.from(this.allEmployeeSeatMap.keys());
 
         for (let i = 0; i < keys.length; i++) {
-          let seats = new Array();
+          let seats = [];
           seats = this.allEmployeeSeatMap.get(keys[i]);
           for (let j = 0; j < seats.length; j++) {
             let newSeat = {};
 
-              if (seats[j].employee_id != null) { //공석 제외
-                newSeat.seatid = seats[j].seatId;
-                newSeat.employeeid = seats[j].employee_id;
-                newSeat.name = seats[j].employee_name;
-                newSeat.department = seats[j].employee_department;
-                newSeat.floorid = seats[j].floor_id;
-                newSeat.number = seats[j].employee_number;
-                this.allEmployeeSeat.push(newSeat);
-              }
+            if (seats[j].employee_id != null) {
+              //공석 제외
+              newSeat.seatid = seats[j].seatId;
+              newSeat.employeeid = seats[j].employee_id;
+              newSeat.name = seats[j].employee_name;
+              newSeat.department = seats[j].employee_department;
+              newSeat.floorid = seats[j].floor_id;
+              newSeat.number = seats[j].employee_number;
+              this.allEmployeeSeat.push(newSeat);
+            }
           }
         }
       }
