@@ -22,5 +22,4 @@ public class ResultVo {
 	private String resultDesc;
 
 	List<EmployeesVo> allEmployeeListVo;
-	
 }
