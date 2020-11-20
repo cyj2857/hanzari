@@ -1,21 +1,11 @@
 <template>
   <div>
     <v-toolbar color="black" dark> </v-toolbar>
-<<<<<<< HEAD
-    <v-tabs v-model="tab" background-color="black" dark height="65">
-      <v-tabs-slider color="blue"></v-tabs-slider>
-      <v-tab v-for="item in items" :key="item.index">
-        <v-icon large dark>{{ item.icon }}</v-icon
-        >{{ item.title }}</v-tab
-      >
-    </v-tabs>
-=======
       <v-tabs v-model="tab" background-color="black" dark height="65" horizontal grow>
           <v-tabs-slider color="blue"></v-tabs-slider>
         <v-tab  v-for="item in items" :key="item.index">
           <v-icon large dark>{{ item.icon }}</v-icon></v-tab>
       </v-tabs>
->>>>>>> 83573610f4ba6ed8f4e4afd525d5d0eb8caf11ef
 
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="item in items" :key="item.index">

@@ -1052,6 +1052,7 @@ export default {
     // 층간이동
     changeFloorSeat(floor_name) {
       if (!this.floorCanvas.getActiveObject()) {
+        alert("이동할 좌석이 선택되지 않았습니다.");
         return;
       }
       let eachFloorSeatList = this.getEachFloorSeatList(

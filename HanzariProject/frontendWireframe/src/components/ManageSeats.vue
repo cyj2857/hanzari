@@ -89,7 +89,7 @@
         >
       </v-row>
     </v-card>
-    
+
     <MappingEmployee
       :copyFromManageSeatsEmployeeList="employee"
       v-if="mappingEmployeeComponentStatus && employee"
@@ -155,19 +155,12 @@ export default {
 
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      this.floorItems = [];
-      for (let i = 0; i < this.allFloorList.length; i++) {
-        if (
-          this.currentSelectedFloor.floor_id == this.allFloorList[i].floor_id
-        ) {
-          continue;
-        }
-        this.floorItems.push(this.allFloorList[i].floor_name);
-      }
+      this.initFloorItems();
     });
 
     eventBus.$on("changeFloor", (floor) => {
       this.currentSelectedFloor = floor;
+      this.initFloorItems();
     });
 
     eventBus.$on(
@@ -191,9 +184,23 @@ export default {
     eventBus.$off("changeSlider");
   },
   methods: {
+    initFloorItems() {
+      this.floorItems = [];
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        if (
+          this.currentSelectedFloor.floor_id == this.allFloorList[i].floor_id
+        ) {
+          continue;
+        }
+
+        this.floorItems.push(this.allFloorList[i].floor_name);
+      }
+    },
     clickChangeFloorSeat() {
       if (this.selectedFloorItems) {
         eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItems);
+      } else {
+        alert("이동할 층을 선택하지 않았습니다.");
       }
     },
     getMappingEmployeeComponent() {
