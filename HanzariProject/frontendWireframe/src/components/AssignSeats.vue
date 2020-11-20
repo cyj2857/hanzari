@@ -404,6 +404,10 @@ export default {
                   alert("도면 이미지가 없습니다");
                   return;
                 }
+                if (this.currentSelectedFloorName == "") {
+                  alert("층 이름이 설정되지 않았습니다.");
+                  return;
+                }
                 this.addVacantSeat(this.posX, this.posY, afterPosX, afterPosY);
               }
             }
@@ -769,7 +773,6 @@ export default {
           fontSize: this.fontSize / this.zoom,
           fill: "black",
         });
-        group.remove(group.item(2));
         group.add(seatNameObject);
       }
 
