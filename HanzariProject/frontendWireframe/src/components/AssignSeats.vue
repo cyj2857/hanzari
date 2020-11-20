@@ -134,6 +134,10 @@ export default {
       seatHeight: null,
 
       seatNumber: 0,
+
+      isDown: null,
+      posX: 0,
+      posY: 0,
     };
   },
   created() {
@@ -361,19 +365,45 @@ export default {
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
             if (this.ableAddVacant) {
-              if (!this.seatWidth) {
-                alert("공석 크기를 선택해야 합니다.");
-                return;
-              }
+              // if (!this.seatWidth) {
+              //   alert("공석 크기를 선택해야 합니다.");
+              //   return;
+              // }
               var pointer = this.floorCanvas.getPointer(event.e);
-              var posX = pointer.x;
-              var posY = pointer.y;
-              this.addVacantSeat(posX, posY);
+              this.posX = pointer.x;
+              this.posY = pointer.y;
+
+              console.log(this.posX);
+              console.log(this.posY);
+
+              //this.addVacantSeat(posX, posY, afterPosX, afterPosY);
             } else if (this.floorCanvas.getActiveObject()) {
               //contextMenu
               var posX = event.e.clientX;
               var posY = event.e.clientY;
               this.showContextMenu(posX, posY);
+            }
+          }
+        });
+
+        this.floorCanvas.on("mouse:up", (event) => {
+          if (event.button === 3) {
+            if (this.ableAddVacant) {
+              var pointer = this.floorCanvas.getPointer(event.e);
+              var afterPosX = pointer.x;
+              var afterPosY = pointer.y;
+
+              console.log(afterPosX);
+              console.log(afterPosY);
+              console.log("mouseup");
+
+              if(this.posX==afterPosX && this.posY==afterPosY){
+                return;
+              }
+              else{
+                this.addVacantSeat(this.posX, this.posY, afterPosX, afterPosY);
+              }
+              
             }
           }
         });
@@ -676,7 +706,8 @@ export default {
       else return Colors.Gray;
     },
 
-    addVacantSeat(posX, posY) {
+    addVacantSeat(posX, posY, afterPosX, afterPosY) {
+      this.isDown = true;
       let x = posX;
       let y = posY;
 
@@ -694,8 +725,8 @@ export default {
       );
 
       let rectangle = new fabric.Rect({
-        width: this.seatWidth,
-        height: this.seatHeight,
+        width: x - afterPosX,
+        height: y - afterPosY,
         fill: this.getColor(null),
         opacity: 1,
       });
@@ -767,9 +798,31 @@ export default {
       });
 
       this.floorCanvas.add(group);
+
+      //this.floorCanvas.renderAll();
+
+      this.floorCanvas.on("mouse:move", function (o) {
+        if (!this.isDown) return;
+        var pointer = this.floorCanvas.getPointer(o.e);
+
+        if (posX > pointer.x) {
+          group.set("left", Math.abs(pointer.x));
+        }
+        if (posY > pointer.y) {
+          group.set("top", Math.abs(pointer.y));
+        }
+
+        group.item(0).set("width", Math.abs(posX - pointer.x));
+        group.item(0).set("height", Math.abs(posY - pointer.y));
+
+        this.floorCanvas.renderAll();
+      });
+
+      this.floorCanvas.setActiveObject(group);
+
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);
-      this.floorCanvas.renderAll();
+
       eventBus.$emit("allSeatMap", this.allSeatMap);
     },
     setMappingSeat(item) {
