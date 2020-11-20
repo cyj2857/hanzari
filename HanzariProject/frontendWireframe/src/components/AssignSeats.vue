@@ -401,6 +401,9 @@ export default {
                 if (!this.allImageMap.get(this.currentSelectedFloorId)) {
                   alert("도면 이미지가 없습니다");
                   return;
+                }if (this.currentSelectedFloorName == "") {
+                  alert("층 이름이 설정되지 않았습니다.");
+                  return;
                 }
 
                 console.log(this.firstMouseDownX);
@@ -411,7 +414,7 @@ export default {
                   this.firstMouseDownY,
                   mouseUpX,
                   mouseUpY
-                );
+                  );
               }
             }
           }
