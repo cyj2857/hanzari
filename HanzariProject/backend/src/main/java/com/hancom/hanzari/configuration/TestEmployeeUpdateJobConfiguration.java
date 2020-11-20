@@ -60,7 +60,7 @@ public class TestEmployeeUpdateJobConfiguration {
 	//GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
 	//Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.
 	public Job getEmployeesInfoJob(Step fistStep, Step secondStep, Step thirdStep) {
-		return jobBuilderFactory.get("getEmployeesInfoJob").start(fistStep).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
+		return jobBuilderFactory.get("getEmployeesInfoJob").start(firstStep()).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
 				.to(thirdStep) // stepC으로 이동한다.
 				.on("*") // stepC의 결과 관계 없이
 				.end() // stepC으로 이동하면 Flow가 종료한다.
