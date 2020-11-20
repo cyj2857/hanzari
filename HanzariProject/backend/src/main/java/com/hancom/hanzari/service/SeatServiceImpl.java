@@ -109,28 +109,29 @@ public class SeatServiceImpl implements SeatService {
 		try {
 			List<PlacementVo> placements = CSVHelper.csvToSeat(file.getInputStream());
 			List<Seat> seats = new ArrayList<Seat>();
-			
+
 			// TODO 지금 for문안에서 여러 repository에 대해 각각 접근하여 처리하는데 이부분을 깔끔하게 가다듬을 필요가 있어보임.
 			for (PlacementVo placement : placements) {
 				Optional<Floor> floor = floorRepository.findById(placement.getFloor());
 				if (!floor.isPresent()) {
 					// TODO 실패 처리
 				}
-
+				Seat seat = seatRepository.findBySeatNameAndFloor(placement.getSeatName(), floor.get());
+				// TODO Seat이 안찾아지는 경우도 생각해봐야할 듯 
 				Optional<Employee> employee = employeeRepository.findById(placement.getEmployeeId());
 				if (!employee.isPresent()) {
 					// TODO 실패 처리
+					seat.setEmployee(null);
+				} else {
+					seat.setEmployee(employee.get());
 				}
-				Seat seat = seatRepository.findBySeatNameAndFloor(placement.getSeatName(), floor.get());
 
-				LOGGER.info("seatId: {}, seat.seatName: {}, placement.seatName: {}", seat.getSeatId(),
-						seat.getSeatName(), placement.getSeatName());
-
-				seat.setEmployee(employee.get());
 				seats.add(seat);
+				LOGGER.info("Seat added. (seatId: {}, seat.seatName: {}, placement.seatName: {})", seat.getSeatId(),
+						seat.getSeatName(), placement.getSeatName());
 			}
-
 			return seatRepository.saveAll(seats);
+
 		} catch (IOException e) {
 			throw new RuntimeException("fail to store csv data: " + e.getMessage());
 		}

@@ -80,12 +80,12 @@ import { eventBus } from "../main.js";
 export default {
   name: "AttachCanvas",
   props: [
-    "copyEmployee",
-    "copyFloors",
-    "latestFloorImage",
-    "otherFloorsImageList",
-    "latestFloorSeatsList",
-    "otherFloorsSeatsList",
+    "copyEmployeeList",
+    "copyFloorList",
+    "copyLatestFloorImage",
+    "copyOtherFloorsImageList",
+    "copyLatestFloorSeatList",
+    "copyOtherFloorsSeatMap",
   ],
   data() {
     return {
@@ -98,21 +98,21 @@ export default {
       currentSelectedFloorName: null,
       currentSelectedFloorId: null,
 
-      latestFloorImageFromDb: this.latestFloorImage,
-      otherFloorImageFromDb: this.otherFloorsImageList,
+      latestFloorImageFromDb: this.copyLatestFloorImage,
+      otherFloorImageFromDb: this.copyOtherFloorsImageList,
       allImageMap: null, //모든 이미지 저장과 로드(floorid / file or url)
 
-      latestFloorSeatListFromDb: this.latestFloorSeatsList,
-      otherFloorSeatListFromDb: this.otherFloorsSeatsList,
+      latestFloorSeatListFromDb: this.copyLatestFloorSeatList,
+      otherFloorSeatListFromDb: this.copyOtherFloorsSeatMap,
       //자리 Map <층이름, 자리리스트>
       allSeatMap: null, //가시적 자리 map
       managerAllSeatMap: null, //DB 관리 자리 map
 
-      employees: this.copyEmployee,
+      employees: this.copyEmployeeList,
       eachEmployeeSeatMap: null, //each Employee's seats map
 
-      allFloorList: this.copyFloors, // 가시적 층 리스트
-      managerFloorList: this.copyFloors, // DB 관리 층 리스트
+      allFloorList: this.copyFloorList, // 가시적 층 리스트
+      managerFloorList: this.copyFloorList, // DB 관리 층 리스트
 
       contextMenuStatus: false,
       contextMenuXLocation: 100,
@@ -508,7 +508,7 @@ export default {
       }
       //층에 해당하는 도형리스트가 만들어지지 않았을때 각 층의 도형 리스트 생성하기
       if (!this.allSeatMap.get(floor)) {
-        let newSeatsList = new Array();
+        let newSeatsList = [];
         this.allSeatMap.set(floor, newSeatsList);
         //console.log(this.allSeatMap.size + "allSeatMap 처음의 자리 맵 사이즈입니다");
         return this.allSeatMap.get(floor);
@@ -523,7 +523,7 @@ export default {
         return;
       }
       if (!this.managerAllSeatMap.get(floor)) {
-        let newSeatsList = new Array();
+        let newSeatsList = [];
         this.managerAllSeatMap.set(floor, newSeatsList);
         //console.log(this.managerAllSeatMap.size + "managerAllSeatMap 처음의 자리 맵 사이즈입니다");
         return this.managerAllSeatMap.get(floor);
@@ -534,7 +534,7 @@ export default {
     },
     getEachEmployeeSeatList: function (employee_id) {
       if (!this.eachEmployeeSeatMap.get(employee_id)) {
-        let newEmployeeSeatList = new Array();
+        let newEmployeeSeatList = [];
         this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
         return this.eachEmployeeSeatMap.get(employee_id);
       } else {
@@ -712,7 +712,7 @@ export default {
         if (
           this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length
         ) {
-          let seatNumberArray = new Array();
+          let seatNumberArray = [];
           this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
             (seat) => {
               console.log(seat.seatName);
@@ -848,7 +848,7 @@ export default {
     },
     deleteBtn() {
       let activeObject = null;
-      let shapearray = new Array();
+      let shapearray = [];
 
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
@@ -942,7 +942,7 @@ export default {
           evented: true,
         });
 
-        let seatNumberArray = new Array();
+        let seatNumberArray = [];
         this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
           (seat) => {
             seatNumberArray.push(seat.seatName.split("-")[1]);
@@ -1344,7 +1344,7 @@ export default {
     },
     getEmployeeObject(employee_id) {
       // seat table의 employee_id를 받으면 그에 맞는 정보 알아오기 위함
-      let employeeInfoList = new Array();
+      let employeeInfoList = [];
       let employeeObject = {}; // return 될 Object
       for (let i = 0; i < this.employees.length; i++) {
         let employee = {};
@@ -1499,11 +1499,11 @@ export default {
         }
         //다른 층 자리 로드
         if (this.otherFloorSeatListFromDb) {
-          let keys = new Array();
+          let keys = [];
           keys = Array.from(this.otherFloorSeatListFromDb.keys());
 
           for (let i = 0; i < keys.length; i++) {
-            let seats = new Array();
+            let seats = [];
             seats = this.otherFloorSeatListFromDb.get(keys[i]);
 
             for (let j = 0; j < seats.length; j++) {

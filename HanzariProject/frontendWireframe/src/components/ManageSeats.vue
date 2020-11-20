@@ -89,7 +89,7 @@
     </v-card>
     
     <MappingEmployee
-      :copyEmployeeListTwo="employee"
+      :copyFromManageSeatsEmployeeList="employee"
       v-if="mappingEmployeeComponentStatus && employee"
     />
     <SeatSizeSettingDialog
@@ -105,14 +105,14 @@ import SeatSizeSettingDialog from "@/components/SeatSizeSettingDialog.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
-  props: ["copyEmployeeList", "copyfloorList"],
+  props: ["copyFromTabsEmployeeList", "copyFromTabsFloorList"],
   components: {
     MappingEmployee,
     SeatSizeSettingDialog,
   },
   data() {
     return {
-      employee: this.copyEmployeeList,
+      employee: this.copyFromTabsEmployeeList,
       mappingEmployeeComponentStatus: false,
 
       sizeItems: [
@@ -127,7 +127,7 @@ export default {
       addVacantSwitch: false,
       
 
-      allFloorList: this.copyfloorList,
+      allFloorList: this.copyFromTabsFloorList,
       currentSelectedFloor: null,
 
       seatSizeSettingDialogStatus: false,
@@ -136,19 +136,19 @@ export default {
     };
   },
   created() {
-    if (this.copyfloorList && this.copyfloorList.length) {
+    if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
       this.currentSelectedFloor = this.allFloorList[
         this.allFloorList.length - 1
       ];
 
-      for (let i = 0; i < this.copyfloorList.length; i++) {
+      for (let i = 0; i < this.copyFromTabsFloorList.length; i++) {
         if (
-          this.currentSelectedFloor.floor_id == this.copyfloorList[i].floor_id
+          this.currentSelectedFloor.floor_id == this.copyFromTabsFloorList[i].floor_id
         ) {
           continue;
         }
 
-        this.floorItems.push(this.copyfloorList[i].floor_name);
+        this.floorItems.push(this.copyFromTabsFloorList[i].floor_name);
       }
     }
 
