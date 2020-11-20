@@ -17,7 +17,7 @@ import com.hancom.hanzari.vo.PlacementVo;
 public class CSVHelper {
 	public static String TYPE = "text/csv";
 
-	public static String[] HEADERs = { "floorId", "floorName", "seatName", "employeeId" };
+	public static String[] HEADERs = { "seatId", "floorName", "seatName", "employeeId" };
 
 	public static boolean hasCSVFormat(MultipartFile file) {
 		// TODO 여기서 CSV 파일인지 타입체크를 해주는 부분을 넣어줘야 할 것 같습니다.
@@ -36,7 +36,7 @@ public class CSVHelper {
 			Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
 			for (CSVRecord csvRecord : csvRecords) {
-				placementVos.add(PlacementVo.builder().floorId(csvRecord.get("floorId")).floorName("floorName").seatName(csvRecord.get("seatName"))
+				placementVos.add(PlacementVo.builder().seatId(csvRecord.get("seatId")).floorName("floorName").seatName(csvRecord.get("seatName"))
 						.employeeId(csvRecord.get("employeeId")).build());
 			}
 

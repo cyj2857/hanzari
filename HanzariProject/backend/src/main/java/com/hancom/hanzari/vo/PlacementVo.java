@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PlacementVo {
-	String floorId;
+	String seatId;
 	String floorName;
 	String seatName;
 	String employeeId;
