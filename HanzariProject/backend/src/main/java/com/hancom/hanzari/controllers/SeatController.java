@@ -212,13 +212,14 @@ public class SeatController {
 	}
 
 	@Transactional
-	@GetMapping(value = "/get-csv-file")
-	public void exportCsvFile(@PathVariable("floor_id") String floorId, HttpServletResponse response) throws Exception {
+	@GetMapping(value = "/get-csv-file-curfloor-seats")
+	public void exportEachFloorSeatCsvFile(@PathVariable("floor_id") String floorId, HttpServletResponse response)
+			throws Exception {
 
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		String currentDateTime = dateFormatter.format(new Date());
 		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=placements_" + currentDateTime + ".csv"; // 파일명을 정해주는 부분. 앞에 attachment; 가 붙는 경우 뒤에오는 filename으로 해당 data를 다운로드 받게 하는 옵션이다.
+		String headerValue = "attachment; filename=CurrentFloorPlacements_" + currentDateTime + ".csv"; // 파일명을 정해주는 부분. 앞에 attachment; 가 붙는 경우 뒤에오는 filename으로 해당 data를 다운로드 받게 하는 옵션이다.
 
 		response.setContentType("text/csv"); // response contentType을 text/csv로 지정
 		response.setHeader(headerKey, headerValue); // header에 
@@ -232,25 +233,76 @@ public class SeatController {
 
 		seat.forEach(e -> {
 			if (e.getEmployee() != null) {
-				placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId()).seatName(e.getSeatName())
-						.employeeId(e.getEmployee().getEmployeeId()).build());
+				placementVos.add(PlacementVo.builder().seatId(e.getSeatId()).floorName(e.getFloor().getFloorName())
+						.seatName(e.getSeatName()).employeeId(e.getEmployee().getEmployeeId()).build());
 
 			} else {
-				placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId()).seatName(e.getSeatName())
-						.employeeId(null).build());
+				placementVos.add(PlacementVo.builder().seatId(e.getSeatId()).floorName(e.getFloor().getFloorName())
+						.seatName(e.getSeatName()).employeeId(null).build());
 			}
 		});
 
 		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 		String[] csvHeader = CSVHelper.HEADERs;
-		String[] nameMapping = { "floor", "seatName", "employeeId" };
+		String[] nameMapping = CSVHelper.HEADERs;
 
 		csvWriter.writeHeader(csvHeader);
 		for (PlacementVo placementVo : placementVos) {
 			csvWriter.write(placementVo, nameMapping);
 		}
 		csvWriter.close();
+	}
 
+	@Transactional
+	@GetMapping(value = "/get-csv-file-allfloor-seats")
+	public void exportAllFloorSeatCsvFile(@PathVariable("building_id") String buildingId, HttpServletResponse response)
+			throws Exception {
+
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+		String currentDateTime = dateFormatter.format(new Date());
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment; filename=AllFloorPlacements_" + currentDateTime + ".csv"; // 파일명을 정해주는 부분. 앞에 attachment; 가 붙는 경우 뒤에오는 filename으로 해당 data를 다운로드 받게 하는 옵션이다.
+
+		response.setContentType("text/csv"); // response contentType을 text/csv로 지정
+		response.setHeader(headerKey, headerValue); // header에 
+
+		Building building = buildingService.findByIdNullable(buildingId);
+		if (building == null) {
+			throw new ResourceNotFoundException("Building", "building_id", buildingId);
+		}
+
+		List<Floor> floor = building.getFloors();
+		List<PlacementVo> placementVos = new ArrayList<PlacementVo>();
+		floor.forEach(curFloor -> {
+			List<Seat> seat;
+			try {
+				seat = seatService.findByFloor(curFloor);
+				seat.forEach(e -> {
+					if (e.getEmployee() != null) {
+						placementVos
+								.add(PlacementVo.builder().seatId(e.getSeatId()).floorName(e.getFloor().getFloorName())
+										.seatName(e.getSeatName()).employeeId(e.getEmployee().getEmployeeId()).build());
+
+					} else {
+						placementVos
+								.add(PlacementVo.builder().seatId(e.getSeatId()).floorName(e.getFloor().getFloorName())
+										.seatName(e.getSeatName()).employeeId(null).build());
+					}
+				});
+			} catch (Exception e) {
+				// TODO 예외처리
+			}
+		});
+
+		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+		String[] csvHeader = CSVHelper.HEADERs;
+		String[] nameMapping = CSVHelper.HEADERs;
+
+		csvWriter.writeHeader(csvHeader);
+		for (PlacementVo placementVo : placementVos) {
+			csvWriter.write(placementVo, nameMapping);
+		}
+		csvWriter.close();
 	}
 
 }
