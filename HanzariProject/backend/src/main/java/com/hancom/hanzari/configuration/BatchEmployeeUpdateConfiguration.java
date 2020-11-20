@@ -175,8 +175,7 @@ public class BatchEmployeeUpdateConfiguration {
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
-
-	@Bean
+	
 	//VO에 매핑된 임직원 리스트를 데이터베이스에 저장
 	//TODO authority와 status에 대한 정보 추후에 변경하기
 	public Step thirdStep() {
