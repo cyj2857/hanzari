@@ -136,8 +136,8 @@ export default {
       seatNumber: 0,
 
       isDown: null,
-      posX: 0,
-      posY: 0,
+      firstMouseDownX: 0,
+      firstMouseDownY: 0,
     };
   },
   created() {
@@ -370,13 +370,11 @@ export default {
               //   return;
               // }
               var pointer = this.floorCanvas.getPointer(event.e);
-              this.posX = pointer.x;
-              this.posY = pointer.y;
+              this.firstMouseDownX = pointer.x;
+              this.firstMouseDownY = pointer.y;
 
-              console.log(this.posX);
-              console.log(this.posY);
-
-              //this.addVacantSeat(posX, posY, afterPosX, afterPosY);
+              console.log(this.firstMouseDownX);
+              console.log(this.firstMouseDownY);
             } else if (this.floorCanvas.getActiveObject()) {
               //contextMenu
               var posX = event.e.clientX;
@@ -390,21 +388,30 @@ export default {
           if (event.button === 3) {
             if (this.ableAddVacant) {
               var pointer = this.floorCanvas.getPointer(event.e);
-              var afterPosX = pointer.x;
-              var afterPosY = pointer.y;
+              var mouseUpX = pointer.x;
+              var mouseUpY = pointer.y;
 
-              console.log(afterPosX);
-              console.log(afterPosY);
+              console.log(mouseUpX);
+              console.log(mouseUpY);
               console.log("mouseup");
 
-              if (this.posX == afterPosX && this.posY == afterPosY) {
+              if (this.posX == mouseUpX && this.posY == mouseUpY) {
                 return;
               } else {
                 if (!this.allImageMap.get(this.currentSelectedFloorId)) {
                   alert("도면 이미지가 없습니다");
                   return;
                 }
-                this.addVacantSeat(this.posX, this.posY, afterPosX, afterPosY);
+
+                console.log(this.firstMouseDownX);
+                console.log(this.firstMouseDownY);
+
+                this.addVacantSeat(
+                  this.firstMouseDownX,
+                  this.firstMouseDownY,
+                  mouseUpX,
+                  mouseUpY
+                );
               }
             }
           }
@@ -705,11 +712,7 @@ export default {
       else return Colors.Gray;
     },
 
-    addVacantSeat(posX, posY, afterPosX, afterPosY) {
-      this.isDown = true;
-      let x = posX;
-      let y = posY;
-
+    addVacantSeat(mouseDownX, mouseDownY, mouseUpX, mouseUpY) {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
@@ -718,8 +721,8 @@ export default {
       );
 
       let rectangle = new fabric.Rect({
-        width: x - afterPosX,
-        height: y - afterPosY,
+        width: Math.abs(mouseDownX - mouseUpX),
+        height: Math.abs(mouseDownY - mouseUpY),
         fill: this.getColor(null),
         opacity: 1,
       });
@@ -738,8 +741,8 @@ export default {
         employee_department: null,
         employee_number: null,
         employee_id: null,
-        left: x,
-        top: y,
+        left: mouseDownX,
+        top: mouseDownY,
         angle: 0,
         create: true, //생성
         modify: false, //변경
@@ -761,15 +764,16 @@ export default {
         }
 
         this.seatNumber++;
-        group.seatName = this.currentSelectedFloorName + "-" + this.seatNumber;
+        let seatNameText =
+          this.currentSelectedFloorName + "-" + this.seatNumber;
 
-        let seatNameObject = new fabric.IText(group.seatName, {
+        let seatNameObject = new fabric.IText(seatNameText, {
           left: group.item(0).left,
           top: group.item(0).top - 15,
           fontSize: this.fontSize / this.zoom,
           fill: "black",
         });
-        group.remove(group.item(2));
+        group.seatName = seatNameText;
         group.add(seatNameObject);
       }
 
@@ -793,8 +797,9 @@ export default {
 
       //this.floorCanvas.renderAll();
 
-      this.floorCanvas.on("mouse:move", function (o) {
+      this.floorCanvas.on("mouse:move", function (eve) {
         if (!this.isDown) return;
+        console.log(mousemove);
         var pointer = this.floorCanvas.getPointer(o.e);
 
         if (posX > pointer.x) {
@@ -1214,10 +1219,10 @@ export default {
     },
     clickExportToCSVBtn() {
       //csv 내려받기 //seatName, employeeid, floorid
-      for (let i = 0; i < this.managerFloorList.length; i++) {
-        let floorid = this.managerFloorList[i].floor_id;
+      //for (let i = 0; i < this.managerFloorList.length; i++) {
+        let floorid = this.currentSelectedFloorId;
         this.$emit("downloadCSVFile", floorid);
-      }
+      //}
     },
     changeCSVFile(e) {
       let files = e.target.files || e.dataTransfer.files;
