@@ -213,7 +213,7 @@ public class SeatController {
 
 	@Transactional
 	@GetMapping(value = "/get-csv-file")
-	public void exportCsvFile(@PathVariable("floor_id") String floorId, HttpServletResponse response) throws Exception {
+	public void exportEachFloorSeatCsvFile(@PathVariable("floor_id") String floorId, HttpServletResponse response) throws Exception {
 
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		String currentDateTime = dateFormatter.format(new Date());
