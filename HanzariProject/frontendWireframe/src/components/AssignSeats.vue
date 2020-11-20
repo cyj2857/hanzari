@@ -397,13 +397,15 @@ export default {
               console.log(afterPosY);
               console.log("mouseup");
 
-              if(this.posX==afterPosX && this.posY==afterPosY){
+              if (this.posX == afterPosX && this.posY == afterPosY) {
                 return;
-              }
-              else{
+              } else {
+                if (!this.allImageMap.get(this.currentSelectedFloorId)) {
+                  alert("도면 이미지가 없습니다");
+                  return;
+                }
                 this.addVacantSeat(this.posX, this.posY, afterPosX, afterPosY);
               }
-              
             }
           }
         });
@@ -708,12 +710,6 @@ export default {
       let x = posX;
       let y = posY;
 
-      if (!this.allImageMap.get(this.currentSelectedFloorId)) {
-        alert("도면 이미지가 없습니다");
-        //console.log(this.getEachFloorSeatList(this.currentSelectedFloorId));
-        return;
-      }
-
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
@@ -842,7 +838,7 @@ export default {
         if (
           !confirm(
             "선택된 좌석 중 " +
-              mappedOtherEmployeeSeatNameList.join(", ")+
+              mappedOtherEmployeeSeatNameList.join(", ") +
               "자리에 다른 사원이 매핑되어 있습니다.\n" +
               "변경하시겠습니까?"
           )
