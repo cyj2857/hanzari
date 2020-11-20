@@ -47,9 +47,7 @@ public class TestEmployeeUpdateJobConfiguration {
 	private final JobBuilderFactory jobBuilderFactory;
 	//Step 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
 	private final StepBuilderFactory stepBuilderFactory;
-
 	private final Logger LOGGER = LoggerFactory.getLogger("ConsoleLogger");
-	
 	//발행 될 토큰과 토큰 정보들을 넣어둘 VO
 	private TokenVo tokenVo;
 	//요청에 대한 응답 정보와 임직원 전체 목록을 리스트로 가지고 있을 VO
@@ -62,17 +60,21 @@ public class TestEmployeeUpdateJobConfiguration {
 	//GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
 	//Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.
 	public Job getEmployeesInfoJob() {
-		return jobBuilderFactory.get("getEmployeesInfoJob").start(firstStep()).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
-				.to(thirdStep()) // stepC으로 이동한다.
-				.on("*") // stepC의 결과 관계 없이
-				.end() // stepC으로 이동하면 Flow가 종료한다.
-				.from(firstStep()) // stepA로부터
-				.on("*") // FAILED 외에 모든 경우
-				.to(secondStep()) // stepB로 이동한다.
-				.next(thirdStep()) // stepB가 정상 종료되면 stepC으로 이동한다.
-				.on("*") // stepC의 결과 관계 없이
-				.end() // stepC으로 이동하면 Flow가 종료한다.
-				.end() // Job 종료
+		return jobBuilderFactory.get("getEmployeesInfoJob")
+				.start(firstStep()) //firstStep 실행
+					.on("FAILED") //firstStep이 FAILED일 경우
+					.end() //flow를 종료한다.
+					.from(firstStep()) //firstStep으로부터
+						.on("*") //FAILED 외에 모든 경우에
+						.to(secondStep()) //secondStep으로 이동한다.
+							.on("FAILED") //secondStep이 FAILED일 경우
+							.end() //Flow를 종료한다.
+							.from(secondStep()) //secondStep으로부터
+								.on("*") //FAILED 외에 모든 경우에
+								.to(thirdStep()) //thirdStep으로 이동한다.
+									.on("*") //thirdStep의 결과에 관계없이
+									.end() //thirdStep으로 이동하면 flow를 종료한다.
+				.end() //Job 종료
 				.build();
 	}
 
@@ -92,7 +94,9 @@ public class TestEmployeeUpdateJobConfiguration {
 			final String stringTokenUrl = "https://infosys-gateway.hancom.com/common/oauth2/token";
 			//URL뒤에 들어갈 Parameter들 설정
 			final String stringTokenUrlParameter = String.format("client_id=%s&client_secret=%s&grant_type=%s", 
-					URLEncoder.encode("8SqT9fPgDyNS2d4mn3PBFsaeD65dVvg2", "UTF-8"), URLEncoder.encode("ypseY19GpZIXcA8wSi4TS7WU7XVknXEs", "UTF-8"), URLEncoder.encode("client_credentials", "UTF-8"));
+					URLEncoder.encode("8SqT9fPgDyNS2d4mn3PBFsaeD65dVvg2", "UTF-8"), 
+					URLEncoder.encode("ypseY19GpZIXcA8wSi4TS7WU7XVknXEs", "UTF-8"), 
+					URLEncoder.encode("client_credentials", "UTF-8"));
 			
 			try {
 				tokenUrl = new URL(stringTokenUrl + "?" + stringTokenUrlParameter);
