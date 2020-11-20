@@ -72,6 +72,9 @@ export default {
       this.sliderHeight = size.height;
     });
   },
+  beforeDestroy() {
+    eventBus.$off("initSeatSizeSettingDialog");
+  },
   computed: {
     dialog() {
       return this.dialogStatus;

@@ -64,6 +64,9 @@ export default {
   mounted() {
     this.getAllEmployeeSeats();
   },
+  beforeDestroy() {
+    eventBus.$off("eachEmployeeSeatMap");
+  },
   methods: {
     getAllEmployeeSeats() {
       if (this.allEmployeeSeatMap) {
