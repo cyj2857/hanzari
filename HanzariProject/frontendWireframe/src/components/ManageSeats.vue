@@ -87,6 +87,7 @@
         >
       </v-row>
     </v-card>
+    
     <MappingEmployee
       :copyFromManageSeatsEmployeeList="employee"
       v-if="mappingEmployeeComponentStatus && employee"
