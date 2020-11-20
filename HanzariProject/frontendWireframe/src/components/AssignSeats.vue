@@ -726,17 +726,16 @@ export default {
           let seatNumberArray = [];
           this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
             (seat) => {
-              console.log(seat.seatName);
-              console.log(seat.seatName.split("-"));
               seatNumberArray.push(seat.seatName.split("-")[1]);
             }
           );
-
           //max
           this.seatNumber = Math.max.apply(null, seatNumberArray);
         }
+
         this.seatNumber++;
         group.seatName = this.currentSelectedFloorName + "-" + this.seatNumber;
+
         let seatNameObject = new fabric.IText(group.seatName, {
           left: group.item(0).left,
           top: group.item(0).top - 15,
@@ -770,24 +769,28 @@ export default {
       eventBus.$emit("allSeatMap", this.allSeatMap);
     },
     setMappingSeat(item) {
-      console.log(item);
       if (!this.floorCanvas.getActiveObject()) {
         alert("선택된 좌석이 없습니다.");
         return;
       }
-      let mappedOtherEmployeeLength = 0;
+
+      let mappedOtherEmployeeSeatNameList = [];
       this.floorCanvas.getActiveObjects().forEach((obj) => {
         if (obj.employee_id && obj.employee_id != item.employee_id) {
-          mappedOtherEmployeeLength++;
+          mappedOtherEmployeeSeatNameList.push(obj.seatName);
         }
       });
 
-      if (mappedOtherEmployeeLength > 0) {
+      mappedOtherEmployeeSeatNameList.forEach((obj) => {
+        console.log(obj);
+      });
+
+      if (mappedOtherEmployeeSeatNameList.length > 0) {
         if (
           !confirm(
-            "선택된 좌석 중 이미 " +
-              mappedOtherEmployeeLength +
-              "명의 다른 사원이 매핑된 좌석이 있습니다.\n" +
+            "선택된 좌석 중 " +
+              mappedOtherEmployeeSeatNameList.join(", ")+
+              "자리에 다른 사원이 매핑되어 있습니다.\n" +
               "변경하시겠습니까?"
           )
         ) {
