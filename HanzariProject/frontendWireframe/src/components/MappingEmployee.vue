@@ -14,7 +14,7 @@
       :headers="headers"
       :items="this.employees"
       :search="search"
-      height="265px"
+      height="400px"
     >
       <template v-slot:item="row">
         <tr>
@@ -22,7 +22,8 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-icon large
+            <v-icon
+              large
               id="MappingSeatButton"
               @click="clickMappingSeat(row.item)"
               >add_box</v-icon
@@ -31,6 +32,8 @@
         </tr>
       </template>
     </v-data-table>
+
+    <v-divider class="mx-4"></v-divider>
   </v-card>
 </template>
 
@@ -44,7 +47,7 @@ export default {
       employees: this.copyEmployeeListTwo,
       search: "",
       headers: [
-        { text: "이름", align: "start", sortable: true, value: "name",},
+        { text: "이름", align: "start", sortable: true, value: "name" },
         { text: "부서", value: "department" },
         { text: "내선번호", value: "number" },
         { text: "", value: "MappingSeatButton" },

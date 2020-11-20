@@ -87,6 +87,7 @@
         >
       </v-row>
     </v-card>
+    
     <MappingEmployee
       :copyEmployeeListTwo="employee"
       v-if="mappingEmployeeComponentStatus && employee"

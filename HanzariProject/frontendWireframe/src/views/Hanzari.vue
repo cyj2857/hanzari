@@ -120,7 +120,7 @@ export default {
           newEmployee.number = response.data[i].extension_number;
           newEmployee.employee_id = response.data[i].employee_id;
           newEmployee.seatIdList = response.data[i].seatList;
-          
+
           allEmployeeList.push(newEmployee);
         }
       } catch (error) {
@@ -270,7 +270,7 @@ export default {
 
             newSeat.seat_id = response.data[i].seat_id;
             newSeat.seat_name = response.data[i].seat_name;
-            newSeat.floor = response.data[i].floor; 
+            newSeat.floor = response.data[i].floor;
             newSeat.x = response.data[i].x;
             newSeat.y = response.data[i].y;
             newSeat.is_group = response.data[i].is_group;
@@ -318,7 +318,7 @@ export default {
               let newSeat = {};
               newSeat.seat_id = response.data[j].seat_id;
               newSeat.seat_name = response.data[j].seat_name;
-              newSeat.floor = response.data[j].floor; 
+              newSeat.floor = response.data[j].floor;
               newSeat.x = response.data[j].x;
               newSeat.y = response.data[j].y;
               newSeat.is_group = response.data[j].is_group;
@@ -352,7 +352,8 @@ export default {
       console.log(saveData);
       console.log("saveTableName is");
       console.log(saveTableName);
-      axios.post(
+      axios
+        .post(
           "http://" +
             host +
             ":" +
@@ -379,18 +380,19 @@ export default {
       console.log("saveTableName is");
       console.log(saveTableName);
 
-      axios.post(
-        "http://" +
-         host +
-         ":" +
-         portNum +
-         "/api/buildings/" +
-         building_id +
-         "/floors/" +
-         floor_id +
-         "/" +
-         tableName,
-         saveData,
+      axios
+        .post(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/" +
+            tableName,
+          saveData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -412,17 +414,18 @@ export default {
       console.log("------------");
       console.log("saveTableName is");
       console.log(saveTableName);
-      axios.post(
-        "http://" +
-          host +
-          ":" +
-          portNum +
-          "/api/buildings/" + 
-          building_id +
-          "/floors/" +
-          floor_id +
-          "/" +
-          saveTableName,
+      axios
+        .post(
+          "http://" +
+            host +
+            ":" +
+            portNum +
+            "/api/buildings/" +
+            building_id +
+            "/floors/" +
+            floor_id +
+            "/" +
+            saveTableName,
           JSON.stringify(saveData),
           {
             headers: { "Content-Type": `application/json` },
@@ -435,7 +438,8 @@ export default {
     deleteFloorWtihKey(tableName, key) {
       let deleteTableName = tableName;
       let deleteKey = key;
-      axios.delete(
+      axios
+        .delete(
           "http://" +
             host +
             ":" +
@@ -457,7 +461,8 @@ export default {
     deleteSeatWithKey(tableName, seatId, floor_id) {
       let deleteTableName = tableName;
       let deleteKey = seatId;
-      axios.delete(
+      axios
+        .delete(
           "http://" +
             host +
             ":" +
@@ -494,7 +499,7 @@ export default {
             "/seats/get-csv-file",
           {
             headers: {
-              "Content-Type": "text/csv"
+              "Content-Type": "text/csv",
             },
           }
         );
@@ -534,7 +539,7 @@ export default {
             "/floors/" +
             floor_id +
             "/seats/update-by-file",
-            saveData,
+          saveData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
