@@ -488,7 +488,7 @@ export default {
             building_id +
             "/floors/" +
             floor_id +
-            "/seats/get-csv-file",
+            "/seats/get-csv-file-allfloor-seats",
           {
             headers: {
               "Content-Type": "text/csv",
