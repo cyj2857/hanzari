@@ -42,7 +42,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration //Spring Batch의 모든 Job은 이 어노테이션을 이용해 등록하고 사용해야한다
 @RequiredArgsConstructor //생성자 DI를 위한 lombok 어노테이션
-public class TestEmployeeUpdateJobConfiguration {
+public class BatchEmployeeUpdateConfiguration {
 	//Job 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
 	private final JobBuilderFactory jobBuilderFactory;
 	//Step 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
