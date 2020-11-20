@@ -578,9 +578,6 @@ export default {
           }
         }
       }
-      //console.log(
-      //  oneEmployeeSeatList.length + "전체 삭제한 자리 리스트 길이입니다."
-      //);
     },
     manageKeyboard() {
       let ctrlDown = false;
@@ -773,69 +770,53 @@ export default {
       eventBus.$emit("allSeatMap", this.allSeatMap);
     },
     setMappingSeat(item) {
-      // 공석 또는 사원이 매핑된 좌석에 사원 매핑
-      let eachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
-      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
-      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
-
-      let activeObject = this.floorCanvas.getActiveObject(); //group 객체
-
-      if (activeObject != null) {
-        //해당 자리가 사원이 매핑되어있는 상태에서 다른 사원으로 변경하고자 하는 경우
-        if (
-          activeObject.employee_id != null &&
-          activeObject.employee_id != item.employee_id
-        ) {
-          if (
-            confirm(
-              activeObject.employee_name +
-                "사원의 자리를 " +
-                item.name +
-                "자리로 변경하시겠습니까?"
-            )
-          ) {
-            let groupToObject = activeObject.toObject([
-              "seatId",
-              "employee_id",
-              "floor_id",
-            ]);
-            activeObject.set("modify", true);
-            this.deleteEachEmployeeSeatList(groupToObject);
-          } else {
-            return;
-          }
+      console.log(item);
+      if (!this.floorCanvas.getActiveObject()) {
+        alert("선택된 좌석이 없습니다.");
+        return;
+      }
+      let mappedOtherEmployeeLength = 0;
+      this.floorCanvas.getActiveObjects().forEach((obj) => {
+        if (obj.employee_id && obj.employee_id != item.employee_id) {
+          mappedOtherEmployeeLength++;
         }
-        //해당 자리가 사원이 매핑되어있는 상태에서 같은 사원으로 매핑을 한번더 하려고 하는 경우
-        else if (
-          activeObject.employee_id != null &&
-          activeObject.employee_id == item.employee_id
+      });
+
+      if (mappedOtherEmployeeLength > 0) {
+        if (
+          !confirm(
+            "선택된 좌석 중 이미 " +
+              mappedOtherEmployeeLength +
+              "명의 다른 사원이 매핑된 좌석이 있습니다.\n" +
+              "변경하시겠습니까?"
+          )
         ) {
-          alert("이 자리는 이미 " + item.name + "의 자리입니다.");
           return;
         }
-
-        //해당 자리가 공석이라면 바로 매핑 가능
-        activeObject.employee_name = item.name;
-        activeObject.employee_department = item.department;
-        activeObject.employee_number = item.number;
-        activeObject.employee_id = item.employee_id;
-        activeObject
-          .item(0)
-          .set("fill", this.getColor(activeObject.employee_department));
-        activeObject.set("modify", true);
-
-        this.checkZoom();
-
-        this.floorCanvas.renderAll();
-        eachEmployeeSeatList.push(activeObject);
-
-        eventBus.$emit("allSeatMap", this.allSeatMap);
-        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
       }
+
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
+
+      this.floorCanvas.getActiveObjects().forEach((obj) => {
+        if (obj.employee_id && obj.employee_id != item.employee_id) {
+          // 다른 사원이 매핑된 좌석
+          let groupToObject = obj.toObject(["seatId", "employee_id"]);
+          this.deleteEachEmployeeSeatList(groupToObject);
+        }
+        // 다른 사원이 매핑된 좌석 + 공석
+        obj.employee_name = item.name;
+        obj.employee_department = item.department;
+        obj.employee_number = item.number;
+        obj.employee_id = item.employee_id;
+        obj.item(0).set("fill", this.getColor(obj.employee_department));
+        obj.set("modify", true);
+        eachEmployeeSeatList.push(obj);
+      });
+
+      this.checkZoom();
+      this.floorCanvas.renderAll();
+      eventBus.$emit("allSeatMap", this.allSeatMap);
+      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     clickdeleteAllBtn() {
       if (confirm("Are you sure?")) {
