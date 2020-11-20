@@ -64,6 +64,9 @@ export default {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
     });
   },
+  beforeDestroy() {
+    eventBus.$off("eachEmployeeSeatMap");
+  },
   methods: {
     clickMappingSeat(item) {
       eventBus.$emit("mappingSeat", item);

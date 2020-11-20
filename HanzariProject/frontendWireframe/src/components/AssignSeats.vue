@@ -187,11 +187,10 @@ export default {
     });
     eventBus.$on("managerFloorList", (managerFloors) => {
       this.managerFloorList = managerFloors;
-
       console.log(this.managerFloorList);
     });
-    eventBus.$on("changeToVacant", (status) => {
-      if (status && this.floorCanvas.getActiveObject()) {
+    eventBus.$on("changeToVacant", () => {
+      if (this.floorCanvas.getActiveObject()) {
         this.changeToVacant();
       } else {
         alert("there is no selected object");
@@ -227,6 +226,20 @@ export default {
   mounted() {
     this.initializing();
     this.loadLatestFloor(); //현재 층 이미지와 자리 로드
+  },
+  beforeDestroy() {
+    eventBus.$off("clickChangeFloorSeat");
+    eventBus.$off("changeFloor");
+    eventBus.$off("changeFloorName");
+    eventBus.$off("changeAddVacantSwitch");
+    eventBus.$off("setSeatSizeDialog");
+    eventBus.$off("mappingSeat");
+    eventBus.$off("allFloorList");
+    eventBus.$off("managerFloorList");
+    eventBus.$off("changeToVacant");
+    eventBus.$off("allImageMap");
+    eventBus.$off("showSeat");
+    eventBus.$off("deleteSeatListKey");
   },
   methods: {
     initializing() {
@@ -1039,6 +1052,7 @@ export default {
     // 층간이동
     changeFloorSeat(floor_name) {
       if (!this.floorCanvas.getActiveObject()) {
+        alert("이동할 좌석이 선택되지 않았습니다.");
         return;
       }
       let eachFloorSeatList = this.getEachFloorSeatList(
@@ -1180,7 +1194,9 @@ export default {
     },
     saveFromCSVFileToDB(csvFile) {
       //csv 수정했을시에 db로 정보 save하기
-      var newFileForCSVType = new File([csvFile], csvFile.name, {type: "text/csv"})
+      var newFileForCSVType = new File([csvFile], csvFile.name, {
+        type: "text/csv",
+      });
       console.log(newFileForCSVType);
 
       let floorid = this.currentSelectedFloorId;

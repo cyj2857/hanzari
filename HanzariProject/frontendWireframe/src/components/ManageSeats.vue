@@ -60,7 +60,9 @@
         <v-col cols="10" sm="4">
           <v-card-text>
             <v-btn color="pink lighten-3" @click="clickChangeToVacant"
-              ><h4><v-icon large>person_add_disabled</v-icon>자리 비우기</h4></v-btn
+              ><h4>
+                <v-icon large>person_add_disabled</v-icon>자리 비우기
+              </h4></v-btn
             ></v-card-text
           >
         </v-col>
@@ -87,7 +89,7 @@
         >
       </v-row>
     </v-card>
-    
+
     <MappingEmployee
       :copyFromManageSeatsEmployeeList="employee"
       v-if="mappingEmployeeComponentStatus && employee"
@@ -123,9 +125,7 @@ export default {
       floorItems: [],
       selectedFloorItems: null,
 
-      
       addVacantSwitch: false,
-      
 
       allFloorList: this.copyFromTabsFloorList,
       currentSelectedFloor: null,
@@ -143,7 +143,8 @@ export default {
 
       for (let i = 0; i < this.copyFromTabsFloorList.length; i++) {
         if (
-          this.currentSelectedFloor.floor_id == this.copyFromTabsFloorList[i].floor_id
+          this.currentSelectedFloor.floor_id ==
+          this.copyFromTabsFloorList[i].floor_id
         ) {
           continue;
         }
@@ -154,19 +155,12 @@ export default {
 
     eventBus.$on("allFloorList", (allFloors) => {
       this.allFloorList = allFloors;
-      this.floorItems = [];
-      for (let i = 0; i < this.allFloorList.length; i++) {
-        if (
-          this.currentSelectedFloor.floor_id == this.allFloorList[i].floor_id
-        ) {
-          continue;
-        }
-        this.floorItems.push(this.allFloorList[i].floor_name);
-      }
+      this.initFloorItems();
     });
 
     eventBus.$on("changeFloor", (floor) => {
       this.currentSelectedFloor = floor;
+      this.initFloorItems();
     });
 
     eventBus.$on(
@@ -183,10 +177,30 @@ export default {
       this.confirmSeatSizeSettingDialog(seatSize);
     });
   },
+  beforeDestroy() {
+    eventBus.$off("allFloorList");
+    eventBus.$off("changeFloor");
+    eventBus.$off("mappingEmployeeComponentStatus");
+    eventBus.$off("changeSlider");
+  },
   methods: {
+    initFloorItems() {
+      this.floorItems = [];
+      for (let i = 0; i < this.allFloorList.length; i++) {
+        if (
+          this.currentSelectedFloor.floor_id == this.allFloorList[i].floor_id
+        ) {
+          continue;
+        }
+
+        this.floorItems.push(this.allFloorList[i].floor_name);
+      }
+    },
     clickChangeFloorSeat() {
       if (this.selectedFloorItems) {
         eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItems);
+      } else {
+        alert("이동할 층을 선택하지 않았습니다.");
       }
     },
     getMappingEmployeeComponent() {
@@ -217,7 +231,7 @@ export default {
       eventBus.$emit("setSeatSizeDialog", seatSize);
     },
     clickChangeToVacant() {
-      eventBus.$emit("changeToVacant", true);
+      eventBus.$emit("changeToVacant");
     },
   },
 };
