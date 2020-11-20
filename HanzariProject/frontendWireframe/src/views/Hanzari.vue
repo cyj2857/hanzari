@@ -107,7 +107,6 @@ export default {
     this.otherFloorsImageList = await this.getOtherFloorImageList();
     // 나머지 층 자리 load
     this.otherFloorsSeatMap = await this.getOtherFloorsSeatMap();
-
   },
   methods: {
     async getEmployeeList() {
@@ -222,7 +221,7 @@ export default {
     },
     //나머지 층 이미지 가져오기
     async getOtherFloorImageList() {
-      let otherFloorImageList = [];
+      let otherFloorsImageList = [];
       let responseList = null;
       if (this.floorIdList.length > 0) {
         try {
@@ -492,7 +491,7 @@ export default {
             "/seats/get-csv-file",
           {
             headers: {
-              "Content-Type": "text/csv"
+              "Content-Type": "text/csv",
             },
           }
         );
@@ -532,7 +531,7 @@ export default {
             "/floors/" +
             floor_id +
             "/seats/update-by-file",
-            saveData,
+          saveData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
