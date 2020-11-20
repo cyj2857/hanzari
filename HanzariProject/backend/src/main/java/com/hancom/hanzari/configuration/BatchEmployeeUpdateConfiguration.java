@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -42,6 +43,8 @@ public class BatchEmployeeUpdateConfiguration {
 	private final JobBuilderFactory jobBuilderFactory;
 	//Step 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
 	private final StepBuilderFactory stepBuilderFactory;
+	//ResourceBundle을 이용하여 string value들을 불러옴 properties 확장자인데 확장자없이 파일명만 적어줘도 ResourceBundle이 알아서 해당 파일 찾아줌
+	private final ResourceBundle stringValues = ResourceBundle.getBundle("Res_string_values");
 	private final Logger LOGGER = LoggerFactory.getLogger("ConsoleLogger");
 	//발행 될 토큰과 토큰 정보들을 넣어둘 VO
 	private TokenVo tokenVo;
@@ -84,8 +87,10 @@ public class BatchEmployeeUpdateConfiguration {
 			HttpsURLConnection tokenCreatedConnection;
 			BufferedReader tokenbufferedReader;
 			BufferedWriter tokenBufferedWriter;
+			//stringValues.getKeys()
+			System.out.println(stringValues.getKeys());
 			//URL String으로 설정
-			final String stringTokenUrl = "https://infosys-gateway.hancom.com/common/oauth2/token";
+			final String stringTokenUrl = stringValues.getString("STRING_TOKEN_URL");
 			//URL뒤에 들어갈 Parameter들 설정
 			final String stringTokenUrlParameter = String.format("client_id=%s&client_secret=%s&grant_type=%s", 
 					URLEncoder.encode("8SqT9fPgDyNS2d4mn3PBFsaeD65dVvg2", "UTF-8"), 
