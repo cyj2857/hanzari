@@ -16,7 +16,6 @@ import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.Floor;
 import com.hancom.hanzari.model.Seat;
 import com.hancom.hanzari.repository.EmployeeRepository;
-import com.hancom.hanzari.repository.FloorRepository;
 import com.hancom.hanzari.repository.SeatRepository;
 import com.hancom.hanzari.util.CSVHelper;
 import com.hancom.hanzari.vo.PlacementVo;
@@ -28,8 +27,6 @@ public class SeatServiceImpl implements SeatService {
 	private SeatRepository seatRepository;
 	@Autowired
 	private EmployeeRepository employeeRepository;
-	@Autowired
-	private FloorRepository floorRepository;
 	// Logger
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
@@ -112,27 +109,29 @@ public class SeatServiceImpl implements SeatService {
 
 			// TODO 지금 for문안에서 여러 repository에 대해 각각 접근하여 처리하는데 이부분을 깔끔하게 가다듬을 필요가 있어보임.
 			for (PlacementVo placement : placements) {
-				Optional<Floor> floor = floorRepository.findById(placement.getFloor());
-				if (!floor.isPresent()) {
-					// TODO 실패 처리
-				}
-				Seat seat = seatRepository.findBySeatNameAndFloor(placement.getSeatName(), floor.get());
-				// TODO Seat이 안찾아지는 경우도 생각해봐야할 듯 
-				Optional<Employee> employee = employeeRepository.findById(placement.getEmployeeId());
-				if (!employee.isPresent()) {
-					// TODO 실패 처리
-					seat.setEmployee(null);
-				} else {
-					seat.setEmployee(employee.get());
-				}
+				Optional<Seat> seat = seatRepository.findById(placement.getSeatId());
 
-				seats.add(seat);
-				LOGGER.info("Seat added. (seatId: {}, seat.seatName: {}, placement.seatName: {})", seat.getSeatId(),
-						seat.getSeatName(), placement.getSeatName());
+				if (!seat.isPresent()) {
+					new ResourceNotFoundException("Seat", "seat_id", placement.getSeatId());
+				} else {
+					// TODO Seat이 안찾아지는 경우도 생각해봐야할 듯 
+					Optional<Employee> employee = employeeRepository.findById(placement.getEmployeeId());
+					if (!employee.isPresent()) {
+						seat.get().setEmployee(null);
+					} else {
+						seat.get().setEmployee(employee.get());
+					}
+
+					seats.add(seat.get());
+					LOGGER.info("Seat added. (seatId: {}, seat.seatName: {}, placement.seatName: {})",
+							seat.get().getSeatId(), seat.get().getSeatName(), placement.getSeatName());
+				}
 			}
 			return seatRepository.saveAll(seats);
 
-		} catch (IOException e) {
+		} catch (
+
+		IOException e) {
 			throw new RuntimeException("fail to store csv data: " + e.getMessage());
 		}
 	}

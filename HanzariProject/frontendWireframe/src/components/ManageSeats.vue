@@ -5,7 +5,7 @@
         <v-col cols="12" sm="9">
           <v-card-title
             ><v-icon large>event_seat</v-icon>
-            <h3>공석 만들기</h3></v-card-title
+            <h3>좌석 만들기</h3></v-card-title
           ></v-col
         >
         <v-col cols="12" sm="3">
@@ -16,7 +16,7 @@
           ></v-switch
         ></v-col>
 
-        <v-col
+        <!-- <v-col
           v-for="size of this.sizeItems"
           :key="size.index"
           class="d-flex child-flex"
@@ -45,9 +45,8 @@
           >
             <p class="font-italic">세부 설정</p>
           </v-btn></v-col
-        >
+        > -->
       </v-row>
-      <v-divider class="mx-4"></v-divider>
 
       <v-row>
         <v-col cols="10" sm="6">
@@ -225,15 +224,15 @@ export default {
 
       eventBus.$emit("setSeatSizeDialog", seatSize);
     },
-    clickSizeBtn(size) {
-      let seatSize = {};
+    // clickSizeBtn(size) {
+    //   let seatSize = {};
 
-      seatSize.width = size;
-      seatSize.height = size;
-      this.clickedSize = seatSize;
+    //   seatSize.width = size;
+    //   seatSize.height = size;
+    //   this.clickedSize = seatSize;
 
-      eventBus.$emit("setSeatSizeDialog", seatSize);
-    },
+    //   eventBus.$emit("setSeatSizeDialog", seatSize);
+    // },
     clickChangeToVacant() {
       eventBus.$emit("changeToVacant");
     },
