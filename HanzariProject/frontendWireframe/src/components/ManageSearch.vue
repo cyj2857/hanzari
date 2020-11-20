@@ -66,11 +66,11 @@ export default {
       if (this.allEmployeeSeatMap) {
         this.allEmployeeSeat = [];
 
-        let keys = new Array();
+        let keys = [];
         keys = Array.from(this.allEmployeeSeatMap.keys());
 
         for (let i = 0; i < keys.length; i++) {
-          let seats = new Array();
+          let seats = [];
           seats = this.allEmployeeSeatMap.get(keys[i]);
           for (let j = 0; j < seats.length; j++) {
             let newSeat = {};

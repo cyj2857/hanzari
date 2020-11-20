@@ -107,11 +107,10 @@ export default {
     this.otherFloorsImageList = await this.getOtherFloorImageList();
     // 나머지 층 자리 load
     this.otherFloorsSeatMap = await this.getOtherFloorsSeatMap();
-
   },
   methods: {
     async getEmployeeList() {
-      let allEmployeeList = new Array();
+      let allEmployeeList = [];
       try {
         let response = await axios.get(
           "http://" + host + ":" + portNum + "/api/employee"
@@ -132,7 +131,7 @@ export default {
       return allEmployeeList;
     },
     async getFloorList() {
-      let allFloorList = new Array();
+      let allFloorList = [];
       try {
         let response = await axios.get(
           "http://" +
@@ -191,7 +190,7 @@ export default {
       return latestFloor;
     },
     async getLatestFloorImage() {
-      let latestFloorImage = new Array();
+      let latestFloorImage = [];
       if (this.latestFloor) {
         let latestFloorId = this.latestFloor.floor_id;
         if (latestFloorId != null) {
@@ -222,7 +221,7 @@ export default {
     },
     //나머지 층 이미지 가져오기
     async getOtherFloorImageList() {
-      let otherFloorsImageList = new Array();
+      let otherFloorsImageList = [];
       let responseList = null;
       if (this.floorIdList.length > 0) {
         try {
@@ -253,7 +252,7 @@ export default {
     },
     //우선 최신 층의 자리만 가져옴
     async getLatestFloorSeatList() {
-      let latestFloorSeatList = new Array();
+      let latestFloorSeatList = [];
       if (this.latestFloor) {
         let latestFloorId = this.latestFloor.floor_id;
         try {
@@ -311,10 +310,10 @@ export default {
               this.floorIdList[i] +
               "/seats"
           );
-          let responseList = new Array();
+          let responseList = [];
           // 그 층에 자리가 없다면
           if (response.data.length == 0) {
-            otherFloorsSeatMap.set(this.floorIdList[i], new Array());
+            otherFloorsSeatMap.set(this.floorIdList[i], []);
           } else {
             for (let j = 0; j < response.data.length; j++) {
               // 자리 수 만큼 돈다
@@ -492,7 +491,7 @@ export default {
             "/seats/get-csv-file",
           {
             headers: {
-              "Content-Type": "text/csv"
+              "Content-Type": "text/csv",
             },
           }
         );
@@ -532,7 +531,7 @@ export default {
             "/floors/" +
             floor_id +
             "/seats/update-by-file",
-            saveData,
+          saveData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
