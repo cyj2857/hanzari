@@ -96,7 +96,11 @@ import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 export default {
-  props: ["copyFromTabsFloorList", "copyFromTabsLatestFloorImage", "copyFromTabsOtherFloorsImageList"],
+  props: [
+    "copyFromTabsFloorList",
+    "copyFromTabsLatestFloorImage",
+    "copyFromTabsOtherFloorsImageList",
+  ],
   data() {
     return {
       length: null,
@@ -157,6 +161,10 @@ export default {
       }
     });
   },
+  beforeDestroy() {
+    eventBus.$off("allSeatMap");
+    eventBus.$off("showSeatFloor");
+  },
   methods: {
     showToolTip(floor) {
       if (this.allSeatMap) {
@@ -196,7 +204,6 @@ export default {
               keys = Array.from(employeeDepartmentMap.keys());
               let text = "<br>";
               for (let i = 0; i < keys.length; i++) {
-                console.log(keys[i] + employeeDepartmentMap.get(keys[i]));
                 text +=
                   keys[i] +
                   " : " +

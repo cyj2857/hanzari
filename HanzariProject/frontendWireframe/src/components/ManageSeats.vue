@@ -60,7 +60,9 @@
         <v-col cols="10" sm="4">
           <v-card-text>
             <v-btn color="pink lighten-3" @click="clickChangeToVacant"
-              ><h4><v-icon large>person_add_disabled</v-icon>자리 비우기</h4></v-btn
+              ><h4>
+                <v-icon large>person_add_disabled</v-icon>자리 비우기
+              </h4></v-btn
             ></v-card-text
           >
         </v-col>
@@ -122,9 +124,7 @@ export default {
       floorItems: [],
       selectedFloorItems: null,
 
-      
       addVacantSwitch: false,
-      
 
       allFloorList: this.copyFromTabsFloorList,
       currentSelectedFloor: null,
@@ -142,7 +142,8 @@ export default {
 
       for (let i = 0; i < this.copyFromTabsFloorList.length; i++) {
         if (
-          this.currentSelectedFloor.floor_id == this.copyFromTabsFloorList[i].floor_id
+          this.currentSelectedFloor.floor_id ==
+          this.copyFromTabsFloorList[i].floor_id
         ) {
           continue;
         }
@@ -181,6 +182,12 @@ export default {
 
       this.confirmSeatSizeSettingDialog(seatSize);
     });
+  },
+  beforeDestroy() {
+    eventBus.$off("allFloorList");
+    eventBus.$off("changeFloor");
+    eventBus.$off("mappingEmployeeComponentStatus");
+    eventBus.$off("changeSlider");
   },
   methods: {
     clickChangeFloorSeat() {

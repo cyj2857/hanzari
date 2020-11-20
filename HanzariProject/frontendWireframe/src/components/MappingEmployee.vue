@@ -22,7 +22,8 @@
           <td>{{ row.item.department }}</td>
           <td>{{ row.item.number }}</td>
           <td>
-            <v-icon large
+            <v-icon
+              large
               id="MappingSeatButton"
               @click="clickMappingSeat(row.item)"
               >add_box</v-icon
@@ -44,7 +45,7 @@ export default {
       employees: this.copyFromManageSeatsEmployeeList,
       search: "",
       headers: [
-        { text: "이름", align: "start", sortable: true, value: "name",},
+        { text: "이름", align: "start", sortable: true, value: "name" },
         { text: "부서", value: "department" },
         { text: "내선번호", value: "number" },
         { text: "", value: "MappingSeatButton" },
@@ -56,6 +57,9 @@ export default {
     eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
     });
+  },
+  beforeDestroy() {
+    eventBus.$off("eachEmployeeSeatMap");
   },
   methods: {
     clickMappingSeat(item) {

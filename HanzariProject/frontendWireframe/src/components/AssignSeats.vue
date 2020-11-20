@@ -228,6 +228,20 @@ export default {
     this.initializing();
     this.loadLatestFloor(); //현재 층 이미지와 자리 로드
   },
+  beforeDestroy() {
+    eventBus.$off("clickChangeFloorSeat");
+    eventBus.$off("changeFloor");
+    eventBus.$off("changeFloorName");
+    eventBus.$off("changeAddVacantSwitch");
+    eventBus.$off("setSeatSizeDialog");
+    eventBus.$off("mappingSeat");
+    eventBus.$off("allFloorList");
+    eventBus.$off("managerFloorList");
+    eventBus.$off("changeToVacant");
+    eventBus.$off("allImageMap");
+    eventBus.$off("showSeat");
+    eventBus.$off("deleteSeatListKey");
+  },
   methods: {
     initializing() {
       //canvas, map 생성
@@ -1180,7 +1194,9 @@ export default {
     },
     saveFromCSVFileToDB(csvFile) {
       //csv 수정했을시에 db로 정보 save하기
-      var newFileForCSVType = new File([csvFile], csvFile.name, {type: "text/csv"})
+      var newFileForCSVType = new File([csvFile], csvFile.name, {
+        type: "text/csv",
+      });
       console.log(newFileForCSVType);
 
       let floorid = this.currentSelectedFloorId;
