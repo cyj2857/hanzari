@@ -21,6 +21,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,21 +51,22 @@ public class BatchEmployeeUpdateConfiguration {
 	@Autowired
 	EmployeeService employeeService;
 
+	@Bean
 	//GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
 	//Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.
-	public Job getEmployeesInfoJob(Step firstStep, Step secondStep, Step thirdStep) {
+	public Job getEmployeesInfoJob() {
 		return jobBuilderFactory.get("getEmployeesInfoJob")
-				.start(firstStep) //firstStep 실행
+				.start(firstStep()) //firstStep 실행
 					.on("FAILED") //firstStep이 FAILED일 경우
 					.end() //flow를 종료한다.
-					.from(firstStep) //firstStep으로부터
+					.from(firstStep()) //firstStep으로부터
 						.on("*") //FAILED 외에 모든 경우에
-						.to(secondStep) //secondStep으로 이동한다.
+						.to(secondStep()) //secondStep으로 이동한다.
 							.on("FAILED") //secondStep이 FAILED일 경우
 							.end() //Flow를 종료한다.
-							.from(secondStep) //secondStep으로부터
+							.from(secondStep()) //secondStep으로부터
 								.on("*") //FAILED 외에 모든 경우에
-								.to(thirdStep) //thirdStep으로 이동한다.
+								.to(thirdStep()) //thirdStep으로 이동한다.
 									.on("*") //thirdStep의 결과에 관계없이
 									.end() //thirdStep으로 이동하면 flow를 종료한다.
 				.end() //Job 종료
