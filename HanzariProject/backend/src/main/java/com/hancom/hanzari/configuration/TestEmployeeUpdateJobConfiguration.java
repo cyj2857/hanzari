@@ -57,8 +57,9 @@ public class TestEmployeeUpdateJobConfiguration {
 	EmployeeService employeeService;
 
 	@Bean
-	public Job conditionalStepJob(Step stepA, Step stepB, Step stepC) {
-		return jobBuilderFactory.get("conditionalStepJob").start(stepA).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
+	//employeesGetJob
+	public Job GetEmployeesInfoJob(Step stepA, Step stepB, Step stepC) {
+		return jobBuilderFactory.get("GetEmployeesInfoJob").start(stepA).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
 				.to(stepC) // stepC으로 이동한다.
 				.on("*") // stepC의 결과 관계 없이
 				.end() // stepC으로 이동하면 Flow가 종료한다.
