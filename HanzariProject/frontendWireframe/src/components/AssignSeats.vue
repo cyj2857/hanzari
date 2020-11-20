@@ -187,11 +187,10 @@ export default {
     });
     eventBus.$on("managerFloorList", (managerFloors) => {
       this.managerFloorList = managerFloors;
-
       console.log(this.managerFloorList);
     });
-    eventBus.$on("changeToVacant", (status) => {
-      if (status && this.floorCanvas.getActiveObject()) {
+    eventBus.$on("changeToVacant", () => {
+      if (this.floorCanvas.getActiveObject()) {
         this.changeToVacant();
       } else {
         alert("there is no selected object");

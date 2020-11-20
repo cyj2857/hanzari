@@ -223,7 +223,7 @@ export default {
       eventBus.$emit("setSeatSizeDialog", seatSize);
     },
     clickChangeToVacant() {
-      eventBus.$emit("changeToVacant", true);
+      eventBus.$emit("changeToVacant");
     },
   },
 };
