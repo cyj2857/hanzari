@@ -75,14 +75,18 @@
       >
       <v-row>
         <v-col cols="9">
-          <v-combobox
-            v-model="selectedFloorItems"
+          <v-select
             :items="floorItems"
+            item-value="floor_id"
+            item-text="floor_name"
+            v-model="selectedFloorItemsId"
+            chips
             label="층을 선택하세요"
             single-line
             outlined
             dense
-          ></v-combobox>
+            no-data-text="이동할 층이 없습니다."
+          ></v-select>
         </v-col>
         <v-col cols="12" sm="3">
           <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col
@@ -123,7 +127,7 @@ export default {
         { index: 2, src: "../assets/rect3.png", size: 40 },
       ],
       floorItems: [],
-      selectedFloorItems: null,
+      selectedFloorItemsId: null,
 
       addVacantSwitch: false,
 
@@ -149,7 +153,7 @@ export default {
           continue;
         }
 
-        this.floorItems.push(this.copyFromTabsFloorList[i].floor_name);
+        this.floorItems.push(this.copyFromTabsFloorList[i]);
       }
     }
 
@@ -193,12 +197,12 @@ export default {
           continue;
         }
 
-        this.floorItems.push(this.allFloorList[i].floor_name);
+        this.floorItems.push(this.allFloorList[i]);
       }
     },
     clickChangeFloorSeat() {
-      if (this.selectedFloorItems) {
-        eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItems);
+      if (this.selectedFloorItemsId) {
+        eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItemsId);
       } else {
         alert("이동할 층을 선택하지 않았습니다.");
       }
