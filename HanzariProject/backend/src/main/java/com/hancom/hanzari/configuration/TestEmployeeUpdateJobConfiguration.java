@@ -210,11 +210,4 @@ public class TestEmployeeUpdateJobConfiguration {
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
-
-	// JSON 객체를 읽어오는 Reader
-	public JsonItemReader<EmployeesVo> jsonItemReader() {
-		return new JsonItemReaderBuilder<EmployeesVo>().jsonObjectReader(new JacksonJsonObjectReader<>(EmployeesVo.class))
-				.resource(new ClassPathResource("/testdata/test-employee-data.json")).name("jsonItemReader").build();
-	}
-
 }
