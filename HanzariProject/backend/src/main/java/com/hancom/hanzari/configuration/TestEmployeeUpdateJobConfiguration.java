@@ -59,14 +59,14 @@ public class TestEmployeeUpdateJobConfiguration {
 	@Bean
 	//GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
 	//Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.
-	public Job getEmployeesInfoJob(Step fistStep, Step stepB, Step stepC) {
+	public Job getEmployeesInfoJob(Step fistStep, Step secondStep, Step stepC) {
 		return jobBuilderFactory.get("getEmployeesInfoJob").start(fistStep).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
 				.to(stepC) // stepC으로 이동한다.
 				.on("*") // stepC의 결과 관계 없이
 				.end() // stepC으로 이동하면 Flow가 종료한다.
 				.from(fistStep) // stepA로부터
 				.on("*") // FAILED 외에 모든 경우
-				.to(stepB) // stepB로 이동한다.
+				.to(secondStep) // stepB로 이동한다.
 				.next(stepC) // stepB가 정상 종료되면 stepC으로 이동한다.
 				.on("*") // stepC의 결과 관계 없이
 				.end() // stepC으로 이동하면 Flow가 종료한다.
@@ -125,9 +125,9 @@ public class TestEmployeeUpdateJobConfiguration {
 
 	@Bean
 	//임직원 리스트 받아온 후 프로젝트단 VO 객체에 매핑
-	public Step stepB() {
-		return stepBuilderFactory.get("stepB").tasklet((contribution, chunkContext) -> {
-			LOGGER.info(">>>>> This is StepB");
+	public Step secondStep() {
+		return stepBuilderFactory.get("secondStep").tasklet((contribution, chunkContext) -> {
+			LOGGER.info(">>>>> 임직원 리스트를 받아온 후 VO 객체에 넣어주는 step");
 			URL allEmployeeListUrl;
 			HttpsURLConnection allEmployeeListGetConnection;
 			BufferedReader allEmployeeListReader;
