@@ -15,19 +15,13 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.item.json.JacksonJsonObjectReader;
-import org.springframework.batch.item.json.JsonItemReader;
-import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,19 +52,19 @@ public class BatchEmployeeUpdateConfiguration {
 
 	//GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
 	//Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.
-	public Job getEmployeesInfoJob() {
+	public Job getEmployeesInfoJob(Step firstStep, Step secondStep, Step thirdStep) {
 		return jobBuilderFactory.get("getEmployeesInfoJob")
-				.start(firstStep()) //firstStep 실행
+				.start(firstStep) //firstStep 실행
 					.on("FAILED") //firstStep이 FAILED일 경우
 					.end() //flow를 종료한다.
-					.from(firstStep()) //firstStep으로부터
+					.from(firstStep) //firstStep으로부터
 						.on("*") //FAILED 외에 모든 경우에
-						.to(secondStep()) //secondStep으로 이동한다.
+						.to(secondStep) //secondStep으로 이동한다.
 							.on("FAILED") //secondStep이 FAILED일 경우
 							.end() //Flow를 종료한다.
-							.from(secondStep()) //secondStep으로부터
+							.from(secondStep) //secondStep으로부터
 								.on("*") //FAILED 외에 모든 경우에
-								.to(thirdStep()) //thirdStep으로 이동한다.
+								.to(thirdStep) //thirdStep으로 이동한다.
 									.on("*") //thirdStep의 결과에 관계없이
 									.end() //thirdStep으로 이동하면 flow를 종료한다.
 				.end() //Job 종료
