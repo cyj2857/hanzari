@@ -233,18 +233,18 @@ public class SeatController {
 
 		seat.forEach(e -> {
 			if (e.getEmployee() != null) {
-				placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId()).seatName(e.getSeatName())
-						.employeeId(e.getEmployee().getEmployeeId()).build());
+				placementVos.add(PlacementVo.builder().seatId(e.getSeatId()).floorName(e.getFloor().getFloorName())
+						.seatName(e.getSeatName()).employeeId(e.getEmployee().getEmployeeId()).build());
 
 			} else {
-				placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId()).seatName(e.getSeatName())
-						.employeeId(null).build());
+				placementVos.add(PlacementVo.builder().seatId(e.getSeatId()).floorName(e.getFloor().getFloorName())
+						.seatName(e.getSeatName()).employeeId(null).build());
 			}
 		});
 
 		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 		String[] csvHeader = CSVHelper.HEADERs;
-		String[] nameMapping = { "floor", "seatName", "employeeId" };
+		String[] nameMapping = CSVHelper.HEADERs;
 
 		csvWriter.writeHeader(csvHeader);
 		for (PlacementVo placementVo : placementVos) {
@@ -279,22 +279,24 @@ public class SeatController {
 				seat = seatService.findByFloor(curFloor);
 				seat.forEach(e -> {
 					if (e.getEmployee() != null) {
-						placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId())
-								.seatName(e.getSeatName()).employeeId(e.getEmployee().getEmployeeId()).build());
+						placementVos
+								.add(PlacementVo.builder().seatId(e.getSeatId()).floorName(e.getFloor().getFloorName())
+										.seatName(e.getSeatName()).employeeId(e.getEmployee().getEmployeeId()).build());
 
 					} else {
-						placementVos.add(PlacementVo.builder().floor(e.getFloor().getFloorId())
-								.seatName(e.getSeatName()).employeeId(null).build());
+						placementVos
+								.add(PlacementVo.builder().seatId(e.getSeatId()).floorName(e.getFloor().getFloorName())
+										.seatName(e.getSeatName()).employeeId(null).build());
 					}
 				});
 			} catch (Exception e) {
-				// 예외처리
+				// TODO 예외처리
 			}
 		});
 
 		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 		String[] csvHeader = CSVHelper.HEADERs;
-		String[] nameMapping = { "floor", "seatName", "employeeId" };
+		String[] nameMapping = CSVHelper.HEADERs;
 
 		csvWriter.writeHeader(csvHeader);
 		for (PlacementVo placementVo : placementVos) {
