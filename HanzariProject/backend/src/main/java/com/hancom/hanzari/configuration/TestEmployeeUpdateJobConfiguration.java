@@ -78,6 +78,7 @@ public class TestEmployeeUpdateJobConfiguration {
 	//토큰 발행 step
 	public Step fistStep() {
 		//Job 이름 지정과 마찬가지로 Builder를 통해 이름을 지정한다.
+		//tasklet안에는 해당 step에서 수행될 기능들을 작성한다.
 		return stepBuilderFactory.get("firstStep").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> First step(토큰 발행 step)");
 			
@@ -184,7 +185,7 @@ public class TestEmployeeUpdateJobConfiguration {
 					employeeService.save(employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer")
 							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId()).employeeName(e.getUserName()).status("재직")
 							.extensionNumber(e.getCmpPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build()));
-			});
+				});
 			} catch(Exception e) {
 				LOGGER.error("Exception in Third step", e);
 			}
