@@ -14,7 +14,7 @@
       :headers="headers"
       :items="this.employees"
       :search="search"
-      height="265px"
+      height="400px"
     >
       <template v-slot:item="row">
         <tr>
@@ -32,6 +32,8 @@
         </tr>
       </template>
     </v-data-table>
+
+    <v-divider class="mx-4"></v-divider>
   </v-card>
 </template>
 
