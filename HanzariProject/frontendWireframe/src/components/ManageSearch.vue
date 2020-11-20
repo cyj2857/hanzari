@@ -14,7 +14,9 @@
       :headers="headers"
       :items="allEmployeeSeat"
       :search="search"
-      height="265px"
+      height="400px"
+      class="elevation-1"
+      :footer-props="{ 'items-per-page-text': '페이지 당 자리' }"
     >
       <template v-slot:item="row">
         <tr>

@@ -15,6 +15,8 @@
       :items="this.employees"
       :search="search"
       height="400px"
+      class="elevation-1"
+      :footer-props="{ 'items-per-page-text': '페이지 당 사원' }"
     >
       <template v-slot:item="row">
         <tr>
@@ -31,9 +33,11 @@
           </td>
         </tr>
       </template>
+      <template v-slot:pageText="row">
+        ITEMS {{ row.pageStart }} - {{ row.pageStop }} OF
+        {{ row.itemsLength }}
+      </template>
     </v-data-table>
-
-    <v-divider class="mx-4"></v-divider>
   </v-card>
 </template>
 
