@@ -192,22 +192,4 @@ public class TestEmployeeUpdateJobConfiguration {
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
-	
-	@Bean
-	public Job simpleJob() {
-		return jobBuilderFactory.get("simpleJob").start(simpleStepD()).build();
-	}
-	
-	// simpleJob에 물려있는 step.
-	@Bean
-	public Step simpleStepD() {
-		return stepBuilderFactory.get("simpleStepD").tasklet((contribution, chunkContext) -> {
-			LOGGER.info(">>>>> This is Step1"); // 테스트를 위한 코드 
-			// TODO 1. JSON파일의 "employees" 부분을 List<EmployeeVo> 리스트로 받아온다.
-			// TODO 2. empVo.forEach()에서 각각의 empVo에 해당하는 employee와 employee_additional_info 객체를 만들어준다. (toEntity())
-			// TODO 3. employeeService.save()과정을 수행해준다.
-			// TODO 4. 이 job을 일정한 스케쥴로 돌려야 함. ex. 00:00마다 돌린다던지...
-			return RepeatStatus.FINISHED;
-		}).build();
-	}
 }
