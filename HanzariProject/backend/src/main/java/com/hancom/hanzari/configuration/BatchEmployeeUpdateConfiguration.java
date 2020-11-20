@@ -15,19 +15,14 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.item.json.JacksonJsonObjectReader;
-import org.springframework.batch.item.json.JsonItemReader;
-import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,7 +73,6 @@ public class BatchEmployeeUpdateConfiguration {
 				.build();
 	}
 
-	@Bean
 	//토큰 발행 step
 	public Step firstStep() {
 		//Job 이름 지정과 마찬가지로 Builder를 통해 이름을 지정한다.
@@ -130,7 +124,6 @@ public class BatchEmployeeUpdateConfiguration {
 		}).build();
 	}
 
-	@Bean
 	//임직원 리스트 받아온 후 프로젝트단 VO 객체에 매핑
 	public Step secondStep() {
 		return stepBuilderFactory.get("secondStep").tasklet((contribution, chunkContext) -> {
@@ -178,8 +171,7 @@ public class BatchEmployeeUpdateConfiguration {
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
-
-	@Bean
+	
 	//VO에 매핑된 임직원 리스트를 데이터베이스에 저장
 	//TODO authority와 status에 대한 정보 추후에 변경하기
 	public Step thirdStep() {
