@@ -41,7 +41,7 @@ import com.hancom.hanzari.vo.TokenVo;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor // 생성자 DI를 위한 lombok 어노테이션
-@Configuration
+@Configuration// Spring Batch의 모든 Job은 이 어노테이션을 이용해 등록하고 사용해야한다
 public class TestEmployeeUpdateJobConfiguration {
 	private final JobBuilderFactory jobBuilderFactory; // 생성자 DI 받음
 	private final StepBuilderFactory stepBuilderFactory; // 생성자 DI 받음
@@ -170,6 +170,7 @@ public class TestEmployeeUpdateJobConfiguration {
 	}
 
 	@Bean
+	//VO에 매핑된 임직원 리스트를 데이터베이스에 저장
 	public Step stepC() {
 		return stepBuilderFactory.get("stepC").tasklet((contribution, chunkContext) -> {
 			LOGGER.info(">>>>> This is StepC");
