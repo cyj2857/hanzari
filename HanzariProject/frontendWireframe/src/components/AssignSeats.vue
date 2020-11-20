@@ -146,8 +146,8 @@ export default {
       ].floor_id;
     }
     //층간 이동
-    eventBus.$on("clickChangeFloorSeat", (floor_name) => {
-      this.changeFloorSeat(floor_name);
+    eventBus.$on("clickChangeFloorSeat", (floor_id) => {
+      this.changeFloorSeat(floor_id);
     });
 
     eventBus.$on("changeFloor", (floor) => {
@@ -1051,7 +1051,7 @@ export default {
       this.toolTipStatus = true;
     },
     // 층간이동
-    changeFloorSeat(floor_name) {
+    changeFloorSeat(floor_id) {
       if (!this.floorCanvas.getActiveObject()) {
         alert("이동할 좌석이 선택되지 않았습니다.");
         return;
@@ -1065,7 +1065,7 @@ export default {
       );
 
       for (let i = 0; i < this.allFloorList.length; i++) {
-        if (floor_name == this.allFloorList[i].floor_name) {
+        if (this.allFloorList[i].floor_id == floor_id) {
           this.floorCanvas.getActiveObjects().forEach((obj) => {
             obj.set("floor_id", this.allFloorList[i].floor_id);
             obj.set("floor_name", this.allFloorList[i].floor_name);
@@ -1074,7 +1074,6 @@ export default {
             let changeFloorSeatList = this.getEachFloorSeatList(
               this.allFloorList[i].floor_id
             );
-
             let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
               this.allFloorList[i].floor_id
             );
@@ -1095,7 +1094,6 @@ export default {
             }
             eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
             eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
-
             eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
           });
           this.floorCanvas.renderAll();
@@ -1209,7 +1207,7 @@ export default {
 
     clickSaveBtn() {
       this.floorCanvas.discardActiveObject();
-      
+
       if (this.managerFloorList) {
         //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
