@@ -56,7 +56,6 @@ public class BatchEmployeeUpdateConfiguration {
 	@Autowired
 	EmployeeService employeeService;
 
-	@Bean
 	//GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
 	//Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.
 	public Job getEmployeesInfoJob() {
@@ -78,7 +77,6 @@ public class BatchEmployeeUpdateConfiguration {
 				.build();
 	}
 
-	@Bean
 	//토큰 발행 step
 	public Step firstStep() {
 		//Job 이름 지정과 마찬가지로 Builder를 통해 이름을 지정한다.
@@ -130,7 +128,6 @@ public class BatchEmployeeUpdateConfiguration {
 		}).build();
 	}
 
-	@Bean
 	//임직원 리스트 받아온 후 프로젝트단 VO 객체에 매핑
 	public Step secondStep() {
 		return stepBuilderFactory.get("secondStep").tasklet((contribution, chunkContext) -> {
