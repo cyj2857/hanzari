@@ -24,7 +24,14 @@
           <v-icon large>cloud_download</v-icon> CSV 내려받기
         </v-btn>
         <v-divider vertical></v-divider>
-        <v-btn @click="clickSaveFromCSVBtn" text>
+        <input
+          v-show="false"
+          ref="Upload"
+          type="file"
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+          @change="changeCSVFile"
+        />
+        <v-btn @click="$refs.Upload.click()" text>
           <v-icon large>cloud_upload</v-icon> CSV 내용 db 업데이트하기
         </v-btn>
       </v-toolbar-items>
@@ -73,12 +80,12 @@ import { eventBus } from "../main.js";
 export default {
   name: "AttachCanvas",
   props: [
-    "copyEmployee",
-    "copyFloors",
-    "latestFloorImage",
-    "otherFloorsImageList",
-    "latestFloorSeatsList",
-    "otherFloorsSeatsList",
+    "copyEmployeeList",
+    "copyFloorList",
+    "copyLatestFloorImage",
+    "copyOtherFloorsImageList",
+    "copyLatestFloorSeatList",
+    "copyOtherFloorsSeatMap",
   ],
   data() {
     return {
@@ -91,21 +98,21 @@ export default {
       currentSelectedFloorName: null,
       currentSelectedFloorId: null,
 
-      latestFloorImageFromDb: this.latestFloorImage,
-      otherFloorImageFromDb: this.otherFloorsImageList,
+      latestFloorImageFromDb: this.copyLatestFloorImage,
+      otherFloorImageFromDb: this.copyOtherFloorsImageList,
       allImageMap: null, //모든 이미지 저장과 로드(floorid / file or url)
 
-      latestFloorSeatListFromDb: this.latestFloorSeatsList,
-      otherFloorSeatListFromDb: this.otherFloorsSeatsList,
+      latestFloorSeatListFromDb: this.copyLatestFloorSeatList,
+      otherFloorSeatListFromDb: this.copyOtherFloorsSeatMap,
       //자리 Map <층이름, 자리리스트>
       allSeatMap: null, //가시적 자리 map
       managerAllSeatMap: null, //DB 관리 자리 map
 
-      employees: this.copyEmployee,
+      employees: this.copyEmployeeList,
       eachEmployeeSeatMap: null, //each Employee's seats map
 
-      allFloorList: this.copyFloors, // 가시적 층 리스트
-      managerFloorList: this.copyFloors, // DB 관리 층 리스트
+      allFloorList: this.copyFloorList, // 가시적 층 리스트
+      managerFloorList: this.copyFloorList, // DB 관리 층 리스트
 
       contextMenuStatus: false,
       contextMenuXLocation: 100,
@@ -805,12 +812,11 @@ export default {
         activeObject
           .item(0)
           .set("fill", this.getColor(activeObject.employee_department));
-        //activeObject.item(1).set("text", item.name);
         activeObject.set("modify", true);
+
         this.checkZoom();
 
         this.floorCanvas.renderAll();
-
         eachEmployeeSeatList.push(activeObject);
 
         eventBus.$emit("allSeatMap", this.allSeatMap);
@@ -1167,12 +1173,21 @@ export default {
         this.$emit("downloadCSVFile", floorid);
       }
     },
-    clickSaveFromCSVBtn() {
+    changeCSVFile(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.saveFromCSVFileToDB(files[0]);
+    },
+    saveFromCSVFileToDB(csvFile) {
       //csv 수정했을시에 db로 정보 save하기
-      for (let i = 0; i < this.managerFloorList.length; i++) {
-        let floorid = this.managerFloorList[i].floor_id;
-        this.$emit("saveFromCSVFileToDB", floorid);
-      }
+      var newFileForCSVType = new File([csvFile], csvFile.name, {type: "text/csv"})
+      console.log(newFileForCSVType);
+
+      let floorid = this.currentSelectedFloorId;
+      let csvFileData = new FormData();
+      csvFileData.append("file", newFileForCSVType);
+
+      this.$emit("saveFromCSVFileToDB", csvFileData, floorid);
     },
 
     clickSaveBtn() {

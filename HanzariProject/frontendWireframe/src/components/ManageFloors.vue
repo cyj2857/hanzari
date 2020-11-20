@@ -96,7 +96,7 @@ import { eventBus } from "../main.js";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 export default {
-  props: ["copyfloorList", "copyLatestFloorImage", "copyOtherFloorsImageList"],
+  props: ["copyFromTabsFloorList", "copyFromTabsLatestFloorImage", "copyFromTabsOtherFloorsImageList"],
   data() {
     return {
       length: null,
@@ -116,30 +116,30 @@ export default {
     };
   },
   created() {
-    if (this.copyfloorList && this.copyfloorList.length) {
-      this.currentSelectedFloor = this.copyfloorList[
-        this.copyfloorList.length - 1
+    if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
+      this.currentSelectedFloor = this.copyFromTabsFloorList[
+        this.copyFromTabsFloorList.length - 1
       ];
-      this.allFloorList = this.copyfloorList;
+      this.allFloorList = this.copyFromTabsFloorList;
       this.managerFloorList = this.allFloorList.slice();
-      this.length = this.copyfloorList.length;
+      this.length = this.copyFromTabsFloorList.length;
       this.clickFloorIndexes = this.currentSelectedFloor.floor_id;
     }
 
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
-      if (this.copyLatestFloorImage) {
-        for (let i = 0; i < this.copyLatestFloorImage.length; i++) {
-          let imgurl = this.copyLatestFloorImage[i].url;
-          let floorid = this.copyLatestFloorImage[i].floorid;
+      if (this.copyFromTabsLatestFloorImage) {
+        for (let i = 0; i < this.copyFromTabsLatestFloorImage.length; i++) {
+          let imgurl = this.copyFromTabsLatestFloorImage[i].url;
+          let floorid = this.copyFromTabsLatestFloorImage[i].floorid;
           this.allImageMap.set(floorid, imgurl);
         }
       }
 
-      if (this.copyOtherFloorsImageList) {
-        for (let i = 0; i < this.copyOtherFloorsImageList.length; i++) {
-          let imgurl = this.copyOtherFloorsImageList[i].url;
-          let floorid = this.copyOtherFloorsImageList[i].floorid;
+      if (this.copyFromTabsOtherFloorsImageList) {
+        for (let i = 0; i < this.copyFromTabsOtherFloorsImageList.length; i++) {
+          let imgurl = this.copyFromTabsOtherFloorsImageList[i].url;
+          let floorid = this.copyFromTabsOtherFloorsImageList[i].floorid;
           this.allImageMap.set(floorid, imgurl);
         }
       }

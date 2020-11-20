@@ -38,10 +38,10 @@
 import { eventBus } from "../main";
 export default {
   name: "MappingEmployee",
-  props: ["copyEmployeeListTwo"],
+  props: ["copyFromManageSeatsEmployeeList"],
   data() {
     return {
-      employees: this.copyEmployeeListTwo,
+      employees: this.copyFromManageSeatsEmployeeList,
       search: "",
       headers: [
         { text: "이름", align: "start", sortable: true, value: "name",},
