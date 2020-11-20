@@ -57,13 +57,14 @@ public class TestEmployeeUpdateJobConfiguration {
 	EmployeeService employeeService;
 
 	@Bean
-	//employeesGetJob
-	public Job GetEmployeesInfoJob(Step stepA, Step stepB, Step stepC) {
-		return jobBuilderFactory.get("GetEmployeesInfoJob").start(stepA).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
+	//GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
+	//Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.
+	public Job getEmployeesInfoJob(Step fistStep, Step stepB, Step stepC) {
+		return jobBuilderFactory.get("getEmployeesInfoJob").start(fistStep).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
 				.to(stepC) // stepC으로 이동한다.
 				.on("*") // stepC의 결과 관계 없이
 				.end() // stepC으로 이동하면 Flow가 종료한다.
-				.from(stepA) // stepA로부터
+				.from(fistStep) // stepA로부터
 				.on("*") // FAILED 외에 모든 경우
 				.to(stepB) // stepB로 이동한다.
 				.next(stepC) // stepB가 정상 종료되면 stepC으로 이동한다.
@@ -75,9 +76,10 @@ public class TestEmployeeUpdateJobConfiguration {
 
 	@Bean
 	//토큰 발행 step
-	public Step stepA() {
-		return stepBuilderFactory.get("stepA").tasklet((contribution, chunkContext) -> {
-			LOGGER.info(">>>>> This is StepA");
+	public Step fistStep() {
+		//Job 이름 지정과 마찬가지로 Builder를 통해 이름을 지정한다.
+		return stepBuilderFactory.get("firstStep").tasklet((contribution, chunkContext) -> {
+			LOGGER.info(">>>>> 토큰 발행 step");
 			
 			URL tokenUrl;
 			HttpsURLConnection tokenCreatedConnection;
