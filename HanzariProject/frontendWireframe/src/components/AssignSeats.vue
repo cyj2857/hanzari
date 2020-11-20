@@ -449,6 +449,7 @@ export default {
         .forEach((obj) => {
           this.floorCanvas.remove(obj);
         });
+      this.floorCanvas.discardActiveObject();
 
       let eachfloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
@@ -1207,8 +1208,9 @@ export default {
     },
 
     clickSaveBtn() {
+      this.floorCanvas.discardActiveObject();
+      
       if (this.managerFloorList) {
-        //console.log(this.managerFloorList);
         //층 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           if (!this.managerFloorList[i].create) {
