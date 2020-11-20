@@ -79,7 +79,7 @@ public class TestEmployeeUpdateJobConfiguration {
 	public Step fistStep() {
 		//Job 이름 지정과 마찬가지로 Builder를 통해 이름을 지정한다.
 		return stepBuilderFactory.get("firstStep").tasklet((contribution, chunkContext) -> {
-			LOGGER.info(">>>>> 토큰 발행 step");
+			LOGGER.info(">>>>> First step(토큰 발행 step)");
 			
 			URL tokenUrl;
 			HttpsURLConnection tokenCreatedConnection;
@@ -110,9 +110,9 @@ public class TestEmployeeUpdateJobConfiguration {
 				tokenVo = new ObjectMapper().readValue(tokenbufferedReader.readLine(),TokenVo.class);
 				tokenbufferedReader.close();
 			} catch(IOException e) {
-				LOGGER.error("IOException in StepA", e);
+				LOGGER.error("IOException in First step", e);
 			} catch(Exception e) {
-				LOGGER.error("Exception in StepA", e);
+				LOGGER.error("Exception in First step", e);
 			}
 			
 			LOGGER.info("토큰 타입 : " + tokenVo.getTokenType());
@@ -127,7 +127,7 @@ public class TestEmployeeUpdateJobConfiguration {
 	//임직원 리스트 받아온 후 프로젝트단 VO 객체에 매핑
 	public Step secondStep() {
 		return stepBuilderFactory.get("secondStep").tasklet((contribution, chunkContext) -> {
-			LOGGER.info(">>>>> 발행된 토큰으로부터 API 콜을 통해 JSON형식의 임직원 리스트를 받아온 후 VO 객체에 매핑해주는 step");
+			LOGGER.info(">>>>> Second step(발행된 토큰으로부터 API 콜을 통해 JSON형식의 임직원 리스트를 받아온 후 VO 객체에 매핑해주는 step)");
 			URL allEmployeeListUrl;
 			HttpsURLConnection allEmployeeListGetConnection;
 			BufferedReader allEmployeeListReader;
@@ -163,9 +163,9 @@ public class TestEmployeeUpdateJobConfiguration {
 				resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
 				allEmployeeListReader.close();
 			} catch(IOException e) {
-				LOGGER.error("IOException in StepB", e);
+				LOGGER.error("IOException in Second step", e);
 			} catch (Exception e) {
-				LOGGER.error("Exception in StepB", e);
+				LOGGER.error("Exception in Second step", e);
 			}
 			
 			return RepeatStatus.FINISHED;
@@ -177,12 +177,17 @@ public class TestEmployeeUpdateJobConfiguration {
 	//TODO authority와 status에 대한 정보 추후에 변경하기
 	public Step thirdStep() {
 		return stepBuilderFactory.get("thirdStep").tasklet((contribution, chunkContext) -> {
-			LOGGER.info(">>>>> VO에 매핑된 임직원 리스트를 데이터베이스에 삽입하는 step");
-			resultVo.getAllEmployeeListVo().forEach(e -> {
-				employeeService.save(employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer")
-				.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId()).employeeName(e.getUserName()).status("재직")
-						.extensionNumber(e.getCmpPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build()));
+			LOGGER.info(">>>>> Third step(VO에 매핑된 임직원 리스트를 데이터베이스에 삽입하는 step)");
+			
+			try{
+				resultVo.getAllEmployeeListVo().forEach(e -> {
+					employeeService.save(employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer")
+							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId()).employeeName(e.getUserName()).status("재직")
+							.extensionNumber(e.getCmpPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build()));
 			});
+			} catch(Exception e) {
+				LOGGER.error("Exception in Third step", e);
+			}
 			return RepeatStatus.FINISHED;
 		}).build();
 	}
