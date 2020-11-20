@@ -40,10 +40,10 @@ import com.hancom.hanzari.vo.TokenVo;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor // 생성자 DI를 위한 lombok 어노테이션
-@Configuration// Spring Batch의 모든 Job은 이 어노테이션을 이용해 등록하고 사용해야한다
+@Configuration//Spring Batch의 모든 Job은 이 어노테이션을 이용해 등록하고 사용해야한다
+@RequiredArgsConstructor //생성자 DI를 위한 lombok 어노테이션
 public class TestEmployeeUpdateJobConfiguration {
-	private final JobBuilderFactory jobBuilderFactory; // 생성자 DI 받음
+	private final JobBuilderFactory jobBuilderFactory; //Job 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
 	private final StepBuilderFactory stepBuilderFactory; // 생성자 DI 받음
 
 	private final Logger LOGGER = LoggerFactory.getLogger("ConsoleLogger");
@@ -59,15 +59,15 @@ public class TestEmployeeUpdateJobConfiguration {
 	@Bean
 	//GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
 	//Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.
-	public Job getEmployeesInfoJob(Step fistStep, Step secondStep, Step thirdStep) {
+	public Job getEmployeesInfoJob() {
 		return jobBuilderFactory.get("getEmployeesInfoJob").start(firstStep()).on(ExitStatus.FAILED.getExitCode()) // FAILED 일 경우
-				.to(thirdStep) // stepC으로 이동한다.
+				.to(thirdStep()) // stepC으로 이동한다.
 				.on("*") // stepC의 결과 관계 없이
 				.end() // stepC으로 이동하면 Flow가 종료한다.
-				.from(fistStep) // stepA로부터
+				.from(firstStep()) // stepA로부터
 				.on("*") // FAILED 외에 모든 경우
-				.to(secondStep) // stepB로 이동한다.
-				.next(thirdStep) // stepB가 정상 종료되면 stepC으로 이동한다.
+				.to(secondStep()) // stepB로 이동한다.
+				.next(thirdStep()) // stepB가 정상 종료되면 stepC으로 이동한다.
 				.on("*") // stepC의 결과 관계 없이
 				.end() // stepC으로 이동하면 Flow가 종료한다.
 				.end() // Job 종료
@@ -76,7 +76,7 @@ public class TestEmployeeUpdateJobConfiguration {
 
 	@Bean
 	//토큰 발행 step
-	public Step fistStep() {
+	public Step firstStep() {
 		//Job 이름 지정과 마찬가지로 Builder를 통해 이름을 지정한다.
 		//tasklet안에는 해당 step에서 수행될 기능들을 작성한다.
 		return stepBuilderFactory.get("firstStep").tasklet((contribution, chunkContext) -> {
