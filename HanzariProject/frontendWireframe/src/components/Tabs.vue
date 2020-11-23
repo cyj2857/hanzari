@@ -69,12 +69,12 @@ export default {
     };
   },
   created() {
-    eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
+    eventBus.$on("pushEachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.eachEmployeeSeatMap = eachEmployeeSeatMap;
     });
   },
   beforeDestroy() {
-    eventBus.$off("eachEmployeeSeatMap");
+    eventBus.$off("pushEachEmployeeSeatMap");
   },
 };
 </script>

@@ -62,7 +62,7 @@ export default {
     };
   },
   created() {
-    eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
+    eventBus.$on("pushEachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
       this.getAllEmployeeSeats();
     });
@@ -71,7 +71,7 @@ export default {
     this.getAllEmployeeSeats();
   },
   beforeDestroy() {
-    eventBus.$off("eachEmployeeSeatMap");
+    eventBus.$off("pushEachEmployeeSeatMap");
   },
   methods: {
     getAllEmployeeSeats() {
@@ -102,8 +102,8 @@ export default {
       }
     },
     showSeatButtonClicked(item) {
-      eventBus.$emit("showSeat", item); //좌석 하이라이트
-      eventBus.$emit("showSeatFloor", item.floorid); //층 이동
+      eventBus.$emit("showSeatHighlight", item); //좌석 하이라이트
+      eventBus.$emit("pushFloorOfSeat", item.floorid); //층 이동
     },
   },
 };
