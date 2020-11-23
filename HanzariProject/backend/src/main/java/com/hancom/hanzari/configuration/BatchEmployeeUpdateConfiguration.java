@@ -87,8 +87,6 @@ public class BatchEmployeeUpdateConfiguration {
 			HttpsURLConnection tokenCreatedConnection;
 			BufferedReader tokenBufferedReader;
 			BufferedWriter tokenBufferedWriter;
-			// stringValues.getKeys()
-			System.out.println(stringValues.getKeys());
 			// URL String으로 설정
 			final String stringTokenUrl = stringValues.getString("TOKEN_URL");
 			// URL뒤에 들어갈 Parameter들 설정
@@ -147,11 +145,11 @@ public class BatchEmployeeUpdateConfiguration {
 			URL allEmployeeListUrl;
 			HttpsURLConnection allEmployeeListGetConnection;
 			BufferedReader allEmployeeListReader;
-			final String stringTokenUrl = "https://infosys-gateway.hancom.com/gw/organization/v1/employees";
-			final String stringCmpIdParameter = String.format("cmpId=%s", URLEncoder.encode("C100171030", "UTF-8"));
+			final String stringEmployeesUrl = stringValues.getString("EMPLOYEES_URL");
+			final String stringCmpIdParameter = String.format("cmpId=%s", URLEncoder.encode(stringValues.getString("COMPANY_ID"), "UTF-8"));
 
 			try {
-				allEmployeeListUrl = new URL(stringTokenUrl + "?" + stringCmpIdParameter);
+				allEmployeeListUrl = new URL(stringEmployeesUrl + "?" + stringCmpIdParameter);
 				allEmployeeListGetConnection = (HttpsURLConnection) allEmployeeListUrl.openConnection();
 				allEmployeeListGetConnection.setRequestMethod("GET");
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
