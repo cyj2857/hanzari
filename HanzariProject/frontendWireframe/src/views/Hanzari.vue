@@ -68,9 +68,9 @@ import Tabs from "@/components/Tabs.vue";
 import AssignSeats from "@/components/AssignSeats.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
 
-const portNum = 8081;
-const host = "172.30.1.53";
-const building_id = "HANCOM01";
+const PORT_NUMBER = 8081;
+const HOST = "172.30.1.53";
+const BUILDING_ID = "HANCOM01";
 
 export default {
   name: "Hanzari",
@@ -118,7 +118,7 @@ export default {
       let allEmployeeList = [];
       try {
         let response = await axios.get(
-          "http://" + host + ":" + portNum + "/api/employee"
+          "http://" + HOST + ":" + PORT_NUMBER + "/api/employee"
         );
         for (var i = 0; i < response.data.length; i++) {
           var newEmployee = {};
@@ -140,11 +140,11 @@ export default {
       try {
         let response = await axios.get(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors"
         );
         for (var i = 0; i < response.data.length; i++) {
@@ -181,11 +181,11 @@ export default {
       try {
         let response = await axios.get(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/get-latest-floor"
         );
         latestFloor = response.data;
@@ -202,11 +202,11 @@ export default {
           try {
             let response = await axios.get(
               "http://" +
-                host +
+                HOST +
                 ":" +
-                portNum +
+                PORT_NUMBER +
                 "/api/buildings/" +
-                building_id +
+                BUILDING_ID +
                 "/floors/" +
                 latestFloorId +
                 "/images"
@@ -233,11 +233,11 @@ export default {
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
             let response = await axios.get(
               "http://" +
-                host +
+                HOST +
                 ":" +
-                portNum +
+                PORT_NUMBER +
                 "/api/buildings/" +
-                building_id +
+                BUILDING_ID +
                 "/floors/" +
                 this.floorIdList[i] +
                 "/images"
@@ -263,11 +263,11 @@ export default {
         try {
           let response = await axios.get(
             "http://" +
-              host +
+              HOST +
               ":" +
-              portNum +
+              PORT_NUMBER +
               "/api/buildings/" +
-              building_id +
+              BUILDING_ID +
               "/floors/" +
               latestFloorId +
               "/seats"
@@ -306,11 +306,11 @@ export default {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
           let response = await axios.get(
             "http://" +
-              host +
+              HOST +
               ":" +
-              portNum +
+              PORT_NUMBER +
               "/api/buildings/" +
-              building_id +
+              BUILDING_ID +
               "/floors/" +
               this.floorIdList[i] +
               "/seats"
@@ -362,11 +362,11 @@ export default {
       try {
         axios.post(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/" +
             saveTableName,
           JSON.stringify(saveData),
@@ -389,11 +389,11 @@ export default {
       try {
         axios.post(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
             floor_id +
             "/" +
@@ -420,11 +420,11 @@ export default {
       try {
         axios.post(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
             floor_id +
             "/" +
@@ -444,11 +444,11 @@ export default {
       try {
         axios.delete(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/" +
             deleteTableName +
             "/" +
@@ -464,11 +464,11 @@ export default {
       try {
         axios.delete(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
             floor_id +
             "/" +
@@ -484,13 +484,13 @@ export default {
     //get CSV File from DB and download CSV file
     async downloadCSVFile(floor_id) {
       try {
-        const response = await axios.get(
+        let response = await axios.get(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
             floor_id +
             "/seats/get-csv-file-allfloor-seats",
@@ -501,13 +501,13 @@ export default {
           }
         );
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        const contentDisposition = response.headers["content-disposition"]; // 파일 이름 //cors
+        let url = window.URL.createObjectURL(new Blob([response.data]));
+        let link = document.createElement("a");
+        let contentDisposition = response.headers["content-disposition"]; // 파일 이름 //cors
 
         let filename = null;
         if (contentDisposition) {
-          const [fileNameMatch] = contentDisposition
+          let [fileNameMatch] = contentDisposition
             .split(";")
             .filter((str) => str.includes("filename"));
           if (fileNameMatch) [, filename] = fileNameMatch.split("=");
@@ -528,11 +528,11 @@ export default {
       axios
         .post(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
             floor_id +
             "/seats/update-by-file",
