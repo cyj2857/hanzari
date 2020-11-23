@@ -61,7 +61,7 @@ public class Employee implements UserDetails {
 	@JsonManagedReference
 	private List<Seat> seat; // = new ArrayList<Seat>();
 
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.LAZY)
 	@Builder.Default
 	private List<String> roles = new ArrayList<>(); // 접근 권한 List
 
