@@ -12,7 +12,7 @@
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="this.employees"
+      :items="this.employeeList"
       :search="search"
       height="400px"
       class="elevation-1"
@@ -53,7 +53,7 @@ export default {
   props: ["copyFromManageSeatsEmployeeList"],
   data() {
     return {
-      employees: this.copyFromManageSeatsEmployeeList,
+      employeeList: this.copyFromManageSeatsEmployeeList,
       search: "",
       headers: [
         { text: "이름", align: "start", sortable: true, value: "name" },
@@ -73,8 +73,8 @@ export default {
     eventBus.$off("pushEachEmployeeSeatMap");
   },
   methods: {
-    clickEmployeeToMapping(item) {
-      eventBus.$emit("mappingEmployeeToVacant", item);
+    clickEmployeeToMapping(clickedEmployee) {
+      eventBus.$emit("mappingEmployeeToVacant", clickedEmployee);
     },
     changeBackPage() {
       eventBus.$emit("pushMappingEmployeeComponentStatus", false);

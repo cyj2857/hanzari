@@ -20,8 +20,8 @@
       >
       <v-row style="overflow-y: scroll; height: 180px">
         <v-col
-          v-for="floor of this.allFloorList"
-          :key="floor.floorId"
+          v-for="floorObject of this.allFloorList"
+          :key="floorObject.floorId"
           class="d-flex child-flex"
           cols="4"
           ><v-tooltip bottom
@@ -29,14 +29,14 @@
               <v-btn
                 v-on="on"
                 large
-                @click="clickFloor(floor)"
-                @mouseover="showToolTip(floor)"
+                @click="clickFloor(floorObject)"
+                @mouseover="showToolTip(floorObject)"
                 :style="{
-                  border: clickFloorIndexes.includes(floor.floorId)
+                  border: clickFloorIndexes.includes(floorObject.floorId)
                     ? 'thick solid black'
                     : '',
                 }"
-                ><h3>{{ floor.floorName }}</h3></v-btn
+                ><h3>{{ floorObject.floorName }}</h3></v-btn
               >
             </template>
             <span v-html="toolTipText"> </span>
@@ -48,10 +48,10 @@
         ><v-icon large>stairs</v-icon>
         <h3>층 이름 편집</h3></v-card-title
       >
-      <v-row v-if="currentSelectedFloor">
+      <v-row v-if="currentSelectedFloorObject">
         <v-col cols="12" sm="9">
           <v-text-field
-            v-model="currentSelectedFloor.floorName"
+            v-model="currentSelectedFloorObject.floorName"
             @keyup="editFloorName"
             label="층 이름을 입력하세요"
             solo
@@ -108,7 +108,7 @@ export default {
       allFloorList: [],
       managerFloorList: [],
 
-      currentSelectedFloor: null,
+      currentSelectedFloorObject: null,
 
       clickFloorIndexes: null,
 
@@ -121,13 +121,13 @@ export default {
   },
   created() {
     if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
-      this.currentSelectedFloor = this.copyFromTabsFloorList[
+      this.currentSelectedFloorObject = this.copyFromTabsFloorList[
         this.copyFromTabsFloorList.length - 1
       ];
       this.allFloorList = this.copyFromTabsFloorList;
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyFromTabsFloorList.length;
-      this.clickFloorIndexes = this.currentSelectedFloor.floorId;
+      this.clickFloorIndexes = this.currentSelectedFloorObject.floorId;
     }
 
     if (this.allImageMap == null) {
@@ -169,11 +169,11 @@ export default {
     eventBus.$off("pushFloorOfSeat");
   },
   methods: {
-    showToolTip(floor) {
+    showToolTip(floorObject) {
       if (this.allSeatMap) {
-        if (this.allSeatMap.get(floor.floorId)) {
-          if (this.allSeatMap.get(floor.floorId).length) {
-            let eachFloorSeatList = this.allSeatMap.get(floor.floorId);
+        if (this.allSeatMap.get(floorObject.floorId)) {
+          if (this.allSeatMap.get(floorObject.floorId).length) {
+            let eachFloorSeatList = this.allSeatMap.get(floorObject.floorId);
             let department = [];
 
             let currentFloorSeatsLength = eachFloorSeatList.length;
@@ -215,7 +215,7 @@ export default {
               }
 
               this.toolTipText =
-                floor.floorName +
+                floorObject.floorName +
                 "층 <br>" +
                 "전체 좌석 : " +
                 currentFloorSeatsLength +
@@ -225,27 +225,27 @@ export default {
             }
           } else {
             this.toolTipText =
-              floor.floorName + "층 <br>" + "좌석이 없습니다.";
+              floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
           }
         } else {
-          this.toolTipText = floor.floorName + "층 <br>" + "좌석이 없습니다.";
+          this.toolTipText = floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
         }
       } else {
-        this.toolTipText = floor.floorName + "층 <br>" + "좌석이 없습니다.";
+        this.toolTipText = floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
       }
     },
-    clickFloor(floor) {
+    clickFloor(floorObject) {
       this.clickFloorIndexes = [];
-      this.clickFloorIndexes.push(floor.floorId);
+      this.clickFloorIndexes.push(floorObject.floorId);
 
-      if (this.allImageMap.get(floor.floorId)) {
-        this.currentFloorImageName = this.allImageMap.get(floor.floorId).name;
+      if (this.allImageMap.get(floorObject.floorId)) {
+        this.currentFloorImageName = this.allImageMap.get(floorObject.floorId).name;
       } else {
         this.currentFloorImageName = "이미지를 업로드하세요";
       }
 
-      this.currentSelectedFloor = floor;
-      eventBus.$emit("pushSelectedFloor", floor);
+      this.currentSelectedFloorObject = floorObject;
+      eventBus.$emit("pushSelectedFloorObject", floorObject);
     },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
@@ -257,54 +257,54 @@ export default {
       });
     },
     addFloor() {
-      let newFloor = {};
-      newFloor.floorId = this.createFloorUUID();
-      newFloor.floorName = "";
-      newFloor.buildingId = "HANCOM01";
-      newFloor.floorOrder = this.allFloorList.length;
-      newFloor.create = true;
-      newFloor.modify = false;
-      newFloor.delete = false;
+      let newFloorObject = {};
+      newFloorObject.floorId = this.createFloorUUID();
+      newFloorObject.floorName = "";
+      newFloorObject.buildingId = "HANCOM01";
+      newFloorObject.floorOrder = this.allFloorList.length;
+      newFloorObject.create = true;
+      newFloorObject.modify = false;
+      newFloorObject.delete = false;
 
-      this.allFloorList.push(newFloor);
-      this.managerFloorList.push(newFloor);
+      this.allFloorList.push(newFloorObject);
+      this.managerFloorList.push(newFloorObject);
 
-      this.currentSelectedFloor = newFloor;
+      this.currentSelectedFloorObject = newFloorObject;
 
       this.clickFloorIndexes = [];
-      this.clickFloorIndexes.push(this.currentSelectedFloor.floorId);
+      this.clickFloorIndexes.push(this.currentSelectedFloorObject.floorId);
 
       this.length++;
 
-      eventBus.$emit("pushSelectedFloor", this.currentSelectedFloor);
+      eventBus.$emit("pushSelectedFloorObject", this.currentSelectedFloorObject);
 
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("pushAllFloorList", allFloors);
+      let allFloorList = this.allFloorList.slice();
+      eventBus.$emit("pushAllFloorList", allFloorList);
 
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("pushManagerFloorList", managerFloors);
+      let managerFloorList = this.managerFloorList.slice();
+      eventBus.$emit("pushManagerFloorList", managerFloorList);
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
         //console.log(typeof item.floorId);//String
         //console.log(typeof this.currentSelectedFloor.floorId); //String
-        return item.floorId === this.currentSelectedFloor.floorId;
+        return item.floorId === this.currentSelectedFloorObject.floorId;
       });
 
       this.allFloorList[idx].modify = true;
       this.managerFloorList[idx].modify = true;
 
-      eventBus.$emit("pushChangedFloorName", this.currentSelectedFloor.floorName);
+      eventBus.$emit("pushChangedFloorName", this.currentSelectedFloorObject.floorName);
 
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("pushAllFloorList", allFloors);
+      let allFloorList = this.allFloorList.slice();
+      eventBus.$emit("pushAllFloorList", allFloorList);
 
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("pushManagerFloorList", managerFloors);
+      let managerFloorList = this.managerFloorList.slice();
+      eventBus.$emit("pushManagerFloorList", managerFloorList);
     },
     removeFloor() {
       if (this.length > 0) {
-        let currentFloorId = this.currentSelectedFloor.floorId;
+        let currentFloorId = this.currentSelectedFloorObject.floorId;
         const idx = this.allFloorList.findIndex(function (item) {
           //console.log(typeof item.floorId) //String
           //console.log(typeof currentFloorId) //String
@@ -324,22 +324,22 @@ export default {
             nextIdx = idx - 1;
           }
 
-          eventBus.$emit("pushSelectedFloor", this.allFloorList[nextIdx]);
+          eventBus.$emit("pushSelectedFloorObject", this.allFloorList[nextIdx]);
 
-          let allFloors = this.allFloorList.slice();
-          eventBus.$emit("pushAllFloorList", allFloors);
+          let allFloorList = this.allFloorList.slice();
+          eventBus.$emit("pushAllFloorList", allFloorList);
 
-          let managerFloors = this.managerFloorList.slice();
-          eventBus.$emit("pushManagerFloorList", managerFloors);
+          let managerFloorList = this.managerFloorList.slice();
+          eventBus.$emit("pushManagerFloorList", managerFloorList);
 
-          this.currentSelectedFloor = this.allFloorList[nextIdx];
+          this.currentSelectedFloorObject = this.allFloorList[nextIdx];
         }
 
         this.length--;
 
         if (this.length > 0) {
           this.clickFloorIndexes = [];
-          this.clickFloorIndexes.push(this.currentSelectedFloor.floorId);
+          this.clickFloorIndexes.push(this.currentSelectedFloorObject.floorId);
         }
       } else {
         alert("there are no seats to delete!");
@@ -351,9 +351,9 @@ export default {
       this.saveImageFile(files[0]);
     },
     saveImageFile(file) {
-      this.allImageMap.set(this.currentSelectedFloor.floorId, file);
+      this.allImageMap.set(this.currentSelectedFloorObject.floorId, file);
       this.currentFloorImageName = this.allImageMap.get(
-        this.currentSelectedFloor.floorId
+        this.currentSelectedFloorObject.floorId
       ).name;
       eventBus.$emit("pushAllImageMap", this.allImageMap);
     },
