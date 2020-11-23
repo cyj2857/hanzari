@@ -147,7 +147,7 @@ export default {
       ].floorId;
     }
     //층간 이동
-    eventBus.$on("clickChangeFloorSeat", (floorId) => {
+    eventBus.$on("changeFloorSeat", (floorId) => {
       this.changeFloorSeat(floorId);
     });
 
@@ -222,7 +222,7 @@ export default {
     this.loadLatestFloor(); //현재 층 이미지와 자리 로드
   },
   beforeDestroy() {
-    eventBus.$off("clickChangeFloorSeat");
+    eventBus.$off("changeFloorSeat");
     eventBus.$off("changeFloor");
     eventBus.$off("changeFloorName");
     eventBus.$off("changeAddVacantSwitch");
@@ -1524,10 +1524,10 @@ export default {
             this.currentSelectedFloorId = floorId;
           }
         }
-        this.clickLoadOtherFloors();
+        this.loadOtherFloors();
       }
     },
-    clickLoadOtherFloors() {
+    loadOtherFloors() {
       if (this.otherFloorSeatListFromDb) {
         //다른 층 이미지 로드
         for (let i = 0; i < this.otherFloorImageFromDb.length; i++) {
