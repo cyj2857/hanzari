@@ -82,7 +82,8 @@ public class FloorPlanController {
 			putFloorPlanFileName.append(currentTime.toString());
 			UUID floorPlanId = UUID.randomUUID();
 			LOGGER.info("Image File name change to {} for store in MinIO bucket", putFloorPlanFileName.toString());
-			putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString()).build();
+			putFloorPlan = FloorPlan.builder().floorPlanId(floorPlanId.toString()).floorId(floorId).latest(true).floorPlanFileName(putFloorPlanFileName.toString())
+					.floorPlanOriginalFileName(file.getOriginalFilename()).build();
 			floorPlanService.save(putFloorPlan);
 			
 			minioClient.putObject(
@@ -140,7 +141,16 @@ public class FloorPlanController {
 					 .bucket(BUCKET_NAME)
 					 .object(getFloorPlanFileName.toString())
 					 .build());
-			response.addHeader("Content-disposition", getFloorPlanFileName.toString());
+			
+			//기존 코드
+			//response.addHeader("Content-disposition", getFloorPlanFileName.toString());
+			
+			//Content-disposition은 HTTP Response Body에 오는 컨첸츠의 기질/성향을 알려주는 속성이다.
+			//default 값은 inline으로 web에 전달되는 data라고 생각하면 된다.
+			//attachment를 주는 경우에 filename과 함께 주게 되면 Body에 오는 값을 다운로드 받으라는 뜻이다.
+			//예시코드
+			//response.addHeader("Content-disposition","attachment; filename" + getFloorPlan.getFloorPlanOriginalFileName());
+			response.addHeader("Content-disposition","inline; filename" + getFloorPlan.getFloorPlanOriginalFileName());
 			response.setContentType(URLConnection.guessContentTypeFromName(getFloorPlanFileName.toString()));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
