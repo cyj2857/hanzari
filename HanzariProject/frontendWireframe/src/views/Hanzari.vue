@@ -202,7 +202,7 @@ export default {
           try {
             let response = await axios.get(
               "http://" +
-                HOST +
+                "172.30.1.56" +
                 ":" +
                 PORT_NUMBER +
                 "/api/buildings/" +
@@ -212,11 +212,25 @@ export default {
                 "/images"
             );
 
+            let filename = null;
+            let contentDisposition = response.headers["content-disposition"]; // 파일 이름
+            if (contentDisposition) {
+              let [fileNameMatch] = contentDisposition
+                .split(";")
+                .filter((str) => str.includes("filename"));
+              if (fileNameMatch) [, filename] = fileNameMatch.split("=");
+              filename = decodeURIComponent(filename);
+            }
+
             let newImageObject = {};
-            newImageObject.url = response.config.url;
+            newImageObject.imgPath = response.config.url;
             newImageObject.floorId = latestFloorId;
+            newImageObject.imgFileName = filename;
+
+            console.log(newImageObject.imgFileName);
 
             latestFloorImage.push(newImageObject);
+
           } catch (error) {
             console.log(error);
           }
@@ -233,7 +247,7 @@ export default {
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
             let response = await axios.get(
               "http://" +
-                HOST +
+                "172.30.1.56" +
                 ":" +
                 PORT_NUMBER +
                 "/api/buildings/" +
@@ -243,11 +257,25 @@ export default {
                 "/images"
             );
 
+            let filename = null;
+            let contentDisposition = response.headers["content-disposition"]; // 파일 이름
+            if (contentDisposition) {
+              let [fileNameMatch] = contentDisposition
+                .split(";")
+                .filter((str) => str.includes("filename"));
+              if (fileNameMatch) [, filename] = fileNameMatch.split("=");
+              filename = decodeURIComponent(filename);
+            }
+
             let newImageObject = {};
-            newImageObject.url = response.config.url;
+            newImageObject.imgPath = response.config.url;
             newImageObject.floorId = this.floorIdList[i];
+            newImageObject.imgFileName = filename;
+
             responseList = newImageObject;
+            console.log(newImageObject.imgFileName);
             otherFloorsImageList.push(responseList);
+
           }
         } catch (error) {
           console.error(error);
@@ -319,7 +347,8 @@ export default {
           // 그 층에 자리가 없다면
           //console.log(typeof response.data.length) //number
           //console.log(typeof 0) //number
-          if (response.data.length === 0) { //number
+          if (response.data.length === 0) {
+            //number
             otherFloorsSeatMap.set(this.floorIdList[i], []);
           } else {
             for (let j = 0; j < response.data.length; j++) {
@@ -345,7 +374,8 @@ export default {
 
               //console.log(typeof this.floorIdList[i]); //String
               //console.log(typeof response.data[j].floor) //String
-              if (this.floorIdList[i] === response.data[j].floor) { //String
+              if (this.floorIdList[i] === response.data[j].floor) {
+                //String
                 otherFloorsSeatMap.set(this.floorIdList[i], responseList);
               }
             }
@@ -386,7 +416,7 @@ export default {
       try {
         axios.post(
           "http://" +
-            HOST +
+            "172.30.1.56" +
             ":" +
             PORT_NUMBER +
             "/api/buildings/" +
