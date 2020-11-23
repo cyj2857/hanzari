@@ -57,7 +57,7 @@
           ></v-select>
         </v-col>
         <v-col cols="12" sm="3">
-          <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col
+          <v-icon large @click="changeFloorSeat">edit</v-icon></v-col
         >
       </v-row>
     </v-card>
@@ -99,8 +99,8 @@ export default {
       ];
 
       for (let i = 0; i < this.copyFromTabsFloorList.length; i++) {
-        //console.log(typeof this.currentSelectedFloor.floor_id);//String
-        //console.log(typeof this.copyFromTabsFloorList[i].floor_id); //String
+        //console.log(typeof this.currentSelectedFloor.floorId);//String
+        //console.log(typeof this.copyFromTabsFloorList[i].floorId); //String
         if (
           this.currentSelectedFloor.floorId ===
           this.copyFromTabsFloorList[i].floorId
@@ -151,9 +151,9 @@ export default {
         this.floorItems.push(this.allFloorList[i]);
       }
     },
-    clickChangeFloorSeat() {
+    changeFloorSeat() {
       if (this.selectedFloorItemsId) {
-        eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItemsId);
+        eventBus.$emit("changeFloorSeat", this.selectedFloorItemsId);
       } else {
         alert("이동할 층을 선택하지 않았습니다.");
       }
