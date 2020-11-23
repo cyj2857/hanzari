@@ -10,9 +10,9 @@
         >
         <v-col cols="12" sm="3">
           <v-switch
-            v-model="addVacantSwitch"
+            v-model="addVacantSwitchStatus"
             inset
-            @change="changeSwitchStatus"
+            @change="changeAddVacantSwitchStatus"
           ></v-switch
         ></v-col>
       </v-row>
@@ -27,7 +27,7 @@
         </v-col>
         <v-col cols="10" sm="4">
           <v-card-text>
-            <v-btn color="pink lighten-3" @click="clickChangeToVacant"
+            <v-btn color="pink lighten-3" @click="clickChangeSeatToVacant"
               ><h4>
                 <v-icon large>person_add_disabled</v-icon>자리 비우기
               </h4></v-btn
@@ -86,7 +86,7 @@ export default {
       floorItems: [],
       selectedFloorItemsId: null,
 
-      addVacantSwitch: false,
+      addVacantSwitchStatus: false,
 
       allFloorList: this.copyFromTabsFloorList,
       currentSelectedFloor: null,
@@ -118,13 +118,13 @@ export default {
       this.initFloorItems();
     });
 
-    eventBus.$on("changeFloor", (floor) => {
+    eventBus.$on("pushSelectedFloor", (floor) => {
       this.currentSelectedFloor = floor;
       this.initFloorItems();
     });
 
     eventBus.$on(
-      "mappingEmployeeComponentStatus",
+      "pushMappingEmployeeComponentStatus",
       (mappingEmployeeComponentStatus) => {
         this.mappingEmployeeComponentStatus = mappingEmployeeComponentStatus;
       }
@@ -132,8 +132,8 @@ export default {
   },
   beforeDestroy() {
     eventBus.$off("allFloorList");
-    eventBus.$off("changeFloor");
-    eventBus.$off("mappingEmployeeComponentStatus");
+    eventBus.$off("pushSelectedFloor");
+    eventBus.$off("pushMappingEmployeeComponentStatus");
   },
   methods: {
     initFloorItems() {
@@ -153,7 +153,7 @@ export default {
     },
     changeFloorSeat() {
       if (this.selectedFloorItemsId) {
-        eventBus.$emit("changeFloorSeat", this.selectedFloorItemsId);
+        eventBus.$emit("moveSeatToAnotherFloor", this.selectedFloorItemsId);
       } else {
         alert("이동할 층을 선택하지 않았습니다.");
       }
@@ -161,11 +161,11 @@ export default {
     getMappingEmployeeComponent() {
       this.mappingEmployeeComponentStatus = true;
     },
-    changeSwitchStatus() {
-      eventBus.$emit("changeAddVacantSwitch", this.addVacantSwitch);
+    changeAddVacantSwitchStatus() {
+      eventBus.$emit("pushAddVacantSwitchStatus", this.addVacantSwitchStatus);
     },
-    clickChangeToVacant() {
-      eventBus.$emit("changeToVacant");
+    clickChangeSeatToVacant() {
+      eventBus.$emit("changeSeatToVacant");
     },
   },
 };

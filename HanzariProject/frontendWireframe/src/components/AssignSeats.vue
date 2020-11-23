@@ -128,7 +128,7 @@ export default {
       toolTipColor: null,
       toolTipText: null,
 
-      ableAddVacant: false,
+      addVacantSwitchStatus: false,
 
       seatNumber: 0,
 
@@ -146,15 +146,25 @@ export default {
         this.allFloorList.length - 1
       ].floorId;
     }
-    //층간 이동
-    eventBus.$on("changeFloorSeat", (floorId) => {
-      this.changeFloorSeat(floorId);
-    });
 
-    eventBus.$on("changeFloor", (floor) => {
-      if (floor) {
-        this.currentSelectedFloorId = floor.floorId;
-        this.currentSelectedFloorName = floor.floorName;
+    if (this.allImageMap == null) {
+      this.allImageMap = new Map();
+    }
+    if (this.allSeatMap == null) {
+      this.allSeatMap = new Map();
+    }
+    if (this.managerAllSeatMap == null) {
+      this.managerAllSeatMap = new Map();
+    }
+    if (this.eachEmployeeSeatMap == null) {
+      this.eachEmployeeSeatMap = new Map();
+    }
+
+    //선택한 층에 대한 값 받아와서 층 전환하기 위한 event
+    eventBus.$on("pushSelectedFloor", (floorObject) => {
+      if (floorObject) {
+        this.currentSelectedFloorId = floorObject.floorId;
+        this.currentSelectedFloorName = floorObject.floorName;
         this.changeFloor();
       } else {
         this.currentSelectedFloorId = null;
@@ -168,71 +178,83 @@ export default {
       }
     });
 
-    eventBus.$on("changeFloorName", (changeFloorName) => {
-      this.currentSelectedFloorName = changeFloorName;
+    //층의 이름이 변경될시 화면에 표출되는 string값을 바꾸기 위한 event
+    eventBus.$on("pushChangedFloorName", (changedFloorName) => {
+      this.currentSelectedFloorName = changedFloorName;
     });
 
-    eventBus.$on("changeAddVacantSwitch", (switchValue) => {
-      this.ableAddVacant = switchValue;
+    //공석 만들기 스위치 상태값 변경하기 위한 event
+    eventBus.$on("pushAddVacantSwitchStatus", (switchStatus) => {
+      this.addVacantSwitchStatus = switchStatus;
     });
-    eventBus.$on("mappingSeat", (item) => {
-      this.setMappingSeat(item);
+
+    //공석에 사원을 매핑하고자 함수를 호출하기 위한 event
+    eventBus.$on("mappingEmployeeToVacant", (employeeObject) => {
+      this.mappingEmployeeToVacant(employeeObject);
     });
-    eventBus.$on("allFloorList", (allFloors) => {
-      this.allFloorList = allFloors;
-      console.log(this.allFloorList);
+
+    //좌석(또는 공석)을 다른층으로 이동하고자 함수를 호출하기 위한 event
+    eventBus.$on("moveSeatToAnotherFloor", (floor_id) => {
+      this.moveSeatToAnotherFloor(floor_id);
     });
-    eventBus.$on("managerFloorList", (managerFloors) => {
-      this.managerFloorList = managerFloors;
-      console.log(this.managerFloorList);
-    });
-    eventBus.$on("changeToVacant", () => {
+
+    //좌석의 사원을 지우고 공석으로 바꾸는 함수를 호출하기 위한 event
+    eventBus.$on("changeSeatToVacant", () => {
       if (this.floorCanvas.getActiveObject()) {
-        this.changeToVacant();
+        this.changeSeatToVacant();
       } else {
         alert("there is no selected object");
       }
     });
-    eventBus.$on("allImageMap", (allImageMap) => {
+
+    //모든 층 객체를 가지고 있는 리스트를 받기 위한 event
+    eventBus.$on("pushAllFloorList", (allFloorList) => {
+      this.allFloorList = allFloorList;
+      console.log(this.allFloorList);
+    });
+
+    //db로 보내는 리스트에 활용되는 층 리스트를 받기 위한 event
+    eventBus.$on("pushManagerFloorList", (managerFloorList) => {
+      this.managerFloorList = managerFloorList;
+      console.log(this.managerFloorList);
+    });
+
+    //이미지 Map 받아오기
+    eventBus.$on("pushAllImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
       this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
     });
-    eventBus.$on("showSeat", (seat) => {
-      this.showSeat(seat);
+
+    //좌석 하이라이트 하는 함수를 호출하기 위한 event
+    eventBus.$on("showSeatHighlight", (seatObject) => {
+      this.showSeatHighlight(seatObject);
     });
-    eventBus.$on("deleteSeatListKey", (floorId) => {
+    
+    //삭제된 층의 아이디를 받기 위한 event
+    eventBus.$on("pushDeletedFloorId", (floorId) => {
       this.allSeatMap.delete(floorId);
+      //managerAllSeatMap 에서 삭제되어도 되는 이유 :
+      //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것.
+      //그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함
       this.managerAllSeatMap.delete(floorId);
     });
-    if (this.allImageMap == null) {
-      this.allImageMap = new Map();
-    }
-    if (this.allSeatMap == null) {
-      this.allSeatMap = new Map();
-    }
-    if (this.managerAllSeatMap == null) {
-      this.managerAllSeatMap = new Map();
-    }
-    if (this.eachEmployeeSeatMap == null) {
-      this.eachEmployeeSeatMap = new Map();
-    }
   },
   mounted() {
     this.initializing();
     this.loadLatestFloor(); //현재 층 이미지와 자리 로드
   },
   beforeDestroy() {
-    eventBus.$off("changeFloorSeat");
-    eventBus.$off("changeFloor");
-    eventBus.$off("changeFloorName");
-    eventBus.$off("changeAddVacantSwitch");
-    eventBus.$off("mappingSeat");
-    eventBus.$off("allFloorList");
-    eventBus.$off("managerFloorList");
-    eventBus.$off("changeToVacant");
-    eventBus.$off("allImageMap");
-    eventBus.$off("showSeat");
-    eventBus.$off("deleteSeatListKey");
+    eventBus.$off("moveSeatToAnotherFloor");
+    eventBus.$off("pushSelectedFloor");
+    eventBus.$off("pushChangedFloorName");
+    eventBus.$off("pushAddVacantSwitchStatus");
+    eventBus.$off("mappingEmployeeToVacant");
+    eventBus.$off("pushAllFloorList");
+    eventBus.$off("pushManagerFloorList");
+    eventBus.$off("changeSeatToVacant");
+    eventBus.$off("pushAllImageMap");
+    eventBus.$off("showSeatHighlight");
+    eventBus.$off("pushDeletedFloorId");
   },
   methods: {
     initializing() {
@@ -353,7 +375,7 @@ export default {
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
-            if (this.ableAddVacant) {
+            if (this.addVacantSwitchStatus) {
               var pointer = this.floorCanvas.getPointer(event.e);
               this.firstMouseDownX = pointer.x;
               this.firstMouseDownY = pointer.y;
@@ -371,7 +393,7 @@ export default {
 
         this.floorCanvas.on("mouse:up", (event) => {
           if (event.button === 3) {
-            if (this.ableAddVacant) {
+            if (this.addVacantSwitchStatus) {
               var pointer = this.floorCanvas.getPointer(event.e);
               var mouseUpX = pointer.x;
               var mouseUpY = pointer.y;
@@ -509,7 +531,7 @@ export default {
           for (let i = 0; i < eachfloorSeatList.length; i++) {
             this.floorCanvas.add(eachfloorSeatList[i]);
           }
-          eventBus.$emit("allSeatMap", this.allSeatMap);
+          eventBus.$emit("pushAllSeatMap", this.allSeatMap);
         }
       } else if (this.allImageMap.get(this.currentSelectedFloorId) == null) {
         //현재 층의 이미지가 저장되어있지 않다면 화면에 그려져있던 이미지와 도형 초기화
@@ -524,7 +546,7 @@ export default {
         this.floorCanvas.backgroundColor = "aliceblue";
         this.floorCanvas.renderAll();
 
-        eventBus.$emit("allSeatMap", this.allSeatMap);
+        eventBus.$emit("pushAllSeatMap", this.allSeatMap);
       }
     },
     loadImageFile(file) {
@@ -805,9 +827,9 @@ export default {
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);
 
-      eventBus.$emit("allSeatMap", this.allSeatMap);
+      eventBus.$emit("pushAllSeatMap", this.allSeatMap);
     },
-    setMappingSeat(item) {
+    mappingEmployeeToVacant(employeeObject) {
       if (!this.floorCanvas.getActiveObject()) {
         alert("선택된 좌석이 없습니다.");
         return;
@@ -815,7 +837,7 @@ export default {
 
       let mappedOtherEmployeeSeatNameList = [];
       this.floorCanvas.getActiveObjects().forEach((obj) => {
-        if (obj.employeeId && obj.employeeId != item.employeeId) {
+        if (obj.employeeId && obj.employeeId != employeeObject.employeeId) {
           mappedOtherEmployeeSeatNameList.push(obj.seatName);
         }
       });
@@ -837,19 +859,19 @@ export default {
         }
       }
 
-      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employeeId);
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(employeeObject.employeeId);
 
       this.floorCanvas.getActiveObjects().forEach((obj) => {
-        if (obj.employeeId && obj.employeeId != item.employeeId) {
+        if (obj.employeeId && obj.employeeId != employeeObject.employeeId) {
           // 다른 사원이 매핑된 좌석
           let groupToObject = obj.toObject(["seatId", "employeeId"]);
           this.deleteEachEmployeeSeatList(groupToObject);
         }
         // 다른 사원이 매핑된 좌석 + 공석
-        obj.employeeName = item.name;
-        obj.employeeDepartment = item.department;
-        obj.employeeNumber = item.number;
-        obj.employeeId = item.employeeId;
+        obj.employeeName = employeeObject.name;
+        obj.employeeDepartment = employeeObject.department;
+        obj.employeeNumber = employeeObject.number;
+        obj.employeeId = employeeObject.employeeId;
         obj.item(0).set("fill", this.getColor(obj.employeeDepartment));
         obj.set("modify", true);
         eachEmployeeSeatList.push(obj);
@@ -857,8 +879,8 @@ export default {
 
       this.checkZoom();
       this.floorCanvas.renderAll();
-      eventBus.$emit("allSeatMap", this.allSeatMap);
-      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      eventBus.$emit("pushAllSeatMap", this.allSeatMap);
+      eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     clickdeleteAllBtn() {
       if (confirm("Are you sure?")) {
@@ -874,11 +896,7 @@ export default {
         this.getEachFloorSeatList(this.currentSelectedFloorId).length = 0;
         this.deleteManagerEachFloorSeatList(this.currentSelectedFloorId);
 
-        eventBus.$emit(
-          "eachFloorSeatList",
-          this.getEachFloorSeatList(this.currentSelectedFloorId)
-        );
-        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+        eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
       } else {
         return;
       }
@@ -903,14 +921,13 @@ export default {
           console.log(eachFloorSeatList);
           this.floorCanvas.remove(obj);
 
-          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-          eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+          eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
         });
       } else {
         return;
       }
     },
-    changeToVacant() {
+    changeSeatToVacant() {
       if (confirm("자리를 비우시겠습니까?")) {
         this.floorCanvas.getActiveObjects().forEach((obj) => {
           let groupToObject = obj.toObject(["seatId", "employeeId"]);
@@ -926,8 +943,8 @@ export default {
         });
 
         this.floorCanvas.renderAll();
-        eventBus.$emit("allSeatMap", this.allSeatMap);
-        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+        eventBus.$emit("pushAllSeatMap", this.allSeatMap);
+        eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
       } else {
         return;
       }
@@ -1022,8 +1039,8 @@ export default {
         eachEmployeeSeatList.push(clonedObj);
       });
 
-      eventBus.$emit("allSeatMap", this.allSeatMap);
-      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      eventBus.$emit("pushAllSeatMap", this.allSeatMap);
+      eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     showContextMenu(clientX, clientY) {
       this.contextMenuStatus = false;
@@ -1074,7 +1091,7 @@ export default {
       this.toolTipStatus = true;
     },
     // 층간이동
-    changeFloorSeat(floorId) {
+    moveSeatToAnotherFloor(floorId) {
       if (!this.floorCanvas.getActiveObject()) {
         alert("이동할 좌석이 선택되지 않았습니다.");
         return;
@@ -1121,21 +1138,20 @@ export default {
                 managerEachFloorSeatList[j].set("delete", true);
               }
             }
-            eventBus.$emit("showSeatFloor", this.allFloorList[i].floorId);
-            eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
-            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+            eventBus.$emit("pushFloorOfSeat", this.allFloorList[i].floorId);
+            eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
           });
           this.floorCanvas.renderAll();
         }
       }
     },
-    showSeat(seat) {
+    showSeatHighlight(seatObject) {
       //좌석 하이라이트
       let seatFloor = null;
       //seat의 층과 현재층이 같지 않다면
-      if (this.currentSelectedFloorId != seat.floorId) {
+      if (this.currentSelectedFloorId != seatObject.floorId) {
         //탭 전환 코드
-        seatFloor = seat.floorId;
+        seatFloor = seatObject.floorId;
       }
       //seat의 층과 현재층이 같다면
       else {
@@ -1153,10 +1169,7 @@ export default {
         ]);
 
         let objectSeatId = asObject.seatId;
-
-        //console.log(typeof objectSeatId)//String
-        //console.log(typeof asObject.seatId)//String
-        if (seat.seatId === objectSeatId) {
+        if (seatObject.seatId == objectSeatId) {
           this.floorCanvas
             .getObjects()
             .slice()
@@ -1510,14 +1523,14 @@ export default {
               eachFloorSeatList.push(group);
               managerEachFloorSeatList.push(group);
 
-              eventBus.$emit("allSeatMap", this.allSeatMap);
+              eventBus.$emit("pushAllSeatMap", this.allSeatMap);
 
               if (this.latestFloorSeatListFromDb[i].employeeId != null) {
                 let eachEmployeeSeatList = this.getEachEmployeeSeatList(
                   this.latestFloorSeatListFromDb[i].employeeId
                 );
                 eachEmployeeSeatList.push(group);
-                eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+                eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
               }
             }
           } else {
@@ -1560,10 +1573,10 @@ export default {
                   seats[j].employeeId
                 );
                 eachEmployeeSeatList.push(group);
-                eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+                eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
               }
 
-              eventBus.$emit("allSeatMap", this.allSeatMap);
+              eventBus.$emit("pushAllSeatMap", this.allSeatMap);
             }
           }
         }

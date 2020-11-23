@@ -149,11 +149,11 @@ export default {
       }
     }
 
-    eventBus.$on("allSeatMap", (allSeatMap) => {
+    eventBus.$on("pushAllSeatMap", (allSeatMap) => {
       this.allSeatMap = allSeatMap;
     });
 
-    eventBus.$on("showSeatFloor", (floorId) => {
+    eventBus.$on("pushFloorOfSeat", (floorId) => {
       for (let i = 0; i < this.allFloorList.length; i++) {
         //console.log(typeof floorId);//String
         //console.log(typeof this.allFloorList[i].floorId); //String
@@ -165,8 +165,8 @@ export default {
     });
   },
   beforeDestroy() {
-    eventBus.$off("allSeatMap");
-    eventBus.$off("showSeatFloor");
+    eventBus.$off("pushAllSeatMap");
+    eventBus.$off("pushFloorOfSeat");
   },
   methods: {
     showToolTip(floor) {
@@ -245,7 +245,7 @@ export default {
       }
 
       this.currentSelectedFloor = floor;
-      eventBus.$emit("changeFloor", floor);
+      eventBus.$emit("pushSelectedFloor", floor);
     },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
@@ -276,13 +276,13 @@ export default {
 
       this.length++;
 
-      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit("pushSelectedFloor", this.currentSelectedFloor);
 
       let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
+      eventBus.$emit("pushAllFloorList", allFloors);
 
       let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
+      eventBus.$emit("pushManagerFloorList", managerFloors);
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
@@ -294,13 +294,13 @@ export default {
       this.allFloorList[idx].modify = true;
       this.managerFloorList[idx].modify = true;
 
-      eventBus.$emit("changeFloorName", this.currentSelectedFloor.floorName);
+      eventBus.$emit("pushChangedFloorName", this.currentSelectedFloor.floorName);
 
       let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
+      eventBus.$emit("pushAllFloorList", allFloors);
 
       let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
+      eventBus.$emit("pushManagerFloorList", managerFloors);
     },
     removeFloor() {
       if (this.length > 0) {
@@ -311,7 +311,7 @@ export default {
           return item.floorId === currentFloorId; //String
         });
         if (idx > -1) {
-          eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floorId);
+          eventBus.$emit("pushDeletedFloorId", this.allFloorList[idx].floorId);
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
 
@@ -324,13 +324,13 @@ export default {
             nextIdx = idx - 1;
           }
 
-          eventBus.$emit("changeFloor", this.allFloorList[nextIdx]);
+          eventBus.$emit("pushSelectedFloor", this.allFloorList[nextIdx]);
 
           let allFloors = this.allFloorList.slice();
-          eventBus.$emit("allFloorList", allFloors);
+          eventBus.$emit("pushAllFloorList", allFloors);
 
           let managerFloors = this.managerFloorList.slice();
-          eventBus.$emit("managerFloorList", managerFloors);
+          eventBus.$emit("pushManagerFloorList", managerFloors);
 
           this.currentSelectedFloor = this.allFloorList[nextIdx];
         }
@@ -355,7 +355,7 @@ export default {
       this.currentFloorImageName = this.allImageMap.get(
         this.currentSelectedFloor.floorId
       ).name;
-      eventBus.$emit("allImageMap", this.allImageMap);
+      eventBus.$emit("pushAllImageMap", this.allImageMap);
     },
   },
 };

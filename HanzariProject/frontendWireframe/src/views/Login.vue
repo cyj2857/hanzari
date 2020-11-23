@@ -3,7 +3,7 @@
     <v-app-bar app dark>
       <v-toolbar color="black" dark>
         <v-spacer />
-        <v-toolbar-title>ÇÑÀÚ¸®</v-toolbar-title></v-toolbar
+        <v-toolbar-title></v-toolbar-title></v-toolbar
       >
     </v-app-bar>
     
