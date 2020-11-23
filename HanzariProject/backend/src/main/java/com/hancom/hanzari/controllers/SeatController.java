@@ -221,8 +221,9 @@ public class SeatController {
 		String headerKey = "Content-Disposition";
 		String headerValue = "attachment; filename=CurrentFloorPlacements_" + currentDateTime + ".csv"; // 파일명을 정해주는 부분. 앞에 attachment; 가 붙는 경우 뒤에오는 filename으로 해당 data를 다운로드 받게 하는 옵션이다.
 
+		response.setCharacterEncoding("UTF-8"); // csv 파일에 한글이 깨지던 오류 수정을 위해 response 객체 자체의 encoding을 UTF-8로 변경
 		response.setContentType("text/csv"); // response contentType을 text/csv로 지정
-		response.setHeader(headerKey, headerValue); // header에 
+		response.setHeader(headerKey, headerValue);
 
 		Floor floor = floorService.findByIdNullable(floorId);
 		if (floor == null) {
@@ -263,8 +264,9 @@ public class SeatController {
 		String headerKey = "Content-Disposition";
 		String headerValue = "attachment; filename=AllFloorPlacements_" + currentDateTime + ".csv"; // 파일명을 정해주는 부분. 앞에 attachment; 가 붙는 경우 뒤에오는 filename으로 해당 data를 다운로드 받게 하는 옵션이다.
 
+		response.setCharacterEncoding("UTF-8"); // csv 파일에 한글이 깨지던 오류 수정을 위해 response 객체 자체의 encoding을 UTF-8로 변경
 		response.setContentType("text/csv"); // response contentType을 text/csv로 지정
-		response.setHeader(headerKey, headerValue); // header에 
+		response.setHeader(headerKey, headerValue);
 
 		Building building = buildingService.findByIdNullable(buildingId);
 		if (building == null) {

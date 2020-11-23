@@ -87,14 +87,14 @@ export default {
           for (let j = 0; j < seats.length; j++) {
             let newSeat = {};
 
-            if (seats[j].employee_id != null) {
+            if (seats[j].employeeId != null) {
               //공석 제외
-              newSeat.seatid = seats[j].seatId;
-              newSeat.employeeid = seats[j].employee_id;
-              newSeat.name = seats[j].employee_name;
-              newSeat.department = seats[j].employee_department;
-              newSeat.floorid = seats[j].floor_id;
-              newSeat.number = seats[j].employee_number;
+              newSeat.seatId = seats[j].seatId;
+              newSeat.employeeId = seats[j].employeeId;
+              newSeat.name = seats[j].employeeName;
+              newSeat.department = seats[j].employeeDepartment;
+              newSeat.floorId = seats[j].floorId;
+              newSeat.number = seats[j].employeeNumber;
               this.allEmployeeSeat.push(newSeat);
             }
           }
@@ -103,7 +103,7 @@ export default {
     },
     showSeatButtonClicked(item) {
       eventBus.$emit("showSeatHighlight", item); //좌석 하이라이트
-      eventBus.$emit("pushFloorOfSeat", item.floorid); //층 이동
+      eventBus.$emit("pushFloorOfSeat", item.floorId); //층 이동
     },
   },
 };
