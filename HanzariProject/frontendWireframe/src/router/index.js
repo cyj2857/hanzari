@@ -12,14 +12,14 @@ export default new Router({
   mode: 'history',
   routes: [
     {
+      path: '/',
+      name: 'login',
+      component: Login
+    },
+    {
       path: '/Hanzari',
       name: 'Hanzari',
       component: Hanzari
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
     }
   ]
 })
