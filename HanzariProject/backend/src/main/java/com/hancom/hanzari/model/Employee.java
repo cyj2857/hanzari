@@ -41,10 +41,7 @@ public class Employee implements UserDetails {
 	@Id
 	@NotNull
 	@Column(name = "employee_id", nullable = false)
-	private String employeeId;
-
-	@Column(nullable = false, unique = true, length = 30)
-	private String uid; // 로그인 시 아이디
+	private String employeeId; // 로그인 시 아이디
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(nullable = false, length = 100)
@@ -103,6 +100,14 @@ public class Employee implements UserDetails {
 				.seatList(seatIdList()).build();
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
@@ -111,7 +116,7 @@ public class Employee implements UserDetails {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Override
 	public String getUsername() {
-		return this.uid;
+		return this.employeeId;
 	}
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
