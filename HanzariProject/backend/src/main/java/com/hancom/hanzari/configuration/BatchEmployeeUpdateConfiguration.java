@@ -93,12 +93,12 @@ public class BatchEmployeeUpdateConfiguration {
 			final String stringTokenUrl = stringValues.getString("TOKEN_URL");
 			// URL뒤에 들어갈 Parameter들 설정
 			final String stringTokenUrlParameter = String.format(stringValues.getString("TOKEN_FORMAT"),
-					URLEncoder.encode(stringValues.getString("CLIENT_ID"), stringValues.getString("CLIENT_SECRET")),
+					URLEncoder.encode(stringValues.getString("CLIENT_ID"), "UTF-8"),
 					URLEncoder.encode(stringValues.getString("CLIENT_SECRET"), "UTF-8"),
 					URLEncoder.encode(stringValues.getString("GRANT_TYPE"), "UTF-8"));
 
 			try {
-				tokenUrl = new URL(stringTokenUrl);
+				tokenUrl = new URL(stringValues.getString("TOKEN_URL") + "?" + stringTokenUrlParameter);
 				tokenCreatedConnection = (HttpsURLConnection) tokenUrl.openConnection();
 				tokenCreatedConnection.setRequestMethod("POST");
 				// 아래 설정들은 입출력 가능상태로 만들기 위한 것
@@ -108,14 +108,22 @@ public class BatchEmployeeUpdateConfiguration {
 
 				// Parameter를 HttpsURLConnection에 설정
 				tokenBufferedWriter = new BufferedWriter(new OutputStreamWriter(
-						tokenCreatedConnection.getOutputStream(), stringValues.getString("UTF_8")));
+						tokenCreatedConnection.getOutputStream(), "UTF-8"));
 				tokenBufferedWriter.write(stringTokenUrlParameter);
 
 				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream(),
-						stringValues.getString("UTF_8")));
+						"UTF-8"));
 
+				StringBuilder jsonAllLine = new StringBuilder(); //전체 Json라인을 받는 StringBuilder
+				String jsonEachLine; //한 줄씩 받는 String
+				
+				while(tokenBufferedReader.readLine() != null) {
+					jsonEachLine = tokenBufferedReader.readLine();
+					jsonAllLine.append(jsonEachLine);
+				}
 				// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
-				tokenVo = new ObjectMapper().readValue(tokenBufferedReader.readLine(), TokenVo.class);
+				// 오버로딩된 readValue() 메소드 중 첫번째 인자가 String인 메소드 사용
+				tokenVo = new ObjectMapper().readValue(jsonAllLine.toString(), TokenVo.class);
 				tokenBufferedReader.close();
 			} catch (IOException e) {
 				LOGGER.error("IOException in First step", e);
