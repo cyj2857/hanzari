@@ -85,10 +85,9 @@ public class BatchEmployeeUpdateConfiguration {
 
 			URL tokenUrl;
 			HttpsURLConnection tokenCreatedConnection;
-			BufferedReader tokenBufferedReader;
-			BufferedWriter tokenBufferedWriter;
-			// URL String으로 설정
-			final String stringTokenUrl = stringValues.getString("TOKEN_URL");
+			//null로 초기화를 시켜주어야 아래 finally block의 if문에서 에러가 나지 않는다.
+			BufferedWriter tokenBufferedWriter = null;
+			BufferedReader tokenBufferedReader = null;
 			// URL뒤에 들어갈 Parameter들 설정
 			final String stringTokenUrlParameter = String.format(stringValues.getString("TOKEN_FORMAT"),
 					URLEncoder.encode(stringValues.getString("CLIENT_ID"), "UTF-8"),
@@ -105,7 +104,7 @@ public class BatchEmployeeUpdateConfiguration {
 				tokenCreatedConnection.setInstanceFollowRedirects(false);
 
 				// Parameter를 HttpsURLConnection에 설정
-				tokenBufferedWriter = new BufferedWriter(new OutputStreamWriter(
+				tokenBufferedWriter = new BufferedWriter(new 	OutputStreamWriter(
 						tokenCreatedConnection.getOutputStream(), "UTF-8"));
 				tokenBufferedWriter.write(stringTokenUrlParameter);
 
@@ -123,11 +122,16 @@ public class BatchEmployeeUpdateConfiguration {
 				}
 				// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
 				tokenVo = new ObjectMapper().readValue(jsonOneLine.toString(), TokenVo.class);
-				tokenBufferedReader.close();
 			} catch (IOException e) {
 				LOGGER.error("IOException in First step", e);
 			} catch (Exception e) {
 				LOGGER.error("Exception in First step", e);
+			//try block이 종료하기 전 finally block 실행
+			} finally {
+				if(tokenBufferedWriter != null)
+					tokenBufferedWriter.close();
+				if(tokenBufferedReader != null)
+					tokenBufferedReader.close();
 			}
 
 			LOGGER.info("토큰 타입 : " + tokenVo.getTokenType());
@@ -144,7 +148,7 @@ public class BatchEmployeeUpdateConfiguration {
 			LOGGER.info(">>>>> Second step(발행된 토큰으로부터 API 콜을 통해 JSON형식의 임직원 리스트를 받아온 후 VO 객체에 매핑해주는 step)");
 			URL allEmployeeListUrl;
 			HttpsURLConnection allEmployeeListGetConnection;
-			BufferedReader allEmployeeListReader;
+			BufferedReader allEmployeeListReader = null;
 			final String stringEmployeesUrl = stringValues.getString("EMPLOYEES_URL");
 			final String stringCmpIdParameter = String.format("cmpId=%s", URLEncoder.encode(stringValues.getString("COMPANY_ID"), "UTF-8"));
 
@@ -186,14 +190,15 @@ public class BatchEmployeeUpdateConfiguration {
 				resultVo = new ResultVo(originalJsonNode.get("result").get("resultCode").textValue(),
 						originalJsonNode.get("result").get("resultMessage").textValue(),
 						originalJsonNode.get("result").get("resultDesc").textValue(), listEmployeesVo);
-
 				LOGGER.info("임직원 리스트({})", new Date());
 				resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
-				allEmployeeListReader.close();
 			} catch (IOException e) {
 				LOGGER.error("IOException in Second step", e);
 			} catch (Exception e) {
 				LOGGER.error("Exception in Second step", e);
+			} finally {
+				if(allEmployeeListReader != null)
+					allEmployeeListReader.close();
 			}
 
 			return RepeatStatus.FINISHED;
