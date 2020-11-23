@@ -55,6 +55,7 @@
           v-on:downloadCSVFile="downloadCSVFile"
           v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
         />
+        <ProgressDialog v-else :dialogStatus="true" />
       </v-main>
     </div>
   </v-app>
@@ -67,6 +68,7 @@ import { eventBus } from "../main";
 import Tabs from "@/components/Tabs.vue";
 import AssignSeats from "@/components/AssignSeats.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
+import ProgressDialog from "@/components/ProgressDialog.vue";
 
 const PORT_NUMBER = 8081;
 const HOST = "172.30.1.53";
@@ -78,6 +80,7 @@ export default {
     Tabs,
     AssignSeats,
     MappingEmployee,
+    ProgressDialog,
   },
   data() {
     return {
@@ -319,7 +322,8 @@ export default {
           // 그 층에 자리가 없다면
           //console.log(typeof response.data.length) //number
           //console.log(typeof 0) //number
-          if (response.data.length === 0) { //number
+          if (response.data.length === 0) {
+            //number
             otherFloorsSeatMap.set(this.floorIdList[i], []);
           } else {
             for (let j = 0; j < response.data.length; j++) {
@@ -345,7 +349,8 @@ export default {
 
               //console.log(typeof this.floorIdList[i]); //String
               //console.log(typeof response.data[j].floor) //String
-              if (this.floorIdList[i] === response.data[j].floor) { //String
+              if (this.floorIdList[i] === response.data[j].floor) {
+                //String
                 otherFloorsSeatMap.set(this.floorIdList[i], responseList);
               }
             }
@@ -545,3 +550,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.v-progress-circular {
+  margin: 1rem;
+}
+</style>
