@@ -145,11 +145,11 @@ public class BatchEmployeeUpdateConfiguration {
 			URL allEmployeeListUrl;
 			HttpsURLConnection allEmployeeListGetConnection;
 			BufferedReader allEmployeeListReader;
-			final String stringTokenUrl = "https://infosys-gateway.hancom.com/gw/organization/v1/employees";
+			final String stringEmployeesUrl = "https://infosys-gateway.hancom.com/gw/organization/v1/employees";
 			final String stringCmpIdParameter = String.format("cmpId=%s", URLEncoder.encode("C100171030", "UTF-8"));
 
 			try {
-				allEmployeeListUrl = new URL(stringTokenUrl + "?" + stringCmpIdParameter);
+				allEmployeeListUrl = new URL(stringEmployeesUrl + "?" + stringCmpIdParameter);
 				allEmployeeListGetConnection = (HttpsURLConnection) allEmployeeListUrl.openConnection();
 				allEmployeeListGetConnection.setRequestMethod("GET");
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
