@@ -5,7 +5,7 @@
         <v-col cols="12" sm="9">
           <v-card-title
             ><v-icon large>event_seat</v-icon>
-            <h3>공석 만들기</h3></v-card-title
+            <h3>좌석 만들기</h3></v-card-title
           ></v-col
         >
         <v-col cols="12" sm="3">
@@ -16,7 +16,7 @@
           ></v-switch
         ></v-col>
 
-        <v-col
+        <!-- <v-col
           v-for="size of this.sizeItems"
           :key="size.index"
           class="d-flex child-flex"
@@ -45,9 +45,8 @@
           >
             <p class="font-italic">세부 설정</p>
           </v-btn></v-col
-        >
+        > -->
       </v-row>
-      <v-divider class="mx-4"></v-divider>
 
       <v-row>
         <v-col cols="10" sm="6">
@@ -75,14 +74,18 @@
       >
       <v-row>
         <v-col cols="9">
-          <v-combobox
-            v-model="selectedFloorItems"
+          <v-select
             :items="floorItems"
+            item-value="floor_id"
+            item-text="floor_name"
+            v-model="selectedFloorItemsId"
+            chips
             label="층을 선택하세요"
             single-line
             outlined
             dense
-          ></v-combobox>
+            no-data-text="이동할 층이 없습니다."
+          ></v-select>
         </v-col>
         <v-col cols="12" sm="3">
           <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col
@@ -123,7 +126,7 @@ export default {
         { index: 2, src: "../assets/rect3.png", size: 40 },
       ],
       floorItems: [],
-      selectedFloorItems: null,
+      selectedFloorItemsId: null,
 
       addVacantSwitch: false,
 
@@ -149,7 +152,7 @@ export default {
           continue;
         }
 
-        this.floorItems.push(this.copyFromTabsFloorList[i].floor_name);
+        this.floorItems.push(this.copyFromTabsFloorList[i]);
       }
     }
 
@@ -193,12 +196,12 @@ export default {
           continue;
         }
 
-        this.floorItems.push(this.allFloorList[i].floor_name);
+        this.floorItems.push(this.allFloorList[i]);
       }
     },
     clickChangeFloorSeat() {
-      if (this.selectedFloorItems) {
-        eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItems);
+      if (this.selectedFloorItemsId) {
+        eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItemsId);
       } else {
         alert("이동할 층을 선택하지 않았습니다.");
       }
@@ -221,15 +224,15 @@ export default {
 
       eventBus.$emit("setSeatSizeDialog", seatSize);
     },
-    clickSizeBtn(size) {
-      let seatSize = {};
+    // clickSizeBtn(size) {
+    //   let seatSize = {};
 
-      seatSize.width = size;
-      seatSize.height = size;
-      this.clickedSize = seatSize;
+    //   seatSize.width = size;
+    //   seatSize.height = size;
+    //   this.clickedSize = seatSize;
 
-      eventBus.$emit("setSeatSizeDialog", seatSize);
-    },
+    //   eventBus.$emit("setSeatSizeDialog", seatSize);
+    // },
     clickChangeToVacant() {
       eventBus.$emit("changeToVacant");
     },

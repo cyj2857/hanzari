@@ -14,7 +14,13 @@
       :headers="headers"
       :items="allEmployeeSeat"
       :search="search"
-      height="265px"
+      height="400px"
+      class="elevation-1"
+      no-data-text="데이터가 없습니다"
+      :footer-props="{
+        'items-per-page-text': '페이지 당 자리수',
+        'items-per-page-options': [5, 10],
+      }"
     >
       <template v-slot:item="row">
         <tr>
