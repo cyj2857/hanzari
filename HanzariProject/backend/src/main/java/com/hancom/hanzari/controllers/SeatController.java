@@ -45,6 +45,9 @@ import com.hancom.hanzari.service.ShapeService;
 import com.hancom.hanzari.util.CSVHelper;
 import com.hancom.hanzari.vo.PlacementVo;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+
 @CrossOrigin(origins = "*", exposedHeaders = { "Content-Disposition" }, maxAge = 3600)
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/seats")
@@ -64,6 +67,8 @@ public class SeatController {
 	// Logger
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> getAllSeatsInFloorInBuilding(@PathVariable("building_id") String buildingId,
@@ -87,6 +92,8 @@ public class SeatController {
 	}
 
 	// seat_id로 한 자리 조회
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<SeatDto> getSeat(@PathVariable("building_id") String buildingId,
@@ -107,6 +114,8 @@ public class SeatController {
 	}
 
 	// employee_id로 자리 조회
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/by-empid/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> getSeatsByEmpId(@PathVariable("building_id") String buildingId,
@@ -133,6 +142,8 @@ public class SeatController {
 		return new ResponseEntity<List<SeatDto>>(result, HttpStatus.OK);
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@PostMapping
 	public ResponseEntity<Seat> save(@PathVariable("building_id") String buildingId,
@@ -173,6 +184,8 @@ public class SeatController {
 		return new ResponseEntity<Seat>(seatService.save(seat), status);
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@DeleteMapping(value = "/{seat_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteSeat(@PathVariable("seat_id") String seat_id) {
 
@@ -181,6 +194,8 @@ public class SeatController {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@PostMapping(value = "/update-by-file", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<SeatDto>> updateByFile(@RequestParam("file") MultipartFile file) throws Exception {
@@ -211,6 +226,8 @@ public class SeatController {
 		return new ResponseEntity<List<SeatDto>>(status);
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/get-csv-file-curfloor-seats")
 	public void exportEachFloorSeatCsvFile(@PathVariable("floor_id") String floorId, HttpServletResponse response)
@@ -254,6 +271,8 @@ public class SeatController {
 		csvWriter.close();
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/get-csv-file-allfloor-seats")
 	public void exportAllFloorSeatCsvFile(@PathVariable("building_id") String buildingId, HttpServletResponse response)
