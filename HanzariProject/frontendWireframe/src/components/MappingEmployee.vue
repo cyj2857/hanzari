@@ -31,7 +31,7 @@
           <td>
             <v-icon
               large
-              id="MappingSeatButton"
+              id="mappingSeatButton"
               @click="clickMappingSeat(row.item)"
               >add_box</v-icon
             >
@@ -59,7 +59,7 @@ export default {
         { text: "이름", align: "start", sortable: true, value: "name" },
         { text: "부서", value: "department" },
         { text: "내선번호", value: "number" },
-        { text: "", value: "MappingSeatButton" },
+        { text: "", value: "mappingSeatButton" },
       ],
       allEmployeeSeatMap: null,
     };
