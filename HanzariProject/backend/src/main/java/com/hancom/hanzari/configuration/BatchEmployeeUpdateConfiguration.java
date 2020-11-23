@@ -45,7 +45,7 @@ public class BatchEmployeeUpdateConfiguration {
 	private final StepBuilderFactory stepBuilderFactory;
 	// ResourceBundle을 이용하여 string value들을 불러옴 properties 확장자인데 확장자없이 파일명만 적어줘도
 	// ResourceBundle이 알아서 해당 파일 찾아줌
-	private final ResourceBundle stringValues = ResourceBundle.getBundle("string");
+	private final ResourceBundle stringValues = ResourceBundle.getBundle("s");
 	private final Logger LOGGER = LoggerFactory.getLogger("ConsoleLogger");
 	// 발행 될 토큰과 토큰 정보들을 넣어둘 VO
 	private TokenVo tokenVo;
@@ -87,8 +87,6 @@ public class BatchEmployeeUpdateConfiguration {
 			HttpsURLConnection tokenCreatedConnection;
 			BufferedReader tokenBufferedReader;
 			BufferedWriter tokenBufferedWriter;
-			// stringValues.getKeys()
-			System.out.println(stringValues.getKeys());
 			// URL String으로 설정
 			final String stringTokenUrl = stringValues.getString("TOKEN_URL");
 			// URL뒤에 들어갈 Parameter들 설정
