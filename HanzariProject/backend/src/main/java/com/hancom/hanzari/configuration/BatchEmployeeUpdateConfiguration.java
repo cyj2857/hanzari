@@ -114,11 +114,11 @@ public class BatchEmployeeUpdateConfiguration {
 				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream(),
 						"UTF-8"));
 
-				StringBuilder jsonAllLine = new StringBuilder(); //전체 Json라인을 받는 StringBuilder
+				StringBuilder jsonAllLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
 				String jsonEachLine; //한 줄씩 받는 String
 				
 				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
-				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받은 Json 그럴 것 같다.)
+				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
 				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
 				while((jsonEachLine = tokenBufferedReader.readLine()) != null) {		
 					jsonAllLine.append(jsonEachLine);
@@ -157,16 +157,29 @@ public class BatchEmployeeUpdateConfiguration {
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
 				allEmployeeListReader = new BufferedReader(
 						new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
-				// 현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json
-				// 리스트)가 있다. 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
+				
+				// 현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 
+				// 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
 				// 우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
-				JsonNode originalJsonNode = new ObjectMapper().readTree(allEmployeeListReader.readLine());
-
+				// token 발행 시에 작성했던 방식과 마찬가지로 한 줄씩 읽어오는 작업을 한다.
+				StringBuilder jsonAllLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
+				String jsonEachLine; //한 줄씩 받는 String
+				
+				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
+				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
+				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
+				while((jsonEachLine = allEmployeeListReader.readLine()) != null) {		
+					jsonAllLine.append(jsonEachLine);
+				}
+				
+				JsonNode originalJsonNode = new ObjectMapper().readTree(jsonAllLine.toString());
+				
 				// forEach문을 돌며 각각의 임직원 정보를 EmployeesVo 객체에 넣어준다.
 				List<EmployeesVo> listEmployeesVo = new ArrayList<>();
 				originalJsonNode.get("result").get("employees").forEach(e -> {
 					// e가 JsonNode 형식이라 readValue()가 아닌 convertValue() 메소드를 사용해야한다.
 					// 내부 로직적으로 setter가 필요하기에 VO 클래스에 @Data 어노테이션을 사용하였다.
+					//jsonAllLine을 사용하여 받아온 Json 데이터를 한 줄로 변환해주었기에 여기서 또 한 줄씩 읽어오는 변환 작업을 할 필요가 없다.
 					EmployeesVo employeesVo = new ObjectMapper().convertValue(e, EmployeesVo.class);
 					listEmployeesVo.add(employeesVo);
 				});
