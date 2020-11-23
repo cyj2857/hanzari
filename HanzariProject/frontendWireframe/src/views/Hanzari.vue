@@ -317,7 +317,9 @@ export default {
           );
           let responseList = [];
           // 그 층에 자리가 없다면
-          if (response.data.length == 0) {
+          //console.log(typeof response.data.length) //number
+          //console.log(typeof 0) //number
+          if (response.data.length === 0) { //number
             otherFloorsSeatMap.set(this.floorIdList[i], []);
           } else {
             for (let j = 0; j < response.data.length; j++) {
@@ -341,7 +343,9 @@ export default {
 
               responseList.push(newSeat);
 
-              if (this.floorIdList[i] == response.data[j].floor) {
+              //console.log(typeof this.floorIdList[i]); //String
+              //console.log(typeof response.data[j].floor) //String
+              if (this.floorIdList[i] === response.data[j].floor) { //String
                 otherFloorsSeatMap.set(this.floorIdList[i], responseList);
               }
             }
