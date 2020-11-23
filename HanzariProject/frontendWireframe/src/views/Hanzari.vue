@@ -1,58 +1,63 @@
 <template>
-  <div class="hanzari" id="hanzari">
-    <v-app-bar app dark>
-      <v-toolbar color="black" dark>
-        <v-spacer>
-          <v-toolbar-items>
-            <v-icon large dark @click="drawer = !drawer" v-if="drawer"
-              >keyboard_arrow_left</v-icon
-            >
-            <v-icon large dark @click="drawer = !drawer" v-if="!drawer"
-              >keyboard_arrow_right</v-icon
-            >
-          </v-toolbar-items>
-        </v-spacer>
-        <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
-      >
-    </v-app-bar>
+  <v-app id="app">
+    <div class="hanzari" id="hanzari">
+      <v-app-bar app dark>
+        <v-toolbar color="black" dark>
+          <v-spacer>
+            <v-toolbar-items>
+              <v-icon large dark @click="drawer = !drawer" v-if="drawer"
+                >keyboard_arrow_left</v-icon
+              >
+              <v-icon large dark @click="drawer = !drawer" v-if="!drawer"
+                >keyboard_arrow_right</v-icon
+              >
+            </v-toolbar-items>
+          </v-spacer>
+          <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
+        >
+      </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app :width="500">
-      <Tabs
-        v-if="
-          employeeList && floorList && latestFloorImage && otherFloorsImageList
-        "
-        v-bind:copyEmployeeList="employeeList"
-        v-bind:copyFloorList="floorList"
-        v-bind:copyLatestFloorImage="latestFloorImage"
-        v-bind:copyOtherFloorsImageList="otherFloorsImageList"
-      />
-    </v-navigation-drawer>
-    <v-main>
-      <AssignSeats
-        v-if="
-          employeeList &&
-          floorList &&
-          latestFloorImage &&
-          latestFloorSeatList &&
-          otherFloorsImageList &&
-          otherFloorsSeatMap
-        "
-        v-bind:copyEmployeeList="employeeList"
-        v-bind:copyFloorList="floorList"
-        v-bind:copyLatestFloorImage="latestFloorImage"
-        v-bind:copyOtherFloorsImageList="otherFloorsImageList"
-        v-bind:copyLatestFloorSeatList="latestFloorSeatList"
-        v-bind:copyOtherFloorsSeatMap="otherFloorsSeatMap"
-        v-on:saveImages="saveImages"
-        v-on:saveFloors="saveFloors"
-        v-on:saveSeats="saveSeats"
-        v-on:deleteFloorWithKey="deleteFloorWtihKey"
-        v-on:deleteSeatWithKey="deleteSeatWithKey"
-        v-on:downloadCSVFile="downloadCSVFile"
-        v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
-      />
-    </v-main>
-  </div>
+      <v-navigation-drawer v-model="drawer" app :width="500">
+        <Tabs
+          v-if="
+            employeeList &&
+            floorList &&
+            latestFloorImage &&
+            otherFloorsImageList
+          "
+          v-bind:copyEmployeeList="employeeList"
+          v-bind:copyFloorList="floorList"
+          v-bind:copyLatestFloorImage="latestFloorImage"
+          v-bind:copyOtherFloorsImageList="otherFloorsImageList"
+        />
+      </v-navigation-drawer>
+      <v-main>
+        <AssignSeats
+          v-if="
+            employeeList &&
+            floorList &&
+            latestFloorImage &&
+            latestFloorSeatList &&
+            otherFloorsImageList &&
+            otherFloorsSeatMap
+          "
+          v-bind:copyEmployeeList="employeeList"
+          v-bind:copyFloorList="floorList"
+          v-bind:copyLatestFloorImage="latestFloorImage"
+          v-bind:copyOtherFloorsImageList="otherFloorsImageList"
+          v-bind:copyLatestFloorSeatList="latestFloorSeatList"
+          v-bind:copyOtherFloorsSeatMap="otherFloorsSeatMap"
+          v-on:saveImages="saveImages"
+          v-on:saveFloors="saveFloors"
+          v-on:saveSeats="saveSeats"
+          v-on:deleteFloorWithKey="deleteFloorWtihKey"
+          v-on:deleteSeatWithKey="deleteSeatWithKey"
+          v-on:downloadCSVFile="downloadCSVFile"
+          v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
+        />
+      </v-main>
+    </div>
+  </v-app>
 </template>
 
 <script>
