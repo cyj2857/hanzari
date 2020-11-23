@@ -395,13 +395,22 @@ export default {
               console.log(mouseUpY);
               console.log("mouseup");
 
-              if (this.posX == mouseUpX && this.posY == mouseUpY) {
+              //console.log(typeof this.firstMouseDownX) //number
+              //console.log(typeof mouseUpX) //number
+              //console.log(typeof this.firstMouseDownY) //number
+              //console.log(typeof mouseUpY) //number
+
+              if (
+                this.firstMouseDownX === mouseUpX &&
+                this.firstMouseDownY === mouseUpY
+              ) {
                 return;
               } else {
                 if (!this.allImageMap.get(this.currentSelectedFloorId)) {
                   alert("도면 이미지가 없습니다");
                   return;
-                }if (this.currentSelectedFloorName == "") {
+                }
+                if (this.currentSelectedFloorName == "") {
                   alert("층 이름이 설정되지 않았습니다.");
                   return;
                 }
@@ -414,7 +423,7 @@ export default {
                   this.firstMouseDownY,
                   mouseUpX,
                   mouseUpY
-                  );
+                );
               }
             }
           }
@@ -614,7 +623,10 @@ export default {
 
         if (oneEmployeeSeatList) {
           for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-            if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
+            //console.log(typeof oneEmployeeSeatList[i].seatId); //String
+            //console.log(typeof groupToObject.seatId); //String
+            if (oneEmployeeSeatList[i].seatId === groupToObject.seatId) {
+              //String
               oneEmployeeSeatList.splice(i, 1);
             }
           }
@@ -709,10 +721,15 @@ export default {
         Blue: "blue",
         Gray: "Gray",
       };
-      if (department == "부서1") return Colors.Orange;
-      else if (department == "부서2") return Colors.Yellow;
-      else if (department == "부서3") return Colors.Green;
-      else return Colors.Gray;
+      if (department == null) {
+        return Colors.Gray;
+      } else {
+        //console.log(typeof department);//String
+        //console.log(typeof "부서1");//String
+        if (department === "부서1") return Colors.Orange;
+        else if (department === "부서2") return Colors.Yellow;
+        else if (department === "부서3") return Colors.Green;
+      }
     },
 
     addVacantSeat(mouseDownX, mouseDownY, mouseUpX, mouseUpY) {
@@ -797,27 +814,7 @@ export default {
       });
 
       this.floorCanvas.add(group);
-
-      //this.floorCanvas.renderAll();
-
-      this.floorCanvas.on("mouse:move", function (eve) {
-        if (!this.isDown) return;
-        console.log(mousemove);
-        var pointer = this.floorCanvas.getPointer(o.e);
-
-        if (posX > pointer.x) {
-          group.set("left", Math.abs(pointer.x));
-        }
-        if (posY > pointer.y) {
-          group.set("top", Math.abs(pointer.y));
-        }
-
-        group.item(0).set("width", Math.abs(posX - pointer.x));
-        group.item(0).set("height", Math.abs(posY - pointer.y));
-
-        this.floorCanvas.renderAll();
-      });
-
+      this.floorCanvas.renderAll();
       this.floorCanvas.setActiveObject(group);
 
       eachFloorSeatList.push(group);
@@ -1106,7 +1103,9 @@ export default {
       );
 
       for (let i = 0; i < this.allFloorList.length; i++) {
-        if (this.allFloorList[i].floor_id == floor_id) {
+        //console.log(typeof this.allFloorList[i].floor_id) //String
+        //console.log(typeof floor_id) //String
+        if (this.allFloorList[i].floor_id === floor_id) {
           this.floorCanvas.getActiveObjects().forEach((obj) => {
             obj.set("floor_id", this.allFloorList[i].floor_id);
             obj.set("floor_name", this.allFloorList[i].floor_name);
@@ -1124,12 +1123,16 @@ export default {
 
             //이동 후에 원래 list에서 삭제
             for (let j = 0; j < eachFloorSeatList.length; j++) {
-              if (eachFloorSeatList[j].seatId == obj.seatId) {
+              //console.log(typeof eachFloorSeatList[j].seatId);//String
+              //console.log(typeof obj.seatId);//String
+              if (eachFloorSeatList[j].seatId === obj.seatId) { //String
                 eachFloorSeatList.splice(j, 1);
               }
             }
             for (let j = 0; j < managerEachFloorSeatList.length; j++) {
-              if (managerEachFloorSeatList[j].seatId == obj.seatId) {
+              //console.log(typeof managerEachFloorSeatList[j].seatId);//String
+              //console.log(typeof obj.seatId);//String
+              if (managerEachFloorSeatList[j].seatId === obj.seatId) { //String
                 managerEachFloorSeatList[j].set("delete", true);
               }
             }
@@ -1165,7 +1168,9 @@ export default {
         ]);
 
         let objectSeatId = asObject.seatId;
-        if (seat.seatid == objectSeatId) {
+        //console.log(typeof objectSeatId)//String
+        //console.log(typeof asObject.seatId)//String
+        if (seat.seatid === objectSeatId) { //String
           this.floorCanvas
             .getObjects()
             .slice()
@@ -1223,8 +1228,8 @@ export default {
     clickExportToCSVBtn() {
       //csv 내려받기 //seatName, employeeid, floorid
       //for (let i = 0; i < this.managerFloorList.length; i++) {
-        let floorid = this.currentSelectedFloorId;
-        this.$emit("downloadCSVFile", floorid);
+      let floorid = this.currentSelectedFloorId;
+      this.$emit("downloadCSVFile", floorid);
       //}
     },
     changeCSVFile(e) {
@@ -1424,7 +1429,9 @@ export default {
       } else {
         // 매핑된 자리
         for (let i = 0; i < employeeInfoList.length; i++) {
-          if (employee_id == employeeInfoList[i].employee_id) {
+          //console.log(typeof employee_id)//String
+          //console.log(typeof employeeInfoList[i].employee_id)//String
+          if (employee_id === employeeInfoList[i].employee_id) { //String
             employeeObject = employeeInfoList[i];
           }
         }

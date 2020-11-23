@@ -145,9 +145,11 @@ export default {
       ];
 
       for (let i = 0; i < this.copyFromTabsFloorList.length; i++) {
+        //console.log(typeof this.currentSelectedFloor.floor_id);//String
+        //console.log(typeof this.copyFromTabsFloorList[i].floor_id); //String
         if (
-          this.currentSelectedFloor.floor_id ==
-          this.copyFromTabsFloorList[i].floor_id
+          this.currentSelectedFloor.floor_id ===
+          this.copyFromTabsFloorList[i].floor_id //String
         ) {
           continue;
         }
@@ -190,8 +192,10 @@ export default {
     initFloorItems() {
       this.floorItems = [];
       for (let i = 0; i < this.allFloorList.length; i++) {
+        //console.log(typeof this.currentSelectedFloor.floor_id); //String
+        //console.log(typeof this.allFloorList[i].floor_id);//String
         if (
-          this.currentSelectedFloor.floor_id == this.allFloorList[i].floor_id
+          this.currentSelectedFloor.floor_id === this.allFloorList[i].floor_id //String
         ) {
           continue;
         }

@@ -155,7 +155,10 @@ export default {
 
     eventBus.$on("showSeatFloor", (floorid) => {
       for (let i = 0; i < this.allFloorList.length; i++) {
-        if (floorid == this.allFloorList[i].floor_id) {
+        //console.log(typeof floorid);//String
+        //console.log(typeof this.allFloorList[i].floor_id); //String
+        if (floorid === this.allFloorList[i].floor_id) {
+          //String
           this.clickFloor(this.allFloorList[i]);
         }
       }
@@ -283,7 +286,9 @@ export default {
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
-        return item.floor_id == this.currentSelectedFloor.floor_id;
+        //console.log(typeof item.floor_id);//String
+        //console.log(typeof this.currentSelectedFloor.floor_id); //String
+        return item.floor_id === this.currentSelectedFloor.floor_id; //String
       });
 
       this.allFloorList[idx].modify = true;
@@ -301,7 +306,9 @@ export default {
       if (this.length > 0) {
         let currentFloorId = this.currentSelectedFloor.floor_id;
         const idx = this.allFloorList.findIndex(function (item) {
-          return item.floor_id == currentFloorId;
+          //console.log(typeof item.floor_id) //String
+          //console.log(typeof currentFloorId) //String
+          return item.floor_id === currentFloorId; //String
         });
         if (idx > -1) {
           eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
@@ -309,7 +316,9 @@ export default {
           this.managerFloorList[idx].delete = true;
 
           let nextIdx = null;
-          if (idx == 0) {
+          console.log(typeof idx) //number
+          console.log(typeof 0) //number
+          if (idx === 0) { //number
             nextIdx = idx;
           } else {
             nextIdx = idx - 1;
