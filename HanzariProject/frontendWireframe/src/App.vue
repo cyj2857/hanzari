@@ -1,5 +1,5 @@
 <template>
-    <Hanzari />
+    <Login />
 </template>
 
 <script>
