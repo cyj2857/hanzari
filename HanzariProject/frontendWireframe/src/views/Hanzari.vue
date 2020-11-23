@@ -17,45 +17,43 @@
         >
       </v-app-bar>
 
-      <v-navigation-drawer v-model="drawer" app :width="500">
-        <Tabs
-          v-if="
-            employeeList &&
-            floorList &&
-            latestFloorImage &&
-            otherFloorsImageList
-          "
-          v-bind:copyEmployeeList="employeeList"
-          v-bind:copyFloorList="floorList"
-          v-bind:copyLatestFloorImage="latestFloorImage"
-          v-bind:copyOtherFloorsImageList="otherFloorsImageList"
-        />
-      </v-navigation-drawer>
-      <v-main>
-        <AssignSeats
-          v-if="
-            employeeList &&
-            floorList &&
-            latestFloorImage &&
-            latestFloorSeatList &&
-            otherFloorsImageList &&
-            otherFloorsSeatMap
-          "
-          v-bind:copyEmployeeList="employeeList"
-          v-bind:copyFloorList="floorList"
-          v-bind:copyLatestFloorImage="latestFloorImage"
-          v-bind:copyOtherFloorsImageList="otherFloorsImageList"
-          v-bind:copyLatestFloorSeatList="latestFloorSeatList"
-          v-bind:copyOtherFloorsSeatMap="otherFloorsSeatMap"
-          v-on:saveImages="saveImages"
-          v-on:saveFloors="saveFloors"
-          v-on:saveSeats="saveSeats"
-          v-on:deleteFloorWithKey="deleteFloorWtihKey"
-          v-on:deleteSeatWithKey="deleteSeatWithKey"
-          v-on:downloadCSVFile="downloadCSVFile"
-          v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
-        />
-      </v-main>
+      <div
+        v-if="
+          employeeList &&
+          floorList &&
+          latestFloorImage &&
+          latestFloorSeatList &&
+          otherFloorsImageList &&
+          otherFloorsSeatMap
+        "
+      >
+        <v-navigation-drawer v-model="drawer" app :width="500">
+          <Tabs
+            v-bind:copyEmployeeList="employeeList"
+            v-bind:copyFloorList="floorList"
+            v-bind:copyLatestFloorImage="latestFloorImage"
+            v-bind:copyOtherFloorsImageList="otherFloorsImageList"
+          />
+        </v-navigation-drawer>
+        <v-main>
+          <AssignSeats
+            v-bind:copyEmployeeList="employeeList"
+            v-bind:copyFloorList="floorList"
+            v-bind:copyLatestFloorImage="latestFloorImage"
+            v-bind:copyOtherFloorsImageList="otherFloorsImageList"
+            v-bind:copyLatestFloorSeatList="latestFloorSeatList"
+            v-bind:copyOtherFloorsSeatMap="otherFloorsSeatMap"
+            v-on:saveImages="saveImages"
+            v-on:saveFloors="saveFloors"
+            v-on:saveSeats="saveSeats"
+            v-on:deleteFloorWithKey="deleteFloorWtihKey"
+            v-on:deleteSeatWithKey="deleteSeatWithKey"
+            v-on:downloadCSVFile="downloadCSVFile"
+            v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
+          />
+        </v-main>
+      </div>
+      <ProgressDialog v-else :dialogStatus="true" />
     </div>
   </v-app>
 </template>
@@ -67,6 +65,7 @@ import { eventBus } from "../main";
 import Tabs from "@/components/Tabs.vue";
 import AssignSeats from "@/components/AssignSeats.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
+import ProgressDialog from "@/components/ProgressDialog.vue";
 
 const PORT_NUMBER = 8081;
 const HOST = "172.30.1.53";
@@ -78,6 +77,7 @@ export default {
     Tabs,
     AssignSeats,
     MappingEmployee,
+    ProgressDialog,
   },
   data() {
     return {
@@ -575,3 +575,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.v-progress-circular {
+  margin: 1rem;
+}
+</style>
