@@ -100,7 +100,7 @@ export default {
     this.employeeList = await this.getEmployeeList();
     //층 load
     this.floorList = await this.getFloorList();
-    //가장 floor_order가 큰 층의 floor_id를 가져오기 위함
+    //가장 floor_order가 큰 층의 floorId를 가져오기 위함
     this.latestFloor = await this.getLatestFloor();
 
     // 최신 층 이미지 load
@@ -125,7 +125,7 @@ export default {
           newEmployee.name = response.data[i].employee_name;
           newEmployee.department = response.data[i].department_name;
           newEmployee.number = response.data[i].extension_number;
-          newEmployee.employee_id = response.data[i].employee_id;
+          newEmployee.employeeId = response.data[i].employee_id;
           newEmployee.seatIdList = response.data[i].seatList;
 
           allEmployeeList.push(newEmployee);
@@ -149,10 +149,10 @@ export default {
         );
         for (var i = 0; i < response.data.length; i++) {
           let newFloor = {};
-          newFloor.floor_id = response.data[i].floor_id;
-          newFloor.floor_name = response.data[i].floor_name;
-          newFloor.building_id = response.data[i].building_id;
-          newFloor.floor_order = response.data[i].floor_order;
+          newFloor.floorId = response.data[i].floor_id;
+          newFloor.floorName = response.data[i].floor_name;
+          newFloor.buildingId = response.data[i].building_id;
+          newFloor.floorOrder = response.data[i].floor_order;
           newFloor.create = false;
           newFloor.modify = false;
           newFloor.delete = false;
@@ -161,15 +161,15 @@ export default {
         }
 
         allFloorList.sort(function (a, b) {
-          return a.floor_order < b.floor_order
+          return a.floorOrder < b.floorOrder
             ? -1
-            : a.floor_order > b.floor_order
+            : a.floorOrder > b.floorOrder
             ? 1
             : 0;
         });
 
         for (let i = 0; i < allFloorList.length; i++) {
-          this.floorIdList.push(allFloorList[i].floor_id);
+          this.floorIdList.push(allFloorList[i].floorId);
         }
       } catch (error) {
         console.log(error);
@@ -214,7 +214,7 @@ export default {
 
             let newImage = {};
             newImage.url = response.config.url;
-            newImage.floorid = latestFloorId;
+            newImage.floorId = latestFloorId;
 
             latestFloorImage.push(newImage);
           } catch (error) {
@@ -245,7 +245,7 @@ export default {
 
             let newImage = {};
             newImage.url = response.config.url;
-            newImage.floorid = this.floorIdList[i];
+            newImage.floorId = this.floorIdList[i];
             responseList = newImage;
             otherFloorsImageList.push(responseList);
           }
@@ -275,18 +275,18 @@ export default {
           for (var i = 0; i < response.data.length; i++) {
             let newSeat = {};
 
-            newSeat.seat_id = response.data[i].seat_id;
-            newSeat.seat_name = response.data[i].seat_name;
-            newSeat.floor = response.data[i].floor;
+            newSeat.seatId = response.data[i].seat_id;
+            newSeat.seatName = response.data[i].seat_name;
+            newSeat.floorId = response.data[i].floor;
             newSeat.x = response.data[i].x;
             newSeat.y = response.data[i].y;
-            newSeat.is_group = response.data[i].is_group;
-            newSeat.building_id = response.data[i].building_id;
-            newSeat.employee_id = response.data[i].employee_id;
+            newSeat.isGroup = response.data[i].is_group;
+            newSeat.buildingId = response.data[i].building_id;
+            newSeat.employeeId = response.data[i].employee_id;
             newSeat.width = response.data[i].width;
             newSeat.height = response.data[i].height;
             newSeat.degree = response.data[i].degree;
-            newSeat.shape_id = response.data[i].shape_id;
+            newSeat.shapeId = response.data[i].shape_id;
             newSeat.create = false;
             newSeat.delete = false;
             newSeat.modify = false;
@@ -323,18 +323,18 @@ export default {
             for (let j = 0; j < response.data.length; j++) {
               // 자리 수 만큼 돈다
               let newSeat = {};
-              newSeat.seat_id = response.data[j].seat_id;
-              newSeat.seat_name = response.data[j].seat_name;
-              newSeat.floor = response.data[j].floor;
+              newSeat.seatId = response.data[j].seat_id;
+              newSeat.seatName = response.data[j].seat_name;
+              newSeat.floorId = response.data[j].floor;
               newSeat.x = response.data[j].x;
               newSeat.y = response.data[j].y;
-              newSeat.is_group = response.data[j].is_group;
-              newSeat.building_id = response.data[j].building_id;
-              newSeat.employee_id = response.data[j].employee_id;
+              newSeat.isGroup = response.data[j].is_group;
+              newSeat.buildingId = response.data[j].building_id;
+              newSeat.employeeId = response.data[j].employee_id;
               newSeat.width = response.data[j].width;
               newSeat.height = response.data[j].height;
               newSeat.degree = response.data[j].degree;
-              newSeat.shape_id = response.data[j].shape_id;
+              newSeat.shapeId = response.data[j].shape_id;
               newSeat.create = false;
               newSeat.delete = false;
               newSeat.modify = false;
@@ -355,10 +355,7 @@ export default {
     saveFloors(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;
-      console.log("saveData is");
-      console.log(saveData);
-      console.log("saveTableName is");
-      console.log(saveTableName);
+
       try {
         axios.post(
           "http://" +
@@ -378,14 +375,10 @@ export default {
         console.error(error);
       }
     },
-    saveImages(tableName, data, floor_id) {
+    saveImages(tableName, data, floorId) {
       let saveData = data;
       let saveTableName = tableName;
-      console.log("saveData is");
-      console.log(saveData);
-      console.log("------------");
-      console.log("saveTableName is");
-      console.log(saveTableName);
+
       try {
         axios.post(
           "http://" +
@@ -395,7 +388,7 @@ export default {
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/" +
             tableName,
           saveData,
@@ -409,14 +402,9 @@ export default {
         console.error(error);
       }
     },
-    saveSeats(tableName, data, floor_id) {
+    saveSeats(tableName, data, floorId) {
       let saveData = data;
       let saveTableName = tableName;
-      console.log("saveData is");
-      console.log(saveData);
-      console.log("------------");
-      console.log("saveTableName is");
-      console.log(saveTableName);
       try {
         axios.post(
           "http://" +
@@ -426,7 +414,7 @@ export default {
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/" +
             saveTableName,
           JSON.stringify(saveData),
@@ -458,7 +446,7 @@ export default {
         console.error(error);
       }
     },
-    deleteSeatWithKey(tableName, seatId, floor_id) {
+    deleteSeatWithKey(tableName, seatId, floorId) {
       let deleteTableName = tableName;
       let deleteKey = seatId;
       try {
@@ -470,7 +458,7 @@ export default {
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/" +
             deleteTableName +
             "/" +
@@ -482,7 +470,7 @@ export default {
     },
 
     //get CSV File from DB and download CSV file
-    async downloadCSVFile(floor_id) {
+    async downloadCSVFile(floorId) {
       try {
         let response = await axios.get(
           "http://" +
@@ -492,7 +480,7 @@ export default {
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/seats/get-csv-file-allfloor-seats",
           {
             headers: {
@@ -524,7 +512,7 @@ export default {
     },
 
     //save information from CSV to DB
-    saveFromCSVFileToDB(saveData, floor_id) {
+    saveFromCSVFileToDB(saveData, floorId) {
       axios
         .post(
           "http://" +
@@ -534,7 +522,7 @@ export default {
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/seats/update-by-file",
           saveData,
           {
