@@ -99,29 +99,29 @@ public class TestController {
 
 		List<Employee> employee = new ArrayList<Employee>();
 		employee.add(Employee.builder().employeeId("10052204").authority("admin").additionalInfo(additionalInfo.get(0))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("19101101").authority("viewer").additionalInfo(additionalInfo.get(1))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("19101102").authority("viewer").additionalInfo(additionalInfo.get(2))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("19101103").authority("viewer").additionalInfo(additionalInfo.get(3))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("19101104").authority("viewer").additionalInfo(additionalInfo.get(4))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("19101199").authority("viewer").additionalInfo(additionalInfo.get(5))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("20091101").authority("viewer").additionalInfo(additionalInfo.get(6))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("20091102").authority("viewer").additionalInfo(additionalInfo.get(7))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("20091103").authority("viewer").additionalInfo(additionalInfo.get(8))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("20091104").authority("viewer").additionalInfo(additionalInfo.get(9))
-				.seat(null).build());
+				.password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("94111201").authority("manager")
-				.additionalInfo(additionalInfo.get(10)).seat(null).build());
+				.additionalInfo(additionalInfo.get(10)).password("0000").seat(null).build());
 		employee.add(Employee.builder().employeeId("95032205").authority("manager")
-				.additionalInfo(additionalInfo.get(11)).seat(null).build());
+				.additionalInfo(additionalInfo.get(11)).password("0000").seat(null).build());
 
 		shapes.forEach(e -> shapeService.save(e));
 		buildings.forEach(e -> buildingService.save(e));
@@ -171,7 +171,9 @@ public class TestController {
 		if (floors == null) {
 			throw new ResourceNotFoundException("Floor", "floors", floors);
 		}
-		floors.forEach(e->{System.out.println( "확인 #########" + e.getFloorId() + "\n");});
+		floors.forEach(e -> {
+			System.out.println("확인 #########" + e.getFloorId() + "\n");
+		});
 		floorService.deleteAllInBatch(floors);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}

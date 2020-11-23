@@ -210,11 +210,13 @@ public class BatchEmployeeUpdateConfiguration {
 			
 			try{
 				resultVo.getAllEmployeeListVo().forEach(e -> {
-					employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer")
-							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId()).employeeName(e.getUserName()).status("재직")
-							.extensionNumber(e.getCmpPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build());
+					employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer").password("0000")
+							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId())
+									.employeeName(e.getUserName()).status("재직").extensionNumber(e.getCmpPhone())
+									.departmentId(e.getDeptId()).departmentName(e.getDeptId()).build())
+							.build());
 				});
-			}catch(Exception e) {
+			} catch (Exception e) {
 				LOGGER.error("Exception in Third step", e);
 			}
 			return RepeatStatus.FINISHED;
