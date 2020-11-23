@@ -117,12 +117,13 @@ public class BatchEmployeeUpdateConfiguration {
 				StringBuilder jsonAllLine = new StringBuilder(); //전체 Json라인을 받는 StringBuilder
 				String jsonEachLine; //한 줄씩 받는 String
 				
-				while(tokenBufferedReader.readLine() != null) {
-					jsonEachLine = tokenBufferedReader.readLine();
+				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
+				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받은 Json 그럴 것 같다.)
+				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
+				while((jsonEachLine = tokenBufferedReader.readLine()) != null) {		
 					jsonAllLine.append(jsonEachLine);
 				}
 				// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
-				// 오버로딩된 readValue() 메소드 중 첫번째 인자가 String인 메소드 사용
 				tokenVo = new ObjectMapper().readValue(jsonAllLine.toString(), TokenVo.class);
 				tokenBufferedReader.close();
 			} catch (IOException e) {
