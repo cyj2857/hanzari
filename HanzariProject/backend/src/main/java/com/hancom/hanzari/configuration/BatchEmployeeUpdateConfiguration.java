@@ -118,7 +118,7 @@ public class BatchEmployeeUpdateConfiguration {
 				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
 				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
 				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
-				while((jsonEachLine = tokenBufferedReader.readLine()) != null) {		
+				while((jsonEachLine = tokenBufferedReader.readLine()) != null) {
 					jsonOneLine.append(jsonEachLine);
 				}
 				// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
