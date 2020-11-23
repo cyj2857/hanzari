@@ -30,7 +30,7 @@ import io.minio.PutObjectArgs;
 
 
 //CORS 오류 해결하기 위한 어노테이션
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", exposedHeaders = { "Content-Disposition" }, maxAge = 3600)
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/images")
 //TODO 현재 전송된 이미지 이름을 건물과 층 id를 조합하여 유니크하게 주고 있지만(따라서 같은 층에 도면을 다시 올릴 경우 덮어쓰기가 된다.) 만약 스냅샷 형태로 매달 자리배치도를 관리하게 된다면 매달 이미지 관리를 따로해주어야 한다. 따라서 이미지 이름에 날짜에 대한 정보도 추가해야한다.
@@ -107,7 +107,7 @@ public class FloorPlanController {
 			/*TODO 따라서 이러한 경우 IOUtils.closequietly()와 같은 메소드를 사용하여 열어둔 stream을 닫아주고 Null일 경우에도 알아서 처리해주는 라이브러리를 사용해도 좋다.
 			 그러나 이름이 같은 클래스에 대해 해당 라이브러리의 import 경로와 개발 중인 프로젝트의 import 경로가 다른 경우가 있을 수 있고 이런 경우 오류가 날 가능성도 있다.
 			 따라서 이렇게 동일한 작업을 처리해주는 메소드가 필요한 경우 직접 작성을 하고 프로젝트 내에서 필요한 클래스에서 import하는 방법으로 진행하는 것이 좋다.*/
-			if(imagePutInputStream!=null)
+			if(imagePutInputStream != null)
 				imagePutInputStream.close();
 		}
 	}
@@ -145,12 +145,11 @@ public class FloorPlanController {
 			//기존 코드
 			//response.addHeader("Content-disposition", getFloorPlanFileName.toString());
 			
+			response.setCharacterEncoding("UTF-8"); // 파일명이 깨지는 문제를 해결하기 위해 response 객체 자체의 encoding을 UTF-8로 변경
 			//Content-disposition은 HTTP Response Body에 오는 컨첸츠의 기질/성향을 알려주는 속성이다.
 			//default 값은 inline으로 web에 전달되는 data라고 생각하면 된다.
 			//attachment를 주는 경우에 filename과 함께 주게 되면 Body에 오는 값을 다운로드 받으라는 뜻이다.
-			//예시코드
-			//response.addHeader("Content-disposition","attachment; filename" + getFloorPlan.getFloorPlanOriginalFileName());
-			response.addHeader("Content-disposition","inline; filename" + getFloorPlan.getFloorPlanOriginalFileName());
+			response.setHeader("Content-disposition","attachment; filename=" + getFloorPlan.getFloorPlanOriginalFileName());
 			response.setContentType(URLConnection.guessContentTypeFromName(getFloorPlanFileName.toString()));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
