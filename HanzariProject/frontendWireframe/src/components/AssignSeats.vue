@@ -130,9 +130,6 @@ export default {
 
       ableAddVacant: false,
 
-      seatWidth: null,
-      seatHeight: null,
-
       seatNumber: 0,
 
       isDown: null,
@@ -177,10 +174,6 @@ export default {
 
     eventBus.$on("changeAddVacantSwitch", (switchValue) => {
       this.ableAddVacant = switchValue;
-    });
-    eventBus.$on("setSeatSizeDialog", (seatSize) => {
-      this.seatWidth = seatSize.width;
-      this.seatHeight = seatSize.height;
     });
     eventBus.$on("mappingSeat", (item) => {
       this.setMappingSeat(item);
@@ -236,7 +229,6 @@ export default {
     eventBus.$off("changeFloor");
     eventBus.$off("changeFloorName");
     eventBus.$off("changeAddVacantSwitch");
-    eventBus.$off("setSeatSizeDialog");
     eventBus.$off("mappingSeat");
     eventBus.$off("allFloorList");
     eventBus.$off("managerFloorList");
@@ -365,10 +357,6 @@ export default {
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
             if (this.ableAddVacant) {
-              // if (!this.seatWidth) {
-              //   alert("공석 크기를 선택해야 합니다.");
-              //   return;
-              // }
               var pointer = this.floorCanvas.getPointer(event.e);
               this.firstMouseDownX = pointer.x;
               this.firstMouseDownY = pointer.y;
@@ -1311,11 +1299,7 @@ export default {
           );
 
           if (managerEachFloorSeatList.length > 0) {
-            //console.log(
-            //  managerEachFloorSeatList.length +
-            //    this.managerFloorList[i].floor_id +
-            //    "층의 자리 개수입니다."
-            //);
+
 
             for (let j = 0; j < managerEachFloorSeatList.length; j++) {
               let groupToObject = managerEachFloorSeatList[j].toObject([

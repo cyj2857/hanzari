@@ -97,23 +97,17 @@
       :copyFromManageSeatsEmployeeList="employee"
       v-if="mappingEmployeeComponentStatus && employee"
     />
-    <SeatSizeSettingDialog
-      :dialogStatus="this.seatSizeSettingDialogStatus"
-      @close="closeSeatSizeSettingDialog"
-    />
   </div>
 </template>
 
 <script>
 import MappingEmployee from "@/components/MappingEmployee.vue";
-import SeatSizeSettingDialog from "@/components/SeatSizeSettingDialog.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
   props: ["copyFromTabsEmployeeList", "copyFromTabsFloorList"],
   components: {
     MappingEmployee,
-    SeatSizeSettingDialog,
   },
   data() {
     return {
@@ -132,8 +126,6 @@ export default {
 
       allFloorList: this.copyFromTabsFloorList,
       currentSelectedFloor: null,
-
-      seatSizeSettingDialogStatus: false,
 
       clickedSize: { width: 0, height: 0 },
     };
@@ -172,19 +164,11 @@ export default {
         this.mappingEmployeeComponentStatus = mappingEmployeeComponentStatus;
       }
     );
-
-    eventBus.$on("changeSlider", (seatSize) => {
-      this.clickedSize.width = seatSize.width;
-      this.clickedSize.height = seatSize.height;
-
-      this.confirmSeatSizeSettingDialog(seatSize);
-    });
   },
   beforeDestroy() {
     eventBus.$off("allFloorList");
     eventBus.$off("changeFloor");
     eventBus.$off("mappingEmployeeComponentStatus");
-    eventBus.$off("changeSlider");
   },
   methods: {
     initFloorItems() {
@@ -212,27 +196,7 @@ export default {
     changeSwitchStatus() {
       eventBus.$emit("changeAddVacantSwitch", this.addVacantSwitch);
     },
-    getSeatSizeSetting() {
-      eventBus.$emit("initSeatSizeSettingDialog", this.clickedSize);
-      this.seatSizeSettingDialogStatus = true;
-    },
-    closeSeatSizeSettingDialog() {
-      this.seatSizeSettingDialogStatus = false;
-    },
-    confirmSeatSizeSettingDialog(seatSize) {
-      this.seatSizeSettingDialogStatus = false;
 
-      eventBus.$emit("setSeatSizeDialog", seatSize);
-    },
-    // clickSizeBtn(size) {
-    //   let seatSize = {};
-
-    //   seatSize.width = size;
-    //   seatSize.height = size;
-    //   this.clickedSize = seatSize;
-
-    //   eventBus.$emit("setSeatSizeDialog", seatSize);
-    // },
     clickChangeToVacant() {
       eventBus.$emit("changeToVacant");
     },
