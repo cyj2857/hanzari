@@ -223,7 +223,7 @@ public class SeatController {
 
 		response.setCharacterEncoding("UTF-8"); // csv 파일에 한글이 깨지던 오류 수정을 위해 response 객체 자체의 encoding을 UTF-8로 변경
 		response.setContentType("text/csv"); // response contentType을 text/csv로 지정
-		response.setHeader(headerKey, headerValue); // header에 
+		response.setHeader(headerKey, headerValue);
 
 		Floor floor = floorService.findByIdNullable(floorId);
 		if (floor == null) {
@@ -266,7 +266,7 @@ public class SeatController {
 
 		response.setCharacterEncoding("UTF-8"); // csv 파일에 한글이 깨지던 오류 수정을 위해 response 객체 자체의 encoding을 UTF-8로 변경
 		response.setContentType("text/csv"); // response contentType을 text/csv로 지정
-		response.setHeader(headerKey, headerValue); // header에 
+		response.setHeader(headerKey, headerValue);
 
 		Building building = buildingService.findByIdNullable(buildingId);
 		if (building == null) {
