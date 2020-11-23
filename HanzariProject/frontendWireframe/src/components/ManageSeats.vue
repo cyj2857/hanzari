@@ -89,12 +89,12 @@ export default {
       addVacantSwitchStatus: false,
 
       allFloorList: this.copyFromTabsFloorList,
-      currentSelectedFloor: null,
+      currentSelectedFloorObject: null,
     };
   },
   created() {
     if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
-      this.currentSelectedFloor = this.allFloorList[
+      this.currentSelectedFloorObject = this.allFloorList[
         this.allFloorList.length - 1
       ];
 
@@ -102,7 +102,7 @@ export default {
         //console.log(typeof this.currentSelectedFloor.floorId);//String
         //console.log(typeof this.copyFromTabsFloorList[i].floorId); //String
         if (
-          this.currentSelectedFloor.floorId ===
+          this.currentSelectedFloorObject.floorId ===
           this.copyFromTabsFloorList[i].floorId
 
         ) {
@@ -113,13 +113,13 @@ export default {
       }
     }
 
-    eventBus.$on("allFloorList", (allFloors) => {
-      this.allFloorList = allFloors;
+    eventBus.$on("allFloorList", (allFloorList) => {
+      this.allFloorList = allFloorList;
       this.initFloorItems();
     });
 
-    eventBus.$on("pushSelectedFloor", (floor) => {
-      this.currentSelectedFloor = floor;
+    eventBus.$on("pushSelectedFloorObject", (floorObject) => {
+      this.currentSelectedFloorObject = floorObject;
       this.initFloorItems();
     });
 
@@ -132,7 +132,7 @@ export default {
   },
   beforeDestroy() {
     eventBus.$off("allFloorList");
-    eventBus.$off("pushSelectedFloor");
+    eventBus.$off("pushSelectedFloorObject");
     eventBus.$off("pushMappingEmployeeComponentStatus");
   },
   methods: {
@@ -140,10 +140,10 @@ export default {
       this.floorItems = [];
       for (let i = 0; i < this.allFloorList.length; i++) {
 
-        //console.log(typeof this.currentSelectedFloor.floorId); //String
+        //console.log(typeof this.currentSelectedFloorObject.floorId); //String
         //console.log(typeof this.allFloorList[i].floorId);//String
  
-        if (this.currentSelectedFloor.floorId === this.allFloorList[i].floorId) {
+        if (this.currentSelectedFloorObject.floorId === this.allFloorList[i].floorId) {
 
           continue;
         }

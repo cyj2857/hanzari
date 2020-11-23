@@ -108,7 +108,7 @@ export default {
       allSeatMap: null, //가시적 자리 map
       managerAllSeatMap: null, //DB 관리 자리 map
 
-      employees: this.copyEmployeeList,
+      employeeList: this.copyEmployeeList,
       eachEmployeeSeatMap: null, //each Employee's seats map
 
       allFloorList: this.copyFloorList, // 가시적 층 리스트
@@ -132,7 +132,6 @@ export default {
 
       seatNumber: 0,
 
-      isDown: null,
       firstMouseDownX: 0,
       firstMouseDownY: 0,
     };
@@ -161,7 +160,7 @@ export default {
     }
 
     //선택한 층에 대한 값 받아와서 층 전환하기 위한 event
-    eventBus.$on("pushSelectedFloor", (floorObject) => {
+    eventBus.$on("pushSelectedFloorObject", (floorObject) => {
       if (floorObject) {
         this.currentSelectedFloorId = floorObject.floorId;
         this.currentSelectedFloorName = floorObject.floorName;
@@ -194,8 +193,8 @@ export default {
     });
 
     //좌석(또는 공석)을 다른층으로 이동하고자 함수를 호출하기 위한 event
-    eventBus.$on("moveSeatToAnotherFloor", (floor_id) => {
-      this.moveSeatToAnotherFloor(floor_id);
+    eventBus.$on("moveSeatToAnotherFloor", (floorId) => {
+      this.moveSeatToAnotherFloor(floorId);
     });
 
     //좌석의 사원을 지우고 공석으로 바꾸는 함수를 호출하기 위한 event
@@ -386,7 +385,7 @@ export default {
               //contextMenu
               var posX = event.e.clientX;
               var posY = event.e.clientY;
-              this.showContextMenu(posX, posY);
+              this.showContextMenuOfOneSeat(posX, posY);
             }
           }
         });
@@ -1042,7 +1041,7 @@ export default {
       eventBus.$emit("pushAllSeatMap", this.allSeatMap);
       eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    showContextMenu(clientX, clientY) {
+    showContextMenuOfOneSeat(clientX, clientY) {
       this.contextMenuStatus = false;
       this.contextMenuXLocation = clientX + 10;
       this.contextMenuYLocation = clientY;
@@ -1400,12 +1399,12 @@ export default {
       // seat table의 employeeId를 받으면 그에 맞는 정보 알아오기 위함
       let employeeInfoList = [];
       let employeeObject = {}; // return 될 Object
-      for (let i = 0; i < this.employees.length; i++) {
+      for (let i = 0; i < this.employeeList.length; i++) {
         let employee = {};
-        employee.name = this.employees[i].name;
-        employee.department = this.employees[i].department;
-        employee.number = this.employees[i].number;
-        employee.employeeId = this.employees[i].employeeId;
+        employee.name = this.employeeList[i].name;
+        employee.department = this.employeeList[i].department;
+        employee.number = this.employeeList[i].number;
+        employee.employeeId = this.employeeList[i].employeeId;
 
         employeeInfoList.push(employee);
       }

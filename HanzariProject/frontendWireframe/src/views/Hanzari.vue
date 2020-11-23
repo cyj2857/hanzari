@@ -121,14 +121,14 @@ export default {
           "http://" + HOST + ":" + PORT_NUMBER + "/api/employee"
         );
         for (var i = 0; i < response.data.length; i++) {
-          var newEmployee = {};
-          newEmployee.name = response.data[i].employee_name;
-          newEmployee.department = response.data[i].department_name;
-          newEmployee.number = response.data[i].extension_number;
-          newEmployee.employeeId = response.data[i].employee_id;
-          newEmployee.seatIdList = response.data[i].seatList;
+          var newEmployeeObject = {};
+          newEmployeeObject.name = response.data[i].employee_name;
+          newEmployeeObject.department = response.data[i].department_name;
+          newEmployeeObject.number = response.data[i].extension_number;
+          newEmployeeObject.employeeId = response.data[i].employee_id;
+          newEmployeeObject.seatIdList = response.data[i].seatList;
 
-          allEmployeeList.push(newEmployee);
+          allEmployeeList.push(newEmployeeObject);
         }
       } catch (error) {
         console.log(error);
@@ -148,16 +148,16 @@ export default {
             "/floors"
         );
         for (var i = 0; i < response.data.length; i++) {
-          let newFloor = {};
-          newFloor.floorId = response.data[i].floor_id;
-          newFloor.floorName = response.data[i].floor_name;
-          newFloor.buildingId = response.data[i].building_id;
-          newFloor.floorOrder = response.data[i].floor_order;
-          newFloor.create = false;
-          newFloor.modify = false;
-          newFloor.delete = false;
+          let newFloorObject = {};
+          newFloorObject.floorId = response.data[i].floor_id;
+          newFloorObject.floorName = response.data[i].floor_name;
+          newFloorObject.buildingId = response.data[i].building_id;
+          newFloorObject.floorOrder = response.data[i].floor_order;
+          newFloorObject.create = false;
+          newFloorObject.modify = false;
+          newFloorObject.delete = false;
 
-          allFloorList.push(newFloor);
+          allFloorList.push(newFloorObject);
         }
 
         allFloorList.sort(function (a, b) {
@@ -212,11 +212,11 @@ export default {
                 "/images"
             );
 
-            let newImage = {};
-            newImage.url = response.config.url;
-            newImage.floorId = latestFloorId;
+            let newImageObject = {};
+            newImageObject.url = response.config.url;
+            newImageObject.floorId = latestFloorId;
 
-            latestFloorImage.push(newImage);
+            latestFloorImage.push(newImageObject);
           } catch (error) {
             console.log(error);
           }
@@ -243,10 +243,10 @@ export default {
                 "/images"
             );
 
-            let newImage = {};
-            newImage.url = response.config.url;
-            newImage.floorId = this.floorIdList[i];
-            responseList = newImage;
+            let newImageObject = {};
+            newImageObject.url = response.config.url;
+            newImageObject.floorId = this.floorIdList[i];
+            responseList = newImageObject;
             otherFloorsImageList.push(responseList);
           }
         } catch (error) {
@@ -273,25 +273,25 @@ export default {
               "/seats"
           );
           for (var i = 0; i < response.data.length; i++) {
-            let newSeat = {};
+            let newSeatObject = {};
 
-            newSeat.seatId = response.data[i].seat_id;
-            newSeat.seatName = response.data[i].seat_name;
-            newSeat.floorId = response.data[i].floor;
-            newSeat.x = response.data[i].x;
-            newSeat.y = response.data[i].y;
-            newSeat.isGroup = response.data[i].is_group;
-            newSeat.buildingId = response.data[i].building_id;
-            newSeat.employeeId = response.data[i].employee_id;
-            newSeat.width = response.data[i].width;
-            newSeat.height = response.data[i].height;
-            newSeat.degree = response.data[i].degree;
-            newSeat.shapeId = response.data[i].shape_id;
-            newSeat.create = false;
-            newSeat.delete = false;
-            newSeat.modify = false;
+            newSeatObject.seatId = response.data[i].seat_id;
+            newSeatObject.seatName = response.data[i].seat_name;
+            newSeatObject.floorId = response.data[i].floor;
+            newSeatObject.x = response.data[i].x;
+            newSeatObject.y = response.data[i].y;
+            newSeatObject.isGroup = response.data[i].is_group;
+            newSeatObject.buildingId = response.data[i].building_id;
+            newSeatObject.employeeId = response.data[i].employee_id;
+            newSeatObject.width = response.data[i].width;
+            newSeatObject.height = response.data[i].height;
+            newSeatObject.degree = response.data[i].degree;
+            newSeatObject.shapeId = response.data[i].shape_id;
+            newSeatObject.create = false;
+            newSeatObject.delete = false;
+            newSeatObject.modify = false;
 
-            latestFloorSeatList.push(newSeat);
+            latestFloorSeatList.push(newSeatObject);
           }
         } catch (error) {
           console.log(error);
@@ -324,24 +324,24 @@ export default {
           } else {
             for (let j = 0; j < response.data.length; j++) {
               // 자리 수 만큼 돈다
-              let newSeat = {};
-              newSeat.seatId = response.data[j].seat_id;
-              newSeat.seatName = response.data[j].seat_name;
-              newSeat.floorId = response.data[j].floor;
-              newSeat.x = response.data[j].x;
-              newSeat.y = response.data[j].y;
-              newSeat.isGroup = response.data[j].is_group;
-              newSeat.buildingId = response.data[j].building_id;
-              newSeat.employeeId = response.data[j].employee_id;
-              newSeat.width = response.data[j].width;
-              newSeat.height = response.data[j].height;
-              newSeat.degree = response.data[j].degree;
-              newSeat.shapeId = response.data[j].shape_id;
-              newSeat.create = false;
-              newSeat.delete = false;
-              newSeat.modify = false;
+              let newSeatObject = {};
+              newSeatObject.seatId = response.data[j].seat_id;
+              newSeatObject.seatName = response.data[j].seat_name;
+              newSeatObject.floorId = response.data[j].floor;
+              newSeatObject.x = response.data[j].x;
+              newSeatObject.y = response.data[j].y;
+              newSeatObject.isGroup = response.data[j].is_group;
+              newSeatObject.buildingId = response.data[j].building_id;
+              newSeatObject.employeeId = response.data[j].employee_id;
+              newSeatObject.width = response.data[j].width;
+              newSeatObject.height = response.data[j].height;
+              newSeatObject.degree = response.data[j].degree;
+              newSeatObject.shapeId = response.data[j].shape_id;
+              newSeatObject.create = false;
+              newSeatObject.delete = false;
+              newSeatObject.modify = false;
 
-              responseList.push(newSeat);
+              responseList.push(newSeatObject);
 
               //console.log(typeof this.floorIdList[i]); //String
               //console.log(typeof response.data[j].floor) //String

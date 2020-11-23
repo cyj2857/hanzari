@@ -13,7 +13,7 @@
           <v-card-text>
             <component
               v-bind:is="item.content"
-              :copyFromTabsEmployeeList="employees"
+              :copyFromTabsEmployeeList="employeeList"
               :copyFromTabsFloorList="floors"
               :eachEmployeeSeatMap="eachEmployeeSeatMap"
               :copyFromTabsLatestFloorImage="latestFloorImage"
@@ -48,7 +48,7 @@ export default {
     return {
       tab: null,
 
-      employees: this.copyEmployeeList,
+      employeeList: this.copyEmployeeList,
       floors: this.copyFloorList,
 
       eachEmployeeSeatMap: null,
