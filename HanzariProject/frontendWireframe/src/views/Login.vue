@@ -3,8 +3,8 @@
     <v-app-bar app dark>
       <v-toolbar color="black" dark>
         <v-spacer />
-        <v-toolbar-title>Hanzari Login</v-toolbar-title></v-toolbar
-      >
+        <v-toolbar-title>Hanzari Login</v-toolbar-title>
+      </v-toolbar>
     </v-app-bar>
     <v-main>
       <v-container style="position: relative; top: 20%" class="text-xs-center">

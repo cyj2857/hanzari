@@ -62,7 +62,7 @@ export default {
     };
   },
   created() {
-    eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
+    eventBus.$on("pushEachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
       this.getAllEmployeeSeats();
     });
@@ -71,7 +71,7 @@ export default {
     this.getAllEmployeeSeats();
   },
   beforeDestroy() {
-    eventBus.$off("eachEmployeeSeatMap");
+    eventBus.$off("pushEachEmployeeSeatMap");
   },
   methods: {
     getAllEmployeeSeats() {
@@ -85,25 +85,25 @@ export default {
           let seats = [];
           seats = this.allEmployeeSeatMap.get(keys[i]);
           for (let j = 0; j < seats.length; j++) {
-            let newSeat = {};
+            let newSeatObject = {};
 
             if (seats[j].employeeId != null) {
               //공석 제외
-              newSeat.seatId = seats[j].seatId;
-              newSeat.employeeId = seats[j].employeeId;
-              newSeat.name = seats[j].employeeName;
-              newSeat.department = seats[j].employeeDepartment;
-              newSeat.floorId = seats[j].floorId;
-              newSeat.number = seats[j].employeeNumber;
-              this.allEmployeeSeat.push(newSeat);
+              newSeatObject.seatId = seats[j].seatId;
+              newSeatObject.employeeId = seats[j].employeeId;
+              newSeatObject.name = seats[j].employeeName;
+              newSeatObject.department = seats[j].employeeDepartment;
+              newSeatObject.floorId = seats[j].floorId;
+              newSeatObject.number = seats[j].employeeNumber;
+              this.allEmployeeSeat.push(newSeatObject);
             }
           }
         }
       }
     },
-    showSeatButtonClicked(item) {
-      eventBus.$emit("showSeat", item); //좌석 하이라이트
-      eventBus.$emit("showSeatFloor", item.floorId); //층 이동
+    showSeatButtonClicked(clickedSeat) {
+      eventBus.$emit("showSeatHighlight", clickedSeat); //좌석 하이라이트
+      eventBus.$emit("pushFloorOfSeat", clickedSeat.floorId); //층 이동
     },
   },
 };
