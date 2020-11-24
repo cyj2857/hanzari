@@ -56,12 +56,12 @@ public class Employee implements UserDetails {
 	@JoinColumn(name = "addi_info_id", nullable = false)
 	private EmployeeAdditionalInfo additionalInfo;
 
-	@OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 	@Column(nullable = true)
 	@JsonManagedReference
 	private List<Seat> seat; // = new ArrayList<Seat>();
 
-	@ElementCollection(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.EAGER)
 	@Builder.Default
 	private List<String> roles = new ArrayList<>(); // 접근 권한 List
 
@@ -102,10 +102,6 @@ public class Employee implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
 	}
 
 	@Override
