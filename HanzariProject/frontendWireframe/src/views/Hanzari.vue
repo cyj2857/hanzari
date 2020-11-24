@@ -153,9 +153,8 @@ export default {
           newFloorObject.floorName = response.data[i].floor_name;
           newFloorObject.buildingId = response.data[i].building_id;
           newFloorObject.floorOrder = response.data[i].floor_order;
-          newFloorObject.create = false;
-          newFloorObject.modify = false;
-          newFloorObject.delete = false;
+          newFloorObject.isObjFromDB = true;
+          newFloorObject.httpRequestPostStatus = false;
 
           allFloorList.push(newFloorObject);
         }

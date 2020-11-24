@@ -112,7 +112,7 @@ export default {
       eachEmployeeSeatMap: null, //each Employee's seats map
 
       allFloorList: this.copyFloorList, // 가시적 층 리스트
-      managerFloorList: this.copyFloorList, // DB 관리 층 리스트
+      deleteFloorIdList: [],
 
       contextMenuStatus: false,
       contextMenuXLocation: 100,
@@ -206,13 +206,6 @@ export default {
     //모든 층 객체를 가지고 있는 리스트를 받기 위한 event
     eventBus.$on("pushAllFloorList", (allFloorList) => {
       this.allFloorList = allFloorList;
-      console.log(this.allFloorList);
-    });
-
-    //db로 보내는 리스트에 활용되는 층 리스트를 받기 위한 event
-    eventBus.$on("pushManagerFloorList", (managerFloorList) => {
-      this.managerFloorList = managerFloorList;
-      console.log(this.managerFloorList);
     });
 
     //이미지 Map 받아오기
@@ -230,6 +223,8 @@ export default {
 
     //삭제된 층의 아이디를 받기 위한 event
     eventBus.$on("pushDeletedFloorId", (floorId) => {
+      this.deleteFloorIdList.push(floorId);
+
       this.allSeatMap.delete(floorId);
     });
   },
@@ -510,8 +505,7 @@ export default {
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId)
           .imgPath;
-        console.log(this.allImageMap.get(this.currentSelectedFloorId).imgPath);
-        console.log("-------------------");
+          
         if (typeof typeCheck === "string") {
           //url
           this.loadImageUrl(
@@ -1142,7 +1136,7 @@ export default {
           if (this.allImageMap.get(seatFloor) != null) {
             let getImageTypeForTypeCheck = this.allImageMap.get(
               this.currentSelectedFloorId
-            );
+            ).imgPath;
             if (typeof getImageTypeForTypeCheck === "string") {
               //url
               this.loadImageUrl(
@@ -1186,7 +1180,6 @@ export default {
     },
     clickExportToCSVBtn() {
       //csv 내려받기 //seatName, employeeid, floorId
-      //for (let i = 0; i < this.managerFloorList.length; i++) {
       let floorId = this.currentSelectedFloorId;
       this.$emit("downloadCSVFile", floorId);
       //}
@@ -1213,52 +1206,36 @@ export default {
     clickSaveBtn() {
       this.floorCanvas.discardActiveObject();
 
-      if (this.managerFloorList) {
+      if (this.allFloorList) {
         //층 저장
-        for (let i = 0; i < this.managerFloorList.length; i++) {
-          if (!this.managerFloorList[i].create) {
-            // 원본
-            if (this.managerFloorList[i].delete) {
-              // 001 011 delete
-              let deleteFloorKey = this.managerFloorList[i].floorId;
-              this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
-            } else if (this.managerFloorList[i].modify) {
-              //010 그 id에 대하여 post
-              let floorData = {};
-              floorData.floor_id = this.managerFloorList[i].floorId;
-              floorData.floor_name = this.managerFloorList[i].floorName;
-              floorData.building_id = this.managerFloorList[i].buildingId;
-              floorData.floor_order = this.managerFloorList[i].floorOrder;
+        if (this.deleteFloorIdList.length) {
+          for (let i = 0; i < this.deleteFloorIdList.length; i++) {
+            let deleteFloorKey = this.deleteFloorIdList[i];
+            this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
+          }
+        }
 
-              this.$emit("saveFloors", "floors", floorData);
-            }
-          } else {
-            // front에서 생성
-            if (this.managerFloorList[i].delete) {
-              //101 111 nothing
-              continue;
-            } else {
-              //100 110 그 id에 대하여 post
-              let floorData = {};
-              floorData.floor_id = this.managerFloorList[i].floorId;
-              floorData.floor_name = this.managerFloorList[i].floorName;
-              floorData.building_id = this.managerFloorList[i].buildingId;
-              floorData.floor_order = this.managerFloorList[i].floorOrder;
+        for (let i = 0; i < this.allFloorList.length; i++) {
+          if (this.allFloorList[i].httpRequestPostStatus) {
+            let floorData = {};
+            floorData.floor_id = this.allFloorList[i].floorId;
+            floorData.floor_name = this.allFloorList[i].floorName;
+            floorData.building_id = this.allFloorList[i].buildingId;
+            floorData.floor_order = this.allFloorList[i].floorOrder;
 
-              this.$emit("saveFloors", "floors", floorData);
-            }
+            this.$emit("saveFloors", "floors", floorData);
           }
         }
 
         //이미지 저장
-        for (let i = 0; i < this.managerFloorList.length; i++) {
+        for (let i = 0; i < this.allFloorList.length; i++) {
           let imgData = new FormData();
-          let floorId = this.managerFloorList[i].floorId;
+          let floorId = this.allFloorList[i].floorId;
 
           console.log(this.allImageMap.get(floorId));
-          let file = this.allImageMap.get(floorId).imgPath;
 
-          if (file != null) {
+          if (this.allImageMap.get(floorId) != null) {
+            let file = this.allImageMap.get(floorId).imgPath;
             if (typeof file === "string") {
               //url
             } else {
@@ -1283,7 +1260,7 @@ export default {
             );
           }
         }
-        for (let i = 0; i < this.managerFloorList.length; i++) {
+        for (let i = 0; i < this.allFloorList.length; i++) {
           let eachFloorSeatList = this.getEachFloorSeatList(
             this.allFloorList[i].floorId
           );
