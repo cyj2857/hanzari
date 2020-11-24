@@ -368,8 +368,8 @@ export default {
               this.firstMouseDownX = pointer.x;
               this.firstMouseDownY = pointer.y;
 
-              console.log(this.firstMouseDownX);
-              console.log(this.firstMouseDownY);
+              //console.log(this.firstMouseDownX);
+              //console.log(this.firstMouseDownY);
             } else if (this.floorCanvas.getActiveObject()) {
               //contextMenu
               var posX = event.e.clientX;
@@ -385,19 +385,11 @@ export default {
               var pointer = this.floorCanvas.getPointer(event.e);
               var mouseUpX = pointer.x;
               var mouseUpY = pointer.y;
-
-              console.log(mouseUpX);
-              console.log(mouseUpY);
-              console.log("mouseup");
-
-              //console.log(typeof this.firstMouseDownX) //number
-              //console.log(typeof mouseUpX) //number
-              //console.log(typeof this.firstMouseDownY) //number
-              //console.log(typeof mouseUpY) //number
-
+              //console.log(mouseUpX);
+              //console.log(mouseUpY);
               if (
-                this.firstMouseDownX === mouseUpX &&
-                this.firstMouseDownY === mouseUpY
+                this.firstMouseDownX === mouseUpX && //Number
+                this.firstMouseDownY === mouseUpY //Number
               ) {
                 return;
               } else {
@@ -409,10 +401,8 @@ export default {
                   alert("층 이름이 설정되지 않았습니다.");
                   return;
                 }
-
-                console.log(this.firstMouseDownX);
-                console.log(this.firstMouseDownY);
-
+                //console.log(this.firstMouseDownX);
+                //console.log(this.firstMouseDownY);
                 this.addVacantSeat(
                   this.firstMouseDownX,
                   this.firstMouseDownY,
@@ -505,7 +495,7 @@ export default {
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId)
           .imgPath;
-          
+
         if (typeof typeCheck === "string") {
           //url
           this.loadImageUrl(
@@ -610,8 +600,6 @@ export default {
 
         if (oneEmployeeSeatList) {
           for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-            //console.log(typeof oneEmployeeSeatList[i].seatId); //String
-            //console.log(typeof groupToObject.seatId); //String
             if (oneEmployeeSeatList[i].seatId === groupToObject.seatId) {
               //String
               oneEmployeeSeatList.splice(i, 1);
@@ -627,7 +615,7 @@ export default {
         switch (key) {
           case 17:
             ctrlDown = true;
-            console.log("ctrl true");
+            //console.log("ctrl true");
             break;
           case 37: // left
             if (this.floorCanvas.getActiveObject()) {
@@ -694,7 +682,7 @@ export default {
         switch (key) {
           case 17:
             ctrlDown = false;
-            console.log("ctrl false");
+            //console.log("ctrl false");
             break;
         }
       });
@@ -719,11 +707,15 @@ export default {
       if (department == null) {
         return Colors.Gray;
       } else {
-        //console.log(typeof department);//String
-        //console.log(typeof "부서1");//String
-        if (department === "부서1") return Colors.Orange;
-        else if (department === "부서2") return Colors.Yellow;
-        else if (department === "부서3") return Colors.Green;
+        if (department === "부서1")
+          //String
+          return Colors.Orange;
+        else if (department === "부서2")
+          //String
+          return Colors.Yellow;
+        else if (department === "부서3")
+          //String
+          return Colors.Green;
       }
     },
 
@@ -808,7 +800,7 @@ export default {
       });
 
       mappedOtherEmployeeSeatNameList.forEach((obj) => {
-        console.log(obj);
+        //console.log(obj);
       });
 
       if (mappedOtherEmployeeSeatNameList.length > 0) {
@@ -885,12 +877,12 @@ export default {
 
           let groupToObject = obj.toObject(["seatId", "employeeId"]);
           this.deleteEachEmployeeSeatList(groupToObject);
-          console.log(this.eachEmployeeSeatMap);
-          console.log(eachFloorSeatList);
+          //console.log(this.eachEmployeeSeatMap);
+          //console.log(eachFloorSeatList);
 
           let index = eachFloorSeatList.indexOf(obj);
           eachFloorSeatList.splice(index, 1);
-          console.log(eachFloorSeatList);
+          //console.log(eachFloorSeatList);
           this.floorCanvas.remove(obj);
 
           eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
@@ -1068,9 +1060,8 @@ export default {
       );
 
       for (let i = 0; i < this.allFloorList.length; i++) {
-        //console.log(typeof this.allFloorList[i].floorId) //String
-        //console.log(typeof floorId) //String
         if (this.allFloorList[i].floorId === floorId) {
+          //String
           this.floorCanvas.getActiveObjects().forEach((obj) => {
             obj.set("floorId", this.allFloorList[i].floorId);
             obj.set("floorName", this.allFloorList[i].floorName);
@@ -1084,8 +1075,6 @@ export default {
 
             //이동 후에 원래 list에서 삭제
             for (let j = 0; j < eachFloorSeatList.length; j++) {
-              //console.log(typeof eachFloorSeatList[j].seatId);//String
-              //console.log(typeof obj.seatId);//String
               if (eachFloorSeatList[j].seatId === obj.seatId) {
                 //String
                 eachFloorSeatList[j].set("isObjFromDB", true);
@@ -1123,7 +1112,7 @@ export default {
         ]);
 
         let objectSeatId = asObject.seatId;
-        if (seatObject.seatId == objectSeatId) {
+        if (seatObject.seatId === objectSeatId) { //String
           this.floorCanvas
             .getObjects()
             .slice()
@@ -1194,7 +1183,7 @@ export default {
       var newFileForCSVType = new File([csvFile], csvFile.name, {
         type: "text/csv",
       });
-      console.log(newFileForCSVType);
+      //console.log(newFileForCSVType);
 
       let floorId = this.currentSelectedFloorId;
       let csvFileData = new FormData();
@@ -1232,7 +1221,7 @@ export default {
           let imgData = new FormData();
           let floorId = this.allFloorList[i].floorId;
 
-          console.log(this.allImageMap.get(floorId));
+          //console.log(this.allImageMap.get(floorId));
 
           if (this.allImageMap.get(floorId) != null) {
             let file = this.allImageMap.get(floorId).imgPath;
@@ -1247,7 +1236,6 @@ export default {
         }
 
         //자리 저장
-        console.log(this.deleteSeatIdList);
         if (this.deleteSeatIdList.length > 0) {
           for (let i = 0; i < this.deleteSeatIdList.length; i++) {
             let deleteSeatKey = this.deleteSeatIdList[i].seatId;
@@ -1282,7 +1270,7 @@ export default {
                 "isObjFromDB",
                 "httpRequestPostStatus",
               ]);
-              console.log(groupToObject.httpRequestPostStatus);
+              
               if (groupToObject.httpRequestPostStatus) {
                 let seatData = {};
                 seatData.seat_id = groupToObject.seatId;
@@ -1331,9 +1319,8 @@ export default {
       } else {
         // 매핑된 자리
         for (let i = 0; i < employeeInfoList.length; i++) {
-          //console.log(typeof employeeId)//String
-          //console.log(typeof employeeInfoList[i].employeeId)//String
           if (employeeId === employeeInfoList[i].employeeId) {
+            //String
             employeeObject = employeeInfoList[i];
           }
         }
@@ -1410,8 +1397,8 @@ export default {
             i
           ].imgFileName;
 
-          console.log("받아온 이미지 파일명입니다.");
-          console.log(newImageObject.imgFileName);
+          //console.log("받아온 이미지 파일명입니다.");
+          //console.log(newImageObject.imgFileName);
 
           this.allImageMap.set(newImageObject.floorId, newImageObject);
 
@@ -1466,8 +1453,8 @@ export default {
             i
           ].imgFileName;
 
-          console.log("받아온 이미지 파일명입니다.");
-          console.log(newImageObject.imgFileName);
+         // console.log("받아온 이미지 파일명입니다.");
+         // console.log(newImageObject.imgFileName);
           this.allImageMap.set(newImageObject.floorId, newImageObject);
         }
         //다른 층 자리 로드

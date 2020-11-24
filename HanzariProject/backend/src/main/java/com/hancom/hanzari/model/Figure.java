@@ -26,7 +26,7 @@ public class Figure {
 	@Column(name = "figure_id", nullable = false)
 	private String figureId; // seat_id와 동일
 
-	@ManyToOne // 관계의 주인
+	@ManyToOne
 	@NotNull
 	@JoinColumn(name = "shape_id", nullable = false)
 	@JsonBackReference

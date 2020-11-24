@@ -51,15 +51,15 @@ public class Employee implements UserDetails {
 	@Column(name = "authority", nullable = false)
 	private String authority;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@NotNull
 	@JoinColumn(name = "addi_info_id", nullable = false)
 	private EmployeeAdditionalInfo additionalInfo;
 
-	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY) // mappedBy를 통해 Seat의 employee로 맵핑이되고 Seat이 관계의 주인임을 나타낸다.
 	@Column(nullable = true)
 	@JsonManagedReference
-	private List<Seat> seat; // = new ArrayList<Seat>();
+	private List<Seat> seat;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Builder.Default
