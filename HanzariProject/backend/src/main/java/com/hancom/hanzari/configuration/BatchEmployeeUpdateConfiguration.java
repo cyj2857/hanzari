@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,7 +63,7 @@ public class BatchEmployeeUpdateConfiguration {
 	private TokenVo tokenVo;
 	// 요청에 대한 응답 정보와 임직원 전체 목록을 리스트로 가지고 있을 VO
 	private ResultVo resultVo;
-
+	private final PasswordEncoder passwordEncoder;
 	@Autowired
 	EmployeeService employeeService;
 	
@@ -250,11 +252,13 @@ public class BatchEmployeeUpdateConfiguration {
 			
 			try{
 				resultVo.getAllEmployeeListVo().forEach(e -> {
-					employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer")
-							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId()).employeeName(e.getUserName()).status("재직")
-							.extensionNumber(e.getCmpPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build());
+					employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer").password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER"))
+							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId())
+									.employeeName(e.getUserName()).status("재직").extensionNumber(e.getCmpPhone())
+									.departmentId(e.getDeptId()).departmentName(e.getDeptId()).build())
+							.build());
 				});
-			}catch(Exception e) {
+			} catch (Exception e) {
 				LOGGER.error("Exception in Third step", e);
 			}
 			return RepeatStatus.FINISHED;

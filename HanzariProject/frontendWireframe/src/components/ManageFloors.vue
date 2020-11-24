@@ -106,7 +106,7 @@ export default {
       length: null,
 
       allFloorList: [],
-      managerFloorList: [],
+      deleteFloorIdList: [],
 
       currentSelectedFloorObject: null,
 
@@ -125,7 +125,6 @@ export default {
         this.copyFromTabsFloorList.length - 1
       ];
       this.allFloorList = this.copyFromTabsFloorList;
-      this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyFromTabsFloorList.length;
       this.clickFloorIndexes = this.currentSelectedFloorObject.floorId;
     }
@@ -186,7 +185,7 @@ export default {
       if (this.allFloorList.length) {
         this.$refs.upload.click();
       } else {
-        alert('도면을 올릴 층이 없습니다.')
+        alert("도면을 올릴 층이 없습니다.");
       }
     },
     showToolTip(floorObject) {
@@ -286,12 +285,12 @@ export default {
       newFloorObject.floorName = "";
       newFloorObject.buildingId = "HANCOM01";
       newFloorObject.floorOrder = this.allFloorList.length;
-      newFloorObject.create = true;
-      newFloorObject.modify = false;
-      newFloorObject.delete = false;
+      newFloorObject.isObjFromDB = false;
+      newFloorObject.httpRequestPostStatus = true;
 
       this.allFloorList.push(newFloorObject);
-      this.managerFloorList.push(newFloorObject);
+      console.log(this.allFloorList);
+      console.log(newFloorObject);
 
       this.currentSelectedFloorObject = newFloorObject;
 
@@ -307,9 +306,6 @@ export default {
 
       let allFloorList = this.allFloorList.slice();
       eventBus.$emit("pushAllFloorList", allFloorList);
-
-      let managerFloorList = this.managerFloorList.slice();
-      eventBus.$emit("pushManagerFloorList", managerFloorList);
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
@@ -318,8 +314,7 @@ export default {
         return item.floorId === this.currentSelectedFloorObject.floorId;
       });
 
-      this.allFloorList[idx].modify = true;
-      this.managerFloorList[idx].modify = true;
+      this.allFloorList[idx].httpRequestPostStatus = true;
 
       eventBus.$emit(
         "pushChangedFloorName",
@@ -328,9 +323,6 @@ export default {
 
       let allFloorList = this.allFloorList.slice();
       eventBus.$emit("pushAllFloorList", allFloorList);
-
-      let managerFloorList = this.managerFloorList.slice();
-      eventBus.$emit("pushManagerFloorList", managerFloorList);
     },
     removeFloor() {
       if (this.length > 0) {
@@ -341,13 +333,18 @@ export default {
           return item.floorId === currentFloorId; //String
         });
         if (idx > -1) {
+          if (this.allFloorList[idx].isObjFromDB) {
+            this.deleteFloorIdList.push(this.allFloorList[idx].floorId);
+          }
+
           eventBus.$emit("pushDeletedFloorId", this.allFloorList[idx].floorId);
+
           this.allFloorList.splice(idx, 1);
-          this.managerFloorList[idx].delete = true;
 
           let nextIdx = null;
-          console.log(typeof idx); //number
-          console.log(typeof 0); //number
+          //console.log(typeof idx); number
+          //console.log(typeof 0); number
+
           if (idx === 0) {
             //number
             nextIdx = idx;
@@ -359,9 +356,6 @@ export default {
 
           let allFloorList = this.allFloorList.slice();
           eventBus.$emit("pushAllFloorList", allFloorList);
-
-          let managerFloorList = this.managerFloorList.slice();
-          eventBus.$emit("pushManagerFloorList", managerFloorList);
 
           this.currentSelectedFloorObject = this.allFloorList[nextIdx];
         }

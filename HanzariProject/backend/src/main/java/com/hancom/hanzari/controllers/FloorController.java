@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,19 +26,24 @@ import com.hancom.hanzari.model.Floor;
 import com.hancom.hanzari.service.BuildingService;
 import com.hancom.hanzari.service.FloorService;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import lombok.RequiredArgsConstructor;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors")
 public class FloorController {
 
-	@Autowired
-	private FloorService floorService;
-	@Autowired
-	private BuildingService buildingService;
+	private final FloorService floorService;
+	private final BuildingService buildingService;
 
 	// Logger
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<FloorDto>> getAllFloorsInBuilding(@PathVariable("building_id") String buildingId)
@@ -57,6 +61,8 @@ public class FloorController {
 		return new ResponseEntity<List<FloorDto>>(result, HttpStatus.OK);
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<FloorDto> getFloor(@PathVariable("building_id") String buildingId,
@@ -70,28 +76,32 @@ public class FloorController {
 		}
 		return new ResponseEntity<FloorDto>(floorService.findById(floorId).toDto(), HttpStatus.OK);
 	}
-	
+
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/get-latest-floor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<FloorDto> getLatestFloor(@PathVariable("building_id") String buildingId) throws Exception {
 
 		LOGGER.info("FloorController.getLatestFloor called. (building_id : {})", buildingId);
-		
+
 		Building building = buildingService.findById(buildingId);
 		if (building == null) {
 			throw new ResourceNotFoundException("Building", "building_id", buildingId);
 		}
-		
-		
+
 		return new ResponseEntity<FloorDto>(floorService.findFirstByOrderByFloorOrderDesc().toDto(), HttpStatus.OK);
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@PostMapping
 	public ResponseEntity<Floor> save(@PathVariable("building_id") String buildingId, @RequestBody FloorDto floorDto)
 			throws Exception {
-		
-		LOGGER.info("FloorController.save called. (building_id : {}, floor_id : {})", buildingId, floorDto.getFloor_id());
+
+		LOGGER.info("FloorController.save called. (building_id : {}, floor_id : {})", buildingId,
+				floorDto.getFloor_id());
 
 		HttpStatus status = null;
 		Building building = buildingService.findByIdNullable(buildingId);
@@ -110,9 +120,11 @@ public class FloorController {
 		return new ResponseEntity<Floor>(floorService.save(floor), status);
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@DeleteMapping(value = "/{floor_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteFloorById(@PathVariable("floor_id") String floor_id) {
-		
+
 		LOGGER.info("FloorController.deleteFloorById called. (floor_id : {})", floor_id);
 
 		floorService.deleteById(floor_id);
