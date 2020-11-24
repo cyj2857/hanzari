@@ -52,6 +52,8 @@ public class FloorPlanController {
 	//IOException은 imagePutInputStream의 예외 상황 처리를 위해서이다.
 	//axios 요청 횟수와 메소드가 실행되는 것은 synchronized 되어있지 않다.(요청에 따라 메소드가 동시에 실행되고 그에 따라 동시에 변수에 접근하여 데이터 일관성이 깨지는 문제가 발생한다.)
 	//따라서 하나의 요청이 끝난 후에 다른 요청이 메소드에 진입할 수 있도록 synchronized 키워드를 사용해주었다.
+	//하지만 synchronized를 사용할 경우 순차적으로 요청을 처리해 속도에 문제가 생길 수 있다. 따라서 synchronized를 사용하기보다는 요청에 따라 메소드는 스택에 고유 공간을 가지니
+	//꼭 필요한 경우가 아니라면 공유 자원(필드와 같은)의 사용을 자제하여 asynchronized하게 작동하더라도 아무 이상이 없도록 코드를 작성해야한다. 
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
 	@PostMapping
 	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
@@ -117,6 +119,8 @@ public class FloorPlanController {
 	//IOException은 imageGetInputStream의 예외 상황 처리를 위해서이다.
 	//axios 요청 횟수와 메소드가 실행되는 것은 synchronized 되어있지 않다.(요청에 따라 메소드가 동시에 실행되고 그에 따라 동시에 변수에 접근하여 데이터 일관성이 깨지는 문제가 발생한다.)
 	//따라서 하나의 요청이 끝난 후에 다른 요청이 메소드에 진입할 수 있도록 synchronized 키워드를 사용해주었다.
+	//하지만 synchronized를 사용할 경우 순차적으로 요청을 처리해 속도에 문제가 생길 수 있다. 따라서 synchronized를 사용하기보다는 요청에 따라 메소드는 스택에 고유 공간을 가지니
+	//꼭 필요한 경우가 아니라면 공유 자원(필드와 같은)의 사용을 자제하여 asynchronized하게 작동하더라도 아무 이상이 없도록 코드를 작성해야한다.
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
 	@GetMapping
 	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
