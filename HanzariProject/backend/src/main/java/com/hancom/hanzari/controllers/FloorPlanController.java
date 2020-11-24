@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,10 +27,14 @@ import com.hancom.hanzari.service.FloorPlanService;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import lombok.RequiredArgsConstructor;
 
 
 //CORS 오류 해결하기 위한 어노테이션
 @CrossOrigin(origins = "*", exposedHeaders = { "Content-Disposition" }, maxAge = 3600)
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors/{floor_id}/images")
 //TODO 현재 전송된 이미지 이름을 건물과 층 id를 조합하여 유니크하게 주고 있지만(따라서 같은 층에 도면을 다시 올릴 경우 덮어쓰기가 된다.) 만약 스냅샷 형태로 매달 자리배치도를 관리하게 된다면 매달 이미지 관리를 따로해주어야 한다. 따라서 이미지 이름에 날짜에 대한 정보도 추가해야한다.
@@ -40,12 +43,8 @@ public class FloorPlanController {
 	//버킷명(Amazon S3 Bucket policy를 지켜야 한다.)
 	private static final String BUCKET_NAME = "hanzari";
 
-	@Autowired
-	private FloorPlanService floorPlanService;
-	
-	@Autowired
-	private MinioClient minioClient;
-	
+	private final FloorPlanService floorPlanService;
+	private final MinioClient minioClient;
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 	
 	//이미지 파일 MinIO 서버에 업로드
@@ -55,6 +54,8 @@ public class FloorPlanController {
 	//하지만 synchronized를 사용할 경우 순차적으로 요청을 처리해 속도에 문제가 생길 수 있다. 따라서 synchronized를 사용하기보다는 요청에 따라 메소드는 스택에 고유 공간을 가지니
 	//꼭 필요한 경우가 아니라면 공유 자원(필드와 같은)의 사용을 자제하여 asynchronized하게 작동하더라도 아무 이상이 없도록 코드를 작성해야한다. 
 	//TODO 현재는 HTTP 통신의 결과값을 클라이언트에게 보내주지는 않지만(리턴타입 void) 백엔드단에서 요청 처리가 어떻게 되었는지를 알려주기 위해 메세지를 보내주어도 좋다. 예를 들어 "SUCCESS", "FAILURE" 등의 메세지를 JSON 스트럭쳐 형태로 리턴해준다.
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@PostMapping
 	public void putImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		
@@ -122,6 +123,8 @@ public class FloorPlanController {
 	//하지만 synchronized를 사용할 경우 순차적으로 요청을 처리해 속도에 문제가 생길 수 있다. 따라서 synchronized를 사용하기보다는 요청에 따라 메소드는 스택에 고유 공간을 가지니
 	//꼭 필요한 경우가 아니라면 공유 자원(필드와 같은)의 사용을 자제하여 asynchronized하게 작동하더라도 아무 이상이 없도록 코드를 작성해야한다.
 	//TODO putImageFile 메소드 상단에 작성한 내용 참조
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@GetMapping
 	public void getImageFile(@PathVariable("building_id") String buildingId, @PathVariable("floor_id") String floorId,  HttpServletResponse response) throws IOException {
 		

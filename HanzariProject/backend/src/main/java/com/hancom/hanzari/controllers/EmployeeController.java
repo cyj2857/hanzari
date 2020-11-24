@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,18 +25,24 @@ import com.hancom.hanzari.model.Employee;
 import com.hancom.hanzari.model.EmployeeAdditionalInfo;
 import com.hancom.hanzari.service.EmployeeService;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import lombok.RequiredArgsConstructor;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/employee")
 public class EmployeeController {
 
-	@Autowired
-	private EmployeeService employeeService;
+	private final EmployeeService employeeService;
 
 	// Logger
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
 	// 전체사원 조회
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getAllEmps() {
@@ -51,6 +56,8 @@ public class EmployeeController {
 	}
 
 	// employee_id로 한명의 사원 조회
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<EmployeeDto> getEmp(@PathVariable("employee_id") String employee_id) throws Exception {
@@ -61,6 +68,8 @@ public class EmployeeController {
 	}
 
 	// department_id로 사원 조회
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/by-departmentid/{department_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getEmpBydepartmentId(@PathVariable("department_id") String department_id) {
@@ -75,6 +84,8 @@ public class EmployeeController {
 	}
 
 	// keyword로 자리 조회
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@GetMapping(value = "/keyword/{keyword}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EmployeeDto>> getEmpByKeyword(@PathVariable("keyword") String keyword) throws Exception {
@@ -88,6 +99,8 @@ public class EmployeeController {
 		return new ResponseEntity<List<EmployeeDto>>(result, HttpStatus.OK);
 	}
 
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional
 	@PostMapping
 	public ResponseEntity<Employee> save(@RequestBody EmployeeDto employeeDto) throws Exception {
@@ -113,6 +126,8 @@ public class EmployeeController {
 	}
 
 	// employee_id로 삭제
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@DeleteMapping(value = "/{employee_id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> deleteEmp(@PathVariable("employee_id") String employee_id) {
 
