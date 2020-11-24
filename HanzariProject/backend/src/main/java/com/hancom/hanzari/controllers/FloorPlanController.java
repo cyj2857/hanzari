@@ -3,6 +3,7 @@ package com.hancom.hanzari.controllers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.UUID;
 
@@ -142,14 +143,16 @@ public class FloorPlanController {
 					 .object(getFloorPlanFileName.toString())
 					 .build());
 			
-			//기존 코드
-			//response.addHeader("Content-disposition", getFloorPlanFileName.toString());
-			
-			response.setCharacterEncoding("UTF-8"); // 파일명이 깨지는 문제를 해결하기 위해 response 객체 자체의 encoding을 UTF-8로 변경
+			//HttpServletResponse를 할 때 한글은 encoding해서 보내주고 받는 쪽에서 decoding해주어야 한다.
+			String encodedFloorPlanOriginalFileName = URLEncoder.encode(getFloorPlan.getFloorPlanOriginalFileName(), "UTF-8");
+
 			//Content-disposition은 HTTP Response Body에 오는 컨첸츠의 기질/성향을 알려주는 속성이다.
 			//default 값은 inline으로 web에 전달되는 data라고 생각하면 된다.
 			//attachment를 주는 경우에 filename과 함께 주게 되면 Body에 오는 값을 다운로드 받으라는 뜻이다.
-			response.setHeader("Content-disposition","attachment; filename=" + getFloorPlan.getFloorPlanOriginalFileName());
+			response.setHeader("Content-disposition","attachment; filename=" + encodedFloorPlanOriginalFileName);
+			//response 객체 자체의 encoding을 UTF-8로 변경
+			//텍스트가 아닌 이미지 파일이기에 깨질 UTF-8 문자가 없지만 학습차원에서 적어두었다.
+			response.setCharacterEncoding("UTF-8");
 			response.setContentType(URLConnection.guessContentTypeFromName(getFloorPlanFileName.toString()));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
 			response.flushBuffer();
