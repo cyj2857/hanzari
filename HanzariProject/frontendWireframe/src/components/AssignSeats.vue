@@ -221,14 +221,16 @@ export default {
     //이미지 Map 받아오기
     eventBus.$on("pushAllImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
-      this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+      this.loadImageFile(
+        this.allImageMap.get(this.currentSelectedFloorId).imgPath
+      );
     });
 
     //좌석 하이라이트 하는 함수를 호출하기 위한 event
     eventBus.$on("showSeatHighlight", (seatObject) => {
       this.showSeatHighlight(seatObject);
     });
-    
+
     //삭제된 층의 아이디를 받기 위한 event
     eventBus.$on("pushDeletedFloorId", (floorId) => {
       this.allSeatMap.delete(floorId);
@@ -517,13 +519,21 @@ export default {
       this.seatNumber = 0;
 
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
-        let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+        let typeCheck = this.allImageMap.get(this.currentSelectedFloorId)
+          .imgPath;
+        console.log(this.allImageMap.get(this.currentSelectedFloorId)
+          .imgPath);
+        console.log("-------------------");
         if (typeof typeCheck === "string") {
           //url
-          this.loadImageUrl(this.allImageMap.get(this.currentSelectedFloorId));
+          this.loadImageUrl(
+            this.allImageMap.get(this.currentSelectedFloorId).imgPath
+          );
         } else {
           //file
-          this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+          this.loadImageFile(
+            this.allImageMap.get(this.currentSelectedFloorId).imgPath
+          );
         }
         //현재 층에 그린 도형들이 있다면
         if (eachfloorSeatList) {
@@ -818,10 +828,10 @@ export default {
           "scaleY",
         ]);
       });
-
+      this.floorCanvas.setActiveObject(group);
       this.floorCanvas.add(group);
       this.floorCanvas.renderAll();
-      this.floorCanvas.setActiveObject(group);
+
 
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);
@@ -858,7 +868,9 @@ export default {
         }
       }
 
-      let eachEmployeeSeatList = this.getEachEmployeeSeatList(employeeObject.employeeId);
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+        employeeObject.employeeId
+      );
 
       this.floorCanvas.getActiveObjects().forEach((obj) => {
         if (obj.employeeId && obj.employeeId != employeeObject.employeeId) {
@@ -1126,14 +1138,16 @@ export default {
             for (let j = 0; j < eachFloorSeatList.length; j++) {
               //console.log(typeof eachFloorSeatList[j].seatId);//String
               //console.log(typeof obj.seatId);//String
-              if (eachFloorSeatList[j].seatId === obj.seatId) { //String
+              if (eachFloorSeatList[j].seatId === obj.seatId) {
+                //String
                 eachFloorSeatList.splice(j, 1);
               }
             }
             for (let j = 0; j < managerEachFloorSeatList.length; j++) {
               //console.log(typeof managerEachFloorSeatList[j].seatId);//String
               //console.log(typeof obj.seatId);//String
-              if (managerEachFloorSeatList[j].seatId === obj.seatId) { //String
+              if (managerEachFloorSeatList[j].seatId === obj.seatId) {
+                //String
                 managerEachFloorSeatList[j].set("delete", true);
               }
             }
@@ -1185,12 +1199,12 @@ export default {
             if (typeof getImageTypeForTypeCheck === "string") {
               //url
               this.loadImageUrl(
-                this.allImageMap.get(this.currentSelectedFloorId)
+                this.allImageMap.get(this.currentSelectedFloorId).imgPath
               );
             } else {
               //file
               this.loadImageFile(
-                this.allImageMap.get(this.currentSelectedFloorId)
+                this.allImageMap.get(this.currentSelectedFloorId).imgPath
               );
             }
 
@@ -1294,7 +1308,8 @@ export default {
           let imgData = new FormData();
           let floorId = this.managerFloorList[i].floorId;
 
-          let file = this.allImageMap.get(floorId);
+          console.log(this.allImageMap.get(floorId));
+          let file = this.allImageMap.get(floorId).imgPath;
 
           if (file != null) {
             if (typeof file === "string") {
@@ -1493,13 +1508,19 @@ export default {
       //현재 층 이미지 로드
       if (this.latestFloorImageFromDb) {
         for (let i = 0; i < this.latestFloorImageFromDb.length; i++) {
-          let imgUrl = this.latestFloorImageFromDb[i].url;
-          let floorId = this.latestFloorImageFromDb[i].floorId;
-          this.allImageMap.set(floorId, imgUrl);
+          let newImageObject = {};
+          newImageObject.imgPath = this.latestFloorImageFromDb[i].imgPath;
+          newImageObject.floorId = this.latestFloorImageFromDb[i].floorId;
+          newImageObject.imgFileName = this.latestFloorImageFromDb[i].imgFileName;
 
-          this.currentSelectedFloorId = floorId;
+          console.log("받아온 이미지 파일명입니다.");
+          console.log(newImageObject.imgFileName);
 
-          this.loadImageUrl(imgUrl);
+          this.allImageMap.set(newImageObject.floorId, newImageObject);
+
+          this.currentSelectedFloorId = newImageObject.floorId;
+
+          this.loadImageUrl(newImageObject.imgPath);
           // 현재층 자리 로드
 
           if (this.latestFloorSeatListFromDb.length) {
@@ -1529,11 +1550,14 @@ export default {
                   this.latestFloorSeatListFromDb[i].employeeId
                 );
                 eachEmployeeSeatList.push(group);
-                eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
+                eventBus.$emit(
+                  "pushEachEmployeeSeatMap",
+                  this.eachEmployeeSeatMap
+                );
               }
             }
           } else {
-            this.currentSelectedFloorId = floorId;
+            this.currentSelectedFloorId = newImageObject.floorId;
           }
         }
         this.loadOtherFloors();
@@ -1543,9 +1567,14 @@ export default {
       if (this.otherFloorSeatListFromDb) {
         //다른 층 이미지 로드
         for (let i = 0; i < this.otherFloorImageFromDb.length; i++) {
-          let imgUrl = this.otherFloorImageFromDb[i].url;
-          let floorId = this.otherFloorImageFromDb[i].floorId;
-          this.allImageMap.set(floorId, imgUrl);
+          let newImageObject = {};
+          newImageObject.imgPath = this.otherFloorImageFromDb[i].imgPath;
+          newImageObject.floorId = this.otherFloorImageFromDb[i].floorId;
+          newImageObject.imgFileName = this.otherFloorImageFromDb[i].imgFileName;
+
+          console.log("받아온 이미지 파일명입니다.");
+          console.log(newImageObject.imgFileName);
+          this.allImageMap.set(newImageObject.floorId, newImageObject);
         }
         //다른 층 자리 로드
         if (this.otherFloorSeatListFromDb) {
@@ -1557,7 +1586,9 @@ export default {
             seats = this.otherFloorSeatListFromDb.get(keys[i]);
 
             for (let j = 0; j < seats.length; j++) {
-              let eachFloorSeatList = this.getEachFloorSeatList(seats[j].floorId);
+              let eachFloorSeatList = this.getEachFloorSeatList(
+                seats[j].floorId
+              );
               let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
                 seats[j].floorId
               );
@@ -1572,7 +1603,10 @@ export default {
                   seats[j].employeeId
                 );
                 eachEmployeeSeatList.push(group);
-                eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
+                eventBus.$emit(
+                  "pushEachEmployeeSeatMap",
+                  this.eachEmployeeSeatMap
+                );
               }
 
               eventBus.$emit("pushAllSeatMap", this.allSeatMap);

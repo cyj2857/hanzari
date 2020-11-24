@@ -87,18 +87,18 @@ public class BatchEmployeeUpdateConfiguration {
 
 			URL tokenUrl;
 			HttpsURLConnection tokenCreatedConnection;
-			BufferedReader tokenBufferedReader;
-			BufferedWriter tokenBufferedWriter;
-			// stringValues.getKeys()
-			System.out.println(stringValues.getKeys());
-			// URL String으로 설정
-			final String stringTokenUrl = stringValues.getString("TOKEN_URL");
+			//null로 초기화를 시켜주어야 아래 finally block의 if문에서 에러가 나지 않는다.
+			BufferedWriter tokenBufferedWriter = null;
+			BufferedReader tokenBufferedReader = null;
 			// URL뒤에 들어갈 Parameter들 설정
 			final String stringTokenUrlParameter = String.format(stringValues.getString("TOKEN_FORMAT"),
 					URLEncoder.encode(stringValues.getString("CLIENT_ID"), "UTF-8"),
 					URLEncoder.encode(stringValues.getString("CLIENT_SECRET"), "UTF-8"),
 					URLEncoder.encode(stringValues.getString("GRANT_TYPE"), "UTF-8"));
 
+			/*TODO try with resources statement를 사용하려고 했지만 tokenBufferedWriter와 tokenBufferedReader를 null로 초기화시키는 문장은 ()안에 사용할 수 없다. 
+			또한 실제 생성자를 통해 객체를 생성해주는 부분도 try문에서 다른 문장들이 실행된 결과값을 가지고 객체를 생성하기에 ()안에 먼저 사용할 수도 없다.
+			따라서 해당 객체를 생성하기전까지의 문장을 다른 try~catch문을 생성하여 작성하고 해당 객체를 생성하는 부분부터 try문을 새로만들어 ()안에 객체를 생성하는 방법 등의 다른 방법들을 생각해 봐야겠다.*/
 			try {
 				tokenUrl = new URL(stringValues.getString("TOKEN_URL") + "?" + stringTokenUrlParameter);
 				tokenCreatedConnection = (HttpsURLConnection) tokenUrl.openConnection();
@@ -109,7 +109,7 @@ public class BatchEmployeeUpdateConfiguration {
 				tokenCreatedConnection.setInstanceFollowRedirects(false);
 
 				// Parameter를 HttpsURLConnection에 설정
-				tokenBufferedWriter = new BufferedWriter(new OutputStreamWriter(
+				tokenBufferedWriter = new BufferedWriter(new 	OutputStreamWriter(
 						tokenCreatedConnection.getOutputStream(), "UTF-8"));
 				tokenBufferedWriter.write(stringTokenUrlParameter);
 
@@ -122,16 +122,21 @@ public class BatchEmployeeUpdateConfiguration {
 				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
 				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
 				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
-				while((jsonEachLine = tokenBufferedReader.readLine()) != null) {		
+				while((jsonEachLine = tokenBufferedReader.readLine()) != null) {
 					jsonOneLine.append(jsonEachLine);
 				}
 				// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
 				tokenVo = new ObjectMapper().readValue(jsonOneLine.toString(), TokenVo.class);
-				tokenBufferedReader.close();
 			} catch (IOException e) {
 				LOGGER.error("IOException in First step", e);
 			} catch (Exception e) {
 				LOGGER.error("Exception in First step", e);
+			//try block이 종료하기 전 finally block 실행
+			} finally {
+				if(tokenBufferedWriter != null)
+					tokenBufferedWriter.close();
+				if(tokenBufferedReader != null)
+					tokenBufferedReader.close();
 			}
 
 			LOGGER.info("토큰 타입 : " + tokenVo.getTokenType());
@@ -148,12 +153,15 @@ public class BatchEmployeeUpdateConfiguration {
 			LOGGER.info(">>>>> Second step(발행된 토큰으로부터 API 콜을 통해 JSON형식의 임직원 리스트를 받아온 후 VO 객체에 매핑해주는 step)");
 			URL allEmployeeListUrl;
 			HttpsURLConnection allEmployeeListGetConnection;
-			BufferedReader allEmployeeListReader;
-			final String stringTokenUrl = "https://infosys-gateway.hancom.com/gw/organization/v1/employees";
-			final String stringCmpIdParameter = String.format("cmpId=%s", URLEncoder.encode("C100171030", "UTF-8"));
+			BufferedReader allEmployeeListReader = null;
+			final String stringEmployeesUrl = stringValues.getString("EMPLOYEES_URL");
+			final String stringCmpIdParameter = String.format("cmpId=%s", URLEncoder.encode(stringValues.getString("COMPANY_ID"), "UTF-8"));
 
+			/*TODO try with resources statement를 사용하려고 했지만 allEmployeeListReader를 null로 초기화시키는 문장은 ()안에 사용할 수 없다. 
+			또한 실제 생성자를 통해 객체를 생성해주는 부분도 try문에서 다른 문장들이 실행된 결과값을 가지고 객체를 생성하기에 ()안에 먼저 사용할 수도 없다.
+			따라서 해당 객체를 생성하기전까지의 문장을 다른 try~catch문을 생성하여 작성하고 해당 객체를 생성하는 부분부터 try문을 새로만들어 ()안에 객체를 생성하는 방법 등의 다른 방법들을 생각해 봐야겠다.*/
 			try {
-				allEmployeeListUrl = new URL(stringTokenUrl + "?" + stringCmpIdParameter);
+				allEmployeeListUrl = new URL(stringEmployeesUrl + "?" + stringCmpIdParameter);
 				allEmployeeListGetConnection = (HttpsURLConnection) allEmployeeListUrl.openConnection();
 				allEmployeeListGetConnection.setRequestMethod("GET");
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
@@ -190,14 +198,15 @@ public class BatchEmployeeUpdateConfiguration {
 				resultVo = new ResultVo(originalJsonNode.get("result").get("resultCode").textValue(),
 						originalJsonNode.get("result").get("resultMessage").textValue(),
 						originalJsonNode.get("result").get("resultDesc").textValue(), listEmployeesVo);
-
 				LOGGER.info("임직원 리스트({})", new Date());
 				resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
-				allEmployeeListReader.close();
 			} catch (IOException e) {
 				LOGGER.error("IOException in Second step", e);
 			} catch (Exception e) {
 				LOGGER.error("Exception in Second step", e);
+			} finally {
+				if(allEmployeeListReader != null)
+					allEmployeeListReader.close();
 			}
 
 			return RepeatStatus.FINISHED;

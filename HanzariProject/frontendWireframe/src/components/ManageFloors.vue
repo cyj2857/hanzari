@@ -77,11 +77,11 @@
           <v-card-text>
             <input
               v-show="false"
-              ref="Upload"
+              ref="upload"
               type="file"
               @change="changeImageFile"
             />
-            <v-btn color="blue-grey lighten-2" @click="$refs.Upload.click()"
+            <v-btn color="blue-grey lighten-2" @click="uploadImage()"
               ><h4>업로드</h4></v-btn
             >
           </v-card-text>
@@ -134,17 +134,33 @@ export default {
       this.allImageMap = new Map();
       if (this.copyFromTabsLatestFloorImage) {
         for (let i = 0; i < this.copyFromTabsLatestFloorImage.length; i++) {
-          let imgUrl = this.copyFromTabsLatestFloorImage[i].url;
-          let floorId = this.copyFromTabsLatestFloorImage[i].floorId;
-          this.allImageMap.set(floorId, imgUrl);
+          let newImageObject = {};
+          newImageObject.imgPath = this.copyFromTabsLatestFloorImage[i].imgPath;
+          newImageObject.floorId = this.copyFromTabsLatestFloorImage[i].floorId;
+          newImageObject.imgFileName = this.copyFromTabsLatestFloorImage[
+            i
+          ].imgFileName;
+
+          this.allImageMap.set(newImageObject.floorId, newImageObject);
+          this.currentFloorImageName = this.allImageMap.get(
+            newImageObject.floorId
+          ).imgFileName;
         }
       }
 
       if (this.copyFromTabsOtherFloorsImageList) {
         for (let i = 0; i < this.copyFromTabsOtherFloorsImageList.length; i++) {
-          let imgUrl = this.copyFromTabsOtherFloorsImageList[i].url;
-          let floorId = this.copyFromTabsOtherFloorsImageList[i].floorId;
-          this.allImageMap.set(floorId, imgUrl);
+          let newImageObject = {};
+          newImageObject.imgPath = this.copyFromTabsOtherFloorsImageList[
+            i
+          ].imgPath;
+          newImageObject.floorId = this.copyFromTabsOtherFloorsImageList[
+            i
+          ].floorId;
+          newImageObject.imgFileName = this.copyFromTabsOtherFloorsImageList[
+            i
+          ].imgFileName;
+          this.allImageMap.set(newImageObject.floorId, newImageObject);
         }
       }
     }
@@ -155,9 +171,6 @@ export default {
 
     eventBus.$on("pushFloorOfSeat", (floorId) => {
       for (let i = 0; i < this.allFloorList.length; i++) {
-        //console.log(typeof floorId);//String
-        //console.log(typeof this.allFloorList[i].floorId); //String
-
         if (floorId === this.allFloorList[i].floorId) {
           this.clickFloor(this.allFloorList[i]);
         }
@@ -169,6 +182,13 @@ export default {
     eventBus.$off("pushFloorOfSeat");
   },
   methods: {
+    uploadImage() {
+      if (this.allFloorList.length) {
+        this.$refs.upload.click();
+      } else {
+        alert('도면을 올릴 층이 없습니다.')
+      }
+    },
     showToolTip(floorObject) {
       if (this.allSeatMap) {
         if (this.allSeatMap.get(floorObject.floorId)) {
@@ -228,10 +248,12 @@ export default {
               floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
           }
         } else {
-          this.toolTipText = floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
+          this.toolTipText =
+            floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
         }
       } else {
-        this.toolTipText = floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
+        this.toolTipText =
+          floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
       }
     },
     clickFloor(floorObject) {
@@ -239,7 +261,9 @@ export default {
       this.clickFloorIndexes.push(floorObject.floorId);
 
       if (this.allImageMap.get(floorObject.floorId)) {
-        this.currentFloorImageName = this.allImageMap.get(floorObject.floorId).name;
+        this.currentFloorImageName = this.allImageMap.get(
+          floorObject.floorId
+        ).imgFileName;
       } else {
         this.currentFloorImageName = "이미지를 업로드하세요";
       }
@@ -276,7 +300,10 @@ export default {
 
       this.length++;
 
-      eventBus.$emit("pushSelectedFloorObject", this.currentSelectedFloorObject);
+      eventBus.$emit(
+        "pushSelectedFloorObject",
+        this.currentSelectedFloorObject
+      );
 
       let allFloorList = this.allFloorList.slice();
       eventBus.$emit("pushAllFloorList", allFloorList);
@@ -294,7 +321,10 @@ export default {
       this.allFloorList[idx].modify = true;
       this.managerFloorList[idx].modify = true;
 
-      eventBus.$emit("pushChangedFloorName", this.currentSelectedFloorObject.floorName);
+      eventBus.$emit(
+        "pushChangedFloorName",
+        this.currentSelectedFloorObject.floorName
+      );
 
       let allFloorList = this.allFloorList.slice();
       eventBus.$emit("pushAllFloorList", allFloorList);
@@ -316,9 +346,10 @@ export default {
           this.managerFloorList[idx].delete = true;
 
           let nextIdx = null;
-          console.log(typeof idx) //number
-          console.log(typeof 0) //number
-          if (idx === 0) { //number
+          console.log(typeof idx); //number
+          console.log(typeof 0); //number
+          if (idx === 0) {
+            //number
             nextIdx = idx;
           } else {
             nextIdx = idx - 1;
@@ -351,10 +382,19 @@ export default {
       this.saveImageFile(files[0]);
     },
     saveImageFile(file) {
-      this.allImageMap.set(this.currentSelectedFloorObject.floorId, file);
+      let newImageObject = {};
+      newImageObject.imgPath = file;
+      newImageObject.floorId = this.currentSelectedFloorObject.floorId;
+      newImageObject.imgFileName = file.name;
+
+      this.allImageMap.set(
+        this.currentSelectedFloorObject.floorId,
+        newImageObject
+      );
       this.currentFloorImageName = this.allImageMap.get(
         this.currentSelectedFloorObject.floorId
-      ).name;
+      ).imgFileName;
+
       eventBus.$emit("pushAllImageMap", this.allImageMap);
     },
   },
