@@ -521,9 +521,6 @@ export default {
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId)
           .imgPath;
-        console.log(this.allImageMap.get(this.currentSelectedFloorId)
-          .imgPath);
-        console.log("-------------------");
         if (typeof typeCheck === "string") {
           //url
           this.loadImageUrl(
@@ -1195,7 +1192,7 @@ export default {
           if (this.allImageMap.get(seatFloor) != null) {
             let getImageTypeForTypeCheck = this.allImageMap.get(
               this.currentSelectedFloorId
-            );
+            ).imgPath;
             if (typeof getImageTypeForTypeCheck === "string") {
               //url
               this.loadImageUrl(
