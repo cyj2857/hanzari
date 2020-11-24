@@ -289,8 +289,6 @@ export default {
       newFloorObject.httpRequestPostStatus = true;
 
       this.allFloorList.push(newFloorObject);
-      console.log(this.allFloorList);
-      console.log(newFloorObject);
 
       this.currentSelectedFloorObject = newFloorObject;
 
@@ -309,9 +307,7 @@ export default {
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
-        //console.log(typeof item.floorId);//String
-        //console.log(typeof this.currentSelectedFloor.floorId); //String
-        return item.floorId === this.currentSelectedFloorObject.floorId;
+        return item.floorId === this.currentSelectedFloorObject.floorId;//String
       });
 
       this.allFloorList[idx].httpRequestPostStatus = true;
@@ -328,8 +324,6 @@ export default {
       if (this.length > 0) {
         let currentFloorId = this.currentSelectedFloorObject.floorId;
         const idx = this.allFloorList.findIndex(function (item) {
-          //console.log(typeof item.floorId) //String
-          //console.log(typeof currentFloorId) //String
           return item.floorId === currentFloorId; //String
         });
         if (idx > -1) {
@@ -342,11 +336,9 @@ export default {
           this.allFloorList.splice(idx, 1);
 
           let nextIdx = null;
-          //console.log(typeof idx); number
-          //console.log(typeof 0); number
 
-          if (idx === 0) {
-            //number
+
+          if (idx === 0) {//number
             nextIdx = idx;
           } else {
             nextIdx = idx - 1;
