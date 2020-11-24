@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +28,16 @@ import com.hancom.hanzari.service.FloorService;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/buildings/{building_id}/floors")
 public class FloorController {
 
-	@Autowired
-	private FloorService floorService;
-	@Autowired
-	private BuildingService buildingService;
+	private final FloorService floorService;
+	private final BuildingService buildingService;
 
 	// Logger
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
