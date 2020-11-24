@@ -1,16 +1,17 @@
 package com.hancom.hanzari.controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,25 +35,23 @@ import com.hancom.hanzari.service.FloorService;
 import com.hancom.hanzari.service.SeatService;
 import com.hancom.hanzari.service.ShapeService;
 
+import lombok.RequiredArgsConstructor;
+
 /*
  * TEST에 필요한 메소드들을 모아놓은 Controller
 */
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("test-api")
 public class TestController {
 
-	@Autowired
-	private SeatService seatService;
-	@Autowired
-	private FloorService floorService;
-	@Autowired
-	private BuildingService buildingService;
-	@Autowired
-	private EmployeeService employeeService;
-	@Autowired
-	private ShapeService shapeService;
-
+	private final SeatService seatService;
+	private final FloorService floorService;
+	private final BuildingService buildingService;
+	private final EmployeeService employeeService;
+	private final ShapeService shapeService;
+	private final PasswordEncoder passwordEncoder;
 	private final Logger LOGGER = LoggerFactory.getLogger("EngineLogger");
 
 	@Transactional
@@ -99,29 +98,41 @@ public class TestController {
 
 		List<Employee> employee = new ArrayList<Employee>();
 		employee.add(Employee.builder().employeeId("10052204").authority("admin").additionalInfo(additionalInfo.get(0))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("19101101").authority("viewer").additionalInfo(additionalInfo.get(1))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("19101102").authority("viewer").additionalInfo(additionalInfo.get(2))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("19101103").authority("viewer").additionalInfo(additionalInfo.get(3))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("19101104").authority("viewer").additionalInfo(additionalInfo.get(4))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("19101199").authority("viewer").additionalInfo(additionalInfo.get(5))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("20091101").authority("viewer").additionalInfo(additionalInfo.get(6))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("20091102").authority("viewer").additionalInfo(additionalInfo.get(7))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("20091103").authority("viewer").additionalInfo(additionalInfo.get(8))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("20091104").authority("viewer").additionalInfo(additionalInfo.get(9))
-				.password("0000").seat(null).build());
+				.password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER")).seat(null)
+				.build());
 		employee.add(Employee.builder().employeeId("94111201").authority("manager")
-				.additionalInfo(additionalInfo.get(10)).password("0000").seat(null).build());
+				.additionalInfo(additionalInfo.get(10)).password(passwordEncoder.encode("0000"))
+				.roles(Collections.singletonList("ROLE_USER")).seat(null).build());
 		employee.add(Employee.builder().employeeId("95032205").authority("manager")
-				.additionalInfo(additionalInfo.get(11)).password("0000").seat(null).build());
+				.additionalInfo(additionalInfo.get(11)).password(passwordEncoder.encode("0000"))
+				.roles(Collections.singletonList("ROLE_USER")).seat(null).build());
 
 		shapes.forEach(e -> shapeService.save(e));
 		buildings.forEach(e -> buildingService.save(e));
