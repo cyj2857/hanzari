@@ -52,11 +52,7 @@ public class Floor {
 	@Column(name = "floor_order", nullable = false)
 	private int floorOrder;
 
-	//FloorImageUrl 정보를 Floor측에서 가지고있지 않아도 될 것이라 판단하여(이미지 관련 통신은 따로 axios 호출을 하여 FloorPlan과 통신함) 우선은 주석 처리를 해둠.
-	//@Column(name = "floor_image_url", nullable = true)
-	//private int floorImageUrl;
-
-	@OneToMany(mappedBy = "floor", cascade = CascadeType.ALL, orphanRemoval = false)
+	@OneToMany(mappedBy = "floor", cascade = CascadeType.ALL, orphanRemoval = false) // mappedBy를 통해 Seat의 floor로 맵핑이되고 Seat이 관계의 주인임을 나타낸다.
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonManagedReference
 	private List<Seat> seats;

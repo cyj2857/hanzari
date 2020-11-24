@@ -39,7 +39,7 @@ public class Building {
 	@Column(name = "building_name", nullable = false)
 	private String buildingName;
 
-	@OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = false)
+	@OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = false) // mappedBy를 통해 Floor의 building로 맵핑이되고 Floor가 관계의 주인임을 나타낸다.
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonManagedReference
 	private List<Floor> floors;
