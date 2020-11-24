@@ -71,10 +71,11 @@ public class FloorPlanController {
 			LOGGER.error("Can't find matched floorPlan record. Exception message : ", e);
 		}
 
-		InputStream imagePutInputStream = file.getInputStream();
+		
 		putFloorPlanFileName = new StringBuilder();
 		
-		try {
+		//try with resources statement 사용하여 ()안에서 생성된 객체 try statement 종료시 자동으로 해당 객체의 close() 메소드 호출
+		try(InputStream imagePutInputStream = file.getInputStream();) {
 			//이미지 파일 이름에 일별로 구분해주기 위한 레퍼런스 변수들
 			Date currentTime = new Date();
 			
@@ -101,16 +102,14 @@ public class FloorPlanController {
 				    .build());
 		} catch (Exception e) {
 			LOGGER.error("Can't put object in the MinIO bucket. Exception message : ", e);
-		} finally {
-			//finally안에는 try안에서 리턴문에 의해 메소드가 종료될 경우 그 전에 해야할 작업들을 적어줄 수 있다.
-			//해당 finally문 안에는 후에 try문 안에 return문을 작성할 경우를 대비해 imagePutInputStream을 닫아주어야한다.
-			//하지만 닫아 주는 경우에도 exception이 발생할 가능성이 있다. 그렇게 되면 finally안에 또 try~catch문을 사용해야하는데 이럴 경우 코드가 너무 길어진다.
-			/*TODO 따라서 이러한 경우 IOUtils.closequietly()와 같은 메소드를 사용하여 열어둔 stream을 닫아주고 Null일 경우에도 알아서 처리해주는 라이브러리를 사용해도 좋다.
-			 그러나 이름이 같은 클래스에 대해 해당 라이브러리의 import 경로와 개발 중인 프로젝트의 import 경로가 다른 경우가 있을 수 있고 이런 경우 오류가 날 가능성도 있다.
-			 따라서 이렇게 동일한 작업을 처리해주는 메소드가 필요한 경우 직접 작성을 하고 프로젝트 내에서 필요한 클래스에서 import하는 방법으로 진행하는 것이 좋다.*/
-			if(imagePutInputStream != null)
-				imagePutInputStream.close();
 		}
+		//finally문 작성시 유의사항(해당 try~catch문에서는 try with resources statement를 사용하여 신경쓰지않아도 됨. 학습 차원에서 남겨둠)
+		//finally문 안에는 try문 안에서 리턴문에 의해 메소드가 종료될 경우 그 전에 해야할 작업들을 적어줄 수 있다.
+		//하지만 닫아 주는 경우에도 exception이 발생할 가능성이 있다. 그렇게 되면 finally문 안에 또 try~catch문을 사용해야하는데 이럴 경우 코드가 너무 길어진다.
+		/*TODO 따라서 이러한 경우 IOUtils.closequietly()와 같은 메소드를 사용하여 열어둔 stream을 닫아주고 Null일 경우에도 알아서 처리해주는 라이브러리를 사용해도 좋다.
+		 그러나 이름이 같은 클래스에 대해 해당 라이브러리의 import 경로와 개발 중인 프로젝트의 import 경로가 다른 경우가 있을 수 있고 이런 경우 오류가 날 가능성도 있다.
+		 따라서 이렇게 동일한 작업을 처리해주는 메소드가 필요한 경우 직접 작성을 하고 프로젝트 내에서 필요한 클래스에서 import하는 방법으로 진행하는 것이 좋다.*/
+		
 	}
 
 	//이미지 파일 MinIO 서버에서 다운로드
@@ -128,8 +127,11 @@ public class FloorPlanController {
 		StringBuilder getFloorPlanFileName;
 		InputStream imageGetInputStream = null;
 		
+		
 		//클라이언트에서 요청을 할 때 잘못된 요청(floorId가 undefined가 오는 등)이 오더라도 try catch문을 두개로 나눠두었기에 이전 getFloorPlanFileName에 저장되어있던 이전 이미지 파일을 가져오게 된다.
 		//따라서 모든 과정을 하나의 try catch문에 넣어주어 하나의 과정에서 에러가 난다면 다음 단계로 넘어갈 수 없도록 해주어야한다.
+		/*TODO try with resources statement를 사용하려고 했지만 imageGetInputStream을 null로 초기화하는 문장은 ()안에 사용할 수 없다. 따라서 해당 문법을 사용하고 싶다면 다른 방법을 생각해 봐야겠다.
+		DB에서 해당 레코드를 찾아오는 문장들을 다른 try문을 만들어 넣어두고 새로운 try문을 만들어 ()안에 할당해 줄 수도 있겠지만 이럴 경우 try문이 많아진다는 단점이 있다.*/
 		try {
 			//DB에서 요청한 층 정보와 연결된 레코드를 찾아 이미지 이름 찾기
 			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
@@ -151,7 +153,7 @@ public class FloorPlanController {
 			//attachment를 주는 경우에 filename과 함께 주게 되면 Body에 오는 값을 다운로드 받으라는 뜻이다.
 			response.setHeader("Content-disposition","attachment; filename=" + encodedFloorPlanOriginalFileName);
 			//response 객체 자체의 encoding을 UTF-8로 변경
-			//텍스트가 아닌 이미지 파일이기에 깨질 UTF-8 문자가 없지만 학습차원에서 적어두었다.
+			//텍스트가 아닌 이미지 파일이기에 깨질 UTF-8 문자가 없지만 학습 차원에서 적어두었다.
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType(URLConnection.guessContentTypeFromName(getFloorPlanFileName.toString()));
 			IOUtils.copy(imageGetInputStream, response.getOutputStream());
@@ -160,7 +162,7 @@ public class FloorPlanController {
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 		} finally {
-			//TODO putImageFile 메소드 안의 finally문에 작성한 내용 참조
+			//TODO putImageFile 메소드 2번째 try~catch문 마지막에 작성한 주석 내용 참조
 			if(imageGetInputStream != null)
 				imageGetInputStream.close();
 		}
