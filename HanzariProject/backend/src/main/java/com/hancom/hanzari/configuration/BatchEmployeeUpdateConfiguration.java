@@ -18,13 +18,20 @@ import javax.net.ssl.HttpsURLConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,23 +47,47 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration // Spring Batch의 모든 Job은 이 어노테이션을 이용해 등록하고 사용해야한다
 @RequiredArgsConstructor // 생성자 DI를 위한 lombok 어노테이션
+@EnableBatchProcessing
 public class BatchEmployeeUpdateConfiguration {
 	// Job 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
 	private final JobBuilderFactory jobBuilderFactory;
 	// Step 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
 	private final StepBuilderFactory stepBuilderFactory;
+	@Autowired
+	private SimpleJobLauncher jobLauncher;
 	// ResourceBundle을 이용하여 string value들을 불러옴 properties 확장자인데 확장자없이 파일명만 적어줘도
 	// ResourceBundle이 알아서 해당 파일 찾아줌
 	private final ResourceBundle stringValues = ResourceBundle.getBundle("string");
 	private final Logger LOGGER = LoggerFactory.getLogger("ConsoleLogger");
-	// 발행 될 토큰과 토큰 정보들을 넣어둘 VO
+	// 발행 될 토큰과 토큰 정보들을 넣어둘 VO	
 	private TokenVo tokenVo;
 	// 요청에 대한 응답 정보와 임직원 전체 목록을 리스트로 가지고 있을 VO
 	private ResultVo resultVo;
 	private final PasswordEncoder passwordEncoder;
 	@Autowired
 	EmployeeService employeeService;
+	
+	@Scheduled(cron = "0 0 * * * *")
+	//@Scheduled(fixedDelay = 1000)
+	public void perform() throws Exception {
 
+		System.out.println("Job Started at :" + new Date());
+
+		JobParameters param = new JobParametersBuilder().addString("JobID", String.valueOf(System.currentTimeMillis()))
+				.toJobParameters();
+
+		JobExecution execution = jobLauncher.run(getEmployeesInfoJob(), param);
+
+		System.out.println("Job finished with status :" + execution.getStatus());
+	}
+	
+	@Bean
+	public SimpleJobLauncher jobLauncher(JobRepository jobRepository) {
+		SimpleJobLauncher launcher = new SimpleJobLauncher();
+		launcher.setJobRepository(jobRepository);
+		return launcher;
+	}
+	
 	@Bean
 	// GetEmployeesInfoJob이란 이름으로 Batch Job을 생성
 	// Job의 이름은 별도로 지정하지 않고 Builder를 통해 지정한다.

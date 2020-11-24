@@ -38,7 +38,7 @@ public class Seat {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull
-	@JoinColumn(name = "floor_id", nullable = false) // 관계의 주인
+	@JoinColumn(name = "floor_id", nullable = false)
 	@JsonBackReference
 	private Floor floor;
 
