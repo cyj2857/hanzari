@@ -14,9 +14,6 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hancom.hanzari.dto.FloorDto;
@@ -52,8 +49,7 @@ public class Floor {
 	@Column(name = "floor_order", nullable = false)
 	private int floorOrder;
 
-	@OneToMany(mappedBy = "floor", cascade = CascadeType.ALL, orphanRemoval = false) // mappedBy를 통해 Seat의 floor로 맵핑이되고 Seat이 관계의 주인임을 나타낸다.
-	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "floor", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false) // mappedBy를 통해 Seat의 floor로 맵핑이되고 Seat이 관계의 주인임을 나타낸다.
 	@JsonManagedReference
 	private List<Seat> seats;
 

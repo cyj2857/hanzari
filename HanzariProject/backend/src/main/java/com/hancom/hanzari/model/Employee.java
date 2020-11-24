@@ -51,7 +51,7 @@ public class Employee implements UserDetails {
 	@Column(name = "authority", nullable = false)
 	private String authority;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@NotNull
 	@JoinColumn(name = "addi_info_id", nullable = false)
 	private EmployeeAdditionalInfo additionalInfo;
