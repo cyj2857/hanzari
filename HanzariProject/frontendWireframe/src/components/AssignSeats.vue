@@ -104,9 +104,9 @@ export default {
 
       latestFloorSeatListFromDb: this.copyLatestFloorSeatList,
       otherFloorSeatListFromDb: this.copyOtherFloorsSeatMap,
-      //자리 Map <층이름, 자리리스트>
-      allSeatMap: null, //가시적 자리 map
-      managerAllSeatMap: null, //DB 관리 자리 map
+
+      allSeatMap: null, //자리 Map<층이름, 자리리스트>
+      deleteSeatIdList: [], // deleteId 자리 리스트
 
       employeeList: this.copyEmployeeList,
       eachEmployeeSeatMap: null, //each Employee's seats map
@@ -151,9 +151,6 @@ export default {
     }
     if (this.allSeatMap == null) {
       this.allSeatMap = new Map();
-    }
-    if (this.managerAllSeatMap == null) {
-      this.managerAllSeatMap = new Map();
     }
     if (this.eachEmployeeSeatMap == null) {
       this.eachEmployeeSeatMap = new Map();
@@ -234,15 +231,11 @@ export default {
     //삭제된 층의 아이디를 받기 위한 event
     eventBus.$on("pushDeletedFloorId", (floorId) => {
       this.allSeatMap.delete(floorId);
-      //managerAllSeatMap 에서 삭제되어도 되는 이유 :
-      //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것.
-      //그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함
-      this.managerAllSeatMap.delete(floorId);
     });
   },
   mounted() {
     this.initializing();
-    this.loadLatestFloor(); //현재 층 이미지와 자리 로드
+    this.loadLatestFloor(); //최신 층 이미지와 자리 로드
   },
   beforeDestroy() {
     eventBus.$off("moveSeatToAnotherFloor");
@@ -251,7 +244,6 @@ export default {
     eventBus.$off("pushAddVacantSwitchStatus");
     eventBus.$off("mappingEmployeeToVacant");
     eventBus.$off("pushAllFloorList");
-    eventBus.$off("pushManagerFloorList");
     eventBus.$off("changeSeatToVacant");
     eventBus.$off("pushAllImageMap");
     eventBus.$off("showSeatHighlight");
@@ -439,7 +431,7 @@ export default {
 
         this.floorCanvas.on("object:modified", (e) => {
           this.floorCanvas.getObjects().forEach((obj) => {
-            obj.set("modify", true);
+            obj.set("httpRequestPostStatus", true);
           });
         });
 
@@ -513,16 +505,12 @@ export default {
       let eachfloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
-      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
       this.seatNumber = 0;
 
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
         let typeCheck = this.allImageMap.get(this.currentSelectedFloorId)
           .imgPath;
-        console.log(this.allImageMap.get(this.currentSelectedFloorId)
-          .imgPath);
+        console.log(this.allImageMap.get(this.currentSelectedFloorId).imgPath);
         console.log("-------------------");
         if (typeof typeCheck === "string") {
           //url
@@ -598,21 +586,6 @@ export default {
         return this.allSeatMap.get(floor);
       }
     },
-    getManagerEachFloorSeatList: function (floor) {
-      if (!floor) {
-        // 초반에 층이 생성 안되었을때
-        return;
-      }
-      if (!this.managerAllSeatMap.get(floor)) {
-        let newSeatsList = [];
-        this.managerAllSeatMap.set(floor, newSeatsList);
-        //console.log(this.managerAllSeatMap.size + "managerAllSeatMap 처음의 자리 맵 사이즈입니다");
-        return this.managerAllSeatMap.get(floor);
-      } else {
-        //console.log(this.managerAllSeatMap.size + "managerAllSeatMap 현재 자리 맵 사이즈입니다" );
-        return this.managerAllSeatMap.get(floor);
-      }
-    },
     getEachEmployeeSeatList: function (employeeId) {
       if (!this.eachEmployeeSeatMap.get(employeeId)) {
         let newEmployeeSeatList = [];
@@ -623,11 +596,15 @@ export default {
       }
     },
     // 해당 층의 도형 리스트의 Delete field 전체 true 만들기
-    deleteManagerEachFloorSeatList: function (floor) {
-      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(floor);
-      //console.log(managerEachFloorSeatList);
-      for (let i = 0; i < managerEachFloorSeatList.length; i++) {
-        managerEachFloorSeatList[i].set("delete", true);
+    deleteEachFloorSeatList: function (floor) {
+      let eachFloorSeatList = this.getEachFloorSeatList(floor);
+      for (let i = 0; i < eachFloorSeatList.length; i++) {
+        if (eachFloorSeatList[i].isObjFromDB) {
+          let deleteSeat = {};
+          deleteSeat.floorId = eachFloorSeatList[i].floorId;
+          deleteSeat.seatId = eachFloorSeatList[i].seatId;
+          this.deleteSeatIdList.push(deleteSeat);
+        }
       }
     },
     //사원의 자리리스트에서 삭제된 자리를 삭제하기
@@ -663,7 +640,9 @@ export default {
               this.floorCanvas
                 .getActiveObject()
                 .set("left", this.floorCanvas.getActiveObject().left - 5);
-              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas
+                .getActiveObject()
+                .set("httpRequestPostStatus", true);
               this.floorCanvas.renderAll();
             }
             break;
@@ -672,7 +651,9 @@ export default {
               this.floorCanvas
                 .getActiveObject()
                 .set("left", this.floorCanvas.getActiveObject().left + 5);
-              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas
+                .getActiveObject()
+                .set("httpRequestPostStatus", true);
               this.floorCanvas.renderAll();
             }
             break;
@@ -681,7 +662,9 @@ export default {
               this.floorCanvas
                 .getActiveObject()
                 .set("top", this.floorCanvas.getActiveObject().top - 5);
-              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas
+                .getActiveObject()
+                .set("httpRequestPostStatus", true);
               this.floorCanvas.renderAll();
             }
             break;
@@ -690,7 +673,9 @@ export default {
               this.floorCanvas
                 .getActiveObject()
                 .set("top", this.floorCanvas.getActiveObject().top + 5);
-              this.floorCanvas.getActiveObject().set("modify", true);
+              this.floorCanvas
+                .getActiveObject()
+                .set("httpRequestPostStatus", true);
               this.floorCanvas.renderAll();
             }
             break;
@@ -752,9 +737,6 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
-      let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
 
       let rectangle = new fabric.Rect({
         width: Math.abs(mouseDownX - mouseUpX),
@@ -780,17 +762,14 @@ export default {
         left: mouseDownX,
         top: mouseDownY,
         angle: 0,
-        create: true, //생성
-        modify: false, //변경
-        delete: false, //삭제
+        isObjFromDB: false,
+        httpRequestPostStatus: true,
       });
 
       if (this.currentSelectedFloorName != null) {
-        if (
-          this.getManagerEachFloorSeatList(this.currentSelectedFloorId).length
-        ) {
+        if (this.getEachFloorSeatList(this.currentSelectedFloorId).length) {
           let seatNumberArray = [];
-          this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
+          this.getEachFloorSeatList(this.currentSelectedFloorId).forEach(
             (seat) => {
               seatNumberArray.push(seat.seatName.split("-")[1]);
             }
@@ -813,28 +792,11 @@ export default {
         group.add(seatNameObject);
       }
 
-      this.floorCanvas.on("object:scaling", (e) => {
-        let scaledObject = e.target;
-        let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
-        let height = scaledObject.getScaledHeight() / scaledObject.scaleY;
-
-        scaledObject.width = width;
-        scaledObject.height = height;
-
-        let groupx = scaledObject.toObject([
-          "width",
-          "height",
-          "scaleX",
-          "scaleY",
-        ]);
-      });
       this.floorCanvas.setActiveObject(group);
       this.floorCanvas.add(group);
       this.floorCanvas.renderAll();
 
-
       eachFloorSeatList.push(group);
-      managerEachFloorSeatList.push(group);
 
       eventBus.$emit("pushAllSeatMap", this.allSeatMap);
     },
@@ -884,7 +846,7 @@ export default {
         obj.employeeNumber = employeeObject.number;
         obj.employeeId = employeeObject.employeeId;
         obj.item(0).set("fill", this.getColor(obj.employeeDepartment));
-        obj.set("modify", true);
+        obj.set("httpRequestPostStatus", true);
         eachEmployeeSeatList.push(obj);
       });
 
@@ -903,9 +865,8 @@ export default {
             this.deleteEachEmployeeSeatList(groupToObject);
             this.floorCanvas.remove(obj);
           });
-
+        this.deleteEachFloorSeatList(this.currentSelectedFloorId);
         this.getEachFloorSeatList(this.currentSelectedFloorId).length = 0;
-        this.deleteManagerEachFloorSeatList(this.currentSelectedFloorId);
 
         eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
       } else {
@@ -921,7 +882,13 @@ export default {
       );
       if (confirm("Are you sure?")) {
         this.floorCanvas.getActiveObjects().forEach((obj) => {
-          obj.set("delete", true);
+          if (obj.isObjFromDB) {
+            let deleteSeat = {};
+            deleteSeat.floorId = obj.floorId;
+            deleteSeat.seatId = obj.seatId;
+            this.deleteSeatIdList.push(deleteSeat);
+          }
+
           let groupToObject = obj.toObject(["seatId", "employeeId"]);
           this.deleteEachEmployeeSeatList(groupToObject);
           console.log(this.eachEmployeeSeatMap);
@@ -943,7 +910,7 @@ export default {
         this.floorCanvas.getActiveObjects().forEach((obj) => {
           let groupToObject = obj.toObject(["seatId", "employeeId"]);
           this.deleteEachEmployeeSeatList(groupToObject);
-          obj.set("modify", true);
+          obj.set("httpRequestPostStatus", true);
           obj.set("employeeName", null);
           obj.set("employeeDepartment", null);
           obj.set("employeeNumber", null);
@@ -982,9 +949,6 @@ export default {
       let eachFloorSeatList = this.getEachFloorSeatList(
         this.currentSelectedFloorId
       );
-      let managerEachFloorList = this.getManagerEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(
         this.floorCanvas.getActiveObject().employeeId
       );
@@ -994,9 +958,8 @@ export default {
         clonedObj.set({
           left: clonedObj.left + 10,
           top: clonedObj.top + 10,
-          create: true,
-          delete: false,
-          modify: false,
+          isObjFromDB: false,
+          httpRequestPostStatus: true,
           seatId: this.createSeatUUID(),
           floorId: this.currentSelectedFloorId,
           angle: activeObject.angle,
@@ -1008,7 +971,7 @@ export default {
         });
 
         let seatNumberArray = [];
-        this.getManagerEachFloorSeatList(this.currentSelectedFloorId).forEach(
+        this.getEachFloorSeatList(this.currentSelectedFloorId).forEach(
           (seat) => {
             seatNumberArray.push(seat.seatName.split("-")[1]);
           }
@@ -1046,7 +1009,6 @@ export default {
         this.floorCanvas.requestRenderAll();
 
         eachFloorSeatList.push(clonedObj);
-        managerEachFloorList.push(clonedObj);
         eachEmployeeSeatList.push(clonedObj);
       });
 
@@ -1111,10 +1073,6 @@ export default {
         this.currentSelectedFloorId
       );
 
-      let managerEachFloorSeatList = this.getEachFloorSeatList(
-        this.currentSelectedFloorId
-      );
-
       for (let i = 0; i < this.allFloorList.length; i++) {
         //console.log(typeof this.allFloorList[i].floorId) //String
         //console.log(typeof floorId) //String
@@ -1122,17 +1080,13 @@ export default {
           this.floorCanvas.getActiveObjects().forEach((obj) => {
             obj.set("floorId", this.allFloorList[i].floorId);
             obj.set("floorName", this.allFloorList[i].floorName);
-            obj.set("modify", true);
+            obj.set("httpRequestPostStatus", true);
 
             let changeFloorSeatList = this.getEachFloorSeatList(
               this.allFloorList[i].floorId
             );
-            let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
-              this.allFloorList[i].floorId
-            );
 
             changeFloorSeatList.push(obj);
-            changeManagerFloorSeatList.push(obj);
 
             //이동 후에 원래 list에서 삭제
             for (let j = 0; j < eachFloorSeatList.length; j++) {
@@ -1140,15 +1094,8 @@ export default {
               //console.log(typeof obj.seatId);//String
               if (eachFloorSeatList[j].seatId === obj.seatId) {
                 //String
+                eachFloorSeatList[j].set("isObjFromDB", true);
                 eachFloorSeatList.splice(j, 1);
-              }
-            }
-            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
-              //console.log(typeof managerEachFloorSeatList[j].seatId);//String
-              //console.log(typeof obj.seatId);//String
-              if (managerEachFloorSeatList[j].seatId === obj.seatId) {
-                //String
-                managerEachFloorSeatList[j].set("delete", true);
               }
             }
             eventBus.$emit("pushFloorOfSeat", this.allFloorList[i].floorId);
@@ -1323,14 +1270,27 @@ export default {
         }
 
         //자리 저장
+        console.log(this.deleteSeatIdList);
+        if (this.deleteSeatIdList.length > 0) {
+          for (let i = 0; i < this.deleteSeatIdList.length; i++) {
+            let deleteSeatKey = this.deleteSeatIdList[i].seatId;
+            let deleteSeatFloor = this.deleteSeatIdList[i].floorId;
+            this.$emit(
+              "deleteSeatWithKey",
+              "seats",
+              deleteSeatKey,
+              deleteSeatFloor
+            );
+          }
+        }
         for (let i = 0; i < this.managerFloorList.length; i++) {
-          let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-            this.managerFloorList[i].floorId
+          let eachFloorSeatList = this.getEachFloorSeatList(
+            this.allFloorList[i].floorId
           );
 
-          if (managerEachFloorSeatList.length > 0) {
-            for (let j = 0; j < managerEachFloorSeatList.length; j++) {
-              let groupToObject = managerEachFloorSeatList[j].toObject([
+          if (eachFloorSeatList.length > 0) {
+            for (let j = 0; j < eachFloorSeatList.length; j++) {
+              let groupToObject = eachFloorSeatList[j].toObject([
                 "seatId",
                 "seatName",
                 "floorId",
@@ -1342,68 +1302,27 @@ export default {
                 "height",
                 "scaleX",
                 "scaleY",
-                "create",
-                "modify",
-                "delete",
+                "isObjFromDB",
+                "httpRequestPostStatus",
               ]);
+              console.log(groupToObject.httpRequestPostStatus);
+              if (groupToObject.httpRequestPostStatus) {
+                let seatData = {};
+                seatData.seat_id = groupToObject.seatId;
+                seatData.seat_name = groupToObject.seatName;
+                seatData.floor = groupToObject.floorId;
+                seatData.x = groupToObject.left;
+                seatData.y = groupToObject.top;
+                seatData.is_group = false;
+                seatData.group_id = null;
+                seatData.building_id = "HANCOM01";
+                seatData.employee_id = groupToObject.employeeId;
+                seatData.width = groupToObject.width * groupToObject.scaleX;
+                seatData.height = groupToObject.height * groupToObject.scaleY;
+                seatData.degree = groupToObject.angle;
+                seatData.shape_id = "1";
 
-              //console.log(groupToObject);
-              //axios api 호출
-              if (!groupToObject.create) {
-                // 원본
-                if (groupToObject.delete) {
-                  // 001 011 delete
-                  let deleteSeatKey = groupToObject.seatId;
-                  let deleteSeatFloor = groupToObject.floorId;
-                  this.$emit(
-                    "deleteSeatWithKey",
-                    "seats",
-                    deleteSeatKey,
-                    deleteSeatFloor
-                  );
-                } else if (groupToObject.modify) {
-                  //010 그 id에 대하여 post
-                  let seatData = {};
-                  seatData.seat_id = groupToObject.seatId;
-                  seatData.seat_name = groupToObject.seatName;
-                  seatData.floor = groupToObject.floorId;
-                  seatData.x = groupToObject.left;
-                  seatData.y = groupToObject.top;
-                  seatData.is_group = false;
-                  seatData.group_id = null;
-                  seatData.building_id = "HANCOM01";
-                  seatData.employee_id = groupToObject.employeeId;
-                  seatData.width = groupToObject.width * groupToObject.scaleX;
-                  seatData.height = groupToObject.height * groupToObject.scaleY;
-                  seatData.degree = groupToObject.angle;
-                  seatData.shape_id = "1";
-
-                  this.$emit("saveSeats", "seats", seatData, seatData.floor);
-                }
-              } else {
-                // front에서 생성
-                if (groupToObject.delete) {
-                  //101 111 nothing
-                  continue;
-                } else {
-                  //100 110 그 id에 대하여 post
-                  let seatData = {};
-                  seatData.seat_id = groupToObject.seatId;
-                  seatData.seat_name = groupToObject.seatName;
-                  seatData.floor = groupToObject.floorId;
-                  seatData.x = groupToObject.left;
-                  seatData.y = groupToObject.top;
-                  seatData.is_group = false;
-                  seatData.group_id = null;
-                  seatData.building_id = "HANCOM01";
-                  seatData.employee_id = groupToObject.employeeId;
-                  seatData.width = groupToObject.width * groupToObject.scaleX;
-                  seatData.height = groupToObject.height * groupToObject.scaleY;
-                  seatData.degree = groupToObject.angle;
-                  seatData.shape_id = "1";
-
-                  this.$emit("saveSeats", "seats", seatData, seatData.floor);
-                }
+                this.$emit("saveSeats", "seats", seatData, seatData.floor);
               }
             }
           }
@@ -1471,9 +1390,8 @@ export default {
         left: seat.x,
         top: seat.y,
         angle: seat.degree,
-        create: seat.create,
-        modify: seat.modify,
-        delete: seat.delete,
+        isObjFromDB: seat.isObjFromDB,
+        httpRequestPostStatus: seat.httpRequestPostStatus,
       });
 
       let seatNameObject = new fabric.IText(seat.seatName, {
@@ -1511,7 +1429,9 @@ export default {
           let newImageObject = {};
           newImageObject.imgPath = this.latestFloorImageFromDb[i].imgPath;
           newImageObject.floorId = this.latestFloorImageFromDb[i].floorId;
-          newImageObject.imgFileName = this.latestFloorImageFromDb[i].imgFileName;
+          newImageObject.imgFileName = this.latestFloorImageFromDb[
+            i
+          ].imgFileName;
 
           console.log("받아온 이미지 파일명입니다.");
           console.log(newImageObject.imgFileName);
@@ -1532,16 +1452,11 @@ export default {
               let eachFloorSeatList = this.getEachFloorSeatList(
                 this.latestFloorSeatListFromDb[i].floorId
               );
-              let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-                this.latestFloorSeatListFromDb[i].floorId
-              );
 
               let group = this.makeGroupInfo(this.latestFloorSeatListFromDb[i]);
 
               this.floorCanvas.add(group);
-
               eachFloorSeatList.push(group);
-              managerEachFloorSeatList.push(group);
 
               eventBus.$emit("pushAllSeatMap", this.allSeatMap);
 
@@ -1570,7 +1485,9 @@ export default {
           let newImageObject = {};
           newImageObject.imgPath = this.otherFloorImageFromDb[i].imgPath;
           newImageObject.floorId = this.otherFloorImageFromDb[i].floorId;
-          newImageObject.imgFileName = this.otherFloorImageFromDb[i].imgFileName;
+          newImageObject.imgFileName = this.otherFloorImageFromDb[
+            i
+          ].imgFileName;
 
           console.log("받아온 이미지 파일명입니다.");
           console.log(newImageObject.imgFileName);
@@ -1589,14 +1506,9 @@ export default {
               let eachFloorSeatList = this.getEachFloorSeatList(
                 seats[j].floorId
               );
-              let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-                seats[j].floorId
-              );
 
               let group = this.makeGroupInfo(seats[j]);
-
               eachFloorSeatList.push(group);
-              managerEachFloorSeatList.push(group);
 
               if (seats[j].employeeId != null) {
                 let eachEmployeeSeatList = this.getEachEmployeeSeatList(

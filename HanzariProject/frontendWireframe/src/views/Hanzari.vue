@@ -230,7 +230,6 @@ export default {
             console.log(newImageObject.imgFileName);
 
             latestFloorImage.push(newImageObject);
-
           } catch (error) {
             console.log(error);
           }
@@ -275,7 +274,6 @@ export default {
             responseList = newImageObject;
             console.log(newImageObject.imgFileName);
             otherFloorsImageList.push(responseList);
-
           }
         } catch (error) {
           console.error(error);
@@ -315,9 +313,8 @@ export default {
             newSeatObject.height = response.data[i].height;
             newSeatObject.degree = response.data[i].degree;
             newSeatObject.shapeId = response.data[i].shape_id;
-            newSeatObject.create = false;
-            newSeatObject.delete = false;
-            newSeatObject.modify = false;
+            newSeatObject.isObjFromDB = true;
+            newSeatObject.httpRequestPostStatus = false;
 
             latestFloorSeatList.push(newSeatObject);
           }
@@ -366,9 +363,8 @@ export default {
               newSeatObject.height = response.data[j].height;
               newSeatObject.degree = response.data[j].degree;
               newSeatObject.shapeId = response.data[j].shape_id;
-              newSeatObject.create = false;
-              newSeatObject.delete = false;
-              newSeatObject.modify = false;
+              newSeatObject.isObjFromDB = true;
+              newSeatObject.httpRequestPostStatus = false;
 
               responseList.push(newSeatObject);
 
