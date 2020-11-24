@@ -127,8 +127,11 @@ public class FloorPlanController {
 		StringBuilder getFloorPlanFileName;
 		InputStream imageGetInputStream = null;
 		
+		
 		//클라이언트에서 요청을 할 때 잘못된 요청(floorId가 undefined가 오는 등)이 오더라도 try catch문을 두개로 나눠두었기에 이전 getFloorPlanFileName에 저장되어있던 이전 이미지 파일을 가져오게 된다.
 		//따라서 모든 과정을 하나의 try catch문에 넣어주어 하나의 과정에서 에러가 난다면 다음 단계로 넘어갈 수 없도록 해주어야한다.
+		/*TODO try with resources statement를 사용하려고 했지만 imageGetInputStream을 null로 초기화하는 문장은 ()안에 사용할 수 없다. 따라서 해당 문법을 사용하고 싶다면 다른 방법을 생각해 봐야겠다.
+		DB에서 해당 레코드를 찾아오는 문장들을 다른 try문을 만들어 넣어두고 새로운 try문을 만들어 ()안에 할당해 줄 수도 있겠지만 이럴 경우 try문이 많아진다는 단점이 있다.*/
 		try {
 			//DB에서 요청한 층 정보와 연결된 레코드를 찾아 이미지 이름 찾기
 			getFloorPlan = floorPlanService.findByFloorIdAndLatest(floorId, true);
@@ -159,7 +162,7 @@ public class FloorPlanController {
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 		} finally {
-			//TODO putImageFile 메소드 안의 finally문에 작성한 내용 참조
+			//TODO putImageFile 메소드 2번째 try~catch문 마지막에 작성한 주석 내용 참조
 			if(imageGetInputStream != null)
 				imageGetInputStream.close();
 		}
