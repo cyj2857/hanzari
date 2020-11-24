@@ -1,7 +1,5 @@
 package com.hancom.hanzari.controllers;
 
-import java.util.Collections;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +43,6 @@ public class SignController {
 	@PostMapping(value = "/signup")
 	public ResponseEntity<Void> signup(@ApiParam(value = "회원ID : 사원번호", required = true) @RequestParam String id,
 			@ApiParam(value = "비밀번호", required = true) @RequestParam String password) {
-		System.out.println("############## >> SignController.signup called");
 		HttpStatus status = null;
 		Employee employee = employeeService.findByIdNullable(id);
 		if (employee != null) {
@@ -53,9 +50,7 @@ public class SignController {
 		} else {
 			status = HttpStatus.CREATED;
 		}
-
 		employee.setPassword(passwordEncoder.encode(password));
-		employee.setRoles(Collections.singletonList("ROLE_USER"));
 		employeeService.save(employee);
 
 		return new ResponseEntity<Void>(status);
