@@ -100,7 +100,7 @@ export default {
 
       latestFloorImageFromDb: this.copyLatestFloorImage,
       otherFloorImageFromDb: this.copyOtherFloorsImageList,
-      allImageMap: null, //모든 이미지 저장과 로드(floorid / file or url)
+      allImageMap: null, //모든 이미지 저장과 로드(floorId / file or url)
 
       latestFloorSeatListFromDb: this.copyLatestFloorSeatList,
       otherFloorSeatListFromDb: this.copyOtherFloorsSeatMap,
@@ -108,7 +108,7 @@ export default {
       allSeatMap: null, //가시적 자리 map
       managerAllSeatMap: null, //DB 관리 자리 map
 
-      employees: this.copyEmployeeList,
+      employeeList: this.copyEmployeeList,
       eachEmployeeSeatMap: null, //each Employee's seats map
 
       allFloorList: this.copyFloorList, // 가시적 층 리스트
@@ -128,14 +128,10 @@ export default {
       toolTipColor: null,
       toolTipText: null,
 
-      ableAddVacant: false,
-
-      seatWidth: null,
-      seatHeight: null,
+      addVacantSwitchStatus: false,
 
       seatNumber: 0,
 
-      isDown: null,
       firstMouseDownX: 0,
       firstMouseDownY: 0,
     };
@@ -144,20 +140,30 @@ export default {
     if (this.allFloorList && this.allFloorList.length) {
       this.currentSelectedFloorName = this.allFloorList[
         this.allFloorList.length - 1
-      ].floor_name;
+      ].floorName;
       this.currentSelectedFloorId = this.allFloorList[
         this.allFloorList.length - 1
-      ].floor_id;
+      ].floorId;
     }
-    //층간 이동
-    eventBus.$on("clickChangeFloorSeat", (floor_id) => {
-      this.changeFloorSeat(floor_id);
-    });
 
-    eventBus.$on("changeFloor", (floor) => {
-      if (floor) {
-        this.currentSelectedFloorId = floor.floor_id;
-        this.currentSelectedFloorName = floor.floor_name;
+    if (this.allImageMap == null) {
+      this.allImageMap = new Map();
+    }
+    if (this.allSeatMap == null) {
+      this.allSeatMap = new Map();
+    }
+    if (this.managerAllSeatMap == null) {
+      this.managerAllSeatMap = new Map();
+    }
+    if (this.eachEmployeeSeatMap == null) {
+      this.eachEmployeeSeatMap = new Map();
+    }
+
+    //선택한 층에 대한 값 받아와서 층 전환하기 위한 event
+    eventBus.$on("pushSelectedFloorObject", (floorObject) => {
+      if (floorObject) {
+        this.currentSelectedFloorId = floorObject.floorId;
+        this.currentSelectedFloorName = floorObject.floorName;
         this.changeFloor();
       } else {
         this.currentSelectedFloorId = null;
@@ -171,79 +177,85 @@ export default {
       }
     });
 
-    eventBus.$on("changeFloorName", (changeFloorName) => {
-      this.currentSelectedFloorName = changeFloorName;
+    //층의 이름이 변경될시 화면에 표출되는 string값을 바꾸기 위한 event
+    eventBus.$on("pushChangedFloorName", (changedFloorName) => {
+      this.currentSelectedFloorName = changedFloorName;
     });
 
-    eventBus.$on("changeAddVacantSwitch", (switchValue) => {
-      this.ableAddVacant = switchValue;
+    //공석 만들기 스위치 상태값 변경하기 위한 event
+    eventBus.$on("pushAddVacantSwitchStatus", (switchStatus) => {
+      this.addVacantSwitchStatus = switchStatus;
     });
-    eventBus.$on("setSeatSizeDialog", (seatSize) => {
-      this.seatWidth = seatSize.width;
-      this.seatHeight = seatSize.height;
+
+    //공석에 사원을 매핑하고자 함수를 호출하기 위한 event
+    eventBus.$on("mappingEmployeeToVacant", (employeeObject) => {
+      this.mappingEmployeeToVacant(employeeObject);
     });
-    eventBus.$on("mappingSeat", (item) => {
-      this.setMappingSeat(item);
+
+    //좌석(또는 공석)을 다른층으로 이동하고자 함수를 호출하기 위한 event
+    eventBus.$on("moveSeatToAnotherFloor", (floorId) => {
+      this.moveSeatToAnotherFloor(floorId);
     });
-    eventBus.$on("allFloorList", (allFloors) => {
-      this.allFloorList = allFloors;
-      console.log(this.allFloorList);
-    });
-    eventBus.$on("managerFloorList", (managerFloors) => {
-      this.managerFloorList = managerFloors;
-      console.log(this.managerFloorList);
-    });
-    eventBus.$on("changeToVacant", () => {
+
+    //좌석의 사원을 지우고 공석으로 바꾸는 함수를 호출하기 위한 event
+    eventBus.$on("changeSeatToVacant", () => {
       if (this.floorCanvas.getActiveObject()) {
-        this.changeToVacant();
+        this.changeSeatToVacant();
       } else {
         alert("there is no selected object");
       }
     });
-    eventBus.$on("allImageMap", (allImageMap) => {
+
+    //모든 층 객체를 가지고 있는 리스트를 받기 위한 event
+    eventBus.$on("pushAllFloorList", (allFloorList) => {
+      this.allFloorList = allFloorList;
+      console.log(this.allFloorList);
+    });
+
+    //db로 보내는 리스트에 활용되는 층 리스트를 받기 위한 event
+    eventBus.$on("pushManagerFloorList", (managerFloorList) => {
+      this.managerFloorList = managerFloorList;
+      console.log(this.managerFloorList);
+    });
+
+    //이미지 Map 받아오기
+    eventBus.$on("pushAllImageMap", (allImageMap) => {
       this.allImageMap = allImageMap;
-      this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+      this.loadImageFile(
+        this.allImageMap.get(this.currentSelectedFloorId).imgPath
+      );
     });
-    eventBus.$on("showSeat", (seat) => {
-      this.showSeat(seat);
+
+    //좌석 하이라이트 하는 함수를 호출하기 위한 event
+    eventBus.$on("showSeatHighlight", (seatObject) => {
+      this.showSeatHighlight(seatObject);
     });
-    eventBus.$on("deleteSeatListKey", (floor_id) => {
-      this.allSeatMap.delete(floor_id);
+
+    //삭제된 층의 아이디를 받기 위한 event
+    eventBus.$on("pushDeletedFloorId", (floorId) => {
+      this.allSeatMap.delete(floorId);
       //managerAllSeatMap 에서 삭제되어도 되는 이유 :
       //managerFloorList만큼 저장을 하기때문에 그에 해당되지 않는 key는 저장이 되지 않을 것.
       //그리고 DB에서도 삭제되는 층이 있으면 자동으로 그 층에 해당하는 자리들도 삭제함
-      this.managerAllSeatMap.delete(floor_id);
+      this.managerAllSeatMap.delete(floorId);
     });
-    if (this.allImageMap == null) {
-      this.allImageMap = new Map();
-    }
-    if (this.allSeatMap == null) {
-      this.allSeatMap = new Map();
-    }
-    if (this.managerAllSeatMap == null) {
-      this.managerAllSeatMap = new Map();
-    }
-    if (this.eachEmployeeSeatMap == null) {
-      this.eachEmployeeSeatMap = new Map();
-    }
   },
   mounted() {
     this.initializing();
     this.loadLatestFloor(); //현재 층 이미지와 자리 로드
   },
   beforeDestroy() {
-    eventBus.$off("clickChangeFloorSeat");
-    eventBus.$off("changeFloor");
-    eventBus.$off("changeFloorName");
-    eventBus.$off("changeAddVacantSwitch");
-    eventBus.$off("setSeatSizeDialog");
-    eventBus.$off("mappingSeat");
-    eventBus.$off("allFloorList");
-    eventBus.$off("managerFloorList");
-    eventBus.$off("changeToVacant");
-    eventBus.$off("allImageMap");
-    eventBus.$off("showSeat");
-    eventBus.$off("deleteSeatListKey");
+    eventBus.$off("moveSeatToAnotherFloor");
+    eventBus.$off("pushSelectedFloor");
+    eventBus.$off("pushChangedFloorName");
+    eventBus.$off("pushAddVacantSwitchStatus");
+    eventBus.$off("mappingEmployeeToVacant");
+    eventBus.$off("pushAllFloorList");
+    eventBus.$off("pushManagerFloorList");
+    eventBus.$off("changeSeatToVacant");
+    eventBus.$off("pushAllImageMap");
+    eventBus.$off("showSeatHighlight");
+    eventBus.$off("pushDeletedFloorId");
   },
   methods: {
     initializing() {
@@ -364,11 +376,7 @@ export default {
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
-            if (this.ableAddVacant) {
-              // if (!this.seatWidth) {
-              //   alert("공석 크기를 선택해야 합니다.");
-              //   return;
-              // }
+            if (this.addVacantSwitchStatus) {
               var pointer = this.floorCanvas.getPointer(event.e);
               this.firstMouseDownX = pointer.x;
               this.firstMouseDownY = pointer.y;
@@ -379,14 +387,14 @@ export default {
               //contextMenu
               var posX = event.e.clientX;
               var posY = event.e.clientY;
-              this.showContextMenu(posX, posY);
+              this.showContextMenuOfOneSeat(posX, posY);
             }
           }
         });
 
         this.floorCanvas.on("mouse:up", (event) => {
           if (event.button === 3) {
-            if (this.ableAddVacant) {
+            if (this.addVacantSwitchStatus) {
               var pointer = this.floorCanvas.getPointer(event.e);
               var mouseUpX = pointer.x;
               var mouseUpY = pointer.y;
@@ -395,13 +403,22 @@ export default {
               console.log(mouseUpY);
               console.log("mouseup");
 
-              if (this.posX == mouseUpX && this.posY == mouseUpY) {
+              //console.log(typeof this.firstMouseDownX) //number
+              //console.log(typeof mouseUpX) //number
+              //console.log(typeof this.firstMouseDownY) //number
+              //console.log(typeof mouseUpY) //number
+
+              if (
+                this.firstMouseDownX === mouseUpX &&
+                this.firstMouseDownY === mouseUpY
+              ) {
                 return;
               } else {
                 if (!this.allImageMap.get(this.currentSelectedFloorId)) {
                   alert("도면 이미지가 없습니다");
                   return;
-                }if (this.currentSelectedFloorName == "") {
+                }
+                if (this.currentSelectedFloorName == "") {
                   alert("층 이름이 설정되지 않았습니다.");
                   return;
                 }
@@ -414,7 +431,7 @@ export default {
                   this.firstMouseDownY,
                   mouseUpX,
                   mouseUpY
-                  );
+                );
               }
             }
           }
@@ -433,19 +450,19 @@ export default {
             var posY = event.e.clientY;
 
             let groupToObject = group.toObject([
-              "employee_id",
-              "employee_name",
-              "employee_department",
-              "employee_number",
+              "employeeId",
+              "employeeName",
+              "employeeDepartment",
+              "employeeNumber",
             ]);
 
             this.showToolTip(
               posX,
               posY,
-              groupToObject.employee_id,
-              groupToObject.employee_name,
-              groupToObject.employee_department,
-              groupToObject.employee_number
+              groupToObject.employeeId,
+              groupToObject.employeeName,
+              groupToObject.employeeDepartment,
+              groupToObject.employeeNumber
             );
           }
         });
@@ -465,15 +482,15 @@ export default {
       let currentZoom = this.zoom;
       if (5 <= currentZoom && currentZoom <= 7) {
         this.floorCanvas.getObjects().forEach((obj) => {
-          if (obj.employee_name) {
-            obj.item(1).text = obj.employee_name;
+          if (obj.employeeName) {
+            obj.item(1).text = obj.employeeName;
             obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
           }
         });
       } else if (7 < currentZoom && currentZoom <= 10) {
         this.floorCanvas.getObjects().forEach((obj) => {
-          if (obj.employee_name) {
-            obj.item(1).text = obj.employee_name + "\n" + obj.employee_number;
+          if (obj.employeeName) {
+            obj.item(1).text = obj.employeeName + "\n" + obj.employeeNumber;
             obj.item(1).fontSize = parseInt(this.fontSize / currentZoom);
           }
         });
@@ -502,20 +519,28 @@ export default {
       this.seatNumber = 0;
 
       if (this.allImageMap.get(this.currentSelectedFloorId) != null) {
-        let typeCheck = this.allImageMap.get(this.currentSelectedFloorId);
+        let typeCheck = this.allImageMap.get(this.currentSelectedFloorId)
+          .imgPath;
+        console.log(this.allImageMap.get(this.currentSelectedFloorId)
+          .imgPath);
+        console.log("-------------------");
         if (typeof typeCheck === "string") {
           //url
-          this.loadImageUrl(this.allImageMap.get(this.currentSelectedFloorId));
+          this.loadImageUrl(
+            this.allImageMap.get(this.currentSelectedFloorId).imgPath
+          );
         } else {
           //file
-          this.loadImageFile(this.allImageMap.get(this.currentSelectedFloorId));
+          this.loadImageFile(
+            this.allImageMap.get(this.currentSelectedFloorId).imgPath
+          );
         }
         //현재 층에 그린 도형들이 있다면
         if (eachfloorSeatList) {
           for (let i = 0; i < eachfloorSeatList.length; i++) {
             this.floorCanvas.add(eachfloorSeatList[i]);
           }
-          eventBus.$emit("allSeatMap", this.allSeatMap);
+          eventBus.$emit("pushAllSeatMap", this.allSeatMap);
         }
       } else if (this.allImageMap.get(this.currentSelectedFloorId) == null) {
         //현재 층의 이미지가 저장되어있지 않다면 화면에 그려져있던 이미지와 도형 초기화
@@ -530,7 +555,7 @@ export default {
         this.floorCanvas.backgroundColor = "aliceblue";
         this.floorCanvas.renderAll();
 
-        eventBus.$emit("allSeatMap", this.allSeatMap);
+        eventBus.$emit("pushAllSeatMap", this.allSeatMap);
       }
     },
     loadImageFile(file) {
@@ -540,9 +565,9 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    loadImageUrl(imgurl) {
+    loadImageUrl(imgUrl) {
       fabric.Image.fromURL(
-        imgurl,
+        imgUrl,
         (img) => {
           img.set({
             scaleX: this.floorCanvas.width / img.width,
@@ -588,13 +613,13 @@ export default {
         return this.managerAllSeatMap.get(floor);
       }
     },
-    getEachEmployeeSeatList: function (employee_id) {
-      if (!this.eachEmployeeSeatMap.get(employee_id)) {
+    getEachEmployeeSeatList: function (employeeId) {
+      if (!this.eachEmployeeSeatMap.get(employeeId)) {
         let newEmployeeSeatList = [];
-        this.eachEmployeeSeatMap.set(employee_id, newEmployeeSeatList);
-        return this.eachEmployeeSeatMap.get(employee_id);
+        this.eachEmployeeSeatMap.set(employeeId, newEmployeeSeatList);
+        return this.eachEmployeeSeatMap.get(employeeId);
       } else {
-        return this.eachEmployeeSeatMap.get(employee_id);
+        return this.eachEmployeeSeatMap.get(employeeId);
       }
     },
     // 해당 층의 도형 리스트의 Delete field 전체 true 만들기
@@ -607,14 +632,17 @@ export default {
     },
     //사원의 자리리스트에서 삭제된 자리를 삭제하기
     deleteEachEmployeeSeatList: function (groupToObject) {
-      if (groupToObject.employee_id != null) {
+      if (groupToObject.employeeId != null) {
         let oneEmployeeSeatList = this.getEachEmployeeSeatList(
-          groupToObject.employee_id
+          groupToObject.employeeId
         );
 
         if (oneEmployeeSeatList) {
           for (let i = 0; i < oneEmployeeSeatList.length; i++) {
-            if (oneEmployeeSeatList[i].seatId == groupToObject.seatId) {
+            //console.log(typeof oneEmployeeSeatList[i].seatId); //String
+            //console.log(typeof groupToObject.seatId); //String
+            if (oneEmployeeSeatList[i].seatId === groupToObject.seatId) {
+              //String
               oneEmployeeSeatList.splice(i, 1);
             }
           }
@@ -709,10 +737,15 @@ export default {
         Blue: "blue",
         Gray: "Gray",
       };
-      if (department == "부서1") return Colors.Orange;
-      else if (department == "부서2") return Colors.Yellow;
-      else if (department == "부서3") return Colors.Green;
-      else return Colors.Gray;
+      if (department == null) {
+        return Colors.Gray;
+      } else {
+        //console.log(typeof department);//String
+        //console.log(typeof "부서1");//String
+        if (department === "부서1") return Colors.Orange;
+        else if (department === "부서2") return Colors.Yellow;
+        else if (department === "부서3") return Colors.Green;
+      }
     },
 
     addVacantSeat(mouseDownX, mouseDownY, mouseUpX, mouseUpY) {
@@ -739,11 +772,11 @@ export default {
 
       let group = new fabric.Group([rectangle, textObject], {
         seatId: this.createSeatUUID(),
-        floor_id: this.currentSelectedFloorId,
-        employee_name: null,
-        employee_department: null,
-        employee_number: null,
-        employee_id: null,
+        floorId: this.currentSelectedFloorId,
+        employeeName: null,
+        employeeDepartment: null,
+        employeeNumber: null,
+        employeeId: null,
         left: mouseDownX,
         top: mouseDownY,
         angle: 0,
@@ -795,37 +828,17 @@ export default {
           "scaleY",
         ]);
       });
-
-      this.floorCanvas.add(group);
-
-      //this.floorCanvas.renderAll();
-
-      this.floorCanvas.on("mouse:move", function (eve) {
-        if (!this.isDown) return;
-        console.log(mousemove);
-        var pointer = this.floorCanvas.getPointer(o.e);
-
-        if (posX > pointer.x) {
-          group.set("left", Math.abs(pointer.x));
-        }
-        if (posY > pointer.y) {
-          group.set("top", Math.abs(pointer.y));
-        }
-
-        group.item(0).set("width", Math.abs(posX - pointer.x));
-        group.item(0).set("height", Math.abs(posY - pointer.y));
-
-        this.floorCanvas.renderAll();
-      });
-
       this.floorCanvas.setActiveObject(group);
+      this.floorCanvas.add(group);
+      this.floorCanvas.renderAll();
+
 
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);
 
-      eventBus.$emit("allSeatMap", this.allSeatMap);
+      eventBus.$emit("pushAllSeatMap", this.allSeatMap);
     },
-    setMappingSeat(item) {
+    mappingEmployeeToVacant(employeeObject) {
       if (!this.floorCanvas.getActiveObject()) {
         alert("선택된 좌석이 없습니다.");
         return;
@@ -833,7 +846,7 @@ export default {
 
       let mappedOtherEmployeeSeatNameList = [];
       this.floorCanvas.getActiveObjects().forEach((obj) => {
-        if (obj.employee_id && obj.employee_id != item.employee_id) {
+        if (obj.employeeId && obj.employeeId != employeeObject.employeeId) {
           mappedOtherEmployeeSeatNameList.push(obj.seatName);
         }
       });
@@ -855,28 +868,30 @@ export default {
         }
       }
 
-      let eachEmployeeSeatList = this.getEachEmployeeSeatList(item.employee_id);
+      let eachEmployeeSeatList = this.getEachEmployeeSeatList(
+        employeeObject.employeeId
+      );
 
       this.floorCanvas.getActiveObjects().forEach((obj) => {
-        if (obj.employee_id && obj.employee_id != item.employee_id) {
+        if (obj.employeeId && obj.employeeId != employeeObject.employeeId) {
           // 다른 사원이 매핑된 좌석
-          let groupToObject = obj.toObject(["seatId", "employee_id"]);
+          let groupToObject = obj.toObject(["seatId", "employeeId"]);
           this.deleteEachEmployeeSeatList(groupToObject);
         }
         // 다른 사원이 매핑된 좌석 + 공석
-        obj.employee_name = item.name;
-        obj.employee_department = item.department;
-        obj.employee_number = item.number;
-        obj.employee_id = item.employee_id;
-        obj.item(0).set("fill", this.getColor(obj.employee_department));
+        obj.employeeName = employeeObject.name;
+        obj.employeeDepartment = employeeObject.department;
+        obj.employeeNumber = employeeObject.number;
+        obj.employeeId = employeeObject.employeeId;
+        obj.item(0).set("fill", this.getColor(obj.employeeDepartment));
         obj.set("modify", true);
         eachEmployeeSeatList.push(obj);
       });
 
       this.checkZoom();
       this.floorCanvas.renderAll();
-      eventBus.$emit("allSeatMap", this.allSeatMap);
-      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      eventBus.$emit("pushAllSeatMap", this.allSeatMap);
+      eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
     clickdeleteAllBtn() {
       if (confirm("Are you sure?")) {
@@ -884,7 +899,7 @@ export default {
           .getObjects()
           .slice()
           .forEach((obj) => {
-            let groupToObject = obj.toObject(["seatId", "employee_id"]);
+            let groupToObject = obj.toObject(["seatId", "employeeId"]);
             this.deleteEachEmployeeSeatList(groupToObject);
             this.floorCanvas.remove(obj);
           });
@@ -892,11 +907,7 @@ export default {
         this.getEachFloorSeatList(this.currentSelectedFloorId).length = 0;
         this.deleteManagerEachFloorSeatList(this.currentSelectedFloorId);
 
-        eventBus.$emit(
-          "eachFloorSeatList",
-          this.getEachFloorSeatList(this.currentSelectedFloorId)
-        );
-        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+        eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
       } else {
         return;
       }
@@ -911,7 +922,7 @@ export default {
       if (confirm("Are you sure?")) {
         this.floorCanvas.getActiveObjects().forEach((obj) => {
           obj.set("delete", true);
-          let groupToObject = obj.toObject(["seatId", "employee_id"]);
+          let groupToObject = obj.toObject(["seatId", "employeeId"]);
           this.deleteEachEmployeeSeatList(groupToObject);
           console.log(this.eachEmployeeSeatMap);
           console.log(eachFloorSeatList);
@@ -921,31 +932,30 @@ export default {
           console.log(eachFloorSeatList);
           this.floorCanvas.remove(obj);
 
-          eventBus.$emit("eachFloorSeatList", eachFloorSeatList);
-          eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+          eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
         });
       } else {
         return;
       }
     },
-    changeToVacant() {
+    changeSeatToVacant() {
       if (confirm("자리를 비우시겠습니까?")) {
         this.floorCanvas.getActiveObjects().forEach((obj) => {
-          let groupToObject = obj.toObject(["seatId", "employee_id"]);
+          let groupToObject = obj.toObject(["seatId", "employeeId"]);
           this.deleteEachEmployeeSeatList(groupToObject);
           obj.set("modify", true);
-          obj.set("employee_name", null);
-          obj.set("employee_department", null);
-          obj.set("employee_number", null);
-          obj.set("employee_id", null);
-          obj.item(0).set("fill", this.getColor(obj.employee_department));
+          obj.set("employeeName", null);
+          obj.set("employeeDepartment", null);
+          obj.set("employeeNumber", null);
+          obj.set("employeeId", null);
+          obj.item(0).set("fill", this.getColor(obj.employeeDepartment));
           this.floorCanvas.remove(obj.item(1)); // delete textObject
           obj.item(1).set("text", "");
         });
 
         this.floorCanvas.renderAll();
-        eventBus.$emit("allSeatMap", this.allSeatMap);
-        eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+        eventBus.$emit("pushAllSeatMap", this.allSeatMap);
+        eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
       } else {
         return;
       }
@@ -976,7 +986,7 @@ export default {
         this.currentSelectedFloorId
       );
       let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-        this.floorCanvas.getActiveObject().employee_id
+        this.floorCanvas.getActiveObject().employeeId
       );
 
       this.clipboard.clone((clonedObj) => {
@@ -988,12 +998,12 @@ export default {
           delete: false,
           modify: false,
           seatId: this.createSeatUUID(),
-          floor_id: this.currentSelectedFloorId,
+          floorId: this.currentSelectedFloorId,
           angle: activeObject.angle,
-          employee_department: activeObject.employee_department,
-          employee_id: activeObject.employee_id,
-          employee_name: activeObject.employee_name,
-          employee_number: activeObject.employee_number,
+          employeeDepartment: activeObject.employeeDepartment,
+          employeeId: activeObject.employeeId,
+          employeeName: activeObject.employeeName,
+          employeeNumber: activeObject.employeeNumber,
           evented: true,
         });
 
@@ -1040,10 +1050,10 @@ export default {
         eachEmployeeSeatList.push(clonedObj);
       });
 
-      eventBus.$emit("allSeatMap", this.allSeatMap);
-      eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+      eventBus.$emit("pushAllSeatMap", this.allSeatMap);
+      eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
     },
-    showContextMenu(clientX, clientY) {
+    showContextMenuOfOneSeat(clientX, clientY) {
       this.contextMenuStatus = false;
       this.contextMenuXLocation = clientX + 10;
       this.contextMenuYLocation = clientY;
@@ -1064,27 +1074,27 @@ export default {
     showToolTip(
       clientX,
       clientY,
-      employee_id,
-      employee_name,
-      employee_department,
-      employee_number
+      employeeId,
+      employeeName,
+      employeeDepartment,
+      employeeNumber
     ) {
       this.toolTipXLocation = clientX;
       this.toolTipYLocation = clientY;
 
-      if (employee_id == null) {
+      if (employeeId == null) {
         this.toolTipText = "공석";
         this.toolTipColor = null;
       } else {
         this.toolTipText =
           "이름 : " +
-          employee_name +
+          employeeName +
           "<br>아이디 : " +
-          employee_id +
+          employeeId +
           "<br>부서 : " +
-          employee_department +
+          employeeDepartment +
           "<br>내선번호 : " +
-          employee_number;
+          employeeNumber;
 
         this.toolTipColor = "pink lighten-2";
       }
@@ -1092,7 +1102,7 @@ export default {
       this.toolTipStatus = true;
     },
     // 층간이동
-    changeFloorSeat(floor_id) {
+    moveSeatToAnotherFloor(floorId) {
       if (!this.floorCanvas.getActiveObject()) {
         alert("이동할 좌석이 선택되지 않았습니다.");
         return;
@@ -1106,17 +1116,19 @@ export default {
       );
 
       for (let i = 0; i < this.allFloorList.length; i++) {
-        if (this.allFloorList[i].floor_id == floor_id) {
+        //console.log(typeof this.allFloorList[i].floorId) //String
+        //console.log(typeof floorId) //String
+        if (this.allFloorList[i].floorId === floorId) {
           this.floorCanvas.getActiveObjects().forEach((obj) => {
-            obj.set("floor_id", this.allFloorList[i].floor_id);
-            obj.set("floor_name", this.allFloorList[i].floor_name);
+            obj.set("floorId", this.allFloorList[i].floorId);
+            obj.set("floorName", this.allFloorList[i].floorName);
             obj.set("modify", true);
 
             let changeFloorSeatList = this.getEachFloorSeatList(
-              this.allFloorList[i].floor_id
+              this.allFloorList[i].floorId
             );
             let changeManagerFloorSeatList = this.getManagerEachFloorSeatList(
-              this.allFloorList[i].floor_id
+              this.allFloorList[i].floorId
             );
 
             changeFloorSeatList.push(obj);
@@ -1124,30 +1136,35 @@ export default {
 
             //이동 후에 원래 list에서 삭제
             for (let j = 0; j < eachFloorSeatList.length; j++) {
-              if (eachFloorSeatList[j].seatId == obj.seatId) {
+              //console.log(typeof eachFloorSeatList[j].seatId);//String
+              //console.log(typeof obj.seatId);//String
+              if (eachFloorSeatList[j].seatId === obj.seatId) {
+                //String
                 eachFloorSeatList.splice(j, 1);
               }
             }
             for (let j = 0; j < managerEachFloorSeatList.length; j++) {
-              if (managerEachFloorSeatList[j].seatId == obj.seatId) {
+              //console.log(typeof managerEachFloorSeatList[j].seatId);//String
+              //console.log(typeof obj.seatId);//String
+              if (managerEachFloorSeatList[j].seatId === obj.seatId) {
+                //String
                 managerEachFloorSeatList[j].set("delete", true);
               }
             }
-            eventBus.$emit("showSeatFloor", this.allFloorList[i].floor_id);
-            eventBus.$emit("eachFloorSeatList", changeFloorSeatList);
-            eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+            eventBus.$emit("pushFloorOfSeat", this.allFloorList[i].floorId);
+            eventBus.$emit("pushEachEmployeeSeatMap", this.eachEmployeeSeatMap);
           });
           this.floorCanvas.renderAll();
         }
       }
     },
-    showSeat(seat) {
+    showSeatHighlight(seatObject) {
       //좌석 하이라이트
       let seatFloor = null;
       //seat의 층과 현재층이 같지 않다면
-      if (this.currentSelectedFloorId != seat.floorid) {
+      if (this.currentSelectedFloorId != seatObject.floorId) {
         //탭 전환 코드
-        seatFloor = seat.floorid;
+        seatFloor = seatObject.floorId;
       }
       //seat의 층과 현재층이 같다면
       else {
@@ -1158,14 +1175,14 @@ export default {
       for (let i = 0; i < eachFloorSeatList.length; i++) {
         let group = eachFloorSeatList[i];
         let asObject = group.toObject([
-          "employee_id",
-          "floor_id",
+          "employeeId",
+          "floorId",
           "seatId",
-          "employee_department",
+          "employeeDepartment",
         ]);
 
         let objectSeatId = asObject.seatId;
-        if (seat.seatid == objectSeatId) {
+        if (seatObject.seatId == objectSeatId) {
           this.floorCanvas
             .getObjects()
             .slice()
@@ -1182,12 +1199,12 @@ export default {
             if (typeof getImageTypeForTypeCheck === "string") {
               //url
               this.loadImageUrl(
-                this.allImageMap.get(this.currentSelectedFloorId)
+                this.allImageMap.get(this.currentSelectedFloorId).imgPath
               );
             } else {
               //file
               this.loadImageFile(
-                this.allImageMap.get(this.currentSelectedFloorId)
+                this.allImageMap.get(this.currentSelectedFloorId).imgPath
               );
             }
 
@@ -1209,7 +1226,7 @@ export default {
             onComplete: getOrginItem,
           });
 
-          let color = this.getColor(asObject.employee_department);
+          let color = this.getColor(asObject.employeeDepartment);
           function getOrginItem() {
             group.item(0).set("opacity", 1);
             group.item(0).set("fill", color);
@@ -1221,10 +1238,10 @@ export default {
       }
     },
     clickExportToCSVBtn() {
-      //csv 내려받기 //seatName, employeeid, floorid
+      //csv 내려받기 //seatName, employeeid, floorId
       //for (let i = 0; i < this.managerFloorList.length; i++) {
-        let floorid = this.currentSelectedFloorId;
-        this.$emit("downloadCSVFile", floorid);
+      let floorId = this.currentSelectedFloorId;
+      this.$emit("downloadCSVFile", floorId);
       //}
     },
     changeCSVFile(e) {
@@ -1239,11 +1256,11 @@ export default {
       });
       console.log(newFileForCSVType);
 
-      let floorid = this.currentSelectedFloorId;
+      let floorId = this.currentSelectedFloorId;
       let csvFileData = new FormData();
       csvFileData.append("file", newFileForCSVType);
 
-      this.$emit("saveFromCSVFileToDB", csvFileData, floorid);
+      this.$emit("saveFromCSVFileToDB", csvFileData, floorId);
     },
 
     clickSaveBtn() {
@@ -1256,15 +1273,15 @@ export default {
             // 원본
             if (this.managerFloorList[i].delete) {
               // 001 011 delete
-              let deleteFloorKey = this.managerFloorList[i].floor_id;
+              let deleteFloorKey = this.managerFloorList[i].floorId;
               this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
             } else if (this.managerFloorList[i].modify) {
               //010 그 id에 대하여 post
               let floorData = {};
-              floorData.floor_id = this.managerFloorList[i].floor_id;
-              floorData.floor_name = this.managerFloorList[i].floor_name;
-              floorData.building_id = this.managerFloorList[i].building_id;
-              floorData.floor_order = this.managerFloorList[i].floor_order;
+              floorData.floor_id = this.managerFloorList[i].floorId;
+              floorData.floor_name = this.managerFloorList[i].floorName;
+              floorData.building_id = this.managerFloorList[i].buildingId;
+              floorData.floor_order = this.managerFloorList[i].floorOrder;
 
               this.$emit("saveFloors", "floors", floorData);
             }
@@ -1276,10 +1293,10 @@ export default {
             } else {
               //100 110 그 id에 대하여 post
               let floorData = {};
-              floorData.floor_id = this.managerFloorList[i].floor_id;
-              floorData.floor_name = this.managerFloorList[i].floor_name;
-              floorData.building_id = this.managerFloorList[i].building_id;
-              floorData.floor_order = this.managerFloorList[i].floor_order;
+              floorData.floor_id = this.managerFloorList[i].floorId;
+              floorData.floor_name = this.managerFloorList[i].floorName;
+              floorData.building_id = this.managerFloorList[i].buildingId;
+              floorData.floor_order = this.managerFloorList[i].floorOrder;
 
               this.$emit("saveFloors", "floors", floorData);
             }
@@ -1289,9 +1306,10 @@ export default {
         //이미지 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let imgData = new FormData();
-          let floorid = this.managerFloorList[i].floor_id;
+          let floorId = this.managerFloorList[i].floorId;
 
-          let file = this.allImageMap.get(floorid);
+          console.log(this.allImageMap.get(floorId));
+          let file = this.allImageMap.get(floorId).imgPath;
 
           if (file != null) {
             if (typeof file === "string") {
@@ -1299,7 +1317,7 @@ export default {
             } else {
               //file
               imgData.append("imageFile", file);
-              this.$emit("saveImages", "images", imgData, floorid);
+              this.$emit("saveImages", "images", imgData, floorId);
             }
           }
         }
@@ -1307,25 +1325,19 @@ export default {
         //자리 저장
         for (let i = 0; i < this.managerFloorList.length; i++) {
           let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-            this.managerFloorList[i].floor_id
+            this.managerFloorList[i].floorId
           );
 
           if (managerEachFloorSeatList.length > 0) {
-            //console.log(
-            //  managerEachFloorSeatList.length +
-            //    this.managerFloorList[i].floor_id +
-            //    "층의 자리 개수입니다."
-            //);
-
             for (let j = 0; j < managerEachFloorSeatList.length; j++) {
               let groupToObject = managerEachFloorSeatList[j].toObject([
                 "seatId",
                 "seatName",
-                "floor_id",
+                "floorId",
                 "left",
                 "top",
-                "employee_department",
-                "employee_id",
+                "employeeDepartment",
+                "employeeId",
                 "width",
                 "height",
                 "scaleX",
@@ -1342,7 +1354,7 @@ export default {
                 if (groupToObject.delete) {
                   // 001 011 delete
                   let deleteSeatKey = groupToObject.seatId;
-                  let deleteSeatFloor = groupToObject.floor_id;
+                  let deleteSeatFloor = groupToObject.floorId;
                   this.$emit(
                     "deleteSeatWithKey",
                     "seats",
@@ -1354,13 +1366,13 @@ export default {
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
                   seatData.seat_name = groupToObject.seatName;
-                  seatData.floor = groupToObject.floor_id;
+                  seatData.floor = groupToObject.floorId;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
                   seatData.is_group = false;
                   seatData.group_id = null;
                   seatData.building_id = "HANCOM01";
-                  seatData.employee_id = groupToObject.employee_id;
+                  seatData.employee_id = groupToObject.employeeId;
                   seatData.width = groupToObject.width * groupToObject.scaleX;
                   seatData.height = groupToObject.height * groupToObject.scaleY;
                   seatData.degree = groupToObject.angle;
@@ -1378,19 +1390,18 @@ export default {
                   let seatData = {};
                   seatData.seat_id = groupToObject.seatId;
                   seatData.seat_name = groupToObject.seatName;
-                  seatData.floor = groupToObject.floor_id;
+                  seatData.floor = groupToObject.floorId;
                   seatData.x = groupToObject.left;
                   seatData.y = groupToObject.top;
                   seatData.is_group = false;
                   seatData.group_id = null;
                   seatData.building_id = "HANCOM01";
-                  seatData.employee_id = groupToObject.employee_id;
+                  seatData.employee_id = groupToObject.employeeId;
                   seatData.width = groupToObject.width * groupToObject.scaleX;
                   seatData.height = groupToObject.height * groupToObject.scaleY;
                   seatData.degree = groupToObject.angle;
                   seatData.shape_id = "1";
 
-                  //console.log(seatData);
                   this.$emit("saveSeats", "seats", seatData, seatData.floor);
                 }
               }
@@ -1399,21 +1410,21 @@ export default {
         }
       }
     },
-    getEmployeeObject(employee_id) {
-      // seat table의 employee_id를 받으면 그에 맞는 정보 알아오기 위함
+    getEmployeeObject(employeeId) {
+      // seat table의 employeeId를 받으면 그에 맞는 정보 알아오기 위함
       let employeeInfoList = [];
       let employeeObject = {}; // return 될 Object
-      for (let i = 0; i < this.employees.length; i++) {
+      for (let i = 0; i < this.employeeList.length; i++) {
         let employee = {};
-        employee.name = this.employees[i].name;
-        employee.department = this.employees[i].department;
-        employee.number = this.employees[i].number;
-        employee.employee_id = this.employees[i].employee_id;
+        employee.name = this.employeeList[i].name;
+        employee.department = this.employeeList[i].department;
+        employee.number = this.employeeList[i].number;
+        employee.employeeId = this.employeeList[i].employeeId;
 
         employeeInfoList.push(employee);
       }
 
-      if (employee_id == null) {
+      if (employeeId == null) {
         // 공석
         let employee = {};
         employee.name = null;
@@ -1424,16 +1435,17 @@ export default {
       } else {
         // 매핑된 자리
         for (let i = 0; i < employeeInfoList.length; i++) {
-          if (employee_id == employeeInfoList[i].employee_id) {
+          //console.log(typeof employeeId)//String
+          //console.log(typeof employeeInfoList[i].employeeId)//String
+          if (employeeId === employeeInfoList[i].employeeId) {
             employeeObject = employeeInfoList[i];
           }
         }
       }
-      //console.log(employeeObject);
       return employeeObject; // return 받아서 department, name, number 뽑아쓰기
     },
     makeGroupInfo(seat) {
-      let employee = this.getEmployeeObject(seat.employee_id);
+      let employee = this.getEmployeeObject(seat.employeeId);
 
       let rectangle = new fabric.Rect({
         width: seat.width,
@@ -1450,12 +1462,12 @@ export default {
       });
 
       let group = new fabric.Group([rectangle, textObject], {
-        seatId: seat.seat_id,
-        employee_name: employee.name,
-        employee_department: employee.department,
-        employee_number: employee.number,
-        employee_id: seat.employee_id,
-        floor_id: seat.floor,
+        seatId: seat.seatId,
+        employeeName: employee.name,
+        employeeDepartment: employee.department,
+        employeeNumber: employee.number,
+        employeeId: seat.employeeId,
+        floorId: seat.floorId,
         left: seat.x,
         top: seat.y,
         angle: seat.degree,
@@ -1464,14 +1476,14 @@ export default {
         delete: seat.delete,
       });
 
-      let seatNameObject = new fabric.IText(seat.seat_name, {
+      let seatNameObject = new fabric.IText(seat.seatName, {
         left: rectangle.left,
         top: rectangle.top - 15,
         fontSize: this.fontSize / this.zoom,
         fill: "black",
       });
 
-      group.seatName = seat.seat_name;
+      group.seatName = seat.seatName;
       group.add(seatNameObject);
 
       this.floorCanvas.on("object:scaling", (e) => {
@@ -1496,27 +1508,32 @@ export default {
       //현재 층 이미지 로드
       if (this.latestFloorImageFromDb) {
         for (let i = 0; i < this.latestFloorImageFromDb.length; i++) {
-          let imgurl = this.latestFloorImageFromDb[i].url;
-          let floorid = this.latestFloorImageFromDb[i].floorid;
-          this.allImageMap.set(floorid, imgurl);
-          //console.log("현재층 이미지");
-          //console.log(this.allImageMap.get(floorid));
-          this.currentSelectedFloorId = floorid;
+          let newImageObject = {};
+          newImageObject.imgPath = this.latestFloorImageFromDb[i].imgPath;
+          newImageObject.floorId = this.latestFloorImageFromDb[i].floorId;
+          newImageObject.imgFileName = this.latestFloorImageFromDb[i].imgFileName;
 
-          this.loadImageUrl(imgurl);
+          console.log("받아온 이미지 파일명입니다.");
+          console.log(newImageObject.imgFileName);
+
+          this.allImageMap.set(newImageObject.floorId, newImageObject);
+
+          this.currentSelectedFloorId = newImageObject.floorId;
+
+          this.loadImageUrl(newImageObject.imgPath);
           // 현재층 자리 로드
 
           if (this.latestFloorSeatListFromDb.length) {
             for (let i = 0; i < this.latestFloorSeatListFromDb.length; i++) {
               this.currentSelectedFloorId = this.latestFloorSeatListFromDb[
                 i
-              ].floor;
+              ].floorId;
 
               let eachFloorSeatList = this.getEachFloorSeatList(
-                this.latestFloorSeatListFromDb[i].floor
+                this.latestFloorSeatListFromDb[i].floorId
               );
               let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-                this.latestFloorSeatListFromDb[i].floor
+                this.latestFloorSeatListFromDb[i].floorId
               );
 
               let group = this.makeGroupInfo(this.latestFloorSeatListFromDb[i]);
@@ -1526,33 +1543,38 @@ export default {
               eachFloorSeatList.push(group);
               managerEachFloorSeatList.push(group);
 
-              eventBus.$emit("allSeatMap", this.allSeatMap);
+              eventBus.$emit("pushAllSeatMap", this.allSeatMap);
 
-              if (this.latestFloorSeatListFromDb[i].employee_id != null) {
+              if (this.latestFloorSeatListFromDb[i].employeeId != null) {
                 let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-                  this.latestFloorSeatListFromDb[i].employee_id
+                  this.latestFloorSeatListFromDb[i].employeeId
                 );
                 eachEmployeeSeatList.push(group);
-                eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+                eventBus.$emit(
+                  "pushEachEmployeeSeatMap",
+                  this.eachEmployeeSeatMap
+                );
               }
             }
           } else {
-            this.currentSelectedFloorId = floorid;
+            this.currentSelectedFloorId = newImageObject.floorId;
           }
         }
-        this.clickLoadOtherFloors();
+        this.loadOtherFloors();
       }
     },
-    clickLoadOtherFloors() {
+    loadOtherFloors() {
       if (this.otherFloorSeatListFromDb) {
         //다른 층 이미지 로드
         for (let i = 0; i < this.otherFloorImageFromDb.length; i++) {
-          let imgurl = this.otherFloorImageFromDb[i].url;
-          let floorid = this.otherFloorImageFromDb[i].floorid;
-          this.allImageMap.set(floorid, imgurl);
+          let newImageObject = {};
+          newImageObject.imgPath = this.otherFloorImageFromDb[i].imgPath;
+          newImageObject.floorId = this.otherFloorImageFromDb[i].floorId;
+          newImageObject.imgFileName = this.otherFloorImageFromDb[i].imgFileName;
 
-          //console.log("다른층 이미지 ");
-          //console.log(this.allImageMap.get(floorid));
+          console.log("받아온 이미지 파일명입니다.");
+          console.log(newImageObject.imgFileName);
+          this.allImageMap.set(newImageObject.floorId, newImageObject);
         }
         //다른 층 자리 로드
         if (this.otherFloorSeatListFromDb) {
@@ -1564,9 +1586,11 @@ export default {
             seats = this.otherFloorSeatListFromDb.get(keys[i]);
 
             for (let j = 0; j < seats.length; j++) {
-              let eachFloorSeatList = this.getEachFloorSeatList(seats[j].floor);
+              let eachFloorSeatList = this.getEachFloorSeatList(
+                seats[j].floorId
+              );
               let managerEachFloorSeatList = this.getManagerEachFloorSeatList(
-                seats[j].floor
+                seats[j].floorId
               );
 
               let group = this.makeGroupInfo(seats[j]);
@@ -1574,15 +1598,18 @@ export default {
               eachFloorSeatList.push(group);
               managerEachFloorSeatList.push(group);
 
-              if (seats[j].employee_id != null) {
+              if (seats[j].employeeId != null) {
                 let eachEmployeeSeatList = this.getEachEmployeeSeatList(
-                  seats[j].employee_id
+                  seats[j].employeeId
                 );
                 eachEmployeeSeatList.push(group);
-                eventBus.$emit("eachEmployeeSeatMap", this.eachEmployeeSeatMap);
+                eventBus.$emit(
+                  "pushEachEmployeeSeatMap",
+                  this.eachEmployeeSeatMap
+                );
               }
 
-              eventBus.$emit("allSeatMap", this.allSeatMap);
+              eventBus.$emit("pushAllSeatMap", this.allSeatMap);
             }
           }
         }

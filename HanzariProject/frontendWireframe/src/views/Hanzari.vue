@@ -1,34 +1,23 @@
 <template>
-  <div class="hanzari" id="hanzari">
-    <v-app-bar app dark>
-      <v-toolbar color="black" dark>
-        <v-spacer>
-          <v-toolbar-items>
-            <v-icon large dark @click="drawer = !drawer" v-if="drawer"
-              >keyboard_arrow_left</v-icon
-            >
-            <v-icon large dark @click="drawer = !drawer" v-if="!drawer"
-              >keyboard_arrow_right</v-icon
-            >
-          </v-toolbar-items>
-        </v-spacer>
-        <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
-      >
-    </v-app-bar>
+  <v-app id="app">
+    <div class="hanzari" id="hanzari">
+      <v-app-bar app dark>
+        <v-toolbar color="black" dark>
+          <v-spacer>
+            <v-toolbar-items>
+              <v-icon large dark @click="drawer = !drawer" v-if="drawer"
+                >keyboard_arrow_left</v-icon
+              >
+              <v-icon large dark @click="drawer = !drawer" v-if="!drawer"
+                >keyboard_arrow_right</v-icon
+              >
+            </v-toolbar-items>
+          </v-spacer>
+          <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
+        >
+      </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app :width="500">
-      <Tabs
-        v-if="
-          employeeList && floorList && latestFloorImage && otherFloorsImageList
-        "
-        v-bind:copyEmployeeList="employeeList"
-        v-bind:copyFloorList="floorList"
-        v-bind:copyLatestFloorImage="latestFloorImage"
-        v-bind:copyOtherFloorsImageList="otherFloorsImageList"
-      />
-    </v-navigation-drawer>
-    <v-main>
-      <AssignSeats
+      <div
         v-if="
           employeeList &&
           floorList &&
@@ -37,22 +26,36 @@
           otherFloorsImageList &&
           otherFloorsSeatMap
         "
-        v-bind:copyEmployeeList="employeeList"
-        v-bind:copyFloorList="floorList"
-        v-bind:copyLatestFloorImage="latestFloorImage"
-        v-bind:copyOtherFloorsImageList="otherFloorsImageList"
-        v-bind:copyLatestFloorSeatList="latestFloorSeatList"
-        v-bind:copyOtherFloorsSeatMap="otherFloorsSeatMap"
-        v-on:saveImages="saveImages"
-        v-on:saveFloors="saveFloors"
-        v-on:saveSeats="saveSeats"
-        v-on:deleteFloorWithKey="deleteFloorWtihKey"
-        v-on:deleteSeatWithKey="deleteSeatWithKey"
-        v-on:downloadCSVFile="downloadCSVFile"
-        v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
-      />
-    </v-main>
-  </div>
+      >
+        <v-navigation-drawer v-model="drawer" app :width="500">
+          <Tabs
+            v-bind:copyEmployeeList="employeeList"
+            v-bind:copyFloorList="floorList"
+            v-bind:copyLatestFloorImage="latestFloorImage"
+            v-bind:copyOtherFloorsImageList="otherFloorsImageList"
+          />
+        </v-navigation-drawer>
+        <v-main>
+          <AssignSeats
+            v-bind:copyEmployeeList="employeeList"
+            v-bind:copyFloorList="floorList"
+            v-bind:copyLatestFloorImage="latestFloorImage"
+            v-bind:copyOtherFloorsImageList="otherFloorsImageList"
+            v-bind:copyLatestFloorSeatList="latestFloorSeatList"
+            v-bind:copyOtherFloorsSeatMap="otherFloorsSeatMap"
+            v-on:saveImages="saveImages"
+            v-on:saveFloors="saveFloors"
+            v-on:saveSeats="saveSeats"
+            v-on:deleteFloorWithKey="deleteFloorWtihKey"
+            v-on:deleteSeatWithKey="deleteSeatWithKey"
+            v-on:downloadCSVFile="downloadCSVFile"
+            v-on:saveFromCSVFileToDB="saveFromCSVFileToDB"
+          />
+        </v-main>
+      </div>
+      <ProgressDialog v-else :dialogStatus="true" />
+    </div>
+  </v-app>
 </template>
 
 <script>
@@ -62,10 +65,11 @@ import { eventBus } from "../main";
 import Tabs from "@/components/Tabs.vue";
 import AssignSeats from "@/components/AssignSeats.vue";
 import MappingEmployee from "@/components/MappingEmployee.vue";
+import ProgressDialog from "@/components/ProgressDialog.vue";
 
-const portNum = 8081;
-const host = "172.30.1.53";
-const building_id = "HANCOM01";
+const PORT_NUMBER = 8081;
+const HOST = "172.30.1.53";
+const BUILDING_ID = "HANCOM01";
 
 export default {
   name: "Hanzari",
@@ -73,6 +77,7 @@ export default {
     Tabs,
     AssignSeats,
     MappingEmployee,
+    ProgressDialog,
   },
   data() {
     return {
@@ -95,7 +100,7 @@ export default {
     this.employeeList = await this.getEmployeeList();
     //층 load
     this.floorList = await this.getFloorList();
-    //가장 floor_order가 큰 층의 floor_id를 가져오기 위함
+    //가장 floor_order가 큰 층의 floorId를 가져오기 위함
     this.latestFloor = await this.getLatestFloor();
 
     // 최신 층 이미지 load
@@ -113,17 +118,17 @@ export default {
       let allEmployeeList = [];
       try {
         let response = await axios.get(
-          "http://" + host + ":" + portNum + "/api/employee"
+          "http://" + HOST + ":" + PORT_NUMBER + "/api/employee"
         );
         for (var i = 0; i < response.data.length; i++) {
-          var newEmployee = {};
-          newEmployee.name = response.data[i].employee_name;
-          newEmployee.department = response.data[i].department_name;
-          newEmployee.number = response.data[i].extension_number;
-          newEmployee.employee_id = response.data[i].employee_id;
-          newEmployee.seatIdList = response.data[i].seatList;
+          var newEmployeeObject = {};
+          newEmployeeObject.name = response.data[i].employee_name;
+          newEmployeeObject.department = response.data[i].department_name;
+          newEmployeeObject.number = response.data[i].extension_number;
+          newEmployeeObject.employeeId = response.data[i].employee_id;
+          newEmployeeObject.seatIdList = response.data[i].seatList;
 
-          allEmployeeList.push(newEmployee);
+          allEmployeeList.push(newEmployeeObject);
         }
       } catch (error) {
         console.log(error);
@@ -135,36 +140,36 @@ export default {
       try {
         let response = await axios.get(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors"
         );
         for (var i = 0; i < response.data.length; i++) {
-          let newFloor = {};
-          newFloor.floor_id = response.data[i].floor_id;
-          newFloor.floor_name = response.data[i].floor_name;
-          newFloor.building_id = response.data[i].building_id;
-          newFloor.floor_order = response.data[i].floor_order;
-          newFloor.create = false;
-          newFloor.modify = false;
-          newFloor.delete = false;
+          let newFloorObject = {};
+          newFloorObject.floorId = response.data[i].floor_id;
+          newFloorObject.floorName = response.data[i].floor_name;
+          newFloorObject.buildingId = response.data[i].building_id;
+          newFloorObject.floorOrder = response.data[i].floor_order;
+          newFloorObject.create = false;
+          newFloorObject.modify = false;
+          newFloorObject.delete = false;
 
-          allFloorList.push(newFloor);
+          allFloorList.push(newFloorObject);
         }
 
         allFloorList.sort(function (a, b) {
-          return a.floor_order < b.floor_order
+          return a.floorOrder < b.floorOrder
             ? -1
-            : a.floor_order > b.floor_order
+            : a.floorOrder > b.floorOrder
             ? 1
             : 0;
         });
 
         for (let i = 0; i < allFloorList.length; i++) {
-          this.floorIdList.push(allFloorList[i].floor_id);
+          this.floorIdList.push(allFloorList[i].floorId);
         }
       } catch (error) {
         console.log(error);
@@ -176,11 +181,11 @@ export default {
       try {
         let response = await axios.get(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/get-latest-floor"
         );
         latestFloor = response.data;
@@ -197,21 +202,35 @@ export default {
           try {
             let response = await axios.get(
               "http://" +
-                host +
+                HOST +
                 ":" +
-                portNum +
+                PORT_NUMBER +
                 "/api/buildings/" +
-                building_id +
+                BUILDING_ID +
                 "/floors/" +
                 latestFloorId +
                 "/images"
             );
 
-            let newImage = {};
-            newImage.url = response.config.url;
-            newImage.floorid = latestFloorId;
+            let filename = null;
+            let contentDisposition = response.headers["content-disposition"]; // 파일 이름
+            if (contentDisposition) {
+              let [fileNameMatch] = contentDisposition
+                .split(";")
+                .filter((str) => str.includes("filename"));
+              if (fileNameMatch) [, filename] = fileNameMatch.split("=");
+              filename = decodeURIComponent(filename);
+            }
 
-            latestFloorImage.push(newImage);
+            let newImageObject = {};
+            newImageObject.imgPath = response.config.url;
+            newImageObject.floorId = latestFloorId;
+            newImageObject.imgFileName = filename;
+
+            console.log(newImageObject.imgFileName);
+
+            latestFloorImage.push(newImageObject);
+
           } catch (error) {
             console.log(error);
           }
@@ -228,21 +247,35 @@ export default {
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
             let response = await axios.get(
               "http://" +
-                host +
+                HOST +
                 ":" +
-                portNum +
+                PORT_NUMBER +
                 "/api/buildings/" +
-                building_id +
+                BUILDING_ID +
                 "/floors/" +
                 this.floorIdList[i] +
                 "/images"
             );
 
-            let newImage = {};
-            newImage.url = response.config.url;
-            newImage.floorid = this.floorIdList[i];
-            responseList = newImage;
+            let filename = null;
+            let contentDisposition = response.headers["content-disposition"]; // 파일 이름
+            if (contentDisposition) {
+              let [fileNameMatch] = contentDisposition
+                .split(";")
+                .filter((str) => str.includes("filename"));
+              if (fileNameMatch) [, filename] = fileNameMatch.split("=");
+              filename = decodeURIComponent(filename);
+            }
+
+            let newImageObject = {};
+            newImageObject.imgPath = response.config.url;
+            newImageObject.floorId = this.floorIdList[i];
+            newImageObject.imgFileName = filename;
+
+            responseList = newImageObject;
+            console.log(newImageObject.imgFileName);
             otherFloorsImageList.push(responseList);
+
           }
         } catch (error) {
           console.error(error);
@@ -258,35 +291,35 @@ export default {
         try {
           let response = await axios.get(
             "http://" +
-              host +
+              HOST +
               ":" +
-              portNum +
+              PORT_NUMBER +
               "/api/buildings/" +
-              building_id +
+              BUILDING_ID +
               "/floors/" +
               latestFloorId +
               "/seats"
           );
           for (var i = 0; i < response.data.length; i++) {
-            let newSeat = {};
+            let newSeatObject = {};
 
-            newSeat.seat_id = response.data[i].seat_id;
-            newSeat.seat_name = response.data[i].seat_name;
-            newSeat.floor = response.data[i].floor;
-            newSeat.x = response.data[i].x;
-            newSeat.y = response.data[i].y;
-            newSeat.is_group = response.data[i].is_group;
-            newSeat.building_id = response.data[i].building_id;
-            newSeat.employee_id = response.data[i].employee_id;
-            newSeat.width = response.data[i].width;
-            newSeat.height = response.data[i].height;
-            newSeat.degree = response.data[i].degree;
-            newSeat.shape_id = response.data[i].shape_id;
-            newSeat.create = false;
-            newSeat.delete = false;
-            newSeat.modify = false;
+            newSeatObject.seatId = response.data[i].seat_id;
+            newSeatObject.seatName = response.data[i].seat_name;
+            newSeatObject.floorId = response.data[i].floor;
+            newSeatObject.x = response.data[i].x;
+            newSeatObject.y = response.data[i].y;
+            newSeatObject.isGroup = response.data[i].is_group;
+            newSeatObject.buildingId = response.data[i].building_id;
+            newSeatObject.employeeId = response.data[i].employee_id;
+            newSeatObject.width = response.data[i].width;
+            newSeatObject.height = response.data[i].height;
+            newSeatObject.degree = response.data[i].degree;
+            newSeatObject.shapeId = response.data[i].shape_id;
+            newSeatObject.create = false;
+            newSeatObject.delete = false;
+            newSeatObject.modify = false;
 
-            latestFloorSeatList.push(newSeat);
+            latestFloorSeatList.push(newSeatObject);
           }
         } catch (error) {
           console.log(error);
@@ -301,42 +334,48 @@ export default {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
           let response = await axios.get(
             "http://" +
-              host +
+              HOST +
               ":" +
-              portNum +
+              PORT_NUMBER +
               "/api/buildings/" +
-              building_id +
+              BUILDING_ID +
               "/floors/" +
               this.floorIdList[i] +
               "/seats"
           );
           let responseList = [];
           // 그 층에 자리가 없다면
-          if (response.data.length == 0) {
+          //console.log(typeof response.data.length) //number
+          //console.log(typeof 0) //number
+          if (response.data.length === 0) {
+            //number
             otherFloorsSeatMap.set(this.floorIdList[i], []);
           } else {
             for (let j = 0; j < response.data.length; j++) {
               // 자리 수 만큼 돈다
-              let newSeat = {};
-              newSeat.seat_id = response.data[j].seat_id;
-              newSeat.seat_name = response.data[j].seat_name;
-              newSeat.floor = response.data[j].floor;
-              newSeat.x = response.data[j].x;
-              newSeat.y = response.data[j].y;
-              newSeat.is_group = response.data[j].is_group;
-              newSeat.building_id = response.data[j].building_id;
-              newSeat.employee_id = response.data[j].employee_id;
-              newSeat.width = response.data[j].width;
-              newSeat.height = response.data[j].height;
-              newSeat.degree = response.data[j].degree;
-              newSeat.shape_id = response.data[j].shape_id;
-              newSeat.create = false;
-              newSeat.delete = false;
-              newSeat.modify = false;
+              let newSeatObject = {};
+              newSeatObject.seatId = response.data[j].seat_id;
+              newSeatObject.seatName = response.data[j].seat_name;
+              newSeatObject.floorId = response.data[j].floor;
+              newSeatObject.x = response.data[j].x;
+              newSeatObject.y = response.data[j].y;
+              newSeatObject.isGroup = response.data[j].is_group;
+              newSeatObject.buildingId = response.data[j].building_id;
+              newSeatObject.employeeId = response.data[j].employee_id;
+              newSeatObject.width = response.data[j].width;
+              newSeatObject.height = response.data[j].height;
+              newSeatObject.degree = response.data[j].degree;
+              newSeatObject.shapeId = response.data[j].shape_id;
+              newSeatObject.create = false;
+              newSeatObject.delete = false;
+              newSeatObject.modify = false;
 
-              responseList.push(newSeat);
+              responseList.push(newSeatObject);
 
-              if (this.floorIdList[i] == response.data[j].floor) {
+              //console.log(typeof this.floorIdList[i]); //String
+              //console.log(typeof response.data[j].floor) //String
+              if (this.floorIdList[i] === response.data[j].floor) {
+                //String
                 otherFloorsSeatMap.set(this.floorIdList[i], responseList);
               }
             }
@@ -350,18 +389,15 @@ export default {
     saveFloors(tableName, data) {
       let saveData = data;
       let saveTableName = tableName;
-      console.log("saveData is");
-      console.log(saveData);
-      console.log("saveTableName is");
-      console.log(saveTableName);
+
       try {
         axios.post(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/" +
             saveTableName,
           JSON.stringify(saveData),
@@ -373,24 +409,20 @@ export default {
         console.error(error);
       }
     },
-    saveImages(tableName, data, floor_id) {
+    saveImages(tableName, data, floorId) {
       let saveData = data;
       let saveTableName = tableName;
-      console.log("saveData is");
-      console.log(saveData);
-      console.log("------------");
-      console.log("saveTableName is");
-      console.log(saveTableName);
+
       try {
         axios.post(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/" +
             tableName,
           saveData,
@@ -404,24 +436,19 @@ export default {
         console.error(error);
       }
     },
-    saveSeats(tableName, data, floor_id) {
+    saveSeats(tableName, data, floorId) {
       let saveData = data;
       let saveTableName = tableName;
-      console.log("saveData is");
-      console.log(saveData);
-      console.log("------------");
-      console.log("saveTableName is");
-      console.log(saveTableName);
       try {
         axios.post(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/" +
             saveTableName,
           JSON.stringify(saveData),
@@ -439,11 +466,11 @@ export default {
       try {
         axios.delete(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/" +
             deleteTableName +
             "/" +
@@ -453,19 +480,19 @@ export default {
         console.error(error);
       }
     },
-    deleteSeatWithKey(tableName, seatId, floor_id) {
+    deleteSeatWithKey(tableName, seatId, floorId) {
       let deleteTableName = tableName;
       let deleteKey = seatId;
       try {
         axios.delete(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/" +
             deleteTableName +
             "/" +
@@ -477,17 +504,17 @@ export default {
     },
 
     //get CSV File from DB and download CSV file
-    async downloadCSVFile(floor_id) {
+    async downloadCSVFile(floorId) {
       try {
-        const response = await axios.get(
+        let response = await axios.get(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/seats/get-csv-file-allfloor-seats",
           {
             headers: {
@@ -496,13 +523,13 @@ export default {
           }
         );
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        const contentDisposition = response.headers["content-disposition"]; // 파일 이름 //cors
+        let url = window.URL.createObjectURL(new Blob([response.data]));
+        let link = document.createElement("a");
+        let contentDisposition = response.headers["content-disposition"]; // 파일 이름 //cors
 
         let filename = null;
         if (contentDisposition) {
-          const [fileNameMatch] = contentDisposition
+          let [fileNameMatch] = contentDisposition
             .split(";")
             .filter((str) => str.includes("filename"));
           if (fileNameMatch) [, filename] = fileNameMatch.split("=");
@@ -519,17 +546,17 @@ export default {
     },
 
     //save information from CSV to DB
-    saveFromCSVFileToDB(saveData, floor_id) {
+    saveFromCSVFileToDB(saveData, floorId) {
       axios
         .post(
           "http://" +
-            host +
+            HOST +
             ":" +
-            portNum +
+            PORT_NUMBER +
             "/api/buildings/" +
-            building_id +
+            BUILDING_ID +
             "/floors/" +
-            floor_id +
+            floorId +
             "/seats/update-by-file",
           saveData,
           {
@@ -548,3 +575,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.v-progress-circular {
+  margin: 1rem;
+}
+</style>

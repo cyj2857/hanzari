@@ -12,7 +12,7 @@
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="this.employees"
+      :items="this.employeeList"
       :search="search"
       height="400px"
       class="elevation-1"
@@ -31,8 +31,8 @@
           <td>
             <v-icon
               large
-              id="MappingSeatButton"
-              @click="clickMappingSeat(row.item)"
+              id="mappingEmployeeToVacantButton"
+              @click="clickEmployeeToMapping(row.item)"
               >add_box</v-icon
             >
           </td>
@@ -53,31 +53,31 @@ export default {
   props: ["copyFromManageSeatsEmployeeList"],
   data() {
     return {
-      employees: this.copyFromManageSeatsEmployeeList,
+      employeeList: this.copyFromManageSeatsEmployeeList,
       search: "",
       headers: [
         { text: "이름", align: "start", sortable: true, value: "name" },
         { text: "부서", value: "department" },
         { text: "내선번호", value: "number" },
-        { text: "", value: "MappingSeatButton" },
+        { text: "", value: "mappingEmployeeToVacantButton" },
       ],
       allEmployeeSeatMap: null,
     };
   },
   created() {
-    eventBus.$on("eachEmployeeSeatMap", (eachEmployeeSeatMap) => {
+    eventBus.$on("pushEachEmployeeSeatMap", (eachEmployeeSeatMap) => {
       this.allEmployeeSeatMap = eachEmployeeSeatMap;
     });
   },
   beforeDestroy() {
-    eventBus.$off("eachEmployeeSeatMap");
+    eventBus.$off("pushEachEmployeeSeatMap");
   },
   methods: {
-    clickMappingSeat(item) {
-      eventBus.$emit("mappingSeat", item);
+    clickEmployeeToMapping(clickedEmployee) {
+      eventBus.$emit("mappingEmployeeToVacant", clickedEmployee);
     },
     changeBackPage() {
-      eventBus.$emit("mappingEmployeeComponentStatus", false);
+      eventBus.$emit("pushMappingEmployeeComponentStatus", false);
     },
   },
 };

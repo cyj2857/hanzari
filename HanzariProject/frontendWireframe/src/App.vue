@@ -1,7 +1,6 @@
 <template>
-  <v-app id="app">
-    <Hanzari />
-  </v-app>
+  <!-- <router-view /> -->
+  <Hanzari />
 </template>
 
 <script>

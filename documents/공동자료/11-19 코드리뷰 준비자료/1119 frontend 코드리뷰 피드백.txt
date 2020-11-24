@@ -1,10 +1,11 @@
 1. 리스트 선언시 new Array() 보다는 [].
-2. 변수 이름 팟홀 표기법(underbar) 카멜표기법 섞어 쓰지 않기.
-3. vue의 lifecycle destroy 대 eventBus off 시키는 것 필요.
+2. vue의 lifecycle destroy 대 eventBus off 시키는 것 필요. => 중복 호출 막기위함.
+3. 변수 이름 팟홀 표기법(underbar) 카멜표기법 섞어 쓰지 않기. => 카멜로 결정
 4. 이벤트 버스의 이벤트 이름 수정 (이벤트니까 행위가 포함되어야 함).
 5. 변수 로드해올 때 require과 type 지정가능하다. (유효성 검사가 가능)
 6. 비교시 == 연산자 보다  === 연산자 사용하기.
+
 7. 데이터들 필드로 관리하는것 다시 고려하기. 
 (프론트에서 만들어 진 것이면 결론적으로 저장이 되어야하므로 modify 필드가 필요 없음.)
+
 8. string 들 이후에 resource로 빼기.
-9. 컴포넌트 destroy 될 때 eventbus off 해주기 => 중복 호출 막기위함.

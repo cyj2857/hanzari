@@ -10,42 +10,11 @@
         >
         <v-col cols="12" sm="3">
           <v-switch
-            v-model="addVacantSwitch"
+            v-model="addVacantSwitchStatus"
             inset
-            @change="changeSwitchStatus"
+            @change="changeAddVacantSwitchStatus"
           ></v-switch
         ></v-col>
-
-        <!-- <v-col
-          v-for="size of this.sizeItems"
-          :key="size.index"
-          class="d-flex child-flex"
-          cols="4"
-        >
-          <v-btn
-            large
-            :disabled="!addVacantSwitch"
-            tile
-            @click="clickSizeBtn(size.size)"
-            >{{ size.size }}</v-btn
-          ></v-col
-        >
-        <v-col>
-          <v-card-text
-            >현재 가로 길이 : {{ this.clickedSize.width }}</v-card-text
-          ><v-card-text
-            >현재 세로 길이 : {{ this.clickedSize.height }}</v-card-text
-          ></v-col
-        ><v-col
-          ><v-btn
-            text
-            style="float: right"
-            @click="getSeatSizeSetting"
-            :disabled="!addVacantSwitch || !clickedSize"
-          >
-            <p class="font-italic">세부 설정</p>
-          </v-btn></v-col
-        > -->
       </v-row>
 
       <v-row>
@@ -58,7 +27,7 @@
         </v-col>
         <v-col cols="10" sm="4">
           <v-card-text>
-            <v-btn color="pink lighten-3" @click="clickChangeToVacant"
+            <v-btn color="pink lighten-3" @click="clickChangeSeatToVacant"
               ><h4>
                 <v-icon large>person_add_disabled</v-icon>자리 비우기
               </h4></v-btn
@@ -76,8 +45,8 @@
         <v-col cols="9">
           <v-select
             :items="floorItems"
-            item-value="floor_id"
-            item-text="floor_name"
+            item-value="floorId"
+            item-text="floorName"
             v-model="selectedFloorItemsId"
             chips
             label="층을 선택하세요"
@@ -88,7 +57,7 @@
           ></v-select>
         </v-col>
         <v-col cols="12" sm="3">
-          <v-icon large @click="clickChangeFloorSeat">edit</v-icon></v-col
+          <v-icon large @click="changeFloorSeat">edit</v-icon></v-col
         >
       </v-row>
     </v-card>
@@ -97,57 +66,45 @@
       :copyFromManageSeatsEmployeeList="employee"
       v-if="mappingEmployeeComponentStatus && employee"
     />
-    <SeatSizeSettingDialog
-      :dialogStatus="this.seatSizeSettingDialogStatus"
-      @close="closeSeatSizeSettingDialog"
-    />
   </div>
 </template>
 
 <script>
 import MappingEmployee from "@/components/MappingEmployee.vue";
-import SeatSizeSettingDialog from "@/components/SeatSizeSettingDialog.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
   props: ["copyFromTabsEmployeeList", "copyFromTabsFloorList"],
   components: {
     MappingEmployee,
-    SeatSizeSettingDialog,
   },
   data() {
     return {
       employee: this.copyFromTabsEmployeeList,
       mappingEmployeeComponentStatus: false,
 
-      sizeItems: [
-        { index: 0, src: "../assets/rect1.png", size: 20 },
-        { index: 1, src: "../assets/rect2.png", size: 30 },
-        { index: 2, src: "../assets/rect3.png", size: 40 },
-      ],
       floorItems: [],
       selectedFloorItemsId: null,
 
-      addVacantSwitch: false,
+      addVacantSwitchStatus: false,
 
       allFloorList: this.copyFromTabsFloorList,
-      currentSelectedFloor: null,
-
-      seatSizeSettingDialogStatus: false,
-
-      clickedSize: { width: 0, height: 0 },
+      currentSelectedFloorObject: null,
     };
   },
   created() {
     if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
-      this.currentSelectedFloor = this.allFloorList[
+      this.currentSelectedFloorObject = this.allFloorList[
         this.allFloorList.length - 1
       ];
 
       for (let i = 0; i < this.copyFromTabsFloorList.length; i++) {
+        //console.log(typeof this.currentSelectedFloor.floorId);//String
+        //console.log(typeof this.copyFromTabsFloorList[i].floorId); //String
         if (
-          this.currentSelectedFloor.floor_id ==
-          this.copyFromTabsFloorList[i].floor_id
+          this.currentSelectedFloorObject.floorId ===
+          this.copyFromTabsFloorList[i].floorId
+
         ) {
           continue;
         }
@@ -156,52 +113,47 @@ export default {
       }
     }
 
-    eventBus.$on("allFloorList", (allFloors) => {
-      this.allFloorList = allFloors;
+    eventBus.$on("allFloorList", (allFloorList) => {
+      this.allFloorList = allFloorList;
       this.initFloorItems();
     });
 
-    eventBus.$on("changeFloor", (floor) => {
-      this.currentSelectedFloor = floor;
+    eventBus.$on("pushSelectedFloorObject", (floorObject) => {
+      this.currentSelectedFloorObject = floorObject;
       this.initFloorItems();
     });
 
     eventBus.$on(
-      "mappingEmployeeComponentStatus",
+      "pushMappingEmployeeComponentStatus",
       (mappingEmployeeComponentStatus) => {
         this.mappingEmployeeComponentStatus = mappingEmployeeComponentStatus;
       }
     );
-
-    eventBus.$on("changeSlider", (seatSize) => {
-      this.clickedSize.width = seatSize.width;
-      this.clickedSize.height = seatSize.height;
-
-      this.confirmSeatSizeSettingDialog(seatSize);
-    });
   },
   beforeDestroy() {
     eventBus.$off("allFloorList");
-    eventBus.$off("changeFloor");
-    eventBus.$off("mappingEmployeeComponentStatus");
-    eventBus.$off("changeSlider");
+    eventBus.$off("pushSelectedFloorObject");
+    eventBus.$off("pushMappingEmployeeComponentStatus");
   },
   methods: {
     initFloorItems() {
       this.floorItems = [];
       for (let i = 0; i < this.allFloorList.length; i++) {
-        if (
-          this.currentSelectedFloor.floor_id == this.allFloorList[i].floor_id
-        ) {
+
+        //console.log(typeof this.currentSelectedFloorObject.floorId); //String
+        //console.log(typeof this.allFloorList[i].floorId);//String
+ 
+        if (this.currentSelectedFloorObject.floorId === this.allFloorList[i].floorId) {
+
           continue;
         }
 
         this.floorItems.push(this.allFloorList[i]);
       }
     },
-    clickChangeFloorSeat() {
+    changeFloorSeat() {
       if (this.selectedFloorItemsId) {
-        eventBus.$emit("clickChangeFloorSeat", this.selectedFloorItemsId);
+        eventBus.$emit("moveSeatToAnotherFloor", this.selectedFloorItemsId);
       } else {
         alert("이동할 층을 선택하지 않았습니다.");
       }
@@ -209,32 +161,11 @@ export default {
     getMappingEmployeeComponent() {
       this.mappingEmployeeComponentStatus = true;
     },
-    changeSwitchStatus() {
-      eventBus.$emit("changeAddVacantSwitch", this.addVacantSwitch);
+    changeAddVacantSwitchStatus() {
+      eventBus.$emit("pushAddVacantSwitchStatus", this.addVacantSwitchStatus);
     },
-    getSeatSizeSetting() {
-      eventBus.$emit("initSeatSizeSettingDialog", this.clickedSize);
-      this.seatSizeSettingDialogStatus = true;
-    },
-    closeSeatSizeSettingDialog() {
-      this.seatSizeSettingDialogStatus = false;
-    },
-    confirmSeatSizeSettingDialog(seatSize) {
-      this.seatSizeSettingDialogStatus = false;
-
-      eventBus.$emit("setSeatSizeDialog", seatSize);
-    },
-    // clickSizeBtn(size) {
-    //   let seatSize = {};
-
-    //   seatSize.width = size;
-    //   seatSize.height = size;
-    //   this.clickedSize = seatSize;
-
-    //   eventBus.$emit("setSeatSizeDialog", seatSize);
-    // },
-    clickChangeToVacant() {
-      eventBus.$emit("changeToVacant");
+    clickChangeSeatToVacant() {
+      eventBus.$emit("changeSeatToVacant");
     },
   },
 };

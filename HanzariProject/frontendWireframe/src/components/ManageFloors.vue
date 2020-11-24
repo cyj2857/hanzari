@@ -20,8 +20,8 @@
       >
       <v-row style="overflow-y: scroll; height: 180px">
         <v-col
-          v-for="floor of this.allFloorList"
-          :key="floor.floor_id"
+          v-for="floorObject of this.allFloorList"
+          :key="floorObject.floorId"
           class="d-flex child-flex"
           cols="4"
           ><v-tooltip bottom
@@ -29,14 +29,14 @@
               <v-btn
                 v-on="on"
                 large
-                @click="clickFloor(floor)"
-                @mouseover="showToolTip(floor)"
+                @click="clickFloor(floorObject)"
+                @mouseover="showToolTip(floorObject)"
                 :style="{
-                  border: clickFloorIndexes.includes(floor.floor_id)
+                  border: clickFloorIndexes.includes(floorObject.floorId)
                     ? 'thick solid black'
                     : '',
                 }"
-                ><h3>{{ floor.floor_name }}</h3></v-btn
+                ><h3>{{ floorObject.floorName }}</h3></v-btn
               >
             </template>
             <span v-html="toolTipText"> </span>
@@ -48,10 +48,10 @@
         ><v-icon large>stairs</v-icon>
         <h3>층 이름 편집</h3></v-card-title
       >
-      <v-row v-if="currentSelectedFloor">
+      <v-row v-if="currentSelectedFloorObject">
         <v-col cols="12" sm="9">
           <v-text-field
-            v-model="currentSelectedFloor.floor_name"
+            v-model="currentSelectedFloorObject.floorName"
             @keyup="editFloorName"
             label="층 이름을 입력하세요"
             solo
@@ -77,11 +77,11 @@
           <v-card-text>
             <input
               v-show="false"
-              ref="Upload"
+              ref="upload"
               type="file"
               @change="changeImageFile"
             />
-            <v-btn color="blue-grey lighten-2" @click="$refs.Upload.click()"
+            <v-btn color="blue-grey lighten-2" @click="uploadImage()"
               ><h4>업로드</h4></v-btn
             >
           </v-card-text>
@@ -108,7 +108,7 @@ export default {
       allFloorList: [],
       managerFloorList: [],
 
-      currentSelectedFloor: null,
+      currentSelectedFloorObject: null,
 
       clickFloorIndexes: null,
 
@@ -121,56 +121,79 @@ export default {
   },
   created() {
     if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
-      this.currentSelectedFloor = this.copyFromTabsFloorList[
+      this.currentSelectedFloorObject = this.copyFromTabsFloorList[
         this.copyFromTabsFloorList.length - 1
       ];
       this.allFloorList = this.copyFromTabsFloorList;
       this.managerFloorList = this.allFloorList.slice();
       this.length = this.copyFromTabsFloorList.length;
-      this.clickFloorIndexes = this.currentSelectedFloor.floor_id;
+      this.clickFloorIndexes = this.currentSelectedFloorObject.floorId;
     }
 
     if (this.allImageMap == null) {
       this.allImageMap = new Map();
       if (this.copyFromTabsLatestFloorImage) {
         for (let i = 0; i < this.copyFromTabsLatestFloorImage.length; i++) {
-          let imgurl = this.copyFromTabsLatestFloorImage[i].url;
-          let floorid = this.copyFromTabsLatestFloorImage[i].floorid;
-          this.allImageMap.set(floorid, imgurl);
+          let newImageObject = {};
+          newImageObject.imgPath = this.copyFromTabsLatestFloorImage[i].imgPath;
+          newImageObject.floorId = this.copyFromTabsLatestFloorImage[i].floorId;
+          newImageObject.imgFileName = this.copyFromTabsLatestFloorImage[
+            i
+          ].imgFileName;
+
+          this.allImageMap.set(newImageObject.floorId, newImageObject);
+          this.currentFloorImageName = this.allImageMap.get(
+            newImageObject.floorId
+          ).imgFileName;
         }
       }
 
       if (this.copyFromTabsOtherFloorsImageList) {
         for (let i = 0; i < this.copyFromTabsOtherFloorsImageList.length; i++) {
-          let imgurl = this.copyFromTabsOtherFloorsImageList[i].url;
-          let floorid = this.copyFromTabsOtherFloorsImageList[i].floorid;
-          this.allImageMap.set(floorid, imgurl);
+          let newImageObject = {};
+          newImageObject.imgPath = this.copyFromTabsOtherFloorsImageList[
+            i
+          ].imgPath;
+          newImageObject.floorId = this.copyFromTabsOtherFloorsImageList[
+            i
+          ].floorId;
+          newImageObject.imgFileName = this.copyFromTabsOtherFloorsImageList[
+            i
+          ].imgFileName;
+          this.allImageMap.set(newImageObject.floorId, newImageObject);
         }
       }
     }
 
-    eventBus.$on("allSeatMap", (allSeatMap) => {
+    eventBus.$on("pushAllSeatMap", (allSeatMap) => {
       this.allSeatMap = allSeatMap;
     });
 
-    eventBus.$on("showSeatFloor", (floorid) => {
+    eventBus.$on("pushFloorOfSeat", (floorId) => {
       for (let i = 0; i < this.allFloorList.length; i++) {
-        if (floorid == this.allFloorList[i].floor_id) {
+        if (floorId === this.allFloorList[i].floorId) {
           this.clickFloor(this.allFloorList[i]);
         }
       }
     });
   },
   beforeDestroy() {
-    eventBus.$off("allSeatMap");
-    eventBus.$off("showSeatFloor");
+    eventBus.$off("pushAllSeatMap");
+    eventBus.$off("pushFloorOfSeat");
   },
   methods: {
-    showToolTip(floor) {
+    uploadImage() {
+      if (this.allFloorList.length) {
+        this.$refs.upload.click();
+      } else {
+        alert('도면을 올릴 층이 없습니다.')
+      }
+    },
+    showToolTip(floorObject) {
       if (this.allSeatMap) {
-        if (this.allSeatMap.get(floor.floor_id)) {
-          if (this.allSeatMap.get(floor.floor_id).length) {
-            let eachFloorSeatList = this.allSeatMap.get(floor.floor_id);
+        if (this.allSeatMap.get(floorObject.floorId)) {
+          if (this.allSeatMap.get(floorObject.floorId).length) {
+            let eachFloorSeatList = this.allSeatMap.get(floorObject.floorId);
             let department = [];
 
             let currentFloorSeatsLength = eachFloorSeatList.length;
@@ -179,24 +202,24 @@ export default {
 
             if (currentFloorSeatsLength) {
               for (let i = 0; i < eachFloorSeatList.length; i++) {
-                if (eachFloorSeatList[i].employee_id == null) {
+                if (eachFloorSeatList[i].employeeId == null) {
                   currentFloorVacantSeatsLength++;
                 } else {
                   if (
                     !employeeDepartmentMap.get(
-                      eachFloorSeatList[i].employee_department
+                      eachFloorSeatList[i].employeeDepartment
                     )
                   ) {
                     let employees = [];
                     employeeDepartmentMap.set(
-                      eachFloorSeatList[i].employee_department,
+                      eachFloorSeatList[i].employeeDepartment,
                       employees
                     );
                   }
 
                   employeeDepartmentMap
-                    .get(eachFloorSeatList[i].employee_department)
-                    .push(eachFloorSeatList[i].employee_id);
+                    .get(eachFloorSeatList[i].employeeDepartment)
+                    .push(eachFloorSeatList[i].employeeId);
                 }
               }
 
@@ -212,7 +235,7 @@ export default {
               }
 
               this.toolTipText =
-                floor.floor_name +
+                floorObject.floorName +
                 "층 <br>" +
                 "전체 좌석 : " +
                 currentFloorSeatsLength +
@@ -222,27 +245,31 @@ export default {
             }
           } else {
             this.toolTipText =
-              floor.floor_name + "층 <br>" + "좌석이 없습니다.";
+              floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
           }
         } else {
-          this.toolTipText = floor.floor_name + "층 <br>" + "좌석이 없습니다.";
+          this.toolTipText =
+            floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
         }
       } else {
-        this.toolTipText = floor.floor_name + "층 <br>" + "좌석이 없습니다.";
+        this.toolTipText =
+          floorObject.floorName + "층 <br>" + "좌석이 없습니다.";
       }
     },
-    clickFloor(floor) {
+    clickFloor(floorObject) {
       this.clickFloorIndexes = [];
-      this.clickFloorIndexes.push(floor.floor_id);
+      this.clickFloorIndexes.push(floorObject.floorId);
 
-      if (this.allImageMap.get(floor.floor_id)) {
-        this.currentFloorImageName = this.allImageMap.get(floor.floor_id).name;
+      if (this.allImageMap.get(floorObject.floorId)) {
+        this.currentFloorImageName = this.allImageMap.get(
+          floorObject.floorId
+        ).imgFileName;
       } else {
         this.currentFloorImageName = "이미지를 업로드하세요";
       }
 
-      this.currentSelectedFloor = floor;
-      eventBus.$emit("changeFloor", floor);
+      this.currentSelectedFloorObject = floorObject;
+      eventBus.$emit("pushSelectedFloorObject", floorObject);
     },
     createFloorUUID() {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
@@ -254,83 +281,96 @@ export default {
       });
     },
     addFloor() {
-      let newFloor = {};
-      newFloor.floor_id = this.createFloorUUID();
-      newFloor.floor_name = "";
-      newFloor.building_id = "HANCOM01";
-      newFloor.floor_order = this.allFloorList.length;
-      newFloor.create = true;
-      newFloor.modify = false;
-      newFloor.delete = false;
+      let newFloorObject = {};
+      newFloorObject.floorId = this.createFloorUUID();
+      newFloorObject.floorName = "";
+      newFloorObject.buildingId = "HANCOM01";
+      newFloorObject.floorOrder = this.allFloorList.length;
+      newFloorObject.create = true;
+      newFloorObject.modify = false;
+      newFloorObject.delete = false;
 
-      this.allFloorList.push(newFloor);
-      this.managerFloorList.push(newFloor);
+      this.allFloorList.push(newFloorObject);
+      this.managerFloorList.push(newFloorObject);
 
-      this.currentSelectedFloor = newFloor;
+      this.currentSelectedFloorObject = newFloorObject;
 
       this.clickFloorIndexes = [];
-      this.clickFloorIndexes.push(this.currentSelectedFloor.floor_id);
+      this.clickFloorIndexes.push(this.currentSelectedFloorObject.floorId);
 
       this.length++;
 
-      eventBus.$emit("changeFloor", this.currentSelectedFloor);
+      eventBus.$emit(
+        "pushSelectedFloorObject",
+        this.currentSelectedFloorObject
+      );
 
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
+      let allFloorList = this.allFloorList.slice();
+      eventBus.$emit("pushAllFloorList", allFloorList);
 
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
+      let managerFloorList = this.managerFloorList.slice();
+      eventBus.$emit("pushManagerFloorList", managerFloorList);
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
-        return item.floor_id == this.currentSelectedFloor.floor_id;
+        //console.log(typeof item.floorId);//String
+        //console.log(typeof this.currentSelectedFloor.floorId); //String
+        return item.floorId === this.currentSelectedFloorObject.floorId;
       });
 
       this.allFloorList[idx].modify = true;
       this.managerFloorList[idx].modify = true;
 
-      eventBus.$emit("changeFloorName", this.currentSelectedFloor.floor_name);
+      eventBus.$emit(
+        "pushChangedFloorName",
+        this.currentSelectedFloorObject.floorName
+      );
 
-      let allFloors = this.allFloorList.slice();
-      eventBus.$emit("allFloorList", allFloors);
+      let allFloorList = this.allFloorList.slice();
+      eventBus.$emit("pushAllFloorList", allFloorList);
 
-      let managerFloors = this.managerFloorList.slice();
-      eventBus.$emit("managerFloorList", managerFloors);
+      let managerFloorList = this.managerFloorList.slice();
+      eventBus.$emit("pushManagerFloorList", managerFloorList);
     },
     removeFloor() {
       if (this.length > 0) {
-        let currentFloorId = this.currentSelectedFloor.floor_id;
+        let currentFloorId = this.currentSelectedFloorObject.floorId;
         const idx = this.allFloorList.findIndex(function (item) {
-          return item.floor_id == currentFloorId;
+          //console.log(typeof item.floorId) //String
+          //console.log(typeof currentFloorId) //String
+          return item.floorId === currentFloorId; //String
         });
         if (idx > -1) {
-          eventBus.$emit("deleteSeatListKey", this.allFloorList[idx].floor_id);
+          eventBus.$emit("pushDeletedFloorId", this.allFloorList[idx].floorId);
           this.allFloorList.splice(idx, 1);
           this.managerFloorList[idx].delete = true;
 
           let nextIdx = null;
-          if (idx == 0) {
+          console.log(typeof idx); //number
+          console.log(typeof 0); //number
+          if (idx === 0) {
+            //number
             nextIdx = idx;
           } else {
             nextIdx = idx - 1;
           }
 
-          eventBus.$emit("changeFloor", this.allFloorList[nextIdx]);
+          eventBus.$emit("pushSelectedFloorObject", this.allFloorList[nextIdx]);
 
-          let allFloors = this.allFloorList.slice();
-          eventBus.$emit("allFloorList", allFloors);
+          let allFloorList = this.allFloorList.slice();
+          eventBus.$emit("pushAllFloorList", allFloorList);
 
-          let managerFloors = this.managerFloorList.slice();
-          eventBus.$emit("managerFloorList", managerFloors);
+          let managerFloorList = this.managerFloorList.slice();
+          eventBus.$emit("pushManagerFloorList", managerFloorList);
 
-          this.currentSelectedFloor = this.allFloorList[nextIdx];
+          this.currentSelectedFloorObject = this.allFloorList[nextIdx];
         }
 
         this.length--;
 
         if (this.length > 0) {
           this.clickFloorIndexes = [];
-          this.clickFloorIndexes.push(this.currentSelectedFloor.floor_id);
+          this.clickFloorIndexes.push(this.currentSelectedFloorObject.floorId);
         }
       } else {
         alert("there are no seats to delete!");
@@ -342,11 +382,20 @@ export default {
       this.saveImageFile(files[0]);
     },
     saveImageFile(file) {
-      this.allImageMap.set(this.currentSelectedFloor.floor_id, file);
+      let newImageObject = {};
+      newImageObject.imgPath = file;
+      newImageObject.floorId = this.currentSelectedFloorObject.floorId;
+      newImageObject.imgFileName = file.name;
+
+      this.allImageMap.set(
+        this.currentSelectedFloorObject.floorId,
+        newImageObject
+      );
       this.currentFloorImageName = this.allImageMap.get(
-        this.currentSelectedFloor.floor_id
-      ).name;
-      eventBus.$emit("allImageMap", this.allImageMap);
+        this.currentSelectedFloorObject.floorId
+      ).imgFileName;
+
+      eventBus.$emit("pushAllImageMap", this.allImageMap);
     },
   },
 };
