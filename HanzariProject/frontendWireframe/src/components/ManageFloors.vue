@@ -77,11 +77,11 @@
           <v-card-text>
             <input
               v-show="false"
-              ref="Upload"
+              ref="upload"
               type="file"
               @change="changeImageFile"
             />
-            <v-btn color="blue-grey lighten-2" @click="$refs.Upload.click()"
+            <v-btn color="blue-grey lighten-2" @click="uploadImage()"
               ><h4>업로드</h4></v-btn
             >
           </v-card-text>
@@ -151,7 +151,9 @@ export default {
       if (this.copyFromTabsOtherFloorsImageList) {
         for (let i = 0; i < this.copyFromTabsOtherFloorsImageList.length; i++) {
           let newImageObject = {};
-          newImageObject.imgPath = this.copyFromTabsOtherFloorsImageList[i].imgPath;
+          newImageObject.imgPath = this.copyFromTabsOtherFloorsImageList[
+            i
+          ].imgPath;
           newImageObject.floorId = this.copyFromTabsOtherFloorsImageList[
             i
           ].floorId;
@@ -169,9 +171,6 @@ export default {
 
     eventBus.$on("pushFloorOfSeat", (floorId) => {
       for (let i = 0; i < this.allFloorList.length; i++) {
-        //console.log(typeof floorId);//String
-        //console.log(typeof this.allFloorList[i].floorId); //String
-
         if (floorId === this.allFloorList[i].floorId) {
           this.clickFloor(this.allFloorList[i]);
         }
@@ -183,6 +182,13 @@ export default {
     eventBus.$off("pushFloorOfSeat");
   },
   methods: {
+    uploadImage() {
+      if (this.allFloorList.length) {
+        this.$refs.upload.click();
+      } else {
+        alert('도면을 올릴 층이 없습니다.')
+      }
+    },
     showToolTip(floorObject) {
       if (this.allSeatMap) {
         if (this.allSeatMap.get(floorObject.floorId)) {
