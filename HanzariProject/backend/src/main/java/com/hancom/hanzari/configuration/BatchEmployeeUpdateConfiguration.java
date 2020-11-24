@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -24,6 +25,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,7 +53,7 @@ public class BatchEmployeeUpdateConfiguration {
 	private TokenVo tokenVo;
 	// 요청에 대한 응답 정보와 임직원 전체 목록을 리스트로 가지고 있을 VO
 	private ResultVo resultVo;
-
+	private final PasswordEncoder passwordEncoder;
 	@Autowired
 	EmployeeService employeeService;
 
@@ -94,6 +96,9 @@ public class BatchEmployeeUpdateConfiguration {
 					URLEncoder.encode(stringValues.getString("CLIENT_SECRET"), "UTF-8"),
 					URLEncoder.encode(stringValues.getString("GRANT_TYPE"), "UTF-8"));
 
+			/*TODO try with resources statement를 사용하려고 했지만 tokenBufferedWriter와 tokenBufferedReader를 null로 초기화시키는 문장은 ()안에 사용할 수 없다. 
+			또한 실제 생성자를 통해 객체를 생성해주는 부분도 try문에서 다른 문장들이 실행된 결과값을 가지고 객체를 생성하기에 ()안에 먼저 사용할 수도 없다.
+			따라서 해당 객체를 생성하기전까지의 문장을 다른 try~catch문을 생성하여 작성하고 해당 객체를 생성하는 부분부터 try문을 새로만들어 ()안에 객체를 생성하는 방법 등의 다른 방법들을 생각해 봐야겠다.*/
 			try {
 				tokenUrl = new URL(stringValues.getString("TOKEN_URL") + "?" + stringTokenUrlParameter);
 				tokenCreatedConnection = (HttpsURLConnection) tokenUrl.openConnection();
@@ -152,6 +157,9 @@ public class BatchEmployeeUpdateConfiguration {
 			final String stringEmployeesUrl = stringValues.getString("EMPLOYEES_URL");
 			final String stringCmpIdParameter = String.format("cmpId=%s", URLEncoder.encode(stringValues.getString("COMPANY_ID"), "UTF-8"));
 
+			/*TODO try with resources statement를 사용하려고 했지만 allEmployeeListReader를 null로 초기화시키는 문장은 ()안에 사용할 수 없다. 
+			또한 실제 생성자를 통해 객체를 생성해주는 부분도 try문에서 다른 문장들이 실행된 결과값을 가지고 객체를 생성하기에 ()안에 먼저 사용할 수도 없다.
+			따라서 해당 객체를 생성하기전까지의 문장을 다른 try~catch문을 생성하여 작성하고 해당 객체를 생성하는 부분부터 try문을 새로만들어 ()안에 객체를 생성하는 방법 등의 다른 방법들을 생각해 봐야겠다.*/
 			try {
 				allEmployeeListUrl = new URL(stringEmployeesUrl + "?" + stringCmpIdParameter);
 				allEmployeeListGetConnection = (HttpsURLConnection) allEmployeeListUrl.openConnection();
@@ -213,11 +221,13 @@ public class BatchEmployeeUpdateConfiguration {
 			
 			try{
 				resultVo.getAllEmployeeListVo().forEach(e -> {
-					employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer")
-							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId()).employeeName(e.getUserName()).status("재직")
-							.extensionNumber(e.getCmpPhone()).departmentId(e.getDeptId()).departmentName(e.getDeptId()).build()).build());
+					employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer").password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER"))
+							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId())
+									.employeeName(e.getUserName()).status("재직").extensionNumber(e.getCmpPhone())
+									.departmentId(e.getDeptId()).departmentName(e.getDeptId()).build())
+							.build());
 				});
-			}catch(Exception e) {
+			} catch (Exception e) {
 				LOGGER.error("Exception in Third step", e);
 			}
 			return RepeatStatus.FINISHED;

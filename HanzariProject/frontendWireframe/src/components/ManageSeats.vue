@@ -104,7 +104,6 @@ export default {
         if (
           this.currentSelectedFloorObject.floorId ===
           this.copyFromTabsFloorList[i].floorId
-
         ) {
           continue;
         }
@@ -139,12 +138,13 @@ export default {
     initFloorItems() {
       this.floorItems = [];
       for (let i = 0; i < this.allFloorList.length; i++) {
-
         //console.log(typeof this.currentSelectedFloorObject.floorId); //String
         //console.log(typeof this.allFloorList[i].floorId);//String
- 
-        if (this.currentSelectedFloorObject.floorId === this.allFloorList[i].floorId) {
 
+        if (
+          this.currentSelectedFloorObject.floorId ===
+          this.allFloorList[i].floorId
+        ) {
           continue;
         }
 
