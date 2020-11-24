@@ -828,10 +828,10 @@ export default {
           "scaleY",
         ]);
       });
-
+      this.floorCanvas.setActiveObject(group);
       this.floorCanvas.add(group);
       this.floorCanvas.renderAll();
-      this.floorCanvas.setActiveObject(group);
+
 
       eachFloorSeatList.push(group);
       managerEachFloorSeatList.push(group);

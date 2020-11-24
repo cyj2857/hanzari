@@ -202,7 +202,7 @@ export default {
           try {
             let response = await axios.get(
               "http://" +
-                "172.30.1.56" +
+                HOST +
                 ":" +
                 PORT_NUMBER +
                 "/api/buildings/" +
@@ -247,7 +247,7 @@ export default {
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
             let response = await axios.get(
               "http://" +
-                "172.30.1.56" +
+                HOST +
                 ":" +
                 PORT_NUMBER +
                 "/api/buildings/" +
@@ -416,7 +416,7 @@ export default {
       try {
         axios.post(
           "http://" +
-            "172.30.1.56" +
+            HOST +
             ":" +
             PORT_NUMBER +
             "/api/buildings/" +
