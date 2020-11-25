@@ -33,6 +33,8 @@
             v-bind:copyFloorList="floorList"
             v-bind:copyLatestFloorImage="latestFloorImage"
             v-bind:copyOtherFloorsImageList="otherFloorsImageList"
+            v-bind:copyLatestFloorSeatList="latestFloorSeatList"
+            v-bind:copyOtherFloorsSeatMap="otherFloorsSeatMap"
           />
         </v-navigation-drawer>
         <v-main>

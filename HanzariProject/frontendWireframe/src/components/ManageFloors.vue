@@ -100,6 +100,8 @@ export default {
     "copyFromTabsFloorList",
     "copyFromTabsLatestFloorImage",
     "copyFromTabsOtherFloorsImageList",
+    "copyFromTabsLatestFloorSeatList",
+    "copyFromTabsOtherFloorSeatMap",
   ],
   data() {
     return {
@@ -117,9 +119,14 @@ export default {
 
       allSeatMap: null,
       toolTipText: null,
+
+      latestFloorSeatList: this.copyFromTabsLatestFloorSeatList,
+      otherFloorSeatMap: this.copyFromTabsOtherFloorSeatMap,
     };
   },
   created() {
+    this.allSeatMap = new Map();
+
     if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
       this.currentSelectedFloorObject = this.copyFromTabsFloorList[
         this.copyFromTabsFloorList.length - 1
@@ -127,6 +134,23 @@ export default {
       this.allFloorList = this.copyFromTabsFloorList;
       this.length = this.copyFromTabsFloorList.length;
       this.clickFloorIndexes = this.currentSelectedFloorObject.floorId;
+    }
+
+    if (this.latestFloorSeatList && this.latestFloorSeatList.length) {
+      let newSeatsList = this.latestFloorSeatList;
+      let floorId = this.currentSelectedFloorObject.floorId;
+      this.allSeatMap.set(floorId, newSeatsList);
+    }
+
+    if (this.otherFloorSeatMap && this.otherFloorSeatMap.size) {
+      let keys = [];
+      keys = Array.from(this.otherFloorSeatMap.keys());
+
+      for (let i = 0; i < keys.length; i++) {
+        let newSeatsList = this.otherFloorSeatMap.get(keys[i]);
+        let floorId = keys[i];
+        this.allSeatMap.set(floorId, newSeatsList);
+      }
     }
 
     if (this.allImageMap == null) {
@@ -166,6 +190,7 @@ export default {
 
     eventBus.$on("pushAllSeatMap", (allSeatMap) => {
       this.allSeatMap = allSeatMap;
+      console.log(this.allSeatMap);
     });
 
     eventBus.$on("pushFloorOfSeat", (floorId) => {
@@ -307,7 +332,7 @@ export default {
     },
     editFloorName() {
       const idx = this.allFloorList.findIndex((item) => {
-        return item.floorId === this.currentSelectedFloorObject.floorId;//String
+        return item.floorId === this.currentSelectedFloorObject.floorId; //String
       });
 
       this.allFloorList[idx].httpRequestPostStatus = true;
@@ -337,8 +362,8 @@ export default {
 
           let nextIdx = null;
 
-
-          if (idx === 0) {//number
+          if (idx === 0) {
+            //number
             nextIdx = idx;
           } else {
             nextIdx = idx - 1;

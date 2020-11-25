@@ -1112,7 +1112,8 @@ export default {
         ]);
 
         let objectSeatId = asObject.seatId;
-        if (seatObject.seatId === objectSeatId) { //String
+        if (seatObject.seatId === objectSeatId) {
+          //String
           this.floorCanvas
             .getObjects()
             .slice()
@@ -1270,7 +1271,7 @@ export default {
                 "isObjFromDB",
                 "httpRequestPostStatus",
               ]);
-              
+
               if (groupToObject.httpRequestPostStatus) {
                 let seatData = {};
                 seatData.seat_id = groupToObject.seatId;
@@ -1453,8 +1454,8 @@ export default {
             i
           ].imgFileName;
 
-         // console.log("받아온 이미지 파일명입니다.");
-         // console.log(newImageObject.imgFileName);
+          // console.log("받아온 이미지 파일명입니다.");
+          // console.log(newImageObject.imgFileName);
           this.allImageMap.set(newImageObject.floorId, newImageObject);
         }
         //다른 층 자리 로드
