@@ -121,7 +121,7 @@ public class BatchEmployeeUpdateConfiguration {
 			//null로 초기화를 시켜주어야 아래 finally block의 if문에서 에러가 나지 않는다.
 			BufferedWriter tokenBufferedWriter = null;
 			BufferedReader tokenBufferedReader = null;
-			// URL뒤에 들어갈 Parameter들 설정
+			//URL뒤에 들어갈 Parameter들 설정
 			final String stringTokenUrlParameter = String.format(stringValues.getString("TOKEN_FORMAT"),
 					URLEncoder.encode(stringValues.getString("CLIENT_ID"), "UTF-8"),
 					URLEncoder.encode(stringValues.getString("CLIENT_SECRET"), "UTF-8"),
@@ -134,12 +134,13 @@ public class BatchEmployeeUpdateConfiguration {
 				tokenUrl = new URL(stringValues.getString("TOKEN_URL") + "?" + stringTokenUrlParameter);
 				tokenCreatedConnection = (HttpsURLConnection) tokenUrl.openConnection();
 				tokenCreatedConnection.setRequestMethod("POST");
-				// 아래 설정들은 입출력 가능상태로 만들기 위한 것
+				//POST 전송시 Request body에 전달값을 보내기 위한 설정
 				tokenCreatedConnection.setDoInput(true);
 				tokenCreatedConnection.setDoOutput(true);
+				//자동적으로 리다이렉트를 하지 않도록 설정을 해주었다.
 				tokenCreatedConnection.setInstanceFollowRedirects(false);
 
-				// Parameter를 HttpsURLConnection에 설정
+				//Parameter를 HttpsURLConnection에 설정
 				tokenBufferedWriter = new BufferedWriter(new 	OutputStreamWriter(
 						tokenCreatedConnection.getOutputStream(), "UTF-8"));
 				tokenBufferedWriter.write(stringTokenUrlParameter);
