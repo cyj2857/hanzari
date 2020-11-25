@@ -262,35 +262,11 @@ export default {
           stopContextMenu: true, //prevent context menu from showing
         });
 
-        this.floorCanvas.on("mouse:wheel", (opt) => {
-          if (!this.floorCanvas.viewportTransform) {
-            return;
-          }
-
-          let evt = opt.e;
-          let deltaY = evt.deltaY;
-          this.zoom = this.floorCanvas.getZoom();
-          this.zoom = this.zoom - deltaY / 300;
-
-          if (evt.ctrlKey === true) {
-            //zoom in and out
-            if (this.zoom > 10) this.zoom = 10;
-            else if (this.zoom < 1) this.zoom = 1;
-
-            this.floorCanvas.zoomToPoint(
-              new fabric.Point(evt.offsetX, evt.offsetY),
-              this.zoom
-            );
-          } else {
-            //reset canvas ratio
-            this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-            this.zoom = 1;
-          }
-          this.checkZoom();
-
-          opt.e.preventDefault();
-          opt.e.stopPropagation();
-        });
+        this.setMouseWheel();
+        this.setDragDropEventForAddVacantSeat();
+        this.setToolTipForSeat();
+        this.setWhenObjectModified();
+        this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
 
         this.floorCanvas.on("object:moving", function (e) {
           var obj = e.target;
@@ -366,134 +342,160 @@ export default {
             height1 = obj.height;
           }
         });
+      }
+    },
+    setMouseWheel() {
+      this.floorCanvas.on("mouse:wheel", (opt) => {
+        if (!this.floorCanvas.viewportTransform) {
+          return;
+        }
 
-        let rectangle;
-        let canDraw = false;
+        let evt = opt.e;
+        let deltaY = evt.deltaY;
+        this.zoom = this.floorCanvas.getZoom();
+        this.zoom = this.zoom - deltaY / 300;
 
-        //원하는 위치에 자동으로 공석 생성하기
-        this.floorCanvas.on("mouse:down", (event) => {
-          if (event.button === 3) {
-            if (this.addVacantSwitchStatus) {
-              canDraw = true;
+        if (evt.ctrlKey === true) {
+          //zoom in and out
+          if (this.zoom > 10) this.zoom = 10;
+          else if (this.zoom < 1) this.zoom = 1;
 
-              var pointer = this.floorCanvas.getPointer(event.e);
-              this.firstMouseDownX = pointer.x;
-              this.firstMouseDownY = pointer.y;
+          this.floorCanvas.zoomToPoint(
+            new fabric.Point(evt.offsetX, evt.offsetY),
+            this.zoom
+          );
+        } else {
+          //reset canvas ratio
+          this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+          this.zoom = 1;
+        }
+        this.checkZoom();
 
-              rectangle = new fabric.Rect({
-                left: this.firstMouseDownX,
-                top: this.firstMouseDownY,
-                fill: "",
-                stroke: "red",
-                strokeWidth: 3,
-              });
-            } else if (this.floorCanvas.getActiveObject()) {
-              //contextMenu
-              var posX = event.e.clientX;
-              var posY = event.e.clientY;
-              this.showContextMenuOfOneSeat(posX, posY);
-            }
-          }
-        });
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
+      });
+    },
+    setToolTipForSeat() {
+      this.floorCanvas.on("mouse:over", (event) => {
+        let group = event.target;
+        if (group != null) {
+          var posX = event.e.clientX;
+          var posY = event.e.clientY;
 
-        this.floorCanvas.on("mouse:move", (o) => {
-          // Defining the procedure
-          console.log("hello");
-          if (canDraw) {
-            var pointer = this.floorCanvas.getPointer(o.e);
-            if (this.firstMouseDownX > pointer.x) {
-              rectangle.set("left", Math.abs(pointer.x));
-            }
-            if (this.firstMouseDownY > pointer.y) {
-              rectangle.set("top", Math.abs(pointer.y));
-            }
+          let groupToObject = group.toObject([
+            "employeeId",
+            "employeeName",
+            "employeeDepartment",
+            "employeeNumber",
+          ]);
 
-            rectangle.set("width", Math.abs(this.firstMouseDownX - pointer.x));
-            rectangle.set("height", Math.abs(this.firstMouseDownY - pointer.y));
-            this.floorCanvas.add(rectangle);
-            this.floorCanvas.renderAll();
-          }
-          //}
-        });
+          this.showToolTip(
+            posX,
+            posY,
+            groupToObject.employeeId,
+            groupToObject.employeeName,
+            groupToObject.employeeDepartment,
+            groupToObject.employeeNumber
+          );
+        }
+      });
 
-        this.floorCanvas.on("mouse:up", (event) => {
-          if (event.button === 3) {
-            if (this.addVacantSwitchStatus) {
-              var pointer = this.floorCanvas.getPointer(event.e);
-              var mouseUpX = pointer.x;
-              var mouseUpY = pointer.y;
-              //console.log(mouseUpX);
-              //console.log(mouseUpY);
-              if (
-                this.firstMouseDownX === mouseUpX && //Number
-                this.firstMouseDownY === mouseUpY //Number
-              ) {
-                return;
-              } else {
-                if (!this.allImageMap.get(this.currentSelectedFloorId)) {
-                  alert("도면 이미지가 없습니다");
-                  return;
-                }
-                if (this.currentSelectedFloorName == "") {
-                  alert("층 이름이 설정되지 않았습니다.");
-                  return;
-                }
-                //console.log(this.firstMouseDownX);
-                //console.log(this.firstMouseDownY);
-                canDraw = false;
-                this.floorCanvas.remove(rectangle);
-                this.floorCanvas.renderAll();
+      this.floorCanvas.on("mouse:out", (event) => {
+        this.toolTipStatus = false;
+      });
+    },
+    setDragDropEventForAddVacantSeat() {
+      let rectangle;
+      let canDraw = false;
 
-                this.addVacantSeat(
-                  this.firstMouseDownX,
-                  this.firstMouseDownY,
-                  mouseUpX,
-                  mouseUpY
-                );
-                console.log(rectangle);
-                
-                
-              }
-            }
-          }
-        });
+      //원하는 위치에 자동으로 공석 생성하기
+      this.floorCanvas.on("mouse:down", (event) => {
+        if (event.button === 3) {
+          if (this.addVacantSwitchStatus) {
+            canDraw = true;
 
-        this.floorCanvas.on("object:modified", (e) => {
-          this.floorCanvas.getObjects().forEach((obj) => {
-            obj.set("httpRequestPostStatus", true);
-          });
-        });
+            var pointer = this.floorCanvas.getPointer(event.e);
+            this.firstMouseDownX = pointer.x;
+            this.firstMouseDownY = pointer.y;
 
-        this.floorCanvas.on("mouse:over", (event) => {
-          let group = event.target;
-          if (group != null) {
+            rectangle = new fabric.Rect({
+              left: this.firstMouseDownX,
+              top: this.firstMouseDownY,
+              fill: "",
+              stroke: this.getColor(null),
+              strokeWidth: 1,
+            });
+          } else if (this.floorCanvas.getActiveObject()) {
+            //contextMenu
             var posX = event.e.clientX;
             var posY = event.e.clientY;
-
-            let groupToObject = group.toObject([
-              "employeeId",
-              "employeeName",
-              "employeeDepartment",
-              "employeeNumber",
-            ]);
-
-            this.showToolTip(
-              posX,
-              posY,
-              groupToObject.employeeId,
-              groupToObject.employeeName,
-              groupToObject.employeeDepartment,
-              groupToObject.employeeNumber
-            );
+            this.showContextMenuOfOneSeat(posX, posY);
           }
-        });
+        }
+      });
 
-        this.floorCanvas.on("mouse:out", (event) => {
-          this.toolTipStatus = false;
-        });
+      this.floorCanvas.on("mouse:move", (o) => {
+        if (canDraw) {
+          var pointer = this.floorCanvas.getPointer(o.e);
+          if (this.firstMouseDownX > pointer.x) {
+            rectangle.set("left", Math.abs(pointer.x));
+          }
+          if (this.firstMouseDownY > pointer.y) {
+            rectangle.set("top", Math.abs(pointer.y));
+          }
 
-        this.manageKeyboard(); //키보드 조작(상하좌우 이동/복붙/삭제)
-      }
+          rectangle.set("width", Math.abs(this.firstMouseDownX - pointer.x));
+          rectangle.set("height", Math.abs(this.firstMouseDownY - pointer.y));
+          this.floorCanvas.add(rectangle);
+          this.floorCanvas.renderAll();
+        }
+      });
+
+      this.floorCanvas.on("mouse:up", (event) => {
+        if (event.button === 3) {
+          if (this.addVacantSwitchStatus) {
+            var pointer = this.floorCanvas.getPointer(event.e);
+            var mouseUpX = pointer.x;
+            var mouseUpY = pointer.y;
+            if (
+              this.firstMouseDownX === mouseUpX && //Number
+              this.firstMouseDownY === mouseUpY //Number
+            ) {
+              return;
+            } else {
+              if (!this.allImageMap.get(this.currentSelectedFloorId)) {
+                alert("도면 이미지가 없습니다");
+                return;
+              }
+              if (this.currentSelectedFloorName == "") {
+                alert("층 이름이 설정되지 않았습니다.");
+                return;
+              }
+
+              this.floorCanvas.getObjects().forEach((obj) => {
+                if (rectangle === obj) {
+                  this.floorCanvas.remove(obj);
+                }
+              });
+
+              this.addVacantSeat(
+                this.firstMouseDownX,
+                this.firstMouseDownY,
+                mouseUpX,
+                mouseUpY
+              );
+            }
+          }
+          canDraw = false;
+        }
+      });
+    },
+    setWhenObjectModified() {
+      this.floorCanvas.on("object:modified", (e) => {
+        this.floorCanvas.getObjects().forEach((obj) => {
+          obj.set("httpRequestPostStatus", true);
+        });
+      });
     },
     clickResetToRatioBtn() {
       this.floorCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
