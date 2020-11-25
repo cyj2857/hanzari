@@ -133,7 +133,7 @@ public class BatchEmployeeUpdateConfiguration {
 			또한 실제 생성자를 통해 객체를 생성해주는 부분도 try문에서 다른 문장들이 실행된 결과값을 가지고 객체를 생성하기에 ()안에 먼저 사용할 수도 없다.
 			따라서 해당 객체를 생성하기전까지의 문장을 다른 try~catch문을 생성하여 작성하고 해당 객체를 생성하는 부분부터 try문을 새로만들어 ()안에 객체를 생성하는 방법 등의 다른 방법들을 생각해 봐야겠다.*/
 			try {
-				tokenUrl = new URL(stringValues.getString("TOKEN_URL"));// + "?" + stringTokenUrlParamete	r);
+				tokenUrl = new URL(stringValues.getString("TOKEN_URL"));
 				tokenCreatedConnection = (HttpsURLConnection) tokenUrl.openConnection();
 				
 				//요청 방식 POST
@@ -151,10 +151,6 @@ public class BatchEmployeeUpdateConfiguration {
 				osw.flush();
 				osw.close();
 				tokenCreatedConnectionSetRequestBody.close();
-				
-				System.out.println(tokenCreatedConnection.getResponseCode());
-				
-				//tokenBufferedWriter = new BufferedWriter(new OutputStreamWriter(tokenCreatedConnection.getOutputStream()));
 
 				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
 				StringBuilder jsonOneLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
