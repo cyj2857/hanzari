@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -117,11 +118,12 @@ public class BatchEmployeeUpdateConfiguration {
 			LOGGER.info(">>>>> First step(토큰 발행 step)");
 
 			URL tokenUrl;
-			HttpsURLConnection tokenCreatedConnection;
+			HttpsURLConnection tokenCreatedConnection = null;
 			//null로 초기화를 시켜주어야 아래 finally block의 if문에서 에러가 나지 않는다.
 			BufferedWriter tokenBufferedWriter = null;
 			BufferedReader tokenBufferedReader = null;
-			//URL뒤에 들어갈 Parameter들 설정
+			//Request Body에 들어갈 값들을 URLEncoder.encode() 메소드를 사용하여 String을 encoding해준다.
+			//UTF-8 설정을 빼면 메소드가 deprecated가 된다.
 			final String stringTokenUrlParameter = String.format(stringValues.getString("TOKEN_FORMAT"),
 					URLEncoder.encode(stringValues.getString("CLIENT_ID"), "UTF-8"),
 					URLEncoder.encode(stringValues.getString("CLIENT_SECRET"), "UTF-8"),
@@ -131,23 +133,30 @@ public class BatchEmployeeUpdateConfiguration {
 			또한 실제 생성자를 통해 객체를 생성해주는 부분도 try문에서 다른 문장들이 실행된 결과값을 가지고 객체를 생성하기에 ()안에 먼저 사용할 수도 없다.
 			따라서 해당 객체를 생성하기전까지의 문장을 다른 try~catch문을 생성하여 작성하고 해당 객체를 생성하는 부분부터 try문을 새로만들어 ()안에 객체를 생성하는 방법 등의 다른 방법들을 생각해 봐야겠다.*/
 			try {
-				tokenUrl = new URL(stringValues.getString("TOKEN_URL") + "?" + stringTokenUrlParameter);
+				tokenUrl = new URL(stringValues.getString("TOKEN_URL"));// + "?" + stringTokenUrlParamete	r);
 				tokenCreatedConnection = (HttpsURLConnection) tokenUrl.openConnection();
+				
+				//요청 방식 POST
 				tokenCreatedConnection.setRequestMethod("POST");
-				//POST 전송시 Request body에 전달값을 보내기 위한 설정
-				tokenCreatedConnection.setDoInput(true);
+				//OutPutStream으로 POST 데이터를 넘겨주겠다는 설정
 				tokenCreatedConnection.setDoOutput(true);
-				//자동적으로 리다이렉트를 하지 않도록 설정을 해주었다.
-				tokenCreatedConnection.setInstanceFollowRedirects(false);
+				//InputStream으로 서버로부터 응답받겠다는 설정
+				tokenCreatedConnection.setDoInput(true);
+				//참고 Request Header 값들은 setRequestProperty를 사용하면 된다
 
-				//Parameter를 HttpsURLConnection에 설정
-				tokenBufferedWriter = new BufferedWriter(new 	OutputStreamWriter(
-						tokenCreatedConnection.getOutputStream(), "UTF-8"));
-				tokenBufferedWriter.write(stringTokenUrlParameter);
+				//Request Body에 Data를 담기 위해 OutputStream 객체를 생성
+				OutputStream tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
+				OutputStreamWriter osw = new OutputStreamWriter(tokenCreatedConnectionSetRequestBody, "UTF-8");
+				osw.write(stringTokenUrlParameter);
+				osw.flush();
+				osw.close();
+				tokenCreatedConnectionSetRequestBody.close();
+				
+				System.out.println(tokenCreatedConnection.getResponseCode());
+				
+				//tokenBufferedWriter = new BufferedWriter(new OutputStreamWriter(tokenCreatedConnection.getOutputStream()));
 
-				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream(),
-						"UTF-8"));
-
+				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
 				StringBuilder jsonOneLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
 				String jsonEachLine; //한 줄씩 받는 String
 				
@@ -196,6 +205,7 @@ public class BatchEmployeeUpdateConfiguration {
 				allEmployeeListUrl = new URL(stringEmployeesUrl + "?" + stringCmpIdParameter);
 				allEmployeeListGetConnection = (HttpsURLConnection) allEmployeeListUrl.openConnection();
 				allEmployeeListGetConnection.setRequestMethod("GET");
+				//Request Headers에 추가할 내용
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
 				allEmployeeListReader = new BufferedReader(
 						new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
