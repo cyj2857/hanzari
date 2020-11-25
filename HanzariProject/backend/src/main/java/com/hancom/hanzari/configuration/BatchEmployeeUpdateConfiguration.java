@@ -146,10 +146,9 @@ public class BatchEmployeeUpdateConfiguration {
 
 				//Request Body에 Data를 담기 위해 OutputStream 객체를 생성
 				OutputStream tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
-				OutputStreamWriter tokenCreatedConnectionSetRequestBodyWriter = new OutputStreamWriter(tokenCreatedConnectionSetRequestBody, "UTF-8");
-				tokenCreatedConnectionSetRequestBodyWriter.write(stringTokenUrlParameter);
-				tokenCreatedConnectionSetRequestBodyWriter.flush();
-				tokenCreatedConnectionSetRequestBodyWriter.close();
+				//write() 메소드중에 String을 인자로 받는 오버로딩된 메소드가 없기에 stringTokenUrlParameter를 byte형식으로 변환시켜 줘서 매개변수로 주어야 한다.
+				tokenCreatedConnectionSetRequestBody.write(stringTokenUrlParameter.getBytes());
+				tokenCreatedConnectionSetRequestBody.flush();
 				tokenCreatedConnectionSetRequestBody.close();
 
 				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
@@ -169,7 +168,7 @@ public class BatchEmployeeUpdateConfiguration {
 			} catch (Exception e) {
 				LOGGER.error("Exception in First step", e);
 			//try block이 종료하기 전 finally block 실행
-			} finally {
+			} finally {		
 				if(tokenBufferedWriter != null)
 					tokenBufferedWriter.close();
 				if(tokenBufferedReader != null)
