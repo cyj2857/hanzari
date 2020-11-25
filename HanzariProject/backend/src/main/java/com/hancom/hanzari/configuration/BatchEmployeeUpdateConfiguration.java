@@ -120,7 +120,6 @@ public class BatchEmployeeUpdateConfiguration {
 			URL tokenUrl;
 			HttpsURLConnection tokenCreatedConnection = null;
 			//null로 초기화를 시켜주어야 아래 finally block의 if문에서 에러가 나지 않는다.
-			BufferedWriter tokenBufferedWriter = null;
 			BufferedReader tokenBufferedReader = null;
 			//Request Body에 들어갈 값들을 URLEncoder.encode() 메소드를 사용하여 String을 encoding해준다.
 			//UTF-8 설정을 빼면 메소드가 deprecated가 된다.
@@ -168,9 +167,7 @@ public class BatchEmployeeUpdateConfiguration {
 			} catch (Exception e) {
 				LOGGER.error("Exception in First step", e);
 			//try block이 종료하기 전 finally block 실행
-			} finally {		
-				if(tokenBufferedWriter != null)
-					tokenBufferedWriter.close();
+			} finally {
 				if(tokenBufferedReader != null)
 					tokenBufferedReader.close();
 			}
