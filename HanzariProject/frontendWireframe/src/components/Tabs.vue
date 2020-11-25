@@ -1,11 +1,19 @@
 <template>
   <div>
     <v-toolbar color="black" dark> </v-toolbar>
-      <v-tabs v-model="tab" background-color="black" dark height="65" horizontal grow>
-          <v-tabs-slider color="blue"></v-tabs-slider>
-        <v-tab  v-for="item in items" :key="item.index">
-          <v-icon large dark>{{ item.icon }}</v-icon></v-tab>
-      </v-tabs>
+    <v-tabs
+      v-model="tab"
+      background-color="black"
+      dark
+      height="65"
+      horizontal
+      grow
+    >
+      <v-tabs-slider color="blue"></v-tabs-slider>
+      <v-tab v-for="item in items" :key="item.index">
+        <v-icon large dark>{{ item.icon }}</v-icon></v-tab
+      >
+    </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="item in items" :key="item.index">
@@ -18,6 +26,8 @@
               :eachEmployeeSeatMap="eachEmployeeSeatMap"
               :copyFromTabsLatestFloorImage="latestFloorImage"
               :copyFromTabsOtherFloorsImageList="otherFloorsImageList"
+              :copyFromTabsLatestFloorSeatList="latestFloorSeatList"
+              :copyFromTabsOtherFloorSeatMap="otherFloorSeatMap"
             ></component>
           </v-card-text>
         </v-card>
@@ -38,6 +48,8 @@ export default {
     "copyFloorList",
     "copyLatestFloorImage",
     "copyOtherFloorsImageList",
+    "copyLatestFloorSeatList",
+    "copyOtherFloorsSeatMap",
   ],
   components: {
     ManageSeats,
@@ -55,6 +67,10 @@ export default {
 
       latestFloorImage: this.copyLatestFloorImage,
       otherFloorsImageList: this.copyOtherFloorsImageList,
+
+      latestFloorSeatList: this.copyLatestFloorSeatList,
+
+      otherFloorSeatMap: this.copyOtherFloorsSeatMap,
 
       items: [
         { icon: "stairs", title: "층 설정", index: 0, content: "ManageFloors" },
