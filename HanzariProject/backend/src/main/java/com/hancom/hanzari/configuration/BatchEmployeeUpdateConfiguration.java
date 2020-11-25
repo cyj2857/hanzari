@@ -120,6 +120,7 @@ public class BatchEmployeeUpdateConfiguration {
 			URL tokenUrl;
 			HttpsURLConnection tokenCreatedConnection = null;
 			//null로 초기화를 시켜주어야 아래 finally block의 if문에서 에러가 나지 않는다.
+			OutputStream tokenCreatedConnectionSetRequestBody = null;
 			BufferedReader tokenBufferedReader = null;
 			//Request Body에 들어갈 값들을 URLEncoder.encode() 메소드를 사용하여 String을 encoding해준다.
 			//UTF-8 설정을 빼면 메소드가 deprecated가 된다.
@@ -144,7 +145,7 @@ public class BatchEmployeeUpdateConfiguration {
 				//참고 Request Header 값들은 setRequestProperty를 사용하면 된다
 
 				//Request Body에 Data를 담기 위해 OutputStream 객체를 생성
-				OutputStream tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
+				tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
 				//write() 메소드중에 String을 인자로 받는 오버로딩된 메소드가 없기에 stringTokenUrlParameter를 byte형식으로 변환시켜 줘서 매개변수로 주어야 한다.
 				tokenCreatedConnectionSetRequestBody.write(stringTokenUrlParameter.getBytes());
 				tokenCreatedConnectionSetRequestBody.flush();
@@ -168,6 +169,8 @@ public class BatchEmployeeUpdateConfiguration {
 				LOGGER.error("Exception in First step", e);
 			//try block이 종료하기 전 finally block 실행
 			} finally {
+				if(tokenCreatedConnectionSetRequestBody != null)
+					tokenCreatedConnectionSetRequestBody.close();
 				if(tokenBufferedReader != null)
 					tokenBufferedReader.close();
 			}
