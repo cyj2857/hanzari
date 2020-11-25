@@ -731,32 +731,30 @@ export default {
         this.currentSelectedFloorId
       );
 
-      let rectangle = new fabric.Rect({
-        width: Math.abs(mouseDownX - mouseUpX),
-        height: Math.abs(mouseDownY - mouseUpY),
-        fill: this.getColor(null),
-        opacity: 1,
-      });
-
-      let textObject = new fabric.IText("", {
-        left: 0,
-        top: rectangle.height / 3,
-        fontSize: 0,
-        fill: "black",
-      });
-
       if (this.numberOfAddSeat > 0) {
         let mouseDownPointX = mouseDownX;
         let mouseDownPointY = mouseDownY;
 
-        for (let i = 0; i < this.numberOfAddSeat; i++) {
-          console.log(mouseDownPointX);
-
-          if (i > 0) {
+        for (let i = 1; i <= this.numberOfAddSeat; i++) {
+          if (i > 1) {
             mouseDownPointX += 10;
-            console.log(mouseDownPointX);
             mouseDownPointY += 10;
           }
+
+          let rectangle = new fabric.Rect({
+            width: Math.abs(mouseDownX - mouseUpX),
+            height: Math.abs(mouseDownY - mouseUpY),
+            fill: this.getColor(null),
+            opacity: 1,
+          });
+
+          let textObject = new fabric.IText("", {
+            left: 0,
+            top: rectangle.height / 3,
+            fontSize: 0,
+            fill: "black",
+          });
+
 
           let group = new fabric.Group([rectangle, textObject], {
             seatId: this.createSeatUUID(),
@@ -800,6 +798,7 @@ export default {
 
           this.floorCanvas.setActiveObject(group);
           this.floorCanvas.add(group);
+          console.log(group);
           this.floorCanvas.renderAll();
 
           eachFloorSeatList.push(group);
@@ -1134,7 +1133,8 @@ export default {
         ]);
 
         let objectSeatId = asObject.seatId;
-        if (seatObject.seatId === objectSeatId) { //String
+        if (seatObject.seatId === objectSeatId) {
+          //String
           this.floorCanvas
             .getObjects()
             .slice()
@@ -1292,7 +1292,7 @@ export default {
                 "isObjFromDB",
                 "httpRequestPostStatus",
               ]);
-              
+
               if (groupToObject.httpRequestPostStatus) {
                 let seatData = {};
                 seatData.seat_id = groupToObject.seatId;
@@ -1475,8 +1475,8 @@ export default {
             i
           ].imgFileName;
 
-         // console.log("받아온 이미지 파일명입니다.");
-         // console.log(newImageObject.imgFileName);
+          // console.log("받아온 이미지 파일명입니다.");
+          // console.log(newImageObject.imgFileName);
           this.allImageMap.set(newImageObject.floorId, newImageObject);
         }
         //다른 층 자리 로드
