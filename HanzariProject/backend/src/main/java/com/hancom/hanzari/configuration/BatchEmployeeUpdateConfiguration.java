@@ -153,6 +153,7 @@ public class BatchEmployeeUpdateConfiguration {
 				//flush() 메소드를 호출하지 않아도 프로그램이 정상 작동하지만 명시적으로 이 때 입력한 버퍼 내용들을 비워준다는 의미로 작성하였다.
 				tokenCreatedConnectionSetRequestBody.flush();
 
+				//보낸 요청에 따라 서버에서 받아온 정보들을 BufferedReader 객체에 넣어줌.
 				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
 				//전체 Json라인을 한 줄로 받는 StringBuilder
 				StringBuilder jsonOneLine = new StringBuilder();
@@ -206,8 +207,7 @@ public class BatchEmployeeUpdateConfiguration {
 				allEmployeeListGetConnection.setRequestMethod("GET");
 				//Request Headers에 추가할 내용
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
-				allEmployeeListReader = new BufferedReader(
-						new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
+				allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream()));
 				
 				// 현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 
 				// 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
