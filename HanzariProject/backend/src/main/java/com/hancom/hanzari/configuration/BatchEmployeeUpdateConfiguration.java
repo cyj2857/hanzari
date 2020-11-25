@@ -118,7 +118,9 @@ public class BatchEmployeeUpdateConfiguration {
 			URL tokenUrl;
 			HttpsURLConnection tokenCreatedConnection = null;
 			//null로 초기화를 시켜주어야 아래 finally block의 if문에서 에러가 나지 않는다.
+			//Request Body에 Data를 담기 위한 레퍼런스 변수
 			OutputStream tokenCreatedConnectionSetRequestBody = null;
+			//
 			BufferedReader tokenBufferedReader = null;
 			//Request Body에 들어갈 값들을 URLEncoder.encode() 메소드를 사용하여 String을 encoding해준다.
 			//UTF-8 설정을 빼면 메소드가 deprecated가 된다.
@@ -145,13 +147,17 @@ public class BatchEmployeeUpdateConfiguration {
 				//Request Body에 Data를 담기 위해 OutputStream 객체를 생성
 				tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
 				//write() 메소드중에 String을 인자로 받는 오버로딩된 메소드가 없기에 stringTokenUrlParameter를 byte형식으로 변환시켜 줘서 매개변수로 주어야 한다.
+				//Request Body에 Data 세팅
 				tokenCreatedConnectionSetRequestBody.write(stringTokenUrlParameter.getBytes());
+				//Request Body에 Data 입력
+				//flush() 메소드를 호출하지 않아도 프로그램이 정상 작동하지만 명시적으로 이 때 입력한 버퍼 내용들을 비워준다는 의미로 작성하였다.
 				tokenCreatedConnectionSetRequestBody.flush();
-				tokenCreatedConnectionSetRequestBody.close();
 
 				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
-				StringBuilder jsonOneLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
-				String jsonEachLine; //한 줄씩 받는 String
+				//전체 Json라인을 한 줄로 받는 StringBuilder
+				StringBuilder jsonOneLine = new StringBuilder();
+				//한 줄씩 받는 String
+				String jsonEachLine;
 				
 				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
 				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
