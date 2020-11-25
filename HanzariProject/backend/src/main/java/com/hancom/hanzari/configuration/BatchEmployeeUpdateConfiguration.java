@@ -1,10 +1,10 @@
 package com.hancom.hanzari.configuration;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -117,11 +118,14 @@ public class BatchEmployeeUpdateConfiguration {
 			LOGGER.info(">>>>> First step(토큰 발행 step)");
 
 			URL tokenUrl;
-			HttpsURLConnection tokenCreatedConnection;
+			HttpsURLConnection tokenCreatedConnection = null;
 			//null로 초기화를 시켜주어야 아래 finally block의 if문에서 에러가 나지 않는다.
-			BufferedWriter tokenBufferedWriter = null;
+			//Request Body에 Data를 담기 위한 레퍼런스 변수
+			OutputStream tokenCreatedConnectionSetRequestBody = null;
+			//
 			BufferedReader tokenBufferedReader = null;
-			// URL뒤에 들어갈 Parameter들 설정
+			//Request Body에 들어갈 값들을 URLEncoder.encode() 메소드를 사용하여 String을 encoding해준다.
+			//UTF-8 설정을 빼면 메소드가 deprecated가 된다.
 			final String stringTokenUrlParameter = String.format(stringValues.getString("TOKEN_FORMAT"),
 					URLEncoder.encode(stringValues.getString("CLIENT_ID"), "UTF-8"),
 					URLEncoder.encode(stringValues.getString("CLIENT_SECRET"), "UTF-8"),
@@ -131,41 +135,62 @@ public class BatchEmployeeUpdateConfiguration {
 			또한 실제 생성자를 통해 객체를 생성해주는 부분도 try문에서 다른 문장들이 실행된 결과값을 가지고 객체를 생성하기에 ()안에 먼저 사용할 수도 없다.
 			따라서 해당 객체를 생성하기전까지의 문장을 다른 try~catch문을 생성하여 작성하고 해당 객체를 생성하는 부분부터 try문을 새로만들어 ()안에 객체를 생성하는 방법 등의 다른 방법들을 생각해 봐야겠다.*/
 			try {
-				tokenUrl = new URL(stringValues.getString("TOKEN_URL") + "?" + stringTokenUrlParameter);
+				tokenUrl = new URL(stringValues.getString("TOKEN_URL"));
 				tokenCreatedConnection = (HttpsURLConnection) tokenUrl.openConnection();
-				tokenCreatedConnection.setRequestMethod("POST");
-				// 아래 설정들은 입출력 가능상태로 만들기 위한 것
-				tokenCreatedConnection.setDoInput(true);
-				tokenCreatedConnection.setDoOutput(true);
-				tokenCreatedConnection.setInstanceFollowRedirects(false);
-
-				// Parameter를 HttpsURLConnection에 설정
-				tokenBufferedWriter = new BufferedWriter(new 	OutputStreamWriter(
-						tokenCreatedConnection.getOutputStream(), "UTF-8"));
-				tokenBufferedWriter.write(stringTokenUrlParameter);
-
-				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream(),
-						"UTF-8"));
-
-				StringBuilder jsonOneLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
-				String jsonEachLine; //한 줄씩 받는 String
 				
-				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
-				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
-				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
-				while((jsonEachLine = tokenBufferedReader.readLine()) != null) {
-					jsonOneLine.append(jsonEachLine);
+				//요청 방식 POST
+				tokenCreatedConnection.setRequestMethod("POST");
+				//OutPutStream으로 POST 데이터를 넘겨주겠다는 설정
+				tokenCreatedConnection.setDoOutput(true);
+				//InputStream으로 서버로부터 응답받겠다는 설정
+				tokenCreatedConnection.setDoInput(true);
+				//참고 Request Header 값들은 setRequestProperty를 사용하면 된다
+				
+				System.out.println(tokenCreatedConnection.getInstanceFollowRedirects());
+
+				//Request Body에 Data를 담기 위해 OutputStream 객체를 생성
+				tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
+				//write() 메소드중에 String을 인자로 받는 오버로딩된 메소드가 없기에 stringTokenUrlParameter를 byte형식으로 변환시켜 줘서 매개변수로 주어야 한다.
+				//Request Body에 Data 세팅
+				tokenCreatedConnectionSetRequestBody.write(stringTokenUrlParameter.getBytes());
+				//Request Body에 Data 입력
+				//flush() 메소드를 호출하지 않아도 프로그램이 정상 작동하지만 명시적으로 이 때 입력한 버퍼 내용들을 비워준다는 의미로 작성하였다.
+				tokenCreatedConnectionSetRequestBody.flush();
+
+				//먼저 요청에 대한 응답이 잘 왔는지 확인
+				if(tokenCreatedConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+					//보낸 요청에 따라 서버에서 받아온 정보들을 BufferedReader 객체에 넣어줌.
+					tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
+					//전체 Json라인을 한 줄로 받는 StringBuilder
+					StringBuilder jsonOneLine = new StringBuilder();
+					//한 줄씩 받는 String
+					String jsonEachLine;
+					
+					//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
+					//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
+					//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
+					while((jsonEachLine = tokenBufferedReader.readLine()) != null) {
+						jsonOneLine.append(jsonEachLine);
+					}
+					// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
+					tokenVo = new ObjectMapper().readValue(jsonOneLine.toString(), TokenVo.class);
 				}
-				// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
-				tokenVo = new ObjectMapper().readValue(jsonOneLine.toString(), TokenVo.class);
+				//응답이 제대로 오지 않을 경우
+				else {
+					//ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다.
+					//ExitStatus가 FAILED일 때는 flow를 종료하도록 job을 설정해두었다.
+					contribution.setExitStatus(ExitStatus.FAILED);
+				}
 			} catch (IOException e) {
 				LOGGER.error("IOException in First step", e);
+				contribution.setExitStatus(ExitStatus.FAILED);
 			} catch (Exception e) {
 				LOGGER.error("Exception in First step", e);
+				contribution.setExitStatus(ExitStatus.FAILED);
 			//try block이 종료하기 전 finally block 실행
 			} finally {
-				if(tokenBufferedWriter != null)
-					tokenBufferedWriter.close();
+				if(tokenCreatedConnectionSetRequestBody != null)
+					tokenCreatedConnectionSetRequestBody.close();
 				if(tokenBufferedReader != null)
 					tokenBufferedReader.close();
 			}
@@ -195,46 +220,56 @@ public class BatchEmployeeUpdateConfiguration {
 				allEmployeeListUrl = new URL(stringEmployeesUrl + "?" + stringCmpIdParameter);
 				allEmployeeListGetConnection = (HttpsURLConnection) allEmployeeListUrl.openConnection();
 				allEmployeeListGetConnection.setRequestMethod("GET");
+				//Request Headers에 추가할 내용
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
-				allEmployeeListReader = new BufferedReader(
-						new InputStreamReader(allEmployeeListGetConnection.getInputStream(), "UTF-8"));
 				
-				// 현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 
-				// 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
-				// 우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
-				// token 발행 시에 작성했던 방식과 마찬가지로 한 줄씩 읽어오는 작업을 한다.
-				StringBuilder jsonOneLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
-				String jsonEachLine; //한 줄씩 받는 String
-				
-				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
-				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
-				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
-				while((jsonEachLine = allEmployeeListReader.readLine()) != null) {		
-					jsonOneLine.append(jsonEachLine);
+				//먼저 요청에 대한 응답이 잘 왔는지 확인
+				if(allEmployeeListGetConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+					allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream()));
+					
+					// 현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 
+					// 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
+					// 우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
+					// token 발행 시에 작성했던 방식과 마찬가지로 한 줄씩 읽어오는 작업을 한다.
+					StringBuilder jsonOneLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
+					String jsonEachLine; //한 줄씩 받는 String
+					
+					//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
+					//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
+					//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
+					while((jsonEachLine = allEmployeeListReader.readLine()) != null) {		
+						jsonOneLine.append(jsonEachLine);
+					}
+					
+					JsonNode originalJsonNode = new ObjectMapper().readTree(jsonOneLine.toString());
+					
+					// forEach문을 돌며 각각의 임직원 정보를 EmployeesVo 객체에 넣어준다.
+					List<EmployeesVo> listEmployeesVo = new ArrayList<>();
+					originalJsonNode.get("result").get("employees").forEach(e -> {
+						// e가 JsonNode 형식이라 readValue()가 아닌 convertValue() 메소드를 사용해야한다.
+						// 내부 로직적으로 setter가 필요하기에 VO 클래스에 @Data 어노테이션을 사용하였다.
+						//jsonOneLine을 사용하여 받아온 Json 데이터를 한 줄로 변환해주었기에 여기서 또 한 줄씩 읽어오는 변환 작업을 할 필요가 없다.
+						EmployeesVo employeesVo = new ObjectMapper().convertValue(e, EmployeesVo.class);
+						listEmployeesVo.add(employeesVo);
+					});
+
+					// 응답받은 Json의 메타정보들과 모든 임직원 리스트를 저장해두기 위한 resultVo 객체 생성
+					resultVo = new ResultVo(originalJsonNode.get("result").get("resultCode").textValue(),
+							originalJsonNode.get("result").get("resultMessage").textValue(),
+							originalJsonNode.get("result").get("resultDesc").textValue(), listEmployeesVo);
+					LOGGER.info("임직원 리스트({})", new Date());
+					resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
+				}
+				else {
+					contribution.setExitStatus(ExitStatus.FAILED);
 				}
 				
-				JsonNode originalJsonNode = new ObjectMapper().readTree(jsonOneLine.toString());
-				
-				// forEach문을 돌며 각각의 임직원 정보를 EmployeesVo 객체에 넣어준다.
-				List<EmployeesVo> listEmployeesVo = new ArrayList<>();
-				originalJsonNode.get("result").get("employees").forEach(e -> {
-					// e가 JsonNode 형식이라 readValue()가 아닌 convertValue() 메소드를 사용해야한다.
-					// 내부 로직적으로 setter가 필요하기에 VO 클래스에 @Data 어노테이션을 사용하였다.
-					//jsonOneLine을 사용하여 받아온 Json 데이터를 한 줄로 변환해주었기에 여기서 또 한 줄씩 읽어오는 변환 작업을 할 필요가 없다.
-					EmployeesVo employeesVo = new ObjectMapper().convertValue(e, EmployeesVo.class);
-					listEmployeesVo.add(employeesVo);
-				});
-
-				// 응답받은 Json의 메타정보들과 모든 임직원 리스트를 저장해두기 위한 resultVo 객체 생성
-				resultVo = new ResultVo(originalJsonNode.get("result").get("resultCode").textValue(),
-						originalJsonNode.get("result").get("resultMessage").textValue(),
-						originalJsonNode.get("result").get("resultDesc").textValue(), listEmployeesVo);
-				LOGGER.info("임직원 리스트({})", new Date());
-				resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
 			} catch (IOException e) {
 				LOGGER.error("IOException in Second step", e);
+				contribution.setExitStatus(ExitStatus.FAILED);
 			} catch (Exception e) {
 				LOGGER.error("Exception in Second step", e);
+				contribution.setExitStatus(ExitStatus.FAILED);
 			} finally {
 				if(allEmployeeListReader != null)
 					allEmployeeListReader.close();
