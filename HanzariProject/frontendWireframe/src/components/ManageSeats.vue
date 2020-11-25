@@ -2,12 +2,22 @@
   <div>
     <v-card flat color="transparent" v-if="!mappingEmployeeComponentStatus">
       <v-row>
-        <v-col cols="12" sm="9">
+        <v-col cols="12" sm="6">
           <v-card-title
             ><v-icon large>event_seat</v-icon>
             <h3>좌석 만들기</h3></v-card-title
           ></v-col
         >
+        <v-col cols="12" sm="3">
+          <v-select
+            :items="numberOfAddSeatItems"
+            v-model="selectedNumberOfAddSeat"
+            label="공석개수"
+            single-line
+            outlined
+            @change="changeSelectedNumberOfAddSeat"
+          ></v-select
+        ></v-col>
         <v-col cols="12" sm="3">
           <v-switch
             v-model="addVacantSwitchStatus"
@@ -90,9 +100,14 @@ export default {
 
       allFloorList: this.copyFromTabsFloorList,
       currentSelectedFloorObject: null,
+
+      numberOfAddSeatItems: [],
+      selectedNumberOfAddSeat: null
     };
   },
   created() {
+    this.initNumberOfAddSeatItems();
+
     if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
       this.currentSelectedFloorObject = this.allFloorList[
         this.allFloorList.length - 1
@@ -146,6 +161,16 @@ export default {
         this.floorItems.push(this.allFloorList[i]);
       }
     },
+    initNumberOfAddSeatItems(){
+      for(let i=2;i<18;i*=2){
+        this.numberOfAddSeatItems.push(i);
+        console.log(this.numberOfAddSeatItems);
+      }
+
+      //v-select에 초기값을 설정해주는 과정으로 v-select 선택하지않아도 초기값으로 AssignSeats 에게 이벤트를 보낸다.
+      this.selectedNumberOfAddSeat = this.numberOfAddSeatItems[0];
+      this.changeSelectedNumberOfAddSeat();
+    },
     changeFloorSeat() {
       if (this.selectedFloorItemsId) {
         eventBus.$emit("moveSeatToAnotherFloor", this.selectedFloorItemsId);
@@ -158,6 +183,9 @@ export default {
     },
     changeAddVacantSwitchStatus() {
       eventBus.$emit("pushAddVacantSwitchStatus", this.addVacantSwitchStatus);
+    },
+    changeSelectedNumberOfAddSeat(){
+      eventBus.$emit("pushSelectedNumberOfAddSeat", this.selectedNumberOfAddSeat);
     },
     clickChangeSeatToVacant() {
       eventBus.$emit("changeSeatToVacant");

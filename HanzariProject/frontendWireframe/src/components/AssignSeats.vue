@@ -129,6 +129,7 @@ export default {
       toolTipText: null,
 
       addVacantSwitchStatus: false,
+      numberOfAddSeat: null,
 
       seatNumber: 0,
 
@@ -182,6 +183,12 @@ export default {
     //공석 만들기 스위치 상태값 변경하기 위한 event
     eventBus.$on("pushAddVacantSwitchStatus", (switchStatus) => {
       this.addVacantSwitchStatus = switchStatus;
+    });
+
+    //만들고자 하는 공석의 개수를 받기 위한 event
+    eventBus.$on("pushSelectedNumberOfAddSeat", (numberOfAddSeat) => {
+      this.numberOfAddSeat = numberOfAddSeat;
+      console.log(this.numberOfAddSeat);
     });
 
     //공석에 사원을 매핑하고자 함수를 호출하기 위한 event
@@ -738,53 +745,68 @@ export default {
         fill: "black",
       });
 
-      let group = new fabric.Group([rectangle, textObject], {
-        seatId: this.createSeatUUID(),
-        floorId: this.currentSelectedFloorId,
-        employeeName: null,
-        employeeDepartment: null,
-        employeeNumber: null,
-        employeeId: null,
-        left: mouseDownX,
-        top: mouseDownY,
-        angle: 0,
-        isObjFromDB: false,
-        httpRequestPostStatus: true,
-      });
+      if (this.numberOfAddSeat > 0) {
+        let mouseDownPointX = mouseDownX;
+        let mouseDownPointY = mouseDownY;
 
-      if (this.currentSelectedFloorName != null) {
-        if (this.getEachFloorSeatList(this.currentSelectedFloorId).length) {
-          let seatNumberArray = [];
-          this.getEachFloorSeatList(this.currentSelectedFloorId).forEach(
-            (seat) => {
-              seatNumberArray.push(seat.seatName.split("-")[1]);
+        for (let i = 0; i < this.numberOfAddSeat; i++) {
+          console.log(mouseDownPointX);
+
+          if (i > 0) {
+            mouseDownPointX += 10;
+            console.log(mouseDownPointX);
+            mouseDownPointY += 10;
+          }
+
+          let group = new fabric.Group([rectangle, textObject], {
+            seatId: this.createSeatUUID(),
+            floorId: this.currentSelectedFloorId,
+            employeeName: null,
+            employeeDepartment: null,
+            employeeNumber: null,
+            employeeId: null,
+            left: mouseDownPointX,
+            top: mouseDownPointY,
+            angle: 0,
+            isObjFromDB: false,
+            httpRequestPostStatus: true,
+          });
+
+          if (this.currentSelectedFloorName != null) {
+            if (this.getEachFloorSeatList(this.currentSelectedFloorId).length) {
+              let seatNumberArray = [];
+              this.getEachFloorSeatList(this.currentSelectedFloorId).forEach(
+                (seat) => {
+                  seatNumberArray.push(seat.seatName.split("-")[1]);
+                }
+              );
+              //max
+              this.seatNumber = Math.max.apply(null, seatNumberArray);
             }
-          );
-          //max
-          this.seatNumber = Math.max.apply(null, seatNumberArray);
+
+            this.seatNumber++;
+            let seatNameText =
+              this.currentSelectedFloorName + "-" + this.seatNumber;
+
+            let seatNameObject = new fabric.IText(seatNameText, {
+              left: group.item(0).left,
+              top: group.item(0).top - 15,
+              fontSize: this.fontSize / this.zoom,
+              fill: "black",
+            });
+            group.seatName = seatNameText;
+            group.add(seatNameObject);
+          }
+
+          this.floorCanvas.setActiveObject(group);
+          this.floorCanvas.add(group);
+          this.floorCanvas.renderAll();
+
+          eachFloorSeatList.push(group);
+
+          eventBus.$emit("pushAllSeatMap", this.allSeatMap);
         }
-
-        this.seatNumber++;
-        let seatNameText =
-          this.currentSelectedFloorName + "-" + this.seatNumber;
-
-        let seatNameObject = new fabric.IText(seatNameText, {
-          left: group.item(0).left,
-          top: group.item(0).top - 15,
-          fontSize: this.fontSize / this.zoom,
-          fill: "black",
-        });
-        group.seatName = seatNameText;
-        group.add(seatNameObject);
       }
-
-      this.floorCanvas.setActiveObject(group);
-      this.floorCanvas.add(group);
-      this.floorCanvas.renderAll();
-
-      eachFloorSeatList.push(group);
-
-      eventBus.$emit("pushAllSeatMap", this.allSeatMap);
     },
     mappingEmployeeToVacant(employeeObject) {
       if (!this.floorCanvas.getActiveObject()) {
