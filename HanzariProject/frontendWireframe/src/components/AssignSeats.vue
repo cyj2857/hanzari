@@ -367,16 +367,26 @@ export default {
           }
         });
 
+        let rectangle;
+        let canDraw = false;
+
         //원하는 위치에 자동으로 공석 생성하기
         this.floorCanvas.on("mouse:down", (event) => {
           if (event.button === 3) {
             if (this.addVacantSwitchStatus) {
+              canDraw = true;
+
               var pointer = this.floorCanvas.getPointer(event.e);
               this.firstMouseDownX = pointer.x;
               this.firstMouseDownY = pointer.y;
 
-              //console.log(this.firstMouseDownX);
-              //console.log(this.firstMouseDownY);
+              rectangle = new fabric.Rect({
+                left: this.firstMouseDownX,
+                top: this.firstMouseDownY,
+                fill: "",
+                stroke: "red",
+                strokeWidth: 3,
+              });
             } else if (this.floorCanvas.getActiveObject()) {
               //contextMenu
               var posX = event.e.clientX;
@@ -384,6 +394,26 @@ export default {
               this.showContextMenuOfOneSeat(posX, posY);
             }
           }
+        });
+
+        this.floorCanvas.on("mouse:move", (o) => {
+          // Defining the procedure
+          console.log("hello");
+          if (canDraw) {
+            var pointer = this.floorCanvas.getPointer(o.e);
+            if (this.firstMouseDownX > pointer.x) {
+              rectangle.set("left", Math.abs(pointer.x));
+            }
+            if (this.firstMouseDownY > pointer.y) {
+              rectangle.set("top", Math.abs(pointer.y));
+            }
+
+            rectangle.set("width", Math.abs(this.firstMouseDownX - pointer.x));
+            rectangle.set("height", Math.abs(this.firstMouseDownY - pointer.y));
+            this.floorCanvas.add(rectangle);
+            this.floorCanvas.renderAll();
+          }
+          //}
         });
 
         this.floorCanvas.on("mouse:up", (event) => {
@@ -410,12 +440,19 @@ export default {
                 }
                 //console.log(this.firstMouseDownX);
                 //console.log(this.firstMouseDownY);
+                canDraw = false;
+                this.floorCanvas.remove(rectangle);
+                this.floorCanvas.renderAll();
+
                 this.addVacantSeat(
                   this.firstMouseDownX,
                   this.firstMouseDownY,
                   mouseUpX,
                   mouseUpY
                 );
+                console.log(rectangle);
+                
+                
               }
             }
           }
@@ -754,7 +791,6 @@ export default {
             fontSize: 0,
             fill: "black",
           });
-
 
           let group = new fabric.Group([rectangle, textObject], {
             seatId: this.createSeatUUID(),
