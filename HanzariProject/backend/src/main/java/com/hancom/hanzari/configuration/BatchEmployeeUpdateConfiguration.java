@@ -146,10 +146,10 @@ public class BatchEmployeeUpdateConfiguration {
 
 				//Request Body에 Data를 담기 위해 OutputStream 객체를 생성
 				OutputStream tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
-				OutputStreamWriter osw = new OutputStreamWriter(tokenCreatedConnectionSetRequestBody, "UTF-8");
-				osw.write(stringTokenUrlParameter);
-				osw.flush();
-				osw.close();
+				OutputStreamWriter tokenCreatedConnectionSetRequestBodyWriter = new OutputStreamWriter(tokenCreatedConnectionSetRequestBody, "UTF-8");
+				tokenCreatedConnectionSetRequestBodyWriter.write(stringTokenUrlParameter);
+				tokenCreatedConnectionSetRequestBodyWriter.flush();
+				tokenCreatedConnectionSetRequestBodyWriter.close();
 				tokenCreatedConnectionSetRequestBody.close();
 
 				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
