@@ -13,6 +13,7 @@
               >
             </v-toolbar-items>
           </v-spacer>
+          <v-btn text @click="logout">로그아웃</v-btn>
           <v-toolbar-title>한자리</v-toolbar-title></v-toolbar
         >
       </v-app-bar>
@@ -98,6 +99,8 @@ export default {
     };
   },
   async created() {
+    const TOKEN = this.$store.state.token;
+
     //사원 load
     this.employeeList = await this.getEmployeeList();
     //층 load
@@ -116,6 +119,10 @@ export default {
     this.otherFloorsSeatMap = await this.getOtherFloorsSeatMap();
   },
   methods: {
+    logout() {
+      this.$store.commit("logout");
+      this.$router.replace("/");
+    },
     async getEmployeeList() {
       let allEmployeeList = [];
       try {

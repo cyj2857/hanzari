@@ -1,6 +1,5 @@
 <template>
-  <!-- <router-view /> -->
-  <Hanzari />
+  <router-view />
 </template>
 
 <script>
