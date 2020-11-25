@@ -41,9 +41,9 @@ public class SignController {
 		return jwtTokenProvider.createToken(String.valueOf(employee.getEmployeeId()), employee.getRoles());
 	}
 
-	@ApiOperation(value = "가입", notes = "회원가입을 한다.")
+	@ApiOperation(value = "비밀번호 변경", notes = "비밀번호 변경을 한다.")
 	@PostMapping(value = "/signup")
-	public ResponseEntity<Void> signup(@ApiParam(value = "회원ID : 사원번호", required = true) @RequestParam String id,
+	public ResponseEntity<Void> changePassword(@ApiParam(value = "회원ID : 사원번호", required = true) @RequestParam String id,
 			@ApiParam(value = "비밀번호", required = true) @RequestParam String password) {
 		HttpStatus status = null;
 		Employee employee = employeeService.findByIdNullable(id);
