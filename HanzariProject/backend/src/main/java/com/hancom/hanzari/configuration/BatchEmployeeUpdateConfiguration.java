@@ -145,6 +145,8 @@ public class BatchEmployeeUpdateConfiguration {
 				//InputStream으로 서버로부터 응답받겠다는 설정
 				tokenCreatedConnection.setDoInput(true);
 				//참고 Request Header 값들은 setRequestProperty를 사용하면 된다
+				
+				System.out.println(tokenCreatedConnection.getInstanceFollowRedirects());
 
 				//Request Body에 Data를 담기 위해 OutputStream 객체를 생성
 				tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
@@ -156,7 +158,7 @@ public class BatchEmployeeUpdateConfiguration {
 				tokenCreatedConnectionSetRequestBody.flush();
 
 				//먼저 요청에 대한 응답이 잘 왔는지 확인
-				if(tokenCreatedConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				if(tokenCreatedConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 					//보낸 요청에 따라 서버에서 받아온 정보들을 BufferedReader 객체에 넣어줌.
 					tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
 					//전체 Json라인을 한 줄로 받는 StringBuilder
@@ -181,8 +183,10 @@ public class BatchEmployeeUpdateConfiguration {
 				}
 			} catch (IOException e) {
 				LOGGER.error("IOException in First step", e);
+				contribution.setExitStatus(ExitStatus.FAILED);
 			} catch (Exception e) {
 				LOGGER.error("Exception in First step", e);
+				contribution.setExitStatus(ExitStatus.FAILED);
 			//try block이 종료하기 전 finally block 실행
 			} finally {
 				if(tokenCreatedConnectionSetRequestBody != null)
@@ -218,45 +222,54 @@ public class BatchEmployeeUpdateConfiguration {
 				allEmployeeListGetConnection.setRequestMethod("GET");
 				//Request Headers에 추가할 내용
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
-				//if(allEmployeeListGetConnection.getResponseCode() == )
-				allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream()));
 				
-				// 현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 
-				// 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
-				// 우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
-				// token 발행 시에 작성했던 방식과 마찬가지로 한 줄씩 읽어오는 작업을 한다.
-				StringBuilder jsonOneLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
-				String jsonEachLine; //한 줄씩 받는 String
-				
-				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
-				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
-				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
-				while((jsonEachLine = allEmployeeListReader.readLine()) != null) {		
-					jsonOneLine.append(jsonEachLine);
+				//먼저 요청에 대한 응답이 잘 왔는지 확인
+				if(allEmployeeListGetConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+					allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream()));
+					
+					// 현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 
+					// 따라서 일반적인 방법으로 ObjectMapper의 readValue 메소드를 사용할 수 없다.
+					// 우선 응답받은 original Json을 originalJsonNode 객체에 넣어준다.
+					// token 발행 시에 작성했던 방식과 마찬가지로 한 줄씩 읽어오는 작업을 한다.
+					StringBuilder jsonOneLine = new StringBuilder(); //전체 Json라인을 한 줄로 받는 StringBuilder
+					String jsonEachLine; //한 줄씩 받는 String
+					
+					//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
+					//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
+					//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
+					while((jsonEachLine = allEmployeeListReader.readLine()) != null) {		
+						jsonOneLine.append(jsonEachLine);
+					}
+					
+					JsonNode originalJsonNode = new ObjectMapper().readTree(jsonOneLine.toString());
+					
+					// forEach문을 돌며 각각의 임직원 정보를 EmployeesVo 객체에 넣어준다.
+					List<EmployeesVo> listEmployeesVo = new ArrayList<>();
+					originalJsonNode.get("result").get("employees").forEach(e -> {
+						// e가 JsonNode 형식이라 readValue()가 아닌 convertValue() 메소드를 사용해야한다.
+						// 내부 로직적으로 setter가 필요하기에 VO 클래스에 @Data 어노테이션을 사용하였다.
+						//jsonOneLine을 사용하여 받아온 Json 데이터를 한 줄로 변환해주었기에 여기서 또 한 줄씩 읽어오는 변환 작업을 할 필요가 없다.
+						EmployeesVo employeesVo = new ObjectMapper().convertValue(e, EmployeesVo.class);
+						listEmployeesVo.add(employeesVo);
+					});
+
+					// 응답받은 Json의 메타정보들과 모든 임직원 리스트를 저장해두기 위한 resultVo 객체 생성
+					resultVo = new ResultVo(originalJsonNode.get("result").get("resultCode").textValue(),
+							originalJsonNode.get("result").get("resultMessage").textValue(),
+							originalJsonNode.get("result").get("resultDesc").textValue(), listEmployeesVo);
+					LOGGER.info("임직원 리스트({})", new Date());
+					resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
+				}
+				else {
+					contribution.setExitStatus(ExitStatus.FAILED);
 				}
 				
-				JsonNode originalJsonNode = new ObjectMapper().readTree(jsonOneLine.toString());
-				
-				// forEach문을 돌며 각각의 임직원 정보를 EmployeesVo 객체에 넣어준다.
-				List<EmployeesVo> listEmployeesVo = new ArrayList<>();
-				originalJsonNode.get("result").get("employees").forEach(e -> {
-					// e가 JsonNode 형식이라 readValue()가 아닌 convertValue() 메소드를 사용해야한다.
-					// 내부 로직적으로 setter가 필요하기에 VO 클래스에 @Data 어노테이션을 사용하였다.
-					//jsonOneLine을 사용하여 받아온 Json 데이터를 한 줄로 변환해주었기에 여기서 또 한 줄씩 읽어오는 변환 작업을 할 필요가 없다.
-					EmployeesVo employeesVo = new ObjectMapper().convertValue(e, EmployeesVo.class);
-					listEmployeesVo.add(employeesVo);
-				});
-
-				// 응답받은 Json의 메타정보들과 모든 임직원 리스트를 저장해두기 위한 resultVo 객체 생성
-				resultVo = new ResultVo(originalJsonNode.get("result").get("resultCode").textValue(),
-						originalJsonNode.get("result").get("resultMessage").textValue(),
-						originalJsonNode.get("result").get("resultDesc").textValue(), listEmployeesVo);
-				LOGGER.info("임직원 리스트({})", new Date());
-				resultVo.getAllEmployeeListVo().forEach(e -> LOGGER.info(e.toString()));
 			} catch (IOException e) {
 				LOGGER.error("IOException in Second step", e);
+				contribution.setExitStatus(ExitStatus.FAILED);
 			} catch (Exception e) {
 				LOGGER.error("Exception in Second step", e);
+				contribution.setExitStatus(ExitStatus.FAILED);
 			} finally {
 				if(allEmployeeListReader != null)
 					allEmployeeListReader.close();
