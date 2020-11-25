@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -153,21 +155,30 @@ public class BatchEmployeeUpdateConfiguration {
 				//flush() 메소드를 호출하지 않아도 프로그램이 정상 작동하지만 명시적으로 이 때 입력한 버퍼 내용들을 비워준다는 의미로 작성하였다.
 				tokenCreatedConnectionSetRequestBody.flush();
 
-				//보낸 요청에 따라 서버에서 받아온 정보들을 BufferedReader 객체에 넣어줌.
-				tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
-				//전체 Json라인을 한 줄로 받는 StringBuilder
-				StringBuilder jsonOneLine = new StringBuilder();
-				//한 줄씩 받는 String
-				String jsonEachLine;
-				
-				//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
-				//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
-				//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
-				while((jsonEachLine = tokenBufferedReader.readLine()) != null) {
-					jsonOneLine.append(jsonEachLine);
+				//먼저 요청에 대한 응답이 잘 왔는지 확인
+				if(tokenCreatedConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					//보낸 요청에 따라 서버에서 받아온 정보들을 BufferedReader 객체에 넣어줌.
+					tokenBufferedReader = new BufferedReader(new InputStreamReader(tokenCreatedConnection.getInputStream()));
+					//전체 Json라인을 한 줄로 받는 StringBuilder
+					StringBuilder jsonOneLine = new StringBuilder();
+					//한 줄씩 받는 String
+					String jsonEachLine;
+					
+					//while문 조건에 jsonEachLine에 readLine 된 것을 대입해주어야한다.
+					//readLine은 다음번 호출할 때 마지막 읽은 다음 줄 부터 읽기에 만약 첫 줄로 끝나는 데이터이고(대부분의 응답받을 Json은 이런 형태일 것 같다.)
+					//while문 안에 대입문을 작성할 경우 NullPointerException이 발생한다.
+					while((jsonEachLine = tokenBufferedReader.readLine()) != null) {
+						jsonOneLine.append(jsonEachLine);
+					}
+					// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
+					tokenVo = new ObjectMapper().readValue(jsonOneLine.toString(), TokenVo.class);
 				}
-				// jackson 라이브러리를 이용하여 손쉽게 Json형식에서 VO 형식에 매핑해줄 수 있다.
-				tokenVo = new ObjectMapper().readValue(jsonOneLine.toString(), TokenVo.class);
+				//응답이 제대로 오지 않을 경우
+				else {
+					//ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다.
+					//ExitStatus가 FAILED일 때는 flow를 종료하도록 job을 설정해두었다.
+					contribution.setExitStatus(ExitStatus.FAILED);
+				}
 			} catch (IOException e) {
 				LOGGER.error("IOException in First step", e);
 			} catch (Exception e) {
@@ -207,6 +218,7 @@ public class BatchEmployeeUpdateConfiguration {
 				allEmployeeListGetConnection.setRequestMethod("GET");
 				//Request Headers에 추가할 내용
 				allEmployeeListGetConnection.setRequestProperty("Authorization", tokenVo.getAccessToken());
+				//if(allEmployeeListGetConnection.getResponseCode() == )
 				allEmployeeListReader = new BufferedReader(new InputStreamReader(allEmployeeListGetConnection.getInputStream()));
 				
 				// 현재 응답받은 형태가 Json안에 nested Json이있고 그안에 employees 키와 매핑된 array(각각의 임직원 정보 Json 리스트)가 있다. 
