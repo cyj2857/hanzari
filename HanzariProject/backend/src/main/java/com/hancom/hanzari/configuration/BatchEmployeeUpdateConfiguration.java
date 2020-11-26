@@ -67,18 +67,15 @@ public class BatchEmployeeUpdateConfiguration {
 	@Autowired
 	EmployeeService employeeService;
 	
+	//반복주기를 설정하는 어노테이션
 	@Scheduled(cron = "0 0 * * * *")
+	//milisecond 단위로도 설정이 가능하다.
 	//@Scheduled(fixedDelay = 1000)
 	public void perform() throws Exception {
-
-		System.out.println("Job Started at :" + new Date());
-
-		JobParameters param = new JobParametersBuilder().addString("JobID", String.valueOf(System.currentTimeMillis()))
-				.toJobParameters();
-
+		System.out.println("Job start time : " + new Date());
+		JobParameters param = new JobParametersBuilder().addString("JobID", String.valueOf(System.currentTimeMillis())).toJobParameters();
 		JobExecution execution = jobLauncher.run(getEmployeesInfoJob(), param);
-
-		System.out.println("Job finished with status :" + execution.getStatus());
+		System.out.println("Job finished with status : " + execution.getStatus());
 	}
 	
 	@Bean
@@ -136,16 +133,16 @@ public class BatchEmployeeUpdateConfiguration {
 			try {
 				tokenUrl = new URL(stringValues.getString("TOKEN_URL"));
 				tokenCreatedConnection = (HttpsURLConnection) tokenUrl.openConnection();
-				
+
 				//요청 방식 POST
 				tokenCreatedConnection.setRequestMethod("POST");
 				//OutPutStream으로 POST 데이터를 넘겨주겠다는 설정
 				tokenCreatedConnection.setDoOutput(true);
 				//InputStream으로 서버로부터 응답받겠다는 설정
 				tokenCreatedConnection.setDoInput(true);
+				//setRequestProperty 메소드의 매개변수에 true를 주었을 경우 요청받은 서버의 주소가 변경됬을 때에는 자동으로 변경된 주소로 연결해준다.
+				tokenCreatedConnection.setInstanceFollowRedirects(true); 
 				//참고 Request Header 값들은 setRequestProperty를 사용하면 된다
-				
-				System.out.println(tokenCreatedConnection.getInstanceFollowRedirects());
 
 				//Request Body에 Data를 담기 위해 OutputStream 객체를 생성
 				tokenCreatedConnectionSetRequestBody = tokenCreatedConnection.getOutputStream();
