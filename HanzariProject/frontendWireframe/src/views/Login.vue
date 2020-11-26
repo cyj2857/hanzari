@@ -55,7 +55,7 @@ export default {
           `${this.$store.state.hhhost}/v1/signin?id=${this.employeeId}&password=${this.password}`
         )
         .then((res) => {
-          console.log(res);
+          this.$store.commit("loginToken", res.data);
           this.$router.push("/Hanzari");
         });
     },

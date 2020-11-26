@@ -99,8 +99,6 @@ export default {
     };
   },
   async created() {
-    const TOKEN = this.$store.state.token;
-
     //사원 load
     this.employeeList = await this.getEmployeeList();
     //층 load
@@ -127,7 +125,10 @@ export default {
       let allEmployeeList = [];
       try {
         let response = await axios.get(
-          "http://" + HOST + ":" + PORT_NUMBER + "/api/employee"
+          this.$store.state.hhhost + "/api/employee",
+          {
+            headers: { "X-AUTH-TOKEN": this.$store.state.token },
+          }
         );
         for (var i = 0; i < response.data.length; i++) {
           var newEmployeeObject = {};
@@ -148,13 +149,13 @@ export default {
       let allFloorList = [];
       try {
         let response = await axios.get(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
-            "/floors"
+            "/floors",
+          {
+            headers: { "X-AUTH-TOKEN": this.$store.state.token },
+          }
         );
         for (var i = 0; i < response.data.length; i++) {
           let newFloorObject = {};
@@ -188,13 +189,13 @@ export default {
       let latestFloor = null;
       try {
         let response = await axios.get(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
-            "/floors/get-latest-floor"
+            "/floors/get-latest-floor",
+          {
+            headers: { "X-AUTH-TOKEN": this.$store.state.token },
+          }
         );
         latestFloor = response.data;
       } catch (error) {
@@ -209,15 +210,15 @@ export default {
         if (latestFloorId != null) {
           try {
             let response = await axios.get(
-              "http://" +
-                HOST +
-                ":" +
-                PORT_NUMBER +
+              this.$store.state.hhhost +
                 "/api/buildings/" +
                 BUILDING_ID +
                 "/floors/" +
                 latestFloorId +
-                "/images"
+                "/images",
+              {
+                headers: { "X-AUTH-TOKEN": this.$store.state.token },
+              }
             );
 
             let filename = null;
@@ -253,15 +254,15 @@ export default {
         try {
           for (let i = 0; i < this.floorIdList.length - 1; i++) {
             let response = await axios.get(
-              "http://" +
-                HOST +
-                ":" +
-                PORT_NUMBER +
+              this.$store.state.hhhost +
                 "/api/buildings/" +
                 BUILDING_ID +
                 "/floors/" +
                 this.floorIdList[i] +
-                "/images"
+                "/images",
+              {
+                headers: { "X-AUTH-TOKEN": this.$store.state.token },
+              }
             );
 
             let filename = null;
@@ -296,15 +297,15 @@ export default {
         let latestFloorId = this.latestFloor.floor_id;
         try {
           let response = await axios.get(
-            "http://" +
-              HOST +
-              ":" +
-              PORT_NUMBER +
+            this.$store.state.hhhost +
               "/api/buildings/" +
               BUILDING_ID +
               "/floors/" +
               latestFloorId +
-              "/seats"
+              "/seats",
+            {
+              headers: { "X-AUTH-TOKEN": this.$store.state.token },
+            }
           );
           for (var i = 0; i < response.data.length; i++) {
             let newSeatObject = {};
@@ -338,15 +339,15 @@ export default {
       try {
         for (let i = 0; i < this.floorIdList.length - 1; i++) {
           let response = await axios.get(
-            "http://" +
-              HOST +
-              ":" +
-              PORT_NUMBER +
+            this.$store.state.hhhost +
               "/api/buildings/" +
               BUILDING_ID +
               "/floors/" +
               this.floorIdList[i] +
-              "/seats"
+              "/seats",
+            {
+              headers: { "X-AUTH-TOKEN": this.$store.state.token },
+            }
           );
           let responseList = [];
           // 그 층에 자리가 없다면
@@ -396,17 +397,17 @@ export default {
 
       try {
         axios.post(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
             "/" +
             saveTableName,
           JSON.stringify(saveData),
           {
-            headers: { "Content-Type": `application/json` },
+            headers: {
+              "Content-Type": `application/json`,
+              "X-AUTH-TOKEN": this.$store.state.token,
+            },
           }
         );
       } catch (error) {
@@ -419,10 +420,7 @@ export default {
 
       try {
         axios.post(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
@@ -433,6 +431,7 @@ export default {
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              "X-AUTH-TOKEN": this.$store.state.token,
             },
           }
         );
@@ -445,10 +444,7 @@ export default {
       let saveTableName = tableName;
       try {
         axios.post(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
@@ -457,7 +453,10 @@ export default {
             saveTableName,
           JSON.stringify(saveData),
           {
-            headers: { "Content-Type": `application/json` },
+            headers: {
+              "Content-Type": `application/json`,
+              "X-AUTH-TOKEN": this.$store.state.token,
+            },
           }
         );
       } catch (error) {
@@ -469,16 +468,16 @@ export default {
       let deleteKey = key;
       try {
         axios.delete(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
             "/" +
             deleteTableName +
             "/" +
-            deleteKey
+            deleteKey,
+          {
+            headers: { "X-AUTH-TOKEN": this.$store.state.token },
+          }
         );
       } catch (error) {
         console.error(error);
@@ -489,10 +488,7 @@ export default {
       let deleteKey = seatId;
       try {
         axios.delete(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
@@ -500,7 +496,10 @@ export default {
             "/" +
             deleteTableName +
             "/" +
-            deleteKey
+            deleteKey,
+          {
+            headers: { "X-AUTH-TOKEN": this.$store.state.token },
+          }
         );
       } catch (error) {
         console.error(error);
@@ -511,10 +510,7 @@ export default {
     async downloadCSVFile(floorId) {
       try {
         let response = await axios.get(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
@@ -523,6 +519,7 @@ export default {
           {
             headers: {
               "Content-Type": "text/csv",
+              "X-AUTH-TOKEN": this.$store.state.token,
             },
           }
         );
@@ -553,10 +550,7 @@ export default {
     saveFromCSVFileToDB(saveData, floorId) {
       axios
         .post(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
+          this.$store.state.hhhost +
             "/api/buildings/" +
             BUILDING_ID +
             "/floors/" +
@@ -566,6 +560,7 @@ export default {
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              "X-AUTH-TOKEN": this.$store.state.token,
             },
           }
         )
