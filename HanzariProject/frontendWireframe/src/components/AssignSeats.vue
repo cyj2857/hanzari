@@ -454,6 +454,8 @@ export default {
       this.floorCanvas.on("mouse:up", (event) => {
         if (event.button === 3) {
           if (this.addVacantSwitchStatus) {
+            canDraw = false;
+
             var pointer = this.floorCanvas.getPointer(event.e);
             var mouseUpX = pointer.x;
             var mouseUpY = pointer.y;
@@ -472,6 +474,8 @@ export default {
                 return;
               }
 
+              console.log(this.floorCanvas.getObjects);
+
               this.floorCanvas.getObjects().forEach((obj) => {
                 if (rectangle === obj) {
                   this.floorCanvas.remove(obj);
@@ -486,7 +490,6 @@ export default {
               );
             }
           }
-          canDraw = false;
         }
       });
     },
