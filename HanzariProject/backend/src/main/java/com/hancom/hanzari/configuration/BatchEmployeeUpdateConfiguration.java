@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -290,7 +289,7 @@ public class BatchEmployeeUpdateConfiguration {
 					employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer").password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER"))
 							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId())
 									.employeeName(e.getUserName()).status("재직").extensionNumber(e.getCmpPhone())
-									.departmentId(e.getDeptId()).departmentName(e.getDeptId()).build())
+									.departmentId(e.getDeptId()).departmentName(e.getDeptName()).build())
 							.build());
 				});
 			} catch (Exception e) {
