@@ -743,26 +743,15 @@ export default {
       });
     },
     getColor(department) {
+      //부서1,2,3 으로가정하고 부서 길이가 3개이면 for문돌려서 랜덤
       const Colors = {
-        Orange: "orange",
-        Yellow: "yellow",
-        Green: "green",
-        Blue: "blue",
-        Gray: "Gray",
+        vacantColor: "Gray",
+        mappingColor: "Yellow",
       };
-      if (department == null) {
-        return Colors.Gray;
-      } else {
-        if (department === "부서1")
-          //String
-          return Colors.Orange;
-        else if (department === "부서2")
-          //String
-          return Colors.Yellow;
-        else if (department === "부서3")
-          //String
-          return Colors.Green;
+      if (department === null) {
+        return Colors.vacantColor;
       }
+      return Colors.mappingColor;
     },
 
     addVacantSeat(mouseDownX, mouseDownY, mouseUpX, mouseUpY) {
@@ -789,24 +778,12 @@ export default {
 
           let textObject = new fabric.IText("", {
             left: 0,
-            top: rectangle.height / 3,
+            top: rectangle.height / 2,
             fontSize: 0,
             fill: "black",
           });
 
-          let group = new fabric.Group([rectangle, textObject], {
-            seatId: this.createSeatUUID(),
-            floorId: this.currentSelectedFloorId,
-            employeeName: null,
-            employeeDepartment: null,
-            employeeNumber: null,
-            employeeId: null,
-            left: mouseDownPointX,
-            top: mouseDownPointY,
-            angle: 0,
-            isObjFromDB: false,
-            httpRequestPostStatus: true,
-          });
+          let seatNameObject;
 
           if (this.currentSelectedFloorName != null) {
             if (this.getEachFloorSeatList(this.currentSelectedFloorId).length) {
@@ -824,15 +801,33 @@ export default {
             let seatNameText =
               this.currentSelectedFloorName + "-" + this.seatNumber;
 
-            let seatNameObject = new fabric.IText(seatNameText, {
-              left: group.item(0).left,
-              top: group.item(0).top - 15,
+            seatNameObject = new fabric.IText(seatNameText, {
+              left: rectangle.left,
+              top: rectangle.top,
               fontSize: this.fontSize / this.zoom,
               fill: "black",
             });
-            group.seatName = seatNameText;
-            group.add(seatNameObject);
+            //group.seatName = seatNameText;
+            //group.add(seatNameObject);
           }
+
+          let group = new fabric.Group(
+            [rectangle, textObject, seatNameObject],
+            {
+              seatId: this.createSeatUUID(),
+              seatName: seatNameObject.text,
+              floorId: this.currentSelectedFloorId,
+              employeeName: null,
+              employeeDepartment: null,
+              employeeNumber: null,
+              employeeId: null,
+              left: mouseDownPointX,
+              top: mouseDownPointY,
+              angle: 0,
+              isObjFromDB: false,
+              httpRequestPostStatus: true,
+            }
+          );
 
           this.floorCanvas.setActiveObject(group);
           this.floorCanvas.add(group);
@@ -1323,13 +1318,15 @@ export default {
                 "top",
                 "employeeDepartment",
                 "employeeId",
-                "width",
-                "height",
                 "scaleX",
                 "scaleY",
                 "isObjFromDB",
                 "httpRequestPostStatus",
               ]);
+
+              let rectangleObject = eachFloorSeatList[j].item(0).toObject(["width","height"]);
+              console.log(rectangleObject.width);
+              console.log(rectangleObject.height);
 
               if (groupToObject.httpRequestPostStatus) {
                 let seatData = {};
@@ -1342,8 +1339,8 @@ export default {
                 seatData.group_id = null;
                 seatData.building_id = "HANCOM01";
                 seatData.employee_id = groupToObject.employeeId;
-                seatData.width = groupToObject.width * groupToObject.scaleX;
-                seatData.height = groupToObject.height * groupToObject.scaleY;
+                seatData.width = rectangleObject.width * groupToObject.scaleX;
+                seatData.height = rectangleObject.height * groupToObject.scaleY;
                 seatData.degree = groupToObject.angle;
                 seatData.shape_id = "1";
 
@@ -1404,8 +1401,16 @@ export default {
         fill: "black",
       });
 
-      let group = new fabric.Group([rectangle, textObject], {
+      let seatNameObject = new fabric.IText(seat.seatName, {
+        left: rectangle.left,
+        top: rectangle.top,
+        fontSize: this.fontSize / this.zoom,
+        fill: "black",
+      });
+
+      let group = new fabric.Group([rectangle, textObject,seatNameObject], {
         seatId: seat.seatId,
+        seatName: seatNameObject.text,
         employeeName: employee.name,
         employeeDepartment: employee.department,
         employeeNumber: employee.number,
@@ -1416,32 +1421,6 @@ export default {
         angle: seat.degree,
         isObjFromDB: seat.isObjFromDB,
         httpRequestPostStatus: seat.httpRequestPostStatus,
-      });
-
-      let seatNameObject = new fabric.IText(seat.seatName, {
-        left: rectangle.left,
-        top: rectangle.top - 15,
-        fontSize: this.fontSize / this.zoom,
-        fill: "black",
-      });
-
-      group.seatName = seat.seatName;
-      group.add(seatNameObject);
-
-      this.floorCanvas.on("object:scaling", (e) => {
-        let scaledObject = e.target;
-        let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
-        let height = scaledObject.getScaledHeight() / scaledObject.scaleY;
-
-        scaledObject.width = width;
-        scaledObject.height = height;
-
-        let groupx = scaledObject.toObject([
-          "width",
-          "height",
-          "scaleX",
-          "scaleY",
-        ]);
       });
 
       return group;
