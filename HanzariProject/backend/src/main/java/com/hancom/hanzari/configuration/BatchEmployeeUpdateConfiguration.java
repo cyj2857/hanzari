@@ -289,7 +289,7 @@ public class BatchEmployeeUpdateConfiguration {
 					employeeService.save(Employee.builder().employeeId(e.getEmpId()).authority("viewer").password(passwordEncoder.encode("0000")).roles(Collections.singletonList("ROLE_USER"))
 							.additionalInfo(EmployeeAdditionalInfo.builder().employeeId(e.getEmpId())
 									.employeeName(e.getUserName()).status("재직").extensionNumber(e.getCmpPhone())
-									.departmentId(e.getDeptId()).departmentName(e.getDeptId()).build())
+									.departmentId(e.getDeptId()).departmentName(e.getDeptName()).build())
 							.build());
 				});
 			} catch (Exception e) {
