@@ -27,5 +27,5 @@ new Vue({
   components: { App },
   template: '<App/>',
   vuetify: new Vuetify(),
-  beforeCreate() { this.$store.commit('loginCheck') }
+  //beforeCreate() { this.$store.commit('loginCheck') }
 })

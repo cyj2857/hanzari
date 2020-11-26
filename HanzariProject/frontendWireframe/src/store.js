@@ -32,12 +32,12 @@ export const store = new Vuex.Store({
                 })
             }
         }
+        // modules: {
+        //     dataStore
+        // },
+
 
     },
-    // modules: {
-    //     dataStore
-    // },
-    // plugins: [createPersistedState({
-    //     paths: [dataStore],
-    // })],
+    plugins: [createPersistedState()],
+
 })

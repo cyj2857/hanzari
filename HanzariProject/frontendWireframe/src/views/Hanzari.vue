@@ -99,6 +99,8 @@ export default {
     };
   },
   async created() {
+    console.log(this.$store.state.token);
+    
     //사원 load
     this.employeeList = await this.getEmployeeList();
     //층 load
