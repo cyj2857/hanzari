@@ -31,6 +31,7 @@
         <v-navigation-drawer v-model="drawer" app :width="500">
           <Tabs
             v-bind:copyEmployeeList="employeeList"
+            v-bind:copyDepartmentList="departmentList"
             v-bind:copyFloorList="floorList"
             v-bind:copyLatestFloorImage="latestFloorImage"
             v-bind:copyOtherFloorsImageList="otherFloorsImageList"
@@ -86,6 +87,7 @@ export default {
     return {
       drawer: null,
       employeeList: null,
+      departmentList: null,
 
       floorList: null,
       floorIdList: [],
@@ -103,6 +105,8 @@ export default {
 
     //사원 load
     this.employeeList = await this.getEmployeeList();
+    //부서 laod
+    this.departmentList = await this.getDepartmentList();
     //층 load
     this.floorList = await this.getFloorList();
     //가장 floor_order가 큰 층의 floorId를 가져오기 위함
@@ -143,6 +147,16 @@ export default {
         console.log(error);
       }
       return allEmployeeList;
+    },
+    async getDepartmentList() {
+      let allDepartmentList = new Set();
+
+      for (let i = 0; i < this.employeeList.length; i++) {
+        let department_name = this.employeeList[i].department;
+        allDepartmentList.add(department_name);
+      }
+
+      return allDepartmentList;
     },
     async getFloorList() {
       let allFloorList = [];
@@ -219,6 +233,7 @@ export default {
                 latestFloorId +
                 "/images"
             );
+            
 
             let filename = null;
             let contentDisposition = response.headers["content-disposition"]; // 파일 이름

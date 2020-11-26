@@ -22,6 +22,7 @@
             <component
               v-bind:is="item.content"
               :copyFromTabsEmployeeList="employeeList"
+              :copyFromTabsDepartmentList="departmentList"
               :copyFromTabsFloorList="floors"
               :eachEmployeeSeatMap="eachEmployeeSeatMap"
               :copyFromTabsLatestFloorImage="latestFloorImage"
@@ -45,6 +46,7 @@ import ManageSearch from "@/components/ManageSearch.vue";
 export default {
   props: [
     "copyEmployeeList",
+    "copyDepartmentList",
     "copyFloorList",
     "copyLatestFloorImage",
     "copyOtherFloorsImageList",
@@ -61,6 +63,7 @@ export default {
       tab: null,
 
       employeeList: this.copyEmployeeList,
+      departmentList: this.copyDepartmentList,
       floors: this.copyFloorList,
 
       eachEmployeeSeatMap: null,

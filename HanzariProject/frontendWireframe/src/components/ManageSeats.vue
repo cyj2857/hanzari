@@ -84,13 +84,18 @@ import MappingEmployee from "@/components/MappingEmployee.vue";
 import { eventBus } from "../main";
 export default {
   name: "ManageSeats",
-  props: ["copyFromTabsEmployeeList", "copyFromTabsFloorList"],
+  props: [
+    "copyFromTabsEmployeeList",
+    "copyFromTabsDepartmentList",
+    "copyFromTabsFloorList",
+  ],
   components: {
     MappingEmployee,
   },
   data() {
     return {
       employee: this.copyFromTabsEmployeeList,
+      departmentList: this.copyFromTabsDepartmentList,
       mappingEmployeeComponentStatus: false,
 
       floorItems: [],
@@ -102,11 +107,12 @@ export default {
       currentSelectedFloorObject: null,
 
       numberOfAddSeatItems: [],
-      selectedNumberOfAddSeat: null
+      selectedNumberOfAddSeat: null,
     };
   },
   created() {
     this.initNumberOfAddSeatItems();
+    console.log(this.departmentList);
 
     if (this.copyFromTabsFloorList && this.copyFromTabsFloorList.length) {
       this.currentSelectedFloorObject = this.allFloorList[
@@ -161,8 +167,8 @@ export default {
         this.floorItems.push(this.allFloorList[i]);
       }
     },
-    initNumberOfAddSeatItems(){
-      for(let i=2;i<18;i*=2){
+    initNumberOfAddSeatItems() {
+      for (let i = 2; i < 100; i *= 2) {
         this.numberOfAddSeatItems.push(i);
         console.log(this.numberOfAddSeatItems);
       }
@@ -184,8 +190,11 @@ export default {
     changeAddVacantSwitchStatus() {
       eventBus.$emit("pushAddVacantSwitchStatus", this.addVacantSwitchStatus);
     },
-    changeSelectedNumberOfAddSeat(){
-      eventBus.$emit("pushSelectedNumberOfAddSeat", this.selectedNumberOfAddSeat);
+    changeSelectedNumberOfAddSeat() {
+      eventBus.$emit(
+        "pushSelectedNumberOfAddSeat",
+        this.selectedNumberOfAddSeat
+      );
     },
     clickChangeSeatToVacant() {
       eventBus.$emit("changeSeatToVacant");
