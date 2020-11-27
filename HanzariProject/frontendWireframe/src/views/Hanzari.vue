@@ -233,7 +233,6 @@ export default {
                 latestFloorId +
                 "/images"
             );
-            
 
             let filename = null;
             let contentDisposition = response.headers["content-disposition"]; // 파일 이름
@@ -405,25 +404,35 @@ export default {
       }
       return otherFloorsSeatMap;
     },
-    saveFloors(tableName, data) {
-      let saveData = data;
+    saveFloors(tableName, floorData,imgData, seatDataList) {
+      let saveData = floorData;
       let saveTableName = tableName;
 
       try {
-        axios.post(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
-            "/api/buildings/" +
-            BUILDING_ID +
-            "/" +
-            saveTableName,
-          JSON.stringify(saveData),
-          {
-            headers: { "Content-Type": `application/json` },
-          }
-        );
+        axios
+          .post(
+            "http://" +
+              HOST +
+              ":" +
+              PORT_NUMBER +
+              "/api/buildings/" +
+              BUILDING_ID +
+              "/" +
+              saveTableName,
+            JSON.stringify(saveData),
+            {
+              headers: { "Content-Type": `application/json` },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+            if (response && seatDataList.length>0) {
+              this.saveSeats("seats", seatDataList);
+            }
+            if(response && imgData){
+              this.saveImages("images", imgData, saveData.floorId);
+            }
+          });
       } catch (error) {
         console.error(error);
       }
@@ -433,50 +442,63 @@ export default {
       let saveTableName = tableName;
 
       try {
-        axios.post(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
-            "/api/buildings/" +
-            BUILDING_ID +
-            "/floors/" +
-            floorId +
-            "/" +
-            tableName,
-          saveData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        axios
+          .post(
+            "http://" +
+              HOST +
+              ":" +
+              PORT_NUMBER +
+              "/api/buildings/" +
+              BUILDING_ID +
+              "/floors/" +
+              floorId +
+              "/" +
+              tableName,
+            saveData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then(function (response) {
+            console.log(response);
+          });
       } catch (error) {
         console.error(error);
       }
     },
-    saveSeats(tableName, data, floorId) {
-      let saveData = data;
-      let saveTableName = tableName;
-      try {
-        axios.post(
-          "http://" +
-            HOST +
-            ":" +
-            PORT_NUMBER +
-            "/api/buildings/" +
-            BUILDING_ID +
-            "/floors/" +
-            floorId +
-            "/" +
-            saveTableName,
-          JSON.stringify(saveData),
-          {
-            headers: { "Content-Type": `application/json` },
-          }
-        );
-      } catch (error) {
-        console.error(error);
+    saveSeats(tableName, dataList) {
+      for (let i = 0; i < dataList.length; i++) {
+        let seatData = dataList[i];
+        let saveTableName = tableName;
+
+        try {
+          axios
+            .post(
+              "http://" +
+                HOST +
+                ":" +
+                PORT_NUMBER +
+                "/api/buildings/" +
+                BUILDING_ID +
+                "/floors/" +
+                seatData.floor +
+                "/" +
+                saveTableName,
+              JSON.stringify(seatData),
+              {
+                headers: { "Content-Type": `application/json` },
+                timeout: 30000,
+              }
+            )
+            .then(function (response) {
+              console.log(response);
+            });
+        } catch (error) {
+          console.error(error);
+          console.log("errrrrrrrrrrror");
+        }
       }
     },
     deleteFloorWtihKey(tableName, key) {
