@@ -100,7 +100,7 @@ export default {
   },
   async created() {
     console.log(this.$store.state.token);
-    
+
     //사원 load
     this.employeeList = await this.getEmployeeList();
     //층 load
@@ -393,25 +393,34 @@ export default {
       }
       return otherFloorsSeatMap;
     },
-    saveFloors(tableName, data) {
+    saveFloors(tableName, data, seatDataList) {
       let saveData = data;
       let saveTableName = tableName;
 
       try {
-        axios.post(
-          this.$store.state.hhhost +
-            "/api/buildings/" +
-            BUILDING_ID +
-            "/" +
-            saveTableName,
-          JSON.stringify(saveData),
-          {
-            headers: {
-              "Content-Type": `application/json`,
-              "X-AUTH-TOKEN": this.$store.state.token,
-            },
-          }
-        );
+        axios
+          .post(
+            this.$store.state.hhhost +
+              "/api/buildings/" +
+              BUILDING_ID +
+              "/" +
+              saveTableName,
+            JSON.stringify(saveData),
+            {
+              headers: {
+                "Content-Type": `application/json`,
+                "X-AUTH-TOKEN": this.$store.state.token,
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+            if (response && seatDataList.length > 0) {
+              this.saveSeats("seats", seatDataList);
+            }
+          });
       } catch (error) {
         console.error(error);
       }
@@ -421,48 +430,61 @@ export default {
       let saveTableName = tableName;
 
       try {
-        axios.post(
-          this.$store.state.hhhost +
-            "/api/buildings/" +
-            BUILDING_ID +
-            "/floors/" +
-            floorId +
-            "/" +
-            tableName,
-          saveData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "X-AUTH-TOKEN": this.$store.state.token,
-            },
-          }
-        );
+        axios
+          .post(
+            this.$store.state.hhhost +
+              "/api/buildings/" +
+              BUILDING_ID +
+              "/floors/" +
+              floorId +
+              "/" +
+              tableName,
+            saveData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "X-AUTH-TOKEN": this.$store.state.token,
+              },
+            }
+          )
+          .then(function (response) {
+            console.log(response);
+          });
       } catch (error) {
         console.error(error);
       }
     },
-    saveSeats(tableName, data, floorId) {
-      let saveData = data;
-      let saveTableName = tableName;
-      try {
-        axios.post(
-          this.$store.state.hhhost +
-            "/api/buildings/" +
-            BUILDING_ID +
-            "/floors/" +
-            floorId +
-            "/" +
-            saveTableName,
-          JSON.stringify(saveData),
-          {
-            headers: {
-              "Content-Type": `application/json`,
-              "X-AUTH-TOKEN": this.$store.state.token,
-            },
-          }
-        );
-      } catch (error) {
-        console.error(error);
+    saveSeats(tableName, dataList) {
+      for (let i = 0; i < dataList.length; i++) {
+        let seatData = dataList[i];
+        let saveTableName = tableName;
+
+        try {
+          axios
+            .post(
+              this.$store.state.hhhost +
+                "/api/buildings/" +
+                BUILDING_ID +
+                "/floors/" +
+                seatData.floor +
+                "/" +
+                saveTableName,
+              JSON.stringify(seatData),
+              {
+                headers: {
+                  "Content-Type": `application/json`,
+                  "X-AUTH-TOKEN": this.$store.state.token,
+                },
+                timeout: 30000,
+              }
+            )
+            .then(function (response) {
+              console.log(response);
+            });
+        } catch (error) {
+          console.error(error);
+          console.log("errrrrrrrrrrror");
+        }
       }
     },
     deleteFloorWtihKey(tableName, key) {

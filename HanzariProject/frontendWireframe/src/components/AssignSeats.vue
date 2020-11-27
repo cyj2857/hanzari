@@ -1256,46 +1256,9 @@ export default {
       this.floorCanvas.discardActiveObject();
 
       if (this.allFloorList) {
-        //층 저장
-        if (this.deleteFloorIdList.length) {
-          for (let i = 0; i < this.deleteFloorIdList.length; i++) {
-            let deleteFloorKey = this.deleteFloorIdList[i];
-            this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
-          }
-        }
-
-        for (let i = 0; i < this.allFloorList.length; i++) {
-          if (this.allFloorList[i].httpRequestPostStatus) {
-            let floorData = {};
-            floorData.floor_id = this.allFloorList[i].floorId;
-            floorData.floor_name = this.allFloorList[i].floorName;
-            floorData.building_id = this.allFloorList[i].buildingId;
-            floorData.floor_order = this.allFloorList[i].floorOrder;
-
-            this.$emit("saveFloors", "floors", floorData);
-          }
-        }
-
-        //이미지 저장
-        for (let i = 0; i < this.allFloorList.length; i++) {
-          let imgData = new FormData();
-          let floorId = this.allFloorList[i].floorId;
-
-          //console.log(this.allImageMap.get(floorId));
-
-          if (this.allImageMap.get(floorId) != null) {
-            let file = this.allImageMap.get(floorId).imgPath;
-            if (typeof file === "string") {
-              //url
-            } else {
-              //file
-              imgData.append("imageFile", file);
-              this.$emit("saveImages", "images", imgData, floorId);
-            }
-          }
-        }
-
         //자리 저장
+        let seatDataList = [];
+
         if (this.deleteSeatIdList.length > 0) {
           for (let i = 0; i < this.deleteSeatIdList.length; i++) {
             let deleteSeatKey = this.deleteSeatIdList[i].seatId;
@@ -1313,42 +1276,87 @@ export default {
             this.allFloorList[i].floorId
           );
 
-          if (eachFloorSeatList.length > 0) {
-            for (let j = 0; j < eachFloorSeatList.length; j++) {
-              let groupToObject = eachFloorSeatList[j].toObject([
-                "seatId",
-                "seatName",
-                "floorId",
-                "left",
-                "top",
-                "employeeDepartment",
-                "employeeId",
-                "width",
-                "height",
-                "scaleX",
-                "scaleY",
-                "isObjFromDB",
-                "httpRequestPostStatus",
-              ]);
+          for (let j = 0; j < eachFloorSeatList.length; j++) {
+            let groupToObject = eachFloorSeatList[j].toObject([
+              "seatId",
+              "seatName",
+              "floorId",
+              "left",
+              "top",
+              "employeeDepartment",
+              "employeeId",
+              "scaleX",
+              "scaleY",
+              "isObjFromDB",
+              "httpRequestPostStatus",
+            ]);
 
-              if (groupToObject.httpRequestPostStatus) {
-                let seatData = {};
-                seatData.seat_id = groupToObject.seatId;
-                seatData.seat_name = groupToObject.seatName;
-                seatData.floor = groupToObject.floorId;
-                seatData.x = groupToObject.left;
-                seatData.y = groupToObject.top;
-                seatData.is_group = false;
-                seatData.group_id = null;
-                seatData.building_id = "HANCOM01";
-                seatData.employee_id = groupToObject.employeeId;
-                seatData.width = groupToObject.width * groupToObject.scaleX;
-                seatData.height = groupToObject.height * groupToObject.scaleY;
-                seatData.degree = groupToObject.angle;
-                seatData.shape_id = "1";
+            let rectangleObject = eachFloorSeatList[j]
+              .item(0)
+              .toObject(["width", "height"]);
+            console.log(rectangleObject.width);
+            console.log(rectangleObject.height);
 
-                this.$emit("saveSeats", "seats", seatData, seatData.floor);
-              }
+            if (groupToObject.httpRequestPostStatus) {
+              let seatData = {};
+              seatData.seat_id = groupToObject.seatId;
+              seatData.seat_name = groupToObject.seatName;
+              seatData.floor = groupToObject.floorId;
+              seatData.x = groupToObject.left;
+              seatData.y = groupToObject.top;
+              seatData.is_group = false;
+              seatData.group_id = null;
+              seatData.building_id = "HANCOM01";
+              seatData.employee_id = groupToObject.employeeId;
+              seatData.width = rectangleObject.width * groupToObject.scaleX;
+              seatData.height = rectangleObject.height * groupToObject.scaleY;
+              seatData.degree = groupToObject.angle;
+              seatData.shape_id = "1";
+
+              console.log("3");
+              seatDataList.push(seatData);
+            }
+          }
+        }
+        //층 저장
+        if (this.deleteFloorIdList.length) {
+          for (let i = 0; i < this.deleteFloorIdList.length; i++) {
+            let deleteFloorKey = this.deleteFloorIdList[i];
+            this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
+          }
+        }
+
+        for (let i = 0; i < this.allFloorList.length; i++) {
+          if (this.allFloorList[i].httpRequestPostStatus) {
+            console.log("1");
+            let floorData = {};
+            floorData.floor_id = this.allFloorList[i].floorId;
+            floorData.floor_name = this.allFloorList[i].floorName;
+            floorData.building_id = this.allFloorList[i].buildingId;
+            floorData.floor_order = this.allFloorList[i].floorOrder;
+
+            this.$emit("saveFloors", "floors", floorData, seatDataList);
+          } else {
+            this.$emit("saveSeats", "seats", seatDataList);
+          }
+        }
+
+        //이미지 저장
+        for (let i = 0; i < this.allFloorList.length; i++) {
+          let imgData = new FormData();
+          let floorId = this.allFloorList[i].floorId;
+
+          //console.log(this.allImageMap.get(floorId));
+
+          if (this.allImageMap.get(floorId) != null) {
+            let file = this.allImageMap.get(floorId).imgPath;
+            if (typeof file === "string") {
+              //url
+            } else {
+              //file
+              console.log("2");
+              imgData.append("imageFile", file);
+              this.$emit("saveImages", "images", imgData, floorId);
             }
           }
         }
@@ -1464,7 +1472,7 @@ export default {
 
           this.currentSelectedFloorId = newImageObject.floorId;
 
-          this.loadImageUrl(newImageObject.imgPath);
+          this.loadImageUrl(newImageObject.data);
           // 현재층 자리 로드
 
           if (this.latestFloorSeatListFromDb.length) {
