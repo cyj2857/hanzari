@@ -737,14 +737,13 @@ export default {
       });
     },
     createSeatUUID() {
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-        /[xy]/g,
-        function (c) {
-          let r = (Math.random() * 16) | 0,
-            v = c == "x" ? r : (r & 3) | 8;
-          return v.toString(16);
-        }
-      );
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+        c
+      ) {
+        let r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 3) | 8;
+        return v.toString(16);
+      });
     },
     getColor(department) {
       //부서1,2,3 으로가정하고 부서 길이가 3개이면 for문돌려서 랜덤
@@ -1255,14 +1254,19 @@ export default {
       this.floorCanvas.discardActiveObject();
 
       if (this.allFloorList) {
-        let seatDataList = [];
-
-        //db로 보낼 삭제자리 리스트 
+        //db로 보낼 층 삭제
+        if (this.deleteFloorIdList.length) {
+          for (let i = 0; i < this.deleteFloorIdList.length; i++) {
+            let deleteFloorKey = this.deleteFloorIdList[i];
+            this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
+          }
+        }
+        //db로 보낼 삭제자리 리스트
         if (this.deleteSeatIdList.length > 0) {
           for (let i = 0; i < this.deleteSeatIdList.length; i++) {
             let deleteSeatKey = this.deleteSeatIdList[i].seatId;
             let deleteSeatFloor = this.deleteSeatIdList[i].floorId;
-            this.$emit(  
+            this.$emit(
               "deleteSeatWithKey",
               "seats",
               deleteSeatKey,
@@ -1271,8 +1275,10 @@ export default {
           }
         }
 
-        //db로 보낼 자리리스트 생성 
+        //db로 보낼 층, 이미지, 자리 저장
         for (let i = 0; i < this.allFloorList.length; i++) {
+          let seatDataList = [];
+
           let eachFloorSeatList = this.getEachFloorSeatList(
             this.allFloorList[i].floorId
           );
@@ -1314,55 +1320,27 @@ export default {
               seatData.degree = groupToObject.angle;
               seatData.shape_id = "1";
 
-              console.log("3");
               seatDataList.push(seatData);
             }
           }
-        }
-        //층 삭제
-        if (this.deleteFloorIdList.length) {
-          for (let i = 0; i < this.deleteFloorIdList.length; i++) {
-            let deleteFloorKey = this.deleteFloorIdList[i];
-            this.$emit("deleteFloorWithKey", "floors", deleteFloorKey);
-          }
-        }
 
-        //층 저장, 자리저장,이미지저장 
-        for (let i = 0; i < this.allFloorList.length; i++) {
+          //원본 db에서 없는 층이라면 층과 자리 저장 
           if (this.allFloorList[i].httpRequestPostStatus) {
-            console.log("1");
             let floorData = {};
             floorData.floor_id = this.allFloorList[i].floorId;
             floorData.floor_name = this.allFloorList[i].floorName;
             floorData.building_id = this.allFloorList[i].buildingId;
             floorData.floor_order = this.allFloorList[i].floorOrder;
 
-            let imgData = new FormData();
-            let floorId = this.allFloorList[i].floorId;
-
-            if (this.allImageMap.get(floorId) != null) {
-              let file = this.allImageMap.get(floorId).imgPath;
-              if (typeof file === "string") {
-                //url
-              } else {
-                //file
-                imgData.append("imageFile", file);
-                //this.$emit("saveImages", "images", imgData, floorId);
-              }
-            }
-
-            this.$emit("saveFloors", "floors", floorData, imgData, seatDataList);
+            this.$emit("saveFloors", "floors", floorData, seatDataList);
           } else {
+            //원본 db에서 이미 있는 층이라면 자리만 저장
             this.$emit("saveSeats", "seats", seatDataList);
           }
-        }
 
-        //이미지 저장
-        for (let i = 0; i < this.allFloorList.length; i++) {
+          //이미지 저장 
           let imgData = new FormData();
           let floorId = this.allFloorList[i].floorId;
-
-          //console.log(this.allImageMap.get(floorId));
 
           if (this.allImageMap.get(floorId) != null) {
             let file = this.allImageMap.get(floorId).imgPath;
@@ -1370,7 +1348,6 @@ export default {
               //url
             } else {
               //file
-              console.log("2");
               imgData.append("imageFile", file);
               this.$emit("saveImages", "images", imgData, floorId);
             }
