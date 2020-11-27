@@ -407,58 +407,34 @@ export default {
       }
       return otherFloorsSeatMap;
     },
-<<<<<<< HEAD
-    saveFloors(tableName, data, seatDataList) {
-      let saveData = data;
-=======
     saveFloors(tableName, floorData,imgData, seatDataList) {
       let saveData = floorData;
->>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
       let saveTableName = tableName;
 
       try {
         axios
           .post(
-<<<<<<< HEAD
             this.$store.state.hhhost +
-=======
-            "http://" +
-              HOST +
-              ":" +
-              PORT_NUMBER +
->>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
               "/api/buildings/" +
               BUILDING_ID +
               "/" +
               saveTableName,
             JSON.stringify(saveData),
             {
-<<<<<<< HEAD
-              headers: {
-                "Content-Type": `application/json`,
+              headers: { "Content-Type": `application/json`, 
                 "X-AUTH-TOKEN": this.$store.state.token,
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Credentials": true,
-              },
-=======
-              headers: { "Content-Type": `application/json` },
->>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
+                "Access-Control-Allow-Credentials": true, },
             }
           )
           .then((response) => {
             console.log(response);
-<<<<<<< HEAD
-            if (response && seatDataList.length > 0) {
-              this.saveSeats("seats", seatDataList);
-            }
-=======
             if (response && seatDataList.length>0) {
               this.saveSeats("seats", seatDataList);
             }
             if(response && imgData){
               this.saveImages("images", imgData, saveData.floorId);
             }
->>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
           });
       } catch (error) {
         console.error(error);
@@ -471,14 +447,7 @@ export default {
       try {
         axios
           .post(
-<<<<<<< HEAD
             this.$store.state.hhhost +
-=======
-            "http://" +
-              HOST +
-              ":" +
-              PORT_NUMBER +
->>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
               "/api/buildings/" +
               BUILDING_ID +
               "/floors/" +
@@ -489,10 +458,7 @@ export default {
             {
               headers: {
                 "Content-Type": "multipart/form-data",
-<<<<<<< HEAD
                 "X-AUTH-TOKEN": this.$store.state.token,
-=======
->>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
               },
             }
           )
@@ -511,14 +477,7 @@ export default {
         try {
           axios
             .post(
-<<<<<<< HEAD
               this.$store.state.hhhost +
-=======
-              "http://" +
-                HOST +
-                ":" +
-                PORT_NUMBER +
->>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
                 "/api/buildings/" +
                 BUILDING_ID +
                 "/floors/" +
@@ -527,14 +486,10 @@ export default {
                 saveTableName,
               JSON.stringify(seatData),
               {
-<<<<<<< HEAD
                 headers: {
                   "Content-Type": `application/json`,
                   "X-AUTH-TOKEN": this.$store.state.token,
                 },
-=======
-                headers: { "Content-Type": `application/json` },
->>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
                 timeout: 30000,
               }
             )
