@@ -454,6 +454,8 @@ export default {
       this.floorCanvas.on("mouse:up", (event) => {
         if (event.button === 3) {
           if (this.addVacantSwitchStatus) {
+            canDraw = false;
+
             var pointer = this.floorCanvas.getPointer(event.e);
             var mouseUpX = pointer.x;
             var mouseUpY = pointer.y;
@@ -472,6 +474,8 @@ export default {
                 return;
               }
 
+              console.log(this.floorCanvas.getObjects);
+
               this.floorCanvas.getObjects().forEach((obj) => {
                 if (rectangle === obj) {
                   this.floorCanvas.remove(obj);
@@ -486,7 +490,6 @@ export default {
               );
             }
           }
-          canDraw = false;
         }
       });
     },
@@ -734,35 +737,25 @@ export default {
       });
     },
     createSeatUUID() {
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-        c
-      ) {
-        let r = (Math.random() * 16) | 0,
-          v = c == "x" ? r : (r & 3) | 8;
-        return v.toString(16);
-      });
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function (c) {
+          let r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 3) | 8;
+          return v.toString(16);
+        }
+      );
     },
     getColor(department) {
+      //부서1,2,3 으로가정하고 부서 길이가 3개이면 for문돌려서 랜덤
       const Colors = {
-        Orange: "orange",
-        Yellow: "yellow",
-        Green: "green",
-        Blue: "blue",
-        Gray: "Gray",
+        vacantColor: "Gray",
+        mappingColor: "Yellow",
       };
-      if (department == null) {
-        return Colors.Gray;
-      } else {
-        if (department === "부서1")
-          //String
-          return Colors.Orange;
-        else if (department === "부서2")
-          //String
-          return Colors.Yellow;
-        else if (department === "부서3")
-          //String
-          return Colors.Green;
+      if (department === null) {
+        return Colors.vacantColor;
       }
+      return Colors.mappingColor;
     },
 
     addVacantSeat(mouseDownX, mouseDownY, mouseUpX, mouseUpY) {
@@ -789,24 +782,12 @@ export default {
 
           let textObject = new fabric.IText("", {
             left: 0,
-            top: rectangle.height / 3,
+            top: rectangle.height / 2,
             fontSize: 0,
             fill: "black",
           });
 
-          let group = new fabric.Group([rectangle, textObject], {
-            seatId: this.createSeatUUID(),
-            floorId: this.currentSelectedFloorId,
-            employeeName: null,
-            employeeDepartment: null,
-            employeeNumber: null,
-            employeeId: null,
-            left: mouseDownPointX,
-            top: mouseDownPointY,
-            angle: 0,
-            isObjFromDB: false,
-            httpRequestPostStatus: true,
-          });
+          let seatNameObject;
 
           if (this.currentSelectedFloorName != null) {
             if (this.getEachFloorSeatList(this.currentSelectedFloorId).length) {
@@ -824,15 +805,33 @@ export default {
             let seatNameText =
               this.currentSelectedFloorName + "-" + this.seatNumber;
 
-            let seatNameObject = new fabric.IText(seatNameText, {
-              left: group.item(0).left,
-              top: group.item(0).top - 15,
+            seatNameObject = new fabric.IText(seatNameText, {
+              left: rectangle.left,
+              top: rectangle.top,
               fontSize: this.fontSize / this.zoom,
               fill: "black",
             });
-            group.seatName = seatNameText;
-            group.add(seatNameObject);
+            //group.seatName = seatNameText;
+            //group.add(seatNameObject);
           }
+
+          let group = new fabric.Group(
+            [rectangle, textObject, seatNameObject],
+            {
+              seatId: this.createSeatUUID(),
+              seatName: seatNameObject.text,
+              floorId: this.currentSelectedFloorId,
+              employeeName: null,
+              employeeDepartment: null,
+              employeeNumber: null,
+              employeeId: null,
+              left: mouseDownPointX,
+              top: mouseDownPointY,
+              angle: 0,
+              isObjFromDB: false,
+              httpRequestPostStatus: true,
+            }
+          );
 
           this.floorCanvas.setActiveObject(group);
           this.floorCanvas.add(group);
@@ -1256,14 +1255,14 @@ export default {
       this.floorCanvas.discardActiveObject();
 
       if (this.allFloorList) {
-        //자리 저장
         let seatDataList = [];
 
+        //db로 보낼 삭제자리 리스트 
         if (this.deleteSeatIdList.length > 0) {
           for (let i = 0; i < this.deleteSeatIdList.length; i++) {
             let deleteSeatKey = this.deleteSeatIdList[i].seatId;
             let deleteSeatFloor = this.deleteSeatIdList[i].floorId;
-            this.$emit(
+            this.$emit(  
               "deleteSeatWithKey",
               "seats",
               deleteSeatKey,
@@ -1271,6 +1270,8 @@ export default {
             );
           }
         }
+
+        //db로 보낼 자리리스트 생성 
         for (let i = 0; i < this.allFloorList.length; i++) {
           let eachFloorSeatList = this.getEachFloorSeatList(
             this.allFloorList[i].floorId
@@ -1318,7 +1319,7 @@ export default {
             }
           }
         }
-        //층 저장
+        //층 삭제
         if (this.deleteFloorIdList.length) {
           for (let i = 0; i < this.deleteFloorIdList.length; i++) {
             let deleteFloorKey = this.deleteFloorIdList[i];
@@ -1326,6 +1327,7 @@ export default {
           }
         }
 
+        //층 저장, 자리저장,이미지저장 
         for (let i = 0; i < this.allFloorList.length; i++) {
           if (this.allFloorList[i].httpRequestPostStatus) {
             console.log("1");
@@ -1335,7 +1337,21 @@ export default {
             floorData.building_id = this.allFloorList[i].buildingId;
             floorData.floor_order = this.allFloorList[i].floorOrder;
 
-            this.$emit("saveFloors", "floors", floorData, seatDataList);
+            let imgData = new FormData();
+            let floorId = this.allFloorList[i].floorId;
+
+            if (this.allImageMap.get(floorId) != null) {
+              let file = this.allImageMap.get(floorId).imgPath;
+              if (typeof file === "string") {
+                //url
+              } else {
+                //file
+                imgData.append("imageFile", file);
+                //this.$emit("saveImages", "images", imgData, floorId);
+              }
+            }
+
+            this.$emit("saveFloors", "floors", floorData, imgData, seatDataList);
           } else {
             this.$emit("saveSeats", "seats", seatDataList);
           }
@@ -1412,8 +1428,16 @@ export default {
         fill: "black",
       });
 
-      let group = new fabric.Group([rectangle, textObject], {
+      let seatNameObject = new fabric.IText(seat.seatName, {
+        left: rectangle.left,
+        top: rectangle.top,
+        fontSize: this.fontSize / this.zoom,
+        fill: "black",
+      });
+
+      let group = new fabric.Group([rectangle, textObject, seatNameObject], {
         seatId: seat.seatId,
+        seatName: seatNameObject.text,
         employeeName: employee.name,
         employeeDepartment: employee.department,
         employeeNumber: employee.number,
@@ -1424,32 +1448,6 @@ export default {
         angle: seat.degree,
         isObjFromDB: seat.isObjFromDB,
         httpRequestPostStatus: seat.httpRequestPostStatus,
-      });
-
-      let seatNameObject = new fabric.IText(seat.seatName, {
-        left: rectangle.left,
-        top: rectangle.top - 15,
-        fontSize: this.fontSize / this.zoom,
-        fill: "black",
-      });
-
-      group.seatName = seat.seatName;
-      group.add(seatNameObject);
-
-      this.floorCanvas.on("object:scaling", (e) => {
-        let scaledObject = e.target;
-        let width = scaledObject.getScaledWidth() / scaledObject.scaleX;
-        let height = scaledObject.getScaledHeight() / scaledObject.scaleY;
-
-        scaledObject.width = width;
-        scaledObject.height = height;
-
-        let groupx = scaledObject.toObject([
-          "width",
-          "height",
-          "scaleX",
-          "scaleY",
-        ]);
       });
 
       return group;

@@ -31,6 +31,7 @@
         <v-navigation-drawer v-model="drawer" app :width="500">
           <Tabs
             v-bind:copyEmployeeList="employeeList"
+            v-bind:copyDepartmentList="departmentList"
             v-bind:copyFloorList="floorList"
             v-bind:copyLatestFloorImage="latestFloorImage"
             v-bind:copyOtherFloorsImageList="otherFloorsImageList"
@@ -86,6 +87,7 @@ export default {
     return {
       drawer: null,
       employeeList: null,
+      departmentList: null,
 
       floorList: null,
       floorIdList: [],
@@ -103,6 +105,8 @@ export default {
 
     //사원 load
     this.employeeList = await this.getEmployeeList();
+    //부서 laod
+    this.departmentList = await this.getDepartmentList();
     //층 load
     this.floorList = await this.getFloorList();
     //가장 floor_order가 큰 층의 floorId를 가져오기 위함
@@ -146,6 +150,16 @@ export default {
         console.log(error);
       }
       return allEmployeeList;
+    },
+    async getDepartmentList() {
+      let allDepartmentList = new Set();
+
+      for (let i = 0; i < this.employeeList.length; i++) {
+        let department_name = this.employeeList[i].department;
+        allDepartmentList.add(department_name);
+      }
+
+      return allDepartmentList;
     },
     async getFloorList() {
       let allFloorList = [];
@@ -393,33 +407,58 @@ export default {
       }
       return otherFloorsSeatMap;
     },
+<<<<<<< HEAD
     saveFloors(tableName, data, seatDataList) {
       let saveData = data;
+=======
+    saveFloors(tableName, floorData,imgData, seatDataList) {
+      let saveData = floorData;
+>>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
       let saveTableName = tableName;
 
       try {
         axios
           .post(
+<<<<<<< HEAD
             this.$store.state.hhhost +
+=======
+            "http://" +
+              HOST +
+              ":" +
+              PORT_NUMBER +
+>>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
               "/api/buildings/" +
               BUILDING_ID +
               "/" +
               saveTableName,
             JSON.stringify(saveData),
             {
+<<<<<<< HEAD
               headers: {
                 "Content-Type": `application/json`,
                 "X-AUTH-TOKEN": this.$store.state.token,
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Credentials": true,
               },
+=======
+              headers: { "Content-Type": `application/json` },
+>>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
             }
           )
           .then((response) => {
             console.log(response);
+<<<<<<< HEAD
             if (response && seatDataList.length > 0) {
               this.saveSeats("seats", seatDataList);
             }
+=======
+            if (response && seatDataList.length>0) {
+              this.saveSeats("seats", seatDataList);
+            }
+            if(response && imgData){
+              this.saveImages("images", imgData, saveData.floorId);
+            }
+>>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
           });
       } catch (error) {
         console.error(error);
@@ -432,7 +471,14 @@ export default {
       try {
         axios
           .post(
+<<<<<<< HEAD
             this.$store.state.hhhost +
+=======
+            "http://" +
+              HOST +
+              ":" +
+              PORT_NUMBER +
+>>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
               "/api/buildings/" +
               BUILDING_ID +
               "/floors/" +
@@ -443,7 +489,10 @@ export default {
             {
               headers: {
                 "Content-Type": "multipart/form-data",
+<<<<<<< HEAD
                 "X-AUTH-TOKEN": this.$store.state.token,
+=======
+>>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
               },
             }
           )
@@ -462,7 +511,14 @@ export default {
         try {
           axios
             .post(
+<<<<<<< HEAD
               this.$store.state.hhhost +
+=======
+              "http://" +
+                HOST +
+                ":" +
+                PORT_NUMBER +
+>>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
                 "/api/buildings/" +
                 BUILDING_ID +
                 "/floors/" +
@@ -471,10 +527,14 @@ export default {
                 saveTableName,
               JSON.stringify(seatData),
               {
+<<<<<<< HEAD
                 headers: {
                   "Content-Type": `application/json`,
                   "X-AUTH-TOKEN": this.$store.state.token,
                 },
+=======
+                headers: { "Content-Type": `application/json` },
+>>>>>>> 8c495046bdeb71f494bfb0494a06d46bfd578efe
                 timeout: 30000,
               }
             )
