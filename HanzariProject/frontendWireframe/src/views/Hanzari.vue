@@ -404,7 +404,7 @@ export default {
       }
       return otherFloorsSeatMap;
     },
-    saveFloors(tableName, floorData,imgData, seatDataList) {
+    saveFloors(tableName, floorData,seatDataList) {
       let saveData = floorData;
       let saveTableName = tableName;
 
@@ -428,9 +428,6 @@ export default {
             console.log(response);
             if (response && seatDataList.length>0) {
               this.saveSeats("seats", seatDataList);
-            }
-            if(response && imgData){
-              this.saveImages("images", imgData, saveData.floorId);
             }
           });
       } catch (error) {
