@@ -8,7 +8,7 @@ import 'vuetify/dist/vuetify.min.css'
 import vSelectMenu from 'v-selectmenu'
 
 import axios from 'axios' // we can use this.$axios without using 'import' in vue instance
-import {store} from './store'
+import { store } from './store'
 
 export const eventBus = new Vue()
 
@@ -26,5 +26,6 @@ new Vue({
   store,
   components: { App },
   template: '<App/>',
-  vuetify: new Vuetify()
+  vuetify: new Vuetify(),
+  //beforeCreate() { this.$store.commit('loginCheck') }
 })

@@ -50,12 +50,17 @@ export default {
   },
   methods: {
     loginSubmit() {
+      console.log("clicked");
+      console.log(this.employeeId);
+
+      console.log(this.password);
       this.$axios
         .post(
           `${this.$store.state.hhhost}/v1/signin?id=${this.employeeId}&password=${this.password}`
         )
         .then((res) => {
-          console.log(res);
+          console.log(res.data)
+          this.$store.commit("loginToken", res.data);
           this.$router.push("/Hanzari");
         });
     },

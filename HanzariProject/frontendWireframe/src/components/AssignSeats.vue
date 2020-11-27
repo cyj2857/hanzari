@@ -1470,7 +1470,7 @@ export default {
 
           this.currentSelectedFloorId = newImageObject.floorId;
 
-          this.loadImageUrl(newImageObject.imgPath);
+          this.loadImageUrl(newImageObject.data);
           // 현재층 자리 로드
 
           if (this.latestFloorSeatListFromDb.length) {
