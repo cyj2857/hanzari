@@ -45,14 +45,18 @@ import com.hancom.hanzari.vo.TokenVo;
 
 import lombok.RequiredArgsConstructor;
 
-@Configuration // Spring Batch의 모든 Job은 이 어노테이션을 이용해 등록하고 사용해야한다
-@RequiredArgsConstructor // 생성자 DI를 위한 lombok 어노테이션
+/* 클라이언트 →→ */
+//Spring Batch의 모든 Job은 이 어노테이션을 이용해 등록하고 사용해야한다/
+@Configuration
+//생성자 DI를 위한 lombok 어노테이션
+@RequiredArgsConstructor
 @EnableBatchProcessing
 public class BatchEmployeeUpdateConfiguration {
-	// Job 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
+	//Job 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
 	private final JobBuilderFactory jobBuilderFactory;
-	// Step 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
+	//Step 객체를 만드는 빌더, 여러 빌더를 통합하여 처리할 수 있다.
 	private final StepBuilderFactory stepBuilderFactory;
+	//Batch 작업을 실행시키는 역할을 한다. Job과 Job Parameters를 이용하여 요청된 배치 작업을 수행한 후 JobExecution을 반환한다.
 	@Autowired
 	private SimpleJobLauncher jobLauncher;
 	// ResourceBundle을 이용하여 string value들을 불러옴 properties 확장자인데 확장자없이 파일명만 적어줘도
@@ -68,12 +72,14 @@ public class BatchEmployeeUpdateConfiguration {
 	EmployeeService employeeService;
 	
 	//반복주기를 설정하는 어노테이션
+	//프로그램 시작점에 설정해둔 어노테이션에 따라 Batch Job이 실행되고 그와 별개로 @Scheduled 어노테이션에 세팅해둔 시간에 따라 자동으로 Batch Job이 실행된다.
 	@Scheduled(cron = "0 0 * * * *")
 	//milisecond 단위로도 설정이 가능하다.
 	//@Scheduled(fixedDelay = 1000)
 	public void perform() throws Exception {
 		System.out.println("Job start time : " + new Date());
-		JobParameters param = new JobParametersBuilder().addString("JobID", String.valueOf(System.currentTimeMillis())).toJobParameters();
+		//JobParameter는 Spring Environment Variables(환경변수)외에 Batch에서만 사용할 수 있는 것이다. 
+		JobParameters param = new JobParametersBuilder().addString("getEmployeesInfoJob", String.valueOf(System.currentTimeMillis())).toJobParameters();
 		JobExecution execution = jobLauncher.run(getEmployeesInfoJob(), param);
 		System.out.println("Job finished with status : " + execution.getStatus());
 	}
