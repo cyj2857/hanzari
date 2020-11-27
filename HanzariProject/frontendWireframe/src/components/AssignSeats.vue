@@ -737,13 +737,14 @@ export default {
       });
     },
     createSeatUUID() {
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-        c
-      ) {
-        let r = (Math.random() * 16) | 0,
-          v = c == "x" ? r : (r & 3) | 8;
-        return v.toString(16);
-      });
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function (c) {
+          let r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 3) | 8;
+          return v.toString(16);
+        }
+      );
     },
     getColor(department) {
       //부서1,2,3 으로가정하고 부서 길이가 3개이면 for문돌려서 랜덤
@@ -1254,7 +1255,71 @@ export default {
       this.floorCanvas.discardActiveObject();
 
       if (this.allFloorList) {
-        //층 저장
+        let seatDataList = [];
+
+        //db로 보낼 삭제자리 리스트 
+        if (this.deleteSeatIdList.length > 0) {
+          for (let i = 0; i < this.deleteSeatIdList.length; i++) {
+            let deleteSeatKey = this.deleteSeatIdList[i].seatId;
+            let deleteSeatFloor = this.deleteSeatIdList[i].floorId;
+            this.$emit(  
+              "deleteSeatWithKey",
+              "seats",
+              deleteSeatKey,
+              deleteSeatFloor
+            );
+          }
+        }
+
+        //db로 보낼 자리리스트 생성 
+        for (let i = 0; i < this.allFloorList.length; i++) {
+          let eachFloorSeatList = this.getEachFloorSeatList(
+            this.allFloorList[i].floorId
+          );
+
+          for (let j = 0; j < eachFloorSeatList.length; j++) {
+            let groupToObject = eachFloorSeatList[j].toObject([
+              "seatId",
+              "seatName",
+              "floorId",
+              "left",
+              "top",
+              "employeeDepartment",
+              "employeeId",
+              "scaleX",
+              "scaleY",
+              "isObjFromDB",
+              "httpRequestPostStatus",
+            ]);
+
+            let rectangleObject = eachFloorSeatList[j]
+              .item(0)
+              .toObject(["width", "height"]);
+            console.log(rectangleObject.width);
+            console.log(rectangleObject.height);
+
+            if (groupToObject.httpRequestPostStatus) {
+              let seatData = {};
+              seatData.seat_id = groupToObject.seatId;
+              seatData.seat_name = groupToObject.seatName;
+              seatData.floor = groupToObject.floorId;
+              seatData.x = groupToObject.left;
+              seatData.y = groupToObject.top;
+              seatData.is_group = false;
+              seatData.group_id = null;
+              seatData.building_id = "HANCOM01";
+              seatData.employee_id = groupToObject.employeeId;
+              seatData.width = rectangleObject.width * groupToObject.scaleX;
+              seatData.height = rectangleObject.height * groupToObject.scaleY;
+              seatData.degree = groupToObject.angle;
+              seatData.shape_id = "1";
+
+              console.log("3");
+              seatDataList.push(seatData);
+            }
+          }
+        }
+        //층 삭제
         if (this.deleteFloorIdList.length) {
           for (let i = 0; i < this.deleteFloorIdList.length; i++) {
             let deleteFloorKey = this.deleteFloorIdList[i];
@@ -1262,15 +1327,33 @@ export default {
           }
         }
 
+        //층 저장, 자리저장,이미지저장 
         for (let i = 0; i < this.allFloorList.length; i++) {
           if (this.allFloorList[i].httpRequestPostStatus) {
+            console.log("1");
             let floorData = {};
             floorData.floor_id = this.allFloorList[i].floorId;
             floorData.floor_name = this.allFloorList[i].floorName;
             floorData.building_id = this.allFloorList[i].buildingId;
             floorData.floor_order = this.allFloorList[i].floorOrder;
 
-            this.$emit("saveFloors", "floors", floorData);
+            let imgData = new FormData();
+            let floorId = this.allFloorList[i].floorId;
+
+            if (this.allImageMap.get(floorId) != null) {
+              let file = this.allImageMap.get(floorId).imgPath;
+              if (typeof file === "string") {
+                //url
+              } else {
+                //file
+                imgData.append("imageFile", file);
+                //this.$emit("saveImages", "images", imgData, floorId);
+              }
+            }
+
+            this.$emit("saveFloors", "floors", floorData, imgData, seatDataList);
+          } else {
+            this.$emit("saveSeats", "seats", seatDataList);
           }
         }
 
@@ -1287,68 +1370,9 @@ export default {
               //url
             } else {
               //file
+              console.log("2");
               imgData.append("imageFile", file);
               this.$emit("saveImages", "images", imgData, floorId);
-            }
-          }
-        }
-
-        //자리 저장
-        if (this.deleteSeatIdList.length > 0) {
-          for (let i = 0; i < this.deleteSeatIdList.length; i++) {
-            let deleteSeatKey = this.deleteSeatIdList[i].seatId;
-            let deleteSeatFloor = this.deleteSeatIdList[i].floorId;
-            this.$emit(
-              "deleteSeatWithKey",
-              "seats",
-              deleteSeatKey,
-              deleteSeatFloor
-            );
-          }
-        }
-        for (let i = 0; i < this.allFloorList.length; i++) {
-          let eachFloorSeatList = this.getEachFloorSeatList(
-            this.allFloorList[i].floorId
-          );
-
-          if (eachFloorSeatList.length > 0) {
-            for (let j = 0; j < eachFloorSeatList.length; j++) {
-              let groupToObject = eachFloorSeatList[j].toObject([
-                "seatId",
-                "seatName",
-                "floorId",
-                "left",
-                "top",
-                "employeeDepartment",
-                "employeeId",
-                "scaleX",
-                "scaleY",
-                "isObjFromDB",
-                "httpRequestPostStatus",
-              ]);
-
-              let rectangleObject = eachFloorSeatList[j].item(0).toObject(["width","height"]);
-              console.log(rectangleObject.width);
-              console.log(rectangleObject.height);
-
-              if (groupToObject.httpRequestPostStatus) {
-                let seatData = {};
-                seatData.seat_id = groupToObject.seatId;
-                seatData.seat_name = groupToObject.seatName;
-                seatData.floor = groupToObject.floorId;
-                seatData.x = groupToObject.left;
-                seatData.y = groupToObject.top;
-                seatData.is_group = false;
-                seatData.group_id = null;
-                seatData.building_id = "HANCOM01";
-                seatData.employee_id = groupToObject.employeeId;
-                seatData.width = rectangleObject.width * groupToObject.scaleX;
-                seatData.height = rectangleObject.height * groupToObject.scaleY;
-                seatData.degree = groupToObject.angle;
-                seatData.shape_id = "1";
-
-                this.$emit("saveSeats", "seats", seatData, seatData.floor);
-              }
             }
           }
         }
@@ -1411,7 +1435,7 @@ export default {
         fill: "black",
       });
 
-      let group = new fabric.Group([rectangle, textObject,seatNameObject], {
+      let group = new fabric.Group([rectangle, textObject, seatNameObject], {
         seatId: seat.seatId,
         seatName: seatNameObject.text,
         employeeName: employee.name,
