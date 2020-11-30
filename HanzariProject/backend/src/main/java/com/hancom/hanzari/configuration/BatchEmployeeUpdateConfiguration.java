@@ -45,6 +45,7 @@ import com.hancom.hanzari.vo.TokenVo;
 
 import lombok.RequiredArgsConstructor;
 
+//재택근무 개발환경 확인
 /* 클라이언트 →→ */
 //Spring Batch의 모든 Job은 이 어노테이션을 이용해 등록하고 사용해야한다/
 @Configuration
